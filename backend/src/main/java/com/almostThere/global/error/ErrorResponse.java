@@ -18,8 +18,10 @@ public class ErrorResponse {
     private ErrorResponse(final ErrorCode code) {
         this.message = code.getMessage();
         this.code = code.getCode();
-        this.errors = new ArrayList<>();
     }
+    // 정적 팩토리 메소드 패턴: 생성자가 아닌 static 메소드로 객체를 반환하는 것
+    // 장점: 메소드에 이름을 부여할 수 있음, 캐싱 기능 사용 가능
+    // 응답 에러 객체를 생성하는 정적 메소드
     public static ErrorResponse of(final ErrorCode code) {
         return new ErrorResponse(code);
     }
