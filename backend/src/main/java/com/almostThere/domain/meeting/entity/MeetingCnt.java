@@ -9,8 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import lombok.Builder.Default;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
+@DynamicInsert
 public class MeetingCnt {
 
 
@@ -27,6 +31,7 @@ public class MeetingCnt {
     @JoinColumn(name = "friend_id", foreignKey = @ForeignKey(name = "fk_meeting_cnt_member_idx2"), nullable = false)
     private Member friend;
 
+    @ColumnDefault("1")
     @Column(nullable = false)
     private int cnt;
 
