@@ -27,7 +27,7 @@ public class Member {
 
     @Column(nullable = false)
     @CreationTimestamp
-    private LocalDateTime memberRegdate;
+    private LocalDateTime regdate;
 
 
 }
