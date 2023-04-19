@@ -4,10 +4,8 @@
 
 <script>
 export default {
-  name: "InvitePage"
-}
+  name: "InvitePage",
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -6,10 +6,8 @@
 
 <script>
 export default {
-  name: "TodayMeeting"
-}
+  name: "TodayMeeting",
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

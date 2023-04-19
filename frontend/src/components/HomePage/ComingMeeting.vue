@@ -6,10 +6,8 @@
 
 <script>
 export default {
-  name: "ComingMeeting"
-}
+  name: "ComingMeeting",
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

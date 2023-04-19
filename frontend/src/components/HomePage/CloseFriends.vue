@@ -6,10 +6,8 @@
 
 <script>
 export default {
-  name: "CloseFriends"
-}
+  name: "CloseFriends",
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

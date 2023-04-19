@@ -1,15 +1,15 @@
 <template>
-  <v-sheet class="logo-font d-flex flex-row justify-center align-center xxxxl-font main-col-1" height="55" color="transparent">
+  <v-sheet
+    class="logo-font d-flex flex-row justify-center align-center xxxxl-font main-col-1"
+    height="55"
+    color="transparent"
+  >
     Almost There
   </v-sheet>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
-<style>
-
-</style>
+<style></style>

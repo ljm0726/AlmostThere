@@ -4,10 +4,8 @@
 
 <script>
 export default {
-  name: "PlacePage"
-}
+  name: "PlacePage",
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

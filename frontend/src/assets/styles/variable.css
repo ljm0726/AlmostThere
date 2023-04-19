@@ -1,12 +1,11 @@
 :root {
+  --main-col-1: #092a49;
+  --main-col-2: #848f9a;
 
-  --main-col-1: #092A49;
-  --main-col-2: #848F9A;
-
-  --red-col: #F24E55;
-  --yellow-col: #F4A41A;
-  --green-col: #00A381;
-  --blue-col: #005FBA;
+  --red-col: #f24e55;
+  --yellow-col: #f4a41a;
+  --green-col: #00a381;
+  --blue-col: #005fba;
 
   --logo-font: "Shrikhand";
 

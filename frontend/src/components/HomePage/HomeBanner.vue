@@ -14,7 +14,6 @@
 </template>
 
 <script>
-
 export default {
   name: "HomeBanner",
   data() {
@@ -23,12 +22,12 @@ export default {
         slidesPerView: "auto",
         spaceBetween: 25,
         pagination: {
-          el: '.swiper-pagination',
-        }
-      }
-    }
-  }
-}
+          el: ".swiper-pagination",
+        },
+      },
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -38,5 +37,4 @@ export default {
 .swiper-container {
   width: 100% !important;
 }
-
 </style>

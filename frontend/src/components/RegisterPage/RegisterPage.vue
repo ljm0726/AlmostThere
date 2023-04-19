@@ -8,10 +8,8 @@
 
 <script>
 export default {
-  name: "RegisterPage"
-}
+  name: "RegisterPage",
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
