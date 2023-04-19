@@ -26,12 +26,12 @@ public class MeetingDto {
         this.id = meeting.getId();
         this.host = new MemberDto(meeting.getHost());
         this.meetingName = meeting.getMeetingName();
-        this.meetingTime = meeting.getMeetingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));;
+        this.meetingTime = meeting.getMeetingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.meetingPlace = meeting.getMeetingPlace();
         this.meetingLat = meeting.getMeetingLat();
         this.meetingLng = meeting.getMeetingLng();
         this.lateAmount = meeting.getLateAmount();
-        this.regdate = meeting.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));;
+        this.regdate = meeting.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.roomCode = meeting.getRoomCode();
     }
 }
