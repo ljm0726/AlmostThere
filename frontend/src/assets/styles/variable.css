@@ -1,0 +1,24 @@
+:root {
+
+  --main-col-1: #092A49;
+  --main-col-2: #848F9A;
+
+  --red-col: #F24E55;
+  --yellow-col: #F4A41A;
+  --green-col: #00A381;
+  --blue-col: #005FBA;
+
+  --logo-font: "Shrikhand";
+
+  --thin-font: "Pretendard-Thin";
+  --extralight-font: "Pretendard-ExtraLight";
+  --light-font: "Pretendard-Light";
+  --regular-font: "Pretendard-Regular";
+  --medium-font: "Pretendard-Medium";
+  --semibold-font: "Pretendard-SemiBold";
+  --bold-font: "Pretendard-Bold";
+  --extrabold-font: "Pretendard-ExtraBold";
+  --black-font: "Pretendard-Black";
+
+  --point-font: "GeekbleMalang2WOFF2";
+}

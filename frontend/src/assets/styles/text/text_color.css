@@ -1,0 +1,7 @@
+/* 색상 */
+.main-col-1 {
+  color: var(--main-col-1) !important;
+}
+.white-font {
+  color: white;
+}
