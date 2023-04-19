@@ -2,22 +2,16 @@ package com.almostThere.domain.meeting.entity;
 
 import com.almostThere.domain.user.entity.Member;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Meeting {
@@ -56,4 +50,6 @@ public class Meeting {
     @Column(nullable = false)
     private int roomCode;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meeting")
+    private List<MeetingMember> meetingMembers = new ArrayList<>();
 }

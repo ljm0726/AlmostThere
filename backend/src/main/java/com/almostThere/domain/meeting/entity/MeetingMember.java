@@ -1,14 +1,8 @@
 package com.almostThere.domain.meeting.entity;
 
 import com.almostThere.domain.user.entity.Member;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
+import javax.persistence.*;
 
 @Entity
 public class MeetingMember {
@@ -35,7 +29,7 @@ public class MeetingMember {
     @Column
     private double startLng;
 
-    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
     private StateType state;
 
     @Column
