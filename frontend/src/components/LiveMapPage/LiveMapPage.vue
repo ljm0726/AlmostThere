@@ -1,9 +1,28 @@
 <template>
-  <div>실시간위치</div>
+  <div class="liveMap">
+    <live-map></live-map>
+    <!-- <img src="@/assets/images/animals/cat_gray.png" width="60%" /> -->
+    <!-- <img src="@/assets/images/animals/cat_gray.png" width="60%" /> -->
+  </div>
 </template>
 
 <script>
-export default {};
+import LiveMap from "./element/LiveMap.vue";
+
+export default {
+  name: "LiveMapPage",
+  data() {
+    return {};
+  },
+  components: {
+    LiveMap,
+  },
+};
 </script>
 
-<style></style>
+<style>
+.liveMap {
+  width: 100%;
+  height: 100%;
+}
+</style>
