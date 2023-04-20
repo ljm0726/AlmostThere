@@ -9,7 +9,7 @@ public enum ErrorCode {
     NOT_AUTHENTICATION(401, "not authentication"),
     NOT_AUTHORIZATION(403, "not authorization"),
     MEETING_NOT_FOUND(404, "meeting not found."),
-
+    MEMBER_NOT_FOUND(404, "member not found."),
     ;
 
     private int code;
