@@ -1,150 +1,135 @@
 <template>
-  <div id="container" class="container">
-    <h1>채팅</h1>
-    <input type="hidden" id="sessionId" value="" />
+  <v-sheet
+    class="d-flex flex-column justify-end"
+    style="padding: 55px 0px 72px 0px"
+    min-height="100%"
+  >
+    <chatting-header></chatting-header>
 
-    <div id="chating" class="chating"></div>
+    유저이름:
+    <v-text-field v-model="nickname" type="text"></v-text-field>
+    <v-sheet class="d-flex flex-column" min-height="100">
+      <chatting-message
+        v-for="(item, idx) in chatList"
+        :key="idx"
+        :item="item"
+        :nickname="nickname"
+      ></chatting-message>
+    </v-sheet>
 
-    <div id="yourName">
-      <table class="inputTable">
-        <tr>
-          <th>사용자명</th>
-          <th><input type="text" name="userName" id="userName" /></th>
-          <th><button @click="chatName()" id="startBtn">이름 등록</button></th>
-        </tr>
-      </table>
-    </div>
-    <div id="yourMsg">
-      <table class="inputTable">
-        <tr>
-          <th>메시지</th>
-          <th>
-            <input id="chatting" placeholder="보내실 메시지를 입력하세요." />
-          </th>
-          <th><button @click="send()" id="sendBtn">보내기</button></th>
-        </tr>
-      </table>
-    </div>
-  </div>
+    <!-- <div> -->
+    <v-sheet
+      class="px-4 py-4"
+      max-width="500"
+      style="position: fixed; margin: 0 auto; left: 0; right: 0; bottom: 0"
+    >
+      <v-text-field
+        v-model="message"
+        @click:append-outer="sendMessage"
+        @click:clear="message == ''"
+        @keyup.enter="sendMessage"
+        placeholder="메시지를 입력해주세요"
+        outlined
+        append-outer-icon="$vuetify.icons.send_outline"
+        dense
+        hide-details
+        clearable
+      ></v-text-field>
+    </v-sheet>
+    <!-- </div> -->
+  </v-sheet>
 </template>
 
 <script>
+import Stomp from "webstomp-client";
+import SockJS from "sockjs-client";
+import { getChatting } from "@/api/modules/chatting.js";
+import ChattingHeader from "@/views/Header/ChattingHeader.vue";
+import ChattingMessage from "./ChattingMessage.vue";
+
 export default {
+  components: { ChattingHeader, ChattingMessage },
   name: "ChattingPage",
   data() {
     return {
-      ws: null,
+      nickname: "",
+      message: "",
+      chatList: [],
     };
   },
+  async created() {
+    // App.vue가 생성되면 소켓 연결을 시도합니다.
+    this.connect();
+    // 저장된 채팅 정보를 가져옵니다.
+    await getChatting(this.$route.params.id).then((res) => {
+      this.chatList = res.data.data.chatList;
+      setTimeout(this.goBottom, 50);
+    });
+  },
   methods: {
-    wsOpen() {
-      this.ws = new WebSocket("ws://localhost:9999/chat");
-      this.wsEvt();
+    goBottom() {
+      // window.scrollTo(0, document.body.scrollHeight);
+      // console.log("scrollTop", document.scrollTop);
+      // console.log("scrollTop", document.scrollHeight);
+      // const main = document.querySelector(".v-main");
+      // main.scrollTop = main.scrollHeight;
+      console.log("height", document.querySelector("body").scrollHeight);
+      window.scrollTo(0, document.querySelector("body").scrollHeight);
+      // scrollTo(0, main.offsetTop + main.offsetHeight);
+      // console.log("scrollTop", main.offsetTop + main.offsetHeight);
     },
-    wsEvt() {
-      this.ws.onopen = function (data) {
-        // 소켓이 열리면 동작
-        data;
-      };
-
-      this.ws.ommessage = function (data) {
-        // 메시지를 받으면 동작
-        var msg = data.data;
-        if (msg != null && msg.trim() != "") {
-          var d = JSON.parse(msg);
-          if (d.type == "getId") {
-            var si = d.sessionId != null ? d.sessionId : "";
-            if (si != "") {
-              document.getElementById("sessionId").value = si;
-            }
-          } else if (d.type == "message") {
-            if (d.sessionId == document.getElementById("sessionId").value) {
-              document
-                .getElementById("chating")
-                .insertAdjacentHTML("<p class='me'>나 :" + d.msg + "</p>");
-            } else {
-              document
-                .getElementById("chating")
-                .insertAdjacentHTML(
-                  "<p class='others'>" + d.userName + " :" + d.msg + "</p>"
-                );
-            }
-          } else {
-            console.warn("unknown type!");
-          }
-        }
-      };
-
-      document.addEventListener("keypress", function (e) {
-        if (e.keyCode == 13) {
-          //enter press
-          this.send();
-        }
-      });
-    },
-    chatName() {
-      var userName = document.getElementById("userName").value;
-      if (userName == null || userName.trim() == "") {
-        alert("사용자 이름을 입력해주세요.");
-        document.getElementById("userName").focus();
-      } else {
-        this.wsOpen();
-        // document.getElementById("chatting").style.display = "none";
-        document.getElementById("yourName").style.display = "none";
-        document.getElementById("yourMsg").style.display = "block";
+    sendMessage() {
+      if (this.nickname !== "" && this.message !== "") {
+        this.send();
+        this.message = "";
       }
     },
     send() {
-      var option = {
-        type: "message",
-        sessionId: document.getElementById("sessionId").value,
-        userName: document.getElementById("userName").value,
-        msg: document.getElementById("chatting").value,
-      };
-      this.ws.send(JSON.stringify(option));
-      document.getElementById("chatting").value = "";
+      console.log("Send message:" + this.message);
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = {
+          nickname: this.nickname,
+          message: this.message,
+        };
+        this.stompClient.send(
+          `/message/receive/${this.$route.params.id}`,
+          JSON.stringify(msg),
+          {}
+        );
+      }
+    },
+    connect() {
+      const serverURL = "http://localhost:9999/websocket";
+      let socket = new SockJS(serverURL);
+      this.stompClient = Stomp.over(socket);
+      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+      this.stompClient.connect(
+        {},
+        (frame) => {
+          // 소켓 연결 성공
+          this.connected = true;
+          console.log("소켓 연결 성공", frame);
+          // 서버의 메시지 전송 endpoint를 구독합니다.
+          // 이런형태를 pub sub 구조라고 합니다.
+          this.stompClient.subscribe(
+            `/send/${this.$route.params.id}`,
+            (res) => {
+              console.log("구독으로 받은 메시지 입니다.", res.body);
+              console.log("넣을 리스트", this.chatList);
+
+              // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+              this.chatList.push(JSON.parse(res.body));
+              window.setTimeout(this.goBottom, 50);
+            }
+          );
+        },
+        (error) => {
+          // 소켓 연결 실패
+          console.log("소켓 연결 실패", error);
+          this.connected = false;
+        }
+      );
     },
   },
-  created() {},
 };
 </script>
-
-<style scoped>
-* {
-  margin: 0;
-  padding: 0;
-}
-.container {
-  width: 500px;
-  margin: 0 auto;
-  padding: 25px;
-}
-.container h1 {
-  text-align: left;
-  padding: 5px 5px 5px 15px;
-  color: #ffbb00;
-  border-left: 3px solid #ffbb00;
-  margin-bottom: 20px;
-}
-.chating {
-  background-color: #000;
-  width: 500px;
-  height: 500px;
-  overflow: auto;
-}
-.chating .me {
-  color: #f6f6f6;
-  text-align: right;
-}
-.chating .others {
-  color: #ffe400;
-  text-align: left;
-}
-input {
-  width: 330px;
-  height: 25px;
-}
-#yourMsg {
-  display: none;
-}
-</style>
