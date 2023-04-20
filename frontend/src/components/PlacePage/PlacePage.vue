@@ -1,13 +1,6 @@
 <template>
   <div class="map-area">
-    <v-btn
-      id="square-btn"
-      class="back-btn"
-      outlined
-      :color="color"
-      @click="goBack()"
-      rounded
-    >
+    <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
       <v-icon>$vuetify.icons.arrow_left</v-icon>
     </v-btn>
     <input
@@ -24,6 +17,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "PlacePage",
   data() {
@@ -35,7 +30,18 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState("placeStore", ["placeX", "placeY", "placeName", "placeAddr"]),
+  },
+
   mounted() {
+    console.log(
+      "제대로 왓나?",
+      this.placeX,
+      this.placeY,
+      this.placeName,
+      this.placeAddr
+    );
     if (window.kakao && window.kakao.maps) {
       // 카카오 객체가 있고, 카카오 맵 그릴 준비가 되어 있다면 맵 실행
       this.loadMap();
@@ -43,6 +49,18 @@ export default {
       // 없다면 카카오 스크립트 추가 후 맵 실행
       this.loadScript();
     }
+
+    var bounds = new window.kakao.maps.LatLngBounds();
+    bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
+    this.current.lng = this.placeX;
+    this.current.lat = this.placeY;
+    this.displayMarker(this.placeY, this.placeX);
+    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+    this.map.setBounds(bounds);
+    this.map.relayout();
+    this.map.setCenter(
+      new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
+    );
   },
 
   methods: {
@@ -75,6 +93,14 @@ export default {
       this.ps = new window.kakao.maps.services.Places();
       this.geocoder = new window.kakao.maps.services.Geocoder();
     },
+    displayMarker(y, x) {
+      // 마커를 생성하고 지도에 표시합니다
+      if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
+      this.curIntroduceMarker = new window.kakao.maps.Marker({
+        map: this.map,
+        position: new window.kakao.maps.LatLng(y, x),
+      });
+    },
   },
 };
 </script>
@@ -82,6 +108,7 @@ export default {
 <style>
 input {
   padding-left: 10px; /* 여백 크기 조절 */
+  font-family: var(--medium-font);
 }
 .find-place-btn {
   box-sizing: border-box;

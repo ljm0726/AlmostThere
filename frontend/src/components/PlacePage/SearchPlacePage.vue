@@ -1,13 +1,6 @@
 <template>
   <div>
-    <v-btn
-      id="square-btn"
-      class="back-btn"
-      outlined
-      :color="color"
-      @click="goBack()"
-      rounded
-    >
+    <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
       <v-icon>$vuetify.icons.arrow_left</v-icon>
     </v-btn>
     <form action="">
@@ -28,6 +21,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "PlacePage",
   data() {
@@ -40,16 +35,15 @@ export default {
       dong: "",
       regCode: "",
       residentResults: [],
-      isResident: false,
       isListOpen: false,
     };
   },
-
   mounted() {
     this.loadScript();
   },
 
   methods: {
+    ...mapActions("placeStore", ["updatePlace"]),
     goBack() {
       this.$router.go(-1);
     },
@@ -76,6 +70,7 @@ export default {
         console.log("s", data);
         this.isResident = false;
         this.residentResults = [];
+
         const listDiv = data.reduce(
           (
             cur,
@@ -92,7 +87,6 @@ export default {
               x,
               address_name,
             });
-            this.isResident = true;
             return (
               cur +
               `
@@ -105,49 +99,46 @@ export default {
           },
           ""
         );
-        if (this.isResident) {
-          const list = document.querySelector("#list");
-          list.innerHTML = listDiv;
-          console.log(list.childNodes);
-          this.isListOpen = true;
-          list.childNodes.forEach((child) => {
-            child.addEventListener("click", () => {
-              console.log(
-                child.attributes["data-x"].value,
-                child.attributes["data-y"].value
-              );
-              const x = child.attributes["data-x"].value;
-              const y = child.attributes["data-y"].value;
-              this.address = child.attributes["data-address"].value;
-              // this.address = child.attributes["data-address"].value;
-              console.log("da", child.attributes["data-address"].value);
-              this.place = child.attributes["data-place"].value;
-              this.introduceValue = this.address;
-              var bounds = new window.kakao.maps.LatLngBounds();
-              bounds.extend(new window.kakao.maps.LatLng(y, x));
-              this.current.lng = x;
-              this.current.lat = y;
-              this.searchAddrFromCoords(this.current, this.getAddressFromRes);
-              this.displayMarker({ y, x });
-              // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-              this.map.setBounds(bounds);
-              this.map.relayout();
-              this.map.setCenter(
-                new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
-              );
-            });
+        const list = document.querySelector("#list");
+        list.innerHTML = listDiv;
+        console.log(list.childNodes);
+        this.isListOpen = true;
+        list.childNodes.forEach((child) => {
+          child.addEventListener("click", () => {
+            const x = child.attributes["data-x"].value;
+            const y = child.attributes["data-y"].value;
+            this.address = child.attributes["data-address"].value;
+            this.place = child.attributes["data-place"].value;
+            const placeMap = new Map();
+            placeMap.set("x", x);
+            placeMap.set("y", y);
+            placeMap.set("name", this.place);
+            placeMap.set("addr", this.address);
+            this.updatePlace(placeMap);
+            this.$router.push("/place");
+            // console.log(
+            //   "x,y좌표는 ",
+            //   child.attributes["data-x"].value,
+            //   child.attributes["data-y"].value
+            // );
+            // console.log("address는 ", child.attributes["data-address"].value);
+            // console.log("place는 ", child.attributes["data-place"].value);
+            // console.log("이건뭐지? ", this.address);
+            // this.introduceValue = this.address;
+            // var bounds = new window.kakao.maps.LatLngBounds();
+            // bounds.extend(new window.kakao.maps.LatLng(y, x));
+            // console.log("bound는 뭐지? ", bounds);
           });
-        } else {
-          this.searchValue = "";
-        }
+        });
       } else {
         alert("검색 결과가 없습니다.");
       }
     },
     searchAddrFromCoords(coords, callback) {
-      console.log(coords);
+      console.log("뭐가넘어오냐?", coords);
       // 좌표로 행정동 주소 정보를 요청합니다
       this.geocoder.coord2RegionCode(coords.lng, coords.lat, callback);
+      console.log("어케바뀜??", this.geocoder);
     },
     getAddressFromRes(result, status) {
       // 주소 정보 파싱
