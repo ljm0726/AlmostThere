@@ -3,8 +3,10 @@ package com.almostThere.global.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -23,15 +25,39 @@ public class SecurityConfig {
             .csrf().disable()       // rest api이므로 csrf 보안이 필요없으므로 disable처리.
             .formLogin().disable() // 로그인 폼 미사용
             .httpBasic().disable() // Http basic Auth 기반으로 열리는 로그인 인증창 미사용
+            .exceptionHandling()
+            .authenticationEntryPoint(jwtEntryPoint) //filter에서 잘못된 경우 token 문제임
+            .and()
             .sessionManagement().sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS)// jwt token으로 인증하므로 세션 사용하지 않음. stateless 하도록 처리.
             .and()
             .authorizeRequests()
-            .antMatchers("/api/token/**", "/oauth2/**", "/api-docs/**", "/swagger-ui/**").permitAll(); //토큰 재발급 요청은 제외
+            .antMatchers("/api/token/**", "/oauth2/**", "/api-docs/**", "/swagger-ui/**").permitAll() //토큰 재발급 요청은 제외
+            .anyRequest().authenticated() // 그외의 모든 요청은 인증 필요.
+            .and()
+//            .addFilterBefore(new JwtAuthFilter(tokenService, memberRepository),
+//                OAuth2LoginAuthenticationFilter.class)
+//            .and()// 인증권한이 필요한 페이지.// 나머지 모든 요청 허용  ( 생략 가능 )
+//            .formLogin()
+//            .loginPage("http://localhost:5173")
+            .oauth2Login()
+            .successHandler(successHandler)
+            .userInfoEndpoint().userService(customOAuth2UserService);
+//            .failureHandler(failureHandler)
+//
+        http.addFilterAfter(new JwtAuthFilter(tokenService, memberRepository),
+            OAuth2LoginAuthenticationFilter.class);
 
         return http.build();
     }
 
 
-
+    /**
+     * security filter 를 무시한다.
+     * ex) /** => 모든 요청, /static 등
+     */
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/**");
+    }
 }
