@@ -126,22 +126,25 @@ export default {
         marker.setMap(this.map);
 
         // iii) 오버레이 표시
-        this.createInfoWindow(ml.member.memberNickname, marker);
+        this.createOverlay(ml.member.memberNickname, marker);
       }
     },
     // [@Method] marker 별 오버레이 생성
-    createInfoWindow(nickname, marker) {
-      var iwContent = `<div class="ma-2">${nickname}</div>`,
-        iwPosition = new kakao.maps.LatLng(33.450701, 126.570667); // info-window 표시 위치
+    createOverlay(nickname, marker) {
+      const content = `<div class="custom-overlay">${nickname}</div>`;
+      const position = marker.getPosition();
+      // info-window 표시 위치
 
-      // info-window 생성
-      var infowindow = new kakao.maps.InfoWindow({
-        position: iwPosition,
-        content: iwContent,
+      // 오버레이 생성
+      const overlay = new kakao.maps.CustomOverlay({
+        map: this.map,
+        position: position,
+        content: content,
+        yAnchor: 3,
       });
 
-      // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-      infowindow.open(this.map, marker);
+      // 오버레이 표시
+      overlay.setMap(this.map);
     },
   },
 };
@@ -151,5 +154,15 @@ export default {
 #map {
   width: 100%;
   height: 100%;
+}
+
+.custom-overlay {
+  background-color: aquamarine;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 16px;
 }
 </style>
