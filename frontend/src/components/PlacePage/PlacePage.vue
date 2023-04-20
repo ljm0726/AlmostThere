@@ -12,7 +12,7 @@
     </v-btn>
     <input
       class="search-box"
-      placeholder="   모임장소를 검색하세요"
+      placeholder=" 모임장소를 검색하세요"
       v-on:click="goToPage('/search')"
     />
 
@@ -80,13 +80,16 @@ export default {
 </script>
 
 <style>
+input {
+  padding-left: 10px; /* 여백 크기 조절 */
+}
 .find-place-btn {
   box-sizing: border-box;
   position: absolute;
   z-index: 2;
   right: 5%;
   top: 7.5%;
-
+  font-family: var(--extrabold-font);
   background: #ffffff;
   border: 1px solid #092a49;
   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);

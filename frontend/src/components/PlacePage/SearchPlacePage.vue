@@ -1,5 +1,5 @@
 <template>
-  <div class="map-area">
+  <div>
     <v-btn
       id="square-btn"
       class="back-btn"
@@ -13,15 +13,13 @@
     <form action="">
       <input
         class="search-box"
-        placeholder="   모임장소를 검색하세요"
+        placeholder=" 모임장소를 검색하세요"
         v-model="searchValue"
         autocomplete="off"
       />
       <button id="submit_btn" @click.prevent="getSearchResult"></button>
     </form>
-    <div class="map_section">
-      <div id="list" class="lists" v-show="isListOpen"></div>
-    </div>
+    <div id="list" class="lists" v-show="isListOpen"></div>
 
     <v-btn class="find-place-btn"
       ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
@@ -98,7 +96,10 @@ export default {
             return (
               cur +
               `
-                <div class="resident_items" data-x=${x} data-y=${y} data-place=${place_name} data-address="${address_name}" >${address_name} ${place_name}</div>
+                <div class="resident_items" data-x=${x} data-y=${y} data-place=${place_name} data-address="${address_name}" >
+                  <div class="place-name point-font">${place_name}</div>
+                  <div class="address-name point-font">${address_name}</div>
+                </div>
               `
             );
           },
@@ -176,64 +177,22 @@ export default {
 </script>
 
 <style lang="scss">
-.form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 30px;
-}
-.search_bar {
-  height: 5vh;
-}
-.search_bar form {
-  display: flex;
-  justify-content: space-between;
-}
-.search_bar form #search {
-  height: 5vh;
-  width: 80%;
-  border-radius: 10px 0 0 10px;
-}
-.search_bar form #search:focus {
-  border: 0;
-}
-.search_bar form #submit_btn {
-  width: 20%;
-  border-style: none;
-  background: black;
-  border-radius: 0 10px 10px 0;
-}
-.search_bar form #submit_btn #submit_btn_icon {
-}
-.map_section {
-  height: 200px;
-  display: flex;
-  gap: 10px;
-}
-.map_section .maps {
-  width: 100%;
-  height: 100%;
-}
-.map_section .lists {
+.lists {
   overflow: scroll;
+  margin-top: 25%;
 }
-.map_section .resident_items {
-  font-size: 10px;
-  border-bottom: 1px solid #000;
-  padding: 2px;
+.resident_items {
+  position: relative;
+  margin-inline: 6%;
 }
-.map_section .resident_items:hover {
+.resident_items .place-name {
+  font-size: 20px;
+  font-family: var(--extrabold-font);
+  padding-block: 7px;
 }
-input,
-textarea,
-#focus {
-  border: none;
-  border-right: 0px;
-  border-top: 0px;
-  border-left: 0px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.19);
-  background: #f8f8f8;
-  width: 100%;
-  display: block;
+.resident_items .address-name {
+  font-family: var(--medium-font);
+  border-bottom: 2px solid #000;
+  padding-block: 5px;
 }
 </style>
