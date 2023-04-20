@@ -10,8 +10,9 @@ export default {
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
       markerOption: [25, 70], // image marker 위치 (좌표 X)
-      meetingLatLng: [37.5013, 127.0396],
+      meetingLatLng: [37.5013, 127.0396], // 모임장소 좌표
       memberLocation: [
+        // 각 member 별 현재 좌표
         {
           member: {
             memberId: 1,
@@ -123,7 +124,24 @@ export default {
         });
         // marker 표시
         marker.setMap(this.map);
+
+        // iii) 오버레이 표시
+        this.createInfoWindow(ml.member.memberNickname, marker);
       }
+    },
+    // [@Method] marker 별 오버레이 생성
+    createInfoWindow(nickname, marker) {
+      var iwContent = `<div class="ma-2">${nickname}</div>`,
+        iwPosition = new kakao.maps.LatLng(33.450701, 126.570667); // info-window 표시 위치
+
+      // info-window 생성
+      var infowindow = new kakao.maps.InfoWindow({
+        position: iwPosition,
+        content: iwContent,
+      });
+
+      // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+      infowindow.open(this.map, marker);
     },
   },
 };
