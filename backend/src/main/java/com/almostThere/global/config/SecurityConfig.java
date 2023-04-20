@@ -1,7 +1,9 @@
 package com.almostThere.global.config;
 
 import com.almostThere.domain.user.ouath.JwtAuthenticationEntryPoint;
+import com.almostThere.domain.user.ouath.OAuth2SuccessHandler;
 import com.almostThere.domain.user.repository.MemberRepository;
+import com.almostThere.domain.user.service.CustomOAuth2UserService;
 import com.almostThere.domain.user.service.TokenService;
 import com.almostThere.global.filter.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ public class SecurityConfig {
     private final TokenService tokenService;
     private final MemberRepository memberRepository;
     private final JwtAuthenticationEntryPoint jwtEntryPoint;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler successHandler;
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
