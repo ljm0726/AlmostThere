@@ -6,7 +6,28 @@
 export default {
   name: "LiveMap",
   data() {
-    return {};
+    return {
+      placeMarkerSize: [50, 70], // 모임장소 marker 크기
+      memberMarkerSize: [120, 120], // member marker 크기
+      markerOption: [25, 70], // image marker 위치 (좌표 X)
+      meetingLatLng: [37.5013, 127.0396],
+      memberLocation: [
+        {
+          member: {
+            memberId: 1,
+            memberNickname: "김싸피",
+            memberLatLng: [37.5004, 127.0361], // 역삼역
+          },
+        },
+        {
+          member: {
+            memberId: 2,
+            memberNickname: "히정",
+            memberLatLng: [37.5048, 127.0413], // 역삼 신라스테이
+          },
+        },
+      ],
+    };
   },
   mounted() {
     // Kakao Map Script import
@@ -37,14 +58,21 @@ export default {
       // i) 모임 장소 marker
       this.createPlaceMarker(options);
       // ii) 멤버 별 marker 생성
-      const location = new kakao.maps.LatLng(37.5004, 127.0361); // ! 나중에 사용자 위치로 변경
-      this.createMemberMarker(location);
+      this.createMemberMarker();
     },
     // [@Method] 모임장소 marker 생성
     createPlaceMarker(options) {
       const imageSrc = require("@/assets/images/page/pointer.png");
-      const imageSize = new kakao.maps.Size(50, 70);
-      const imageOption = { offset: new kakao.maps.Point(25, 70) };
+      const imageSize = new kakao.maps.Size(
+        this.placeMarkerSize[0],
+        this.placeMarkerSize[1]
+      );
+      const imageOption = {
+        offset: new kakao.maps.Point(
+          this.markerOption[0],
+          this.markerOption[1]
+        ),
+      };
       const markerImage = new kakao.maps.MarkerImage(
         imageSrc,
         imageSize,
@@ -58,21 +86,44 @@ export default {
       marker.setMap(this.map);
     },
     // [@Method] 멤버 별 캐릭터 marker 생성
-    createMemberMarker(location) {
-      const imageSrc = require("@/assets/images/animals/cat_gray.png");
-      const imageSize = new kakao.maps.Size(120, 120);
-      const imageOption = { offset: new kakao.maps.Point(25, 70) };
-      const markerImage = new kakao.maps.MarkerImage(
-        imageSrc,
-        imageSize,
-        imageOption
-      );
-      const marker = new kakao.maps.Marker({
-        position: location,
-        image: markerImage,
-      });
-      // marker 표시
-      marker.setMap(this.map);
+    createMemberMarker() {
+      for (var ml of this.memberLocation) {
+        // console.log("#21# member 확인: ", ml);
+        // console.log(
+        //   "#21# memberLatLng 확인: ",
+        //   ml.member.memberLatLng
+        // );
+        // i) marker option 설정
+        const imageSrc = require(`@/assets/images/animals/${
+          ml.member.memberId % 10
+        }.png`);
+        const imageSize = new kakao.maps.Size(
+          this.memberMarkerSize[0],
+          this.memberMarkerSize[1]
+        );
+        const imageOption = {
+          offset: new kakao.maps.Point(
+            this.markerOption[0],
+            this.markerOption[1]
+          ),
+        };
+        const markerImage = new kakao.maps.MarkerImage(
+          imageSrc,
+          imageSize,
+          imageOption
+        );
+        const location = new kakao.maps.LatLng(
+          ml.member.memberLatLng[0],
+          ml.member.memberLatLng[1]
+        );
+        // ii) marker 생성
+        const marker = new kakao.maps.Marker({
+          position: location,
+          image: markerImage,
+        });
+        // marker 표시
+        marker.setMap(this.map);
+      }
     },
   },
 };
