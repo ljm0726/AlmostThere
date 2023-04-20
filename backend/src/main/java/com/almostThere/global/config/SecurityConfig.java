@@ -1,5 +1,9 @@
 package com.almostThere.global.config;
 
+import com.almostThere.domain.user.ouath.JwtAuthenticationEntryPoint;
+import com.almostThere.domain.user.repository.MemberRepository;
+import com.almostThere.domain.user.service.TokenService;
+import com.almostThere.global.filter.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -15,7 +20,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
-
+    private final TokenService tokenService;
+    private final MemberRepository memberRepository;
+    private final JwtAuthenticationEntryPoint jwtEntryPoint;
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
