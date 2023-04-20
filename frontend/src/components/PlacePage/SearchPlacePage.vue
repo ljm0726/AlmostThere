@@ -8,6 +8,7 @@
         class="search-box"
         placeholder=" 모임장소를 검색하세요"
         v-model="searchValue"
+        ref="myInput"
         autocomplete="off"
       />
       <button id="submit_btn" @click.prevent="getSearchResult"></button>
@@ -40,6 +41,7 @@ export default {
   },
   mounted() {
     this.loadScript();
+    this.$refs.myInput.focus();
   },
 
   methods: {

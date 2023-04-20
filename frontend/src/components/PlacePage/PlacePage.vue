@@ -58,18 +58,19 @@ export default {
 
     if (this.placeX !== null) this.isSelect = true;
     else this.isSelect = false;
-
-    var bounds = new window.kakao.maps.LatLngBounds();
-    bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
-    this.current.lng = this.placeX;
-    this.current.lat = this.placeY;
-    this.displayMarker(this.placeY, this.placeX);
-    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-    this.map.setBounds(bounds);
-    this.map.relayout();
-    this.map.setCenter(
-      new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
-    );
+    if (this.placeX !== null) {
+      var bounds = new window.kakao.maps.LatLngBounds();
+      bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
+      this.current.lng = this.placeX;
+      this.current.lat = this.placeY;
+      this.displayMarker(this.placeY, this.placeX);
+      // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+      this.map.setBounds(bounds);
+      this.map.relayout();
+      this.map.setCenter(
+        new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
+      );
+    }
   },
 
   methods: {
