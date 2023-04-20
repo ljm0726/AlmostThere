@@ -13,13 +13,18 @@
       ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
     >
     <div id="map" class="maps"></div>
+    <div v-if="isSelect">
+      <place-info class="place-info"></place-info>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import placeInfo from "./placeInfo.vue";
 
 export default {
+  components: { placeInfo },
   name: "PlacePage",
   data() {
     return {
@@ -27,6 +32,7 @@ export default {
       ps: null,
       current: { lat: 37.5, lng: 127.039 },
       geocoder: null,
+      isSelect: false,
     };
   },
 
@@ -49,6 +55,9 @@ export default {
       // 없다면 카카오 스크립트 추가 후 맵 실행
       this.loadScript();
     }
+
+    if (this.placeX !== null) this.isSelect = true;
+    else this.isSelect = false;
 
     var bounds = new window.kakao.maps.LatLngBounds();
     bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
@@ -106,6 +115,12 @@ export default {
 </script>
 
 <style>
+.place-info {
+  z-index: 2;
+  position: absolute;
+  bottom: 5%;
+  left: 8.5%;
+}
 input {
   padding-left: 10px; /* 여백 크기 조절 */
   font-family: var(--medium-font);
