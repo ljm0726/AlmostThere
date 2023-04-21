@@ -1,6 +1,9 @@
 <template>
   <div>
+    <!-- test용 -->
+    <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
     <v-btn @click="sendChatTest()">채팅 test</v-btn>
+    <!-- --- -->
     <div id="map"></div>
   </div>
 </template>
@@ -18,6 +21,7 @@ export default {
       /* over-lay 설정 */
       memberOverlay: [0.5, 3.2], // member over-lay (x, y) 위치 좌표
       distanceOverlay: [-0.3, -0.1], // distance over-lay 좌표
+      chatOverlay: [0.5, 4], // chat over-lay 좌표
       /* 현재 좌표 */
       placeLatLng: [37.5013, 127.0396], // 모임장소 좌표
       memberLocation: [
@@ -38,7 +42,9 @@ export default {
         },
       ],
       /* member 채팅 */
+      testChatContent: "", // test용
       chatting: [], // 멤버 별 실시간 chatting 내용
+      memberChatOverlay: [], // 멤버 별 채팅 over-lay
     };
   },
   watch: {
@@ -149,7 +155,7 @@ export default {
     },
     // [@Method] marker 별 오버레이 생성
     createMemberOverlay(nickname, marker) {
-      const content = `<div class="member-overlay">${nickname}</div>`;
+      const content = `<div class="member-overlay point-font">${nickname}</div>`;
       const position = marker.getPosition();
 
       // 오버레이 생성
@@ -193,7 +199,7 @@ export default {
     },
     // [@Method] member와 모임장소 거리 - 오버레이 표시
     createDistanceOverlay(distance, marker) {
-      const content = `<div class="distance-overlay">${distance}m</div>`;
+      const content = `<div class="distance-overlay logo-font">${distance}m</div>`;
       const position = marker.getPosition();
 
       // 오버레이 생성
@@ -210,19 +216,40 @@ export default {
     // [@Method] chatting 내용 over-lay 표시
     updateChatOverlay() {
       for (var chat of this.chatting) {
-        const content = `<div class="chat-overlay">${chat.member.content}</div>`;
+        // chatting 내용이 없는 경우 생성 X
+        if (chat.member.content == null || chat.member.content == "") continue;
+
+        const content = `<div class="chat-overlay point-font">${chat.member.content}</div>`;
+        const memberMarkerLatLng = this.memberLocation.find(
+          (loc) => loc.member.memberId == chat.member.memberId
+        ).member.memberLatLng;
         const position = new kakao.maps.LatLng(
-          this.placeLatLng[0],
-          this.placeLatLng[1]
+          memberMarkerLatLng[0],
+          memberMarkerLatLng[1]
         );
 
         // 오버레이 생성
         const customOverlay = new kakao.maps.CustomOverlay({
           position: position,
           content: content,
-          xAnchor: this.distanceOverlay[0],
-          yAnchor: this.distanceOverlay[1],
+          xAnchor: this.chatOverlay[0],
+          yAnchor: this.chatOverlay[1],
         });
+        // 생성한 오버레이 삭제 후 업데이트 or 저장
+        const index = this.memberChatOverlay.findIndex(
+          (obj) => Object.keys(obj)[0] == chat.member.memberId
+        );
+        // i) 해당 member의 chatOverlay가 있는 경우 값 업데이트(삭제, 추가)
+        if (index > -1) {
+          this.memberChatOverlay[index][chat.member.memberId].setMap(null); // 기존 오버레이 삭제
+          this.memberChatOverlay[index][chat.member.memberId] = customOverlay; // 새로운 오버레이 추가
+        }
+        // ii) 없는 경우, 오버레이 추가
+        else {
+          const object = new Object();
+          object[chat.member.memberId] = customOverlay;
+          this.memberChatOverlay.push(object);
+        }
 
         // 오버레이 표시
         customOverlay.setMap(this.map);
@@ -230,7 +257,6 @@ export default {
     },
     // [@Method] TEST
     sendChatTest() {
-      console.log("#21# button 동작 / 전: ", this.chatting);
       this.chatting = [
         {
           member: {
@@ -241,11 +267,10 @@ export default {
         {
           member: {
             memberId: 2,
-            content: "빨리 와ㅏ",
+            content: this.testChatContent,
           },
         },
       ];
-      console.log("#21# button 동작 / 후: ", this.chatting);
     },
   },
 };
@@ -262,7 +287,6 @@ export default {
 }
 
 .member-overlay {
-  /* background-color: white; */
   text-shadow: -1px -1px 0 var(--main-col-1), 1px -1px 0 var(--main-col-1),
     -1px 1px 0 var(--main-col-1), 1px 1px 0 var(--main-col-1);
   padding: 5px;
@@ -280,5 +304,42 @@ export default {
   font-weight: bold;
   text-align: center;
   font-size: 16px;
+}
+
+.chat-overlay {
+  position: relative;
+  background-color: #ffffff;
+  padding: 8px;
+  border-radius: 10px;
+  color: var(--main-col-1);
+  font-weight: bold;
+  text-align: center;
+  font-size: 15px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.chat-overlay::before,
+.chat-overlay::after {
+  position: absolute;
+  display: block;
+  content: "";
+  border-color: transparent;
+  border-style: solid;
+}
+
+.chat-overlay::before {
+  border-width: 10px;
+  border-top-color: #ffffff;
+  bottom: -18px;
+  left: 50%;
+  margin-left: -10px;
+}
+
+.chat-overlay::after {
+  border-width: 8px;
+  border-top-color: #ffffff;
+  bottom: -16px;
+  left: 50%;
+  margin-left: -8px;
 }
 </style>
