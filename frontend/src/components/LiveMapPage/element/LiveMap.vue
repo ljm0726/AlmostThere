@@ -10,7 +10,7 @@ export default {
       /* marker 설정 */
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
-      placeMarkerOption: [30, 70], // 모임장소 - image marker 위치 (좌표 X)
+      placeMarkerOption: [25, 65], // 모임장소 - image marker 위치 (좌표 X)
       memberMarkerOption: [60, 85], // member - image marker 위치
       /* over-lay 설정 */
       memberOverlay: [0.5, 3.2], // member over-lay (x, y) 위치 좌표
