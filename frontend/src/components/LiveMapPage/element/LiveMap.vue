@@ -131,33 +131,35 @@ export default {
     },
     // [@Method] marker 별 오버레이 생성
     createOverlay(nickname, marker) {
-      const content = `<div class="custom-overlay">${nickname}</div>`;
+      const content = `<div class="label">${nickname}</div>`;
       const position = marker.getPosition();
-      // info-window 표시 위치
 
       // 오버레이 생성
-      const overlay = new kakao.maps.CustomOverlay({
+      const customOverlay = new kakao.maps.CustomOverlay({
         map: this.map,
         position: position,
         content: content,
-        yAnchor: 3,
+        yAnchor: 2.8, // 오버레이 표시 x, y 위치
+        xAnchor: -0.3,
       });
 
       // 오버레이 표시
-      overlay.setMap(this.map);
+      customOverlay.setMap(this.map);
     },
   },
 };
 </script>
 
-<style scoped>
+<style>
 #map {
   width: 100%;
   height: 100%;
 }
 
-.custom-overlay {
-  background-color: aquamarine;
+.label {
+  /* background-color: white; */
+  text-shadow: -1px -1px 0 var(--main-col-1), 1px -1px 0 var(--main-col-1),
+    -1px 1px 0 var(--main-col-1), 1px 1px 0 var(--main-col-1);
   padding: 5px;
   border-radius: 5px;
   color: white;
