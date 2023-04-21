@@ -126,19 +126,18 @@ export default {
         marker.setMap(this.map);
 
         // iii) 오버레이 표시
-        this.createOverlay(ml.member.memberNickname, marker);
+        this.createMemberOverlay(ml.member.memberNickname, marker);
         // iv) 모임장소와의 거리 표시
         this.createDistance(marker);
       }
     },
     // [@Method] marker 별 오버레이 생성
-    createOverlay(nickname, marker) {
-      const content = `<div class="label">${nickname}</div>`;
+    createMemberOverlay(nickname, marker) {
+      const content = `<div class="member-overlay">${nickname}</div>`;
       const position = marker.getPosition();
 
       // 오버레이 생성
       const customOverlay = new kakao.maps.CustomOverlay({
-        map: this.map,
         position: position,
         content: content,
         yAnchor: 2.8, // 오버레이 표시 x, y 위치
@@ -150,6 +149,7 @@ export default {
     },
     // [@Method] 모임장소와의 거리 계산 및 표시
     createDistance(marker) {
+      // i) 선을 그릴 좌표 setting
       const distancePath = [
         // 모임장소 좌표
         new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
@@ -159,7 +159,7 @@ export default {
           marker.getPosition().getLng()
         ),
       ];
-
+      // ii) 선 setting
       const polyline = new kakao.maps.Polyline({
         path: distancePath,
         strokeWeight: 4, // 선의 두께
@@ -168,11 +168,30 @@ export default {
         strokeStyle: "solid",
       });
 
-      //   distance = Math.round(distanceLine.getLength());
-      //   console.log("#21# distance 확인: ", distance);
-
-      // 선 표시
+      // iii) 선 표시
       polyline.setMap(this.map);
+
+      // 두 좌표의 거리 over-lay 표시
+      const distance = Math.round(polyline.getLength());
+      this.createDistanceOverlay(distance, marker);
+    },
+    // [@Method] member와 모임장소 거리 - 오버레이 표시
+    // createDistanceOverlay(distance, polyline) {
+    createDistanceOverlay(distance, marker) {
+      const content = `<div class="distance-overlay">${distance}m</div>`;
+      //   const position = polyline.getPath[2];
+      const position = marker.getPosition();
+
+      // 오버레이 생성
+      const customOverlay = new kakao.maps.CustomOverlay({
+        position: position,
+        content: content,
+        yAnchor: 1,
+        xAnchor: 0.7,
+      });
+
+      // 오버레이 표시
+      customOverlay.setMap(this.map);
     },
   },
 };
@@ -184,13 +203,22 @@ export default {
   height: 100%;
 }
 
-.label {
+.member-overlay {
   /* background-color: white; */
   text-shadow: -1px -1px 0 var(--main-col-1), 1px -1px 0 var(--main-col-1),
     -1px 1px 0 var(--main-col-1), 1px 1px 0 var(--main-col-1);
   padding: 5px;
   border-radius: 5px;
   color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 16px;
+}
+
+.distance-overlay {
+  padding: 5px;
+  border-radius: 5px;
+  color: var(--main-col-1);
   font-weight: bold;
   text-align: center;
   font-size: 16px;
