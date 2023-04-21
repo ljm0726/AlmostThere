@@ -9,12 +9,12 @@ import PlacePage from "@/components/PlacePage/PlacePage.vue";
 import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
 
 const isLogin = async (to, from, next) => {
-  console.log(to, " ", to.query);
+  // console.log(to, " ", to.query);
   const access_token = localStorage.getItem("Authorization");
   if (to.query.accessToken || access_token) {
     console.log("login 성공 ");
     if (!access_token) {
-      localStorage.setItem("Authorization", to.query.accessToken.substring(7));
+      localStorage.setItem("Authorization", to.query.login.substring(7));
     }
     next({
       name: "home",
@@ -30,6 +30,7 @@ const home = [
   {
     path: "/",
     name: "landing",
+    beforeEnter: isLogin,
     components: {
       default: TheLanding,
     },
@@ -37,7 +38,6 @@ const home = [
   {
     path: "/login",
     name: "login",
-    beforeEnter: isLogin,
     components: {
       default: LoginPage,
     },

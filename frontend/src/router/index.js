@@ -17,12 +17,14 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   const access_token = localStorage.getItem("Authorization");
-  console.log("Before", access_token);
+  // console.log("Before", access_token, from, to);
   if (access_token) {
     next();
-  } else if (to.name === "login") {
+  } else if (to.name === "landing" || to.name === "login") {
+    //login page를 가거나 login이 성공 됐을 때는 다음으로 넘어감
     next();
   } else {
+    //그 외에 모든 경로는 login으로
     next({
       name: "login",
     });
