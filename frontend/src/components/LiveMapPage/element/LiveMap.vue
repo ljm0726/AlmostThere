@@ -286,17 +286,18 @@ export default {
   height: 700px;
 }
 
+/* member nickname 오버레이 */
 .member-overlay {
-  text-shadow: -1px -1px 0 var(--main-col-1), 1px -1px 0 var(--main-col-1),
-    -1px 1px 0 var(--main-col-1), 1px 1px 0 var(--main-col-1);
+  text-shadow: -1.2px -1.2px 0 var(--main-col-1),
+    1.2px -1.2px 0 var(--main-col-1), -1.2px 1.2px 0 var(--main-col-1),
+    1.2px 1.2px 0 var(--main-col-1);
   padding: 5px;
-  border-radius: 5px;
   color: white;
-  font-weight: bold;
   text-align: center;
   font-size: 16px;
 }
 
+/* 모임장소와의 거리 오버레이 */
 .distance-overlay {
   padding: 5px;
   border-radius: 5px;
@@ -306,6 +307,7 @@ export default {
   font-size: 16px;
 }
 
+/* member chatting 오버레이 */
 .chat-overlay {
   position: relative;
   background-color: #ffffff;
