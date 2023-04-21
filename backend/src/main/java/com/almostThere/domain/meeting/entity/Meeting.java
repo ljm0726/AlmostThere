@@ -34,6 +34,9 @@ public class Meeting {
     @Column(length = 100, nullable = false)
     private String meetingPlace;
 
+    @Column(length = 200, nullable = false)
+    private String meetingAddress;
+
     @Column
     private double meetingLat;
 

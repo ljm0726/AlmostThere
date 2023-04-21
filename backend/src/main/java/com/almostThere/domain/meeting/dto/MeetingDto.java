@@ -2,11 +2,12 @@ package com.almostThere.domain.meeting.dto;
 
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.user.dto.MemberDto;
-import com.almostThere.domain.user.entity.Member;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +22,7 @@ public class MeetingDto {
     private int lateAmount;
     private String regdate;
     private int roomCode;
+    private List<MeetingMemberDto> meetingMembers;
 
     public MeetingDto(Meeting meeting) {
         this.id = meeting.getId();
@@ -33,5 +35,6 @@ public class MeetingDto {
         this.lateAmount = meeting.getLateAmount();
         this.regdate = meeting.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.roomCode = meeting.getRoomCode();
+        this.meetingMembers = meeting.getMeetingMembers().stream().map(m->new MeetingMemberDto(m)).collect(Collectors.toList());
     }
 }
