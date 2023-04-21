@@ -10,7 +10,7 @@ export default {
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
       markerOption: [25, 70], // image marker 위치 (좌표 X)
-      meetingLatLng: [37.5013, 127.0396], // 모임장소 좌표
+      placeLatLng: [37.5013, 127.0396], // 모임장소 좌표
       memberLocation: [
         // 각 member 별 현재 좌표
         {
@@ -47,7 +47,7 @@ export default {
     initMap() {
       const container = document.getElementById("map");
       const options = {
-        center: new kakao.maps.LatLng(37.5013, 127.0396),
+        center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
         level: 4,
         // mapTypeId: kakao.maps.MapTypeId.ROADMAP, // 지도 타입 (ROADMAP, SATELLITE, HYBRID, TERRAIN 중 선택)
       };
@@ -127,6 +127,8 @@ export default {
 
         // iii) 오버레이 표시
         this.createOverlay(ml.member.memberNickname, marker);
+        // iv) 모임장소와의 거리 표시
+        // this.createDistance(ml.member, marker);
       }
     },
     // [@Method] marker 별 오버레이 생성
@@ -146,6 +148,12 @@ export default {
       // 오버레이 표시
       customOverlay.setMap(this.map);
     },
+    // [@Method] 모임장소와의 거리 계산 및 표시
+    // createDistance(member, marker) {
+    //   const distance = window.kakao.maps.geometry.distance(
+    //     new window.kakao.maps.LatLng(this.p)
+    //   );
+    // },
   },
 };
 </script>
