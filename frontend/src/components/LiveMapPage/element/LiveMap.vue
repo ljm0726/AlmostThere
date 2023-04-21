@@ -128,7 +128,7 @@ export default {
         // iii) 오버레이 표시
         this.createOverlay(ml.member.memberNickname, marker);
         // iv) 모임장소와의 거리 표시
-        // this.createDistance(ml.member, marker);
+        this.createDistance(marker);
       }
     },
     // [@Method] marker 별 오버레이 생성
@@ -149,11 +149,31 @@ export default {
       customOverlay.setMap(this.map);
     },
     // [@Method] 모임장소와의 거리 계산 및 표시
-    // createDistance(member, marker) {
-    //   const distance = window.kakao.maps.geometry.distance(
-    //     new window.kakao.maps.LatLng(this.p)
-    //   );
-    // },
+    createDistance(marker) {
+      const distancePath = [
+        // 모임장소 좌표
+        new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+        // 현재 member 좌표
+        new kakao.maps.LatLng(
+          marker.getPosition().getLat(),
+          marker.getPosition().getLng()
+        ),
+      ];
+
+      const polyline = new kakao.maps.Polyline({
+        path: distancePath,
+        strokeWeight: 4, // 선의 두께
+        strokeColor: "var(--main-col-1)",
+        strokeOpacity: 1, // 불투명도 (0에 가까울수록 투명)
+        strokeStyle: "solid",
+      });
+
+      //   distance = Math.round(distanceLine.getLength());
+      //   console.log("#21# distance 확인: ", distance);
+
+      // 선 표시
+      polyline.setMap(this.map);
+    },
   },
 };
 </script>
