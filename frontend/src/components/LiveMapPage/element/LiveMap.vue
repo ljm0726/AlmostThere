@@ -7,9 +7,14 @@ export default {
   name: "LiveMap",
   data() {
     return {
+      /* marker 설정 */
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
       markerOption: [25, 70], // image marker 위치 (좌표 X)
+      /* over-lay 설정 */
+      memberOverlay: [-0.3, 2.8], // member over-lay (x, y) 위치 좌표
+      distanceOverlay: [0.7, 1], // distance over-lay 좌표
+      /* 현재 좌표 */
       placeLatLng: [37.5013, 127.0396], // 모임장소 좌표
       memberLocation: [
         // 각 member 별 현재 좌표
@@ -140,8 +145,8 @@ export default {
       const customOverlay = new kakao.maps.CustomOverlay({
         position: position,
         content: content,
-        yAnchor: 2.8, // 오버레이 표시 x, y 위치
-        xAnchor: -0.3,
+        xAnchor: this.memberOverlay[0], // 오버레이 표시 x, y 위치
+        yAnchor: this.memberOverlay[1],
       });
 
       // 오버레이 표시
@@ -176,18 +181,16 @@ export default {
       this.createDistanceOverlay(distance, marker);
     },
     // [@Method] member와 모임장소 거리 - 오버레이 표시
-    // createDistanceOverlay(distance, polyline) {
     createDistanceOverlay(distance, marker) {
       const content = `<div class="distance-overlay">${distance}m</div>`;
-      //   const position = polyline.getPath[2];
       const position = marker.getPosition();
 
       // 오버레이 생성
       const customOverlay = new kakao.maps.CustomOverlay({
         position: position,
         content: content,
-        yAnchor: 1,
-        xAnchor: 0.7,
+        xAnchor: this.distanceOverlay[0],
+        yAnchor: this.distanceOverlay[1],
       });
 
       // 오버레이 표시
