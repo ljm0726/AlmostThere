@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- test용 -->
+    <!-- test용 (!추후 삭제) -->
     <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
     <v-btn @click="sendChatTest()">채팅 test</v-btn>
     <!-- --- -->
@@ -13,16 +13,16 @@ export default {
   name: "LiveMap",
   data() {
     return {
-      /* marker 설정 */
+      /* # marker 설정 */
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
       placeMarkerOption: [25, 65], // 모임장소 - image marker 위치 (좌표 X)
       memberMarkerOption: [60, 85], // member - image marker 위치
-      /* over-lay 설정 */
+      /* # over-lay 설정 */
       memberOverlay: [0.5, 3.2], // member over-lay (x, y) 위치 좌표
       distanceOverlay: [-0.3, -0.1], // distance over-lay 좌표
       chatOverlay: [0.5, 4], // chat over-lay 좌표
-      /* 현재 좌표 */
+      /* # 현재 좌표 */
       placeLatLng: [37.5013, 127.0396], // 모임장소 좌표
       memberLocation: [
         // 각 member 별 현재 좌표
@@ -41,10 +41,15 @@ export default {
           },
         },
       ],
-      /* member 채팅 */
-      testChatContent: "", // test용
+      /* # member 채팅 */
+      testChatContent: "", // test용 (!추후 삭제)
       chatting: [], // 멤버 별 실시간 chatting 내용
-      memberChatOverlay: [], // 멤버 별 채팅 over-lay
+      /* # 생성한 marker, overlay 저장 (memberId 기준) */
+      memberMarkerList: [], // marker
+      memberChatOverlayList: [], // 채팅 over-lay
+      memberDistanceOverlayList: [], // 거리(m) over-lay
+      memberNicknameOverlayList: [], // nickname over-lay
+      memberPolylineList: [], // polyline
     };
   },
   watch: {
@@ -111,11 +116,6 @@ export default {
     // [@Method] 멤버 별 캐릭터 marker 생성
     createMemberMarker() {
       for (var ml of this.memberLocation) {
-        // console.log("#21# member 확인: ", ml);
-        // console.log(
-        //   "#21# memberLatLng 확인: ",
-        //   ml.member.memberLatLng
-        // );
         // i) marker option 설정
         const imageSrc = require(`@/assets/images/animals/${
           ml.member.memberId % 10
@@ -144,33 +144,65 @@ export default {
           position: location,
           image: markerImage,
         });
+
+        // marker 저장 (for. 삭제)
+        const index = this.memberMarkerList.findIndex(
+          (obj) => Object.keys(obj)[0] == ml.member.memberId
+        );
+        // i) 해당 member의 marker가 이미 있는 경우 값 업데이트(삭제, 추가)
+        if (index > -1) {
+          this.memberMarkerList[index][ml.member.memberId].setMap(null); // 기존 marker 삭제
+          this.memberMarkerList[index][ml.member.memberId] = marker; // 새로운 marker 추가
+        }
+        // ii) 없는 경우, marker 추가
+        else {
+          const object = new Object();
+          object[ml.member.memberId] = marker;
+          this.memberMarkerList.push(object);
+        }
+
         // marker 표시
         marker.setMap(this.map);
 
         // iii) 오버레이 표시
-        this.createMemberOverlay(ml.member.memberNickname, marker);
+        this.createMemberOverlay(ml.member, marker);
         // iv) 모임장소와의 거리 표시
-        this.createDistance(marker);
+        this.createDistance(ml.member, marker);
       }
     },
-    // [@Method] marker 별 오버레이 생성
-    createMemberOverlay(nickname, marker) {
-      const content = `<div class="member-overlay point-font">${nickname}</div>`;
+    // [@Method] marker 별 over-lay 생성 (nickname)
+    createMemberOverlay(member, marker) {
+      const content = `<div class="member-overlay point-font">${member.memberNickname}</div>`;
       const position = marker.getPosition();
 
-      // 오버레이 생성
+      // over-lay 생성
       const customOverlay = new kakao.maps.CustomOverlay({
         position: position,
         content: content,
         xAnchor: this.memberOverlay[0], // 오버레이 표시 x, y 위치
         yAnchor: this.memberOverlay[1],
       });
+      // over-lay 저장 (for. 삭제)
+      const index = this.memberNicknameOverlayList.findIndex(
+        (obj) => Object.keys(obj)[0] == member.memberId
+      );
+      // i) 이미 있는 경우 값 업데이트(삭제, 추가)
+      if (index > -1) {
+        this.memberNicknameOverlayList[index][member.memberId].setMap(null); // 기존 over-lay 삭제
+        this.memberNicknameOverlayList[index][member.memberId] = customOverlay; // 새로운 over-lay 추가
+      }
+      // ii) 없는 경우, marker 추가
+      else {
+        const object = new Object();
+        object[member.memberId] = customOverlay;
+        this.memberNicknameOverlayList.push(object);
+      }
 
       // 오버레이 표시
       customOverlay.setMap(this.map);
     },
     // [@Method] 모임장소와의 거리 계산 및 표시
-    createDistance(marker) {
+    createDistance(member, marker) {
       // i) 선을 그릴 좌표 setting
       const distancePath = [
         // 모임장소 좌표
@@ -190,7 +222,23 @@ export default {
         strokeStyle: "solid",
       });
 
-      // iii) 선 표시
+      // polyline 저장 (for. 삭제)
+      const index = this.memberPolylineList.findIndex(
+        (obj) => Object.keys(obj)[0] == member.memberId
+      );
+      // i) 이미 있는 경우 값 업데이트(삭제, 추가)
+      if (index > -1) {
+        this.memberPolylineList[index][member.memberId].setMap(null); // 기존 over-lay 삭제
+        this.memberPolylineList[index][member.memberId] = polyline; // 새로운 over-lay 추가
+      }
+      // ii) 없는 경우, marker 추가
+      else {
+        const object = new Object();
+        object[member.memberId] = polyline;
+        this.memberPolylineList.push(object);
+      }
+
+      // 선 표시
       polyline.setMap(this.map);
 
       // 두 좌표의 거리 over-lay 표시
@@ -209,6 +257,7 @@ export default {
         xAnchor: this.distanceOverlay[0],
         yAnchor: this.distanceOverlay[1],
       });
+      // memberDistanceOverlayList
 
       // 오버레이 표시
       customOverlay.setMap(this.map);
@@ -236,26 +285,27 @@ export default {
           yAnchor: this.chatOverlay[1],
         });
         // 생성한 오버레이 삭제 후 업데이트 or 저장
-        const index = this.memberChatOverlay.findIndex(
+        const index = this.memberChatOverlayList.findIndex(
           (obj) => Object.keys(obj)[0] == chat.member.memberId
         );
         // i) 해당 member의 chatOverlay가 있는 경우 값 업데이트(삭제, 추가)
         if (index > -1) {
-          this.memberChatOverlay[index][chat.member.memberId].setMap(null); // 기존 오버레이 삭제
-          this.memberChatOverlay[index][chat.member.memberId] = customOverlay; // 새로운 오버레이 추가
+          this.memberChatOverlayList[index][chat.member.memberId].setMap(null); // 기존 오버레이 삭제
+          this.memberChatOverlayList[index][chat.member.memberId] =
+            customOverlay; // 새로운 오버레이 추가
         }
         // ii) 없는 경우, 오버레이 추가
         else {
           const object = new Object();
           object[chat.member.memberId] = customOverlay;
-          this.memberChatOverlay.push(object);
+          this.memberChatOverlayList.push(object);
         }
 
         // 오버레이 표시
         customOverlay.setMap(this.map);
       }
     },
-    // [@Method] TEST
+    // [@Method] TEST (!추후 삭제)
     sendChatTest() {
       this.chatting = [
         {
