@@ -1,5 +1,5 @@
 server:
-  port: 9999
+  port: 8080
 
   servlet:
     context-path: /
@@ -25,6 +25,10 @@ spring:
     group:
       green: "server"
       develop: "dev, env"
+
+  redis:
+    host: localhost # 서버 host
+    port: 6379 # redis 서버 포트
 
 
 logging:
@@ -54,7 +58,7 @@ spring:
       on-profile: "dev"
 
 server:
-  port: 9999
+  port: 8080
 
 #---
 #spring:

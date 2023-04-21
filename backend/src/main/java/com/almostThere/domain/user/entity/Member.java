@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,5 +36,11 @@ public class Member {
     @CreationTimestamp
     private LocalDateTime regdate;
 
+    @Builder
+    public Member(String memberEmail, String memberProfileImg, String memberNickname) {
+        this.memberEmail = memberEmail;
+        this.memberProfileImg = memberProfileImg;
+        this.memberNickname = memberNickname;
+    }
 
 }
