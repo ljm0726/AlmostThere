@@ -115,11 +115,12 @@ export default {
     },
     // [@Method] 멤버 별 캐릭터 marker 생성
     createMemberMarker() {
+      var markerType = 0;
       for (var ml of this.memberLocation) {
         // i) marker option 설정
-        const imageSrc = require(`@/assets/images/animals/${
-          ml.member.memberId % 10
-        }.png`);
+        const imageSrc = require(`@/assets/images/animals/${markerType}.png`);
+        markerType += 1;
+
         const imageSize = new kakao.maps.Size(
           this.memberMarkerSize[0],
           this.memberMarkerSize[1]
