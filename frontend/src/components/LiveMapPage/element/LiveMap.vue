@@ -10,7 +10,8 @@ export default {
       /* marker 설정 */
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
-      markerOption: [60, 85], // image marker 위치 (좌표 X)
+      placeMarkerOption: [30, 70], // 모임장소 - image marker 위치 (좌표 X)
+      memberMarkerOption: [60, 85], // member - image marker 위치
       /* over-lay 설정 */
       memberOverlay: [0.5, 3.2], // member over-lay (x, y) 위치 좌표
       distanceOverlay: [-0.3, -0.1], // distance over-lay 좌표
@@ -75,8 +76,8 @@ export default {
       );
       const imageOption = {
         offset: new kakao.maps.Point(
-          this.markerOption[0],
-          this.markerOption[1]
+          this.placeMarkerOption[0],
+          this.placeMarkerOption[1]
         ),
       };
       const markerImage = new kakao.maps.MarkerImage(
@@ -109,8 +110,8 @@ export default {
         );
         const imageOption = {
           offset: new kakao.maps.Point(
-            this.markerOption[0],
-            this.markerOption[1]
+            this.memberMarkerOption[0],
+            this.memberMarkerOption[1]
           ),
         };
         const markerImage = new kakao.maps.MarkerImage(
