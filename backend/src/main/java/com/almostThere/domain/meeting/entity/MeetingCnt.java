@@ -9,10 +9,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 public class MeetingCnt {
 
@@ -20,7 +26,7 @@ public class MeetingCnt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "meeting_cnt_id")
-    private Long Id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "my_member_id", foreignKey = @ForeignKey(name = "fk_meeting_cnt_member_idx1"), nullable = false)

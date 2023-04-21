@@ -72,6 +72,21 @@ const home = [
     name: "search",
     components: {
       default: SearchPlacePage,
+      navigation: TheNavigation,
+    },
+  },
+  {
+    path: "/place",
+    name: "place",
+    components: {
+      default: PlacePage,
+    },
+  },
+  {
+    path: "/search",
+    name: "search",
+    components: {
+      default: SearchPlacePage,
     },
   },
   {
