@@ -1,14 +1,21 @@
 <template>
   <div
     class="mx-4 my-1 d-flex flex-column"
-    :class="item.nickname == nickname ? 'align-end' : 'align-start'"
+    :class="item.userId == userId ? 'align-end' : 'align-start'"
   >
-    <span>{{ item.nickname }}</span>
-    <v-sheet class="pa-2" elevation="1" rounded="lg">{{
-      item.message
-    }}</v-sheet>
-    <!-- <h3>유저이름: {{ item.nickname }}</h3> -->
-    <!-- <h3>내용:</h3> -->
+    <span v-if="item.userId != userId">{{ item.userId }}</span>
+    <div
+      class="d-flex align-end"
+      :class="item.userId == userId ? 'flex-row-reverse' : 'flex-row'"
+    >
+      <v-sheet class="pa-2 xs-font light-font" elevation="1" rounded="lg">{{
+        item.message
+      }}</v-sheet>
+
+      <span class="xxxs-font thin-font">
+        {{ chattingTime.getHours() }}시 {{ chattingTime.getMinutes() }}분
+      </span>
+    </div>
   </div>
 </template>
 
@@ -17,7 +24,12 @@ export default {
   name: "ChattingMessage",
   props: {
     item: Object,
-    nickname: String,
+    userId: Number,
+  },
+  computed: {
+    chattingTime() {
+      return new Date(this.item.chattingTime);
+    },
   },
 };
 </script>

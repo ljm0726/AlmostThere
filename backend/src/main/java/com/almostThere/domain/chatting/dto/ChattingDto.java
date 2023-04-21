@@ -3,17 +3,23 @@ package com.almostThere.domain.chatting.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
-public class ChattingDto {
+public class ChattingDto implements Serializable {
 
-    String meetingId;
+    // 모임 ID
+    private Long meetingId;
 
-    Long userId;
+    // 채팅 입력한 멤버 ID
+    private Long memberId;
+    
+    // 채팅 내용
+    private String message;
+    
+    // 채팅 입력 일시
+    private LocalDateTime chattingTime;
 
-    String message;
-
-    LocalDateTime regtime;
 }

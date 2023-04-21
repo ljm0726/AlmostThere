@@ -1,11 +1,10 @@
 package com.almostThere.domain.chatting.controller;
 
-import com.almostThere.domain.chatting.dto.ChattingRequestDto;
-import com.almostThere.domain.chatting.dto.ChattingResponseDto;
+import com.almostThere.domain.chatting.dto.ChattingDto;
+import com.almostThere.domain.chatting.dto.ChattingMemberDto;
+import com.almostThere.domain.chatting.service.ChattingService;
 import com.almostThere.global.response.BaseResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -14,52 +13,60 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
+@RequiredArgsConstructor
 public class ChattingController {
 
-    @Autowired
-    RedisTemplate redisTemplate;
+    private final ChattingService chattingService;
 
-    // /receive를 메시지를 받을 endpoint로 설정합니다.
-    @MessageMapping("/receive/{meetingId}")
-    // /send로 메시지를 반환합니다.
-    @SendTo("/send/{meetingId}")
-    // SocketHandler는 1) /receive에서 메시지를 받고, /send로 메시지를 보내줍니다.
-    // 정의한 SocketVO를 1) 인자값, 2) 반환값으로 사용합니다.
-    public ChattingRequestDto sendChatting(@DestinationVariable String meetingId, ChattingRequestDto chattingRequestDto) {
+    /**
+     * jeey0124
+     * @param meetingId 미팅ID
+     * @param message 채팅 내용
+     * @return 보낸 메시지 정보를 반환한다.
+     * **/
+    @MessageMapping("/receive/{meetingId}") // 메시지를 받을 endpoint 설정
+    @SendTo("/send/{meetingId}") // 메시지를 보낼 곳 설정
+    public BaseResponse sendChatting(@DestinationVariable Long meetingId, String message) {
 
-        // vo에서 getter로 nickname을 가져옵니다.
-        String userName = chattingRequestDto.getNickname();
-        // vo에서 setter로 message를 가져옵니다.
-        String content = chattingRequestDto.getMessage();
-
-//        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-//        ChattingDto chattingDto = new ChattingDto(meetingId, 0L, chattingRequestDto.getMessage(), now);
+        // 사용자ID 임시값
+        Long memberId = 1L;
+        
+        // 해당 채팅방의 멤버가 맞는지 확인
+        
+        // 현재 시간 가져오기
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         // redis에 저장
-        ListOperations<String, ChattingRequestDto> listOperations = redisTemplate.opsForList();
-        listOperations.rightPush(meetingId, chattingRequestDto);
-
-        // 생성자로 반환값을 생성합니다.
-        ChattingRequestDto result = new ChattingRequestDto(userName, content);
+        ChattingDto chattingDto = chattingService.addChattingRedis(memberId, meetingId, message, now);
 
         // 반환
-        return result;
+        return BaseResponse.success(chattingDto);
     }
 
+    /**
+     * jeey0124
+     * @param meetingId 미팅ID
+     * @return 채팅 정보 및 채팅 기록 30개를 조회한다.
+     * **/
     @GetMapping("/api/chat/{meetingId}")
-    public BaseResponse getChatting(@PathVariable Long meetingId) {
-        System.out.println(meetingId);
-        ListOperations<String, ChattingRequestDto> listOperations = redisTemplate.opsForList();
+    public BaseResponse getChattingAll(@PathVariable Long meetingId) {
 
-        String id = Long.toString(meetingId);
+        // 사용자ID 임시값
+        Long memberId = 1L;
 
-        List<ChattingRequestDto> result = listOperations.range(id, 0, listOperations.size(id));
-        ChattingResponseDto chattingResponseDto = new ChattingResponseDto(id, result);
-
-        return BaseResponse.success(chattingResponseDto);
+        // 해당 채팅방의 멤버가 맞는지 확인
+        
+        // 채팅 관련 정보 가져오기
+        
+        // 채팅 기록 전부 가져오기
+        Map<Long, ChattingMemberDto> chattingMemberMap = chattingService.getChatting30(meetingId);
+        
+        return BaseResponse.fail();
     }
 }

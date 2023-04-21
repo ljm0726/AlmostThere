@@ -1,10 +1,12 @@
 package com.almostThere.domain.meeting.entity;
 
 import com.almostThere.domain.user.entity.Member;
+import lombok.Getter;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
 public class MeetingMember {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
