@@ -8,6 +8,24 @@ import LoginPage from "@/components/LoginPage/LoginPage.vue";
 import PlacePage from "@/components/PlacePage/PlacePage.vue";
 import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
 
+const isLogin = async (to, from, next) => {
+  console.log(to, " ", to.query);
+  const access_token = localStorage.getItem("Authorization");
+  if (to.query.accessToken || access_token) {
+    console.log("login 성공 ");
+    if (!access_token) {
+      localStorage.setItem("Authorization", to.query.accessToken.substring(7));
+    }
+    next({
+      name: "home",
+    });
+  } else {
+    console.log("로그인 하러 옴");
+    // console.log("로그인 했다!!!!!!!!!!!!!.");
+    next();
+  }
+};
+
 const home = [
   {
     path: "/",
@@ -19,6 +37,7 @@ const home = [
   {
     path: "/login",
     name: "login",
+    beforeEnter: isLogin,
     components: {
       default: LoginPage,
     },
