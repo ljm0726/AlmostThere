@@ -1,5 +1,8 @@
 <template>
-  <div id="map"></div>
+  <div>
+    <v-btn @click="sendChatTest()">채팅 test</v-btn>
+    <div id="map"></div>
+  </div>
 </template>
 
 <script>
@@ -34,7 +37,14 @@ export default {
           },
         },
       ],
+      /* member 채팅 */
+      chatting: [], // 멤버 별 실시간 chatting 내용
     };
+  },
+  watch: {
+    chatting() {
+      this.updateChatOverlay(this.chatting);
+    },
   },
   mounted() {
     // Kakao Map Script import
@@ -197,14 +207,58 @@ export default {
       // 오버레이 표시
       customOverlay.setMap(this.map);
     },
+    // [@Method] chatting 내용 over-lay 표시
+    updateChatOverlay() {
+      for (var chat of this.chatting) {
+        const content = `<div class="chat-overlay">${chat.member.content}</div>`;
+        const position = new kakao.maps.LatLng(
+          this.placeLatLng[0],
+          this.placeLatLng[1]
+        );
+
+        // 오버레이 생성
+        const customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: content,
+          xAnchor: this.distanceOverlay[0],
+          yAnchor: this.distanceOverlay[1],
+        });
+
+        // 오버레이 표시
+        customOverlay.setMap(this.map);
+      }
+    },
+    // [@Method] TEST
+    sendChatTest() {
+      console.log("#21# button 동작 / 전: ", this.chatting);
+      this.chatting = [
+        {
+          member: {
+            memberId: 1,
+            content: "100m 남음~",
+          },
+        },
+        {
+          member: {
+            memberId: 2,
+            content: "빨리 와ㅏ",
+          },
+        },
+      ];
+      console.log("#21# button 동작 / 후: ", this.chatting);
+    },
   },
 };
 </script>
 
 <style>
-#map {
+/* #map {
   width: 100%;
   height: 100%;
+} */
+#map {
+  width: 100%;
+  height: 700px;
 }
 
 .member-overlay {
