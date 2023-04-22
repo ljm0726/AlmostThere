@@ -79,12 +79,51 @@ export default {
   },
   methods: {
     // [@Method] Kakao Map 생성
+    // initMap() {
+    //   const container = document.getElementById("map");
+    //   const options = {
+    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+    //     level: 4,
+    //     // mapTypeId: kakao.maps.MapTypeId.ROADMAP, // 지도 타입 (ROADMAP, SATELLITE, HYBRID, TERRAIN 중 선택)
+    //   };
+
+    //   // 지도 객체 등록
+    //   this.map = new kakao.maps.Map(container, options);
+
+    //   // marker 생성
+    //   // i) 모임 장소 marker
+    //   this.createPlaceMarker(options);
+    //   // ii) 멤버 별 marker 생성
+    //   this.createMemberMarker();
+    // },
+    // [@Method] Kakao Map 생성 + 배경화면 설정
     initMap() {
+      const domain = "https://i1.daumcdn.net";
+      const path = "/dmaps/apis/openapi/sampleimg/";
+      const plan = (x, y, z) => {
+        y = -y - 1;
+        const limit = Math.ceil(3 / Math.pow(2, z));
+
+        if (0 <= y && y < limit && 0 <= x && x < limit) {
+          return domain + path + "planh" + z + "_" + y + "_" + x + ".png";
+        } else {
+          return "https://i1.daumcdn.net/dmaps/apis/white.png";
+        }
+      };
+
+      kakao.maps.Tileset.add(
+        "PLAN",
+        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 10) // 0, 10으로 level 범위
+      );
+
       const container = document.getElementById("map");
       const options = {
+        projectionId: null,
+        mapTypeId: kakao.maps.MapTypeId.PLAN,
+        $scale: false,
         center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+        // center: new kakao.maps.Coords(650, -550),
         level: 4,
-        // mapTypeId: kakao.maps.MapTypeId.ROADMAP, // 지도 타입 (ROADMAP, SATELLITE, HYBRID, TERRAIN 중 선택)
       };
 
       // 지도 객체 등록
