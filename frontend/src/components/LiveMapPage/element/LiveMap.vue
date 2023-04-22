@@ -3,6 +3,7 @@
     <!-- test용 (!추후 삭제) -->
     <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
     <v-btn @click="sendChatTest()">채팅 test</v-btn>
+    <v-btn @click="resizeMapLevel()">범위 재조정</v-btn>
     <!-- --- -->
     <div id="map"></div>
   </div>
@@ -38,6 +39,13 @@ export default {
             memberId: 2,
             memberNickname: "히정",
             memberLatLng: [37.5048, 127.0413], // 역삼 신라스테이
+          },
+        },
+        {
+          member: {
+            memberId: 3,
+            memberNickname: "시카",
+            memberLatLng: [37.4912, 127.0557], // 도곡역
           },
         },
       ],
@@ -305,6 +313,25 @@ export default {
         // 오버레이 표시
         customOverlay.setMap(this.map);
       }
+    },
+    // [@Method] 지도 범위 조정
+    resizeMapLevel() {
+      const bounds = new kakao.maps.LatLngBounds(); // 지도 재설정할 범위정보 LatLngBounds 객체
+
+      // LatLngBounds 객체에 좌표 추가 (모임장소, 멤버)
+      const place = new kakao.maps.LatLng(
+        this.placeLatLng[0],
+        this.placeLatLng[1]
+      );
+      bounds.extend(place);
+
+      for (const marker of this.memberMarkerList) {
+        const memberId = Object.keys(marker)[0];
+        bounds.extend(marker[memberId].getPosition());
+      }
+
+      // 좌표를 기준으로 지도 범위 재설정
+      this.map.setBounds(bounds);
     },
     // [@Method] TEST (!추후 삭제)
     sendChatTest() {
