@@ -125,8 +125,9 @@ export default {
             // this.updateMemberLocation(JSON.parse(res.body));
           });
 
-          // GeoLocation - 현 위치 얻기
-          this.getGeoLocation();
+          // GeoLocation - 1초마다 현 위치 얻기
+          // this.getGeoLocation();
+          this.startIntervalMemberLocation();
         },
         (error) => {
           // 소켓 연결 실패
@@ -137,6 +138,7 @@ export default {
     },
     // [@Method] 현재 접속위치 얻기 (GeoLocation)
     getGeoLocation() {
+      console.log("#21# getGeoLocation 현 위치 얻기 동작");
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition((position) => {
@@ -158,6 +160,12 @@ export default {
       } else {
         console.log("# geolocation을 사용할수 없어요..");
       }
+    },
+    // [@Method] 1초마다 현 사용자의 위치 얻기
+    startIntervalMemberLocation() {
+      setInterval(() => {
+        this.getGeoLocation();
+      }, 1000);
     },
     // [@Method] member 위치 update
     updateMemberLocation(newMemberLocation) {
