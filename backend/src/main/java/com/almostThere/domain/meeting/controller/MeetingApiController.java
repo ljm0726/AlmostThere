@@ -1,11 +1,16 @@
 package com.almostThere.domain.meeting.controller;
 
+import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
+import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
+import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.service.MeetingService;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,5 +44,27 @@ public class MeetingApiController {
     public BaseResponse getUpcomingMeetings(HttpServletRequest request){
         List<MeetingDto> upcomingMeeting = meetingService.findUpcomingMeeting(1L);
         return BaseResponse.success(upcomingMeeting);
+    }
+
+    /**
+     * asng
+     * @param meetingCreateDto
+     * @return 모임을 생성한다.
+     */
+    @PostMapping
+    public BaseResponse createMeeting(@RequestBody MeetingCreateRequestDto meetingCreateRequestDto){
+        meetingService.createMeeting(meetingCreateRequestDto);
+        return new BaseResponse(200, "SUCCESS",null);
+    }
+
+    /**
+     * asng
+     * @param meetingDetailRequestDto
+     * @return 모임 상세정보를 조회한다.
+     */
+    @GetMapping
+    public BaseResponse getMeetingDetail(@RequestBody MeetingDetailRequestDto meetingDetailRequestDto){
+        MeetingDetailResponseDto meetingDetailResponseDto = meetingService.getMeetingDetail(meetingDetailRequestDto);
+        return BaseResponse.success(meetingDetailResponseDto);
     }
 }
