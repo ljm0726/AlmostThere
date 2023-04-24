@@ -1,7 +1,5 @@
-package com.almostThere.domain.meeting.dto;
+package com.almostThere.domain.meeting.dto.delete;
 
-import com.almostThere.domain.meeting.entity.MeetingCnt;
-import com.almostThere.domain.user.dto.MemberDto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

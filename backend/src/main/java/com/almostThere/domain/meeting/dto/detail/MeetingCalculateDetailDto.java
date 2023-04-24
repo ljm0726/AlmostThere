@@ -2,7 +2,6 @@ package com.almostThere.domain.meeting.dto.detail;
 
 import com.almostThere.domain.meeting.entity.CalculateDetail;
 import com.almostThere.domain.meeting.entity.CalculateType;
-import com.almostThere.domain.meeting.entity.MeetingMember;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

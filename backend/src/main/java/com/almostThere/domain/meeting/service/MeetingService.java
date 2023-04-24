@@ -1,12 +1,13 @@
 package com.almostThere.domain.meeting.service;
 
-import com.almostThere.domain.meeting.dto.MeetingDeleteRequestDto;
+import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingMemberResponseDto;
+import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
@@ -127,5 +128,21 @@ public class MeetingService {
     public void exitMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto){
         meetingMemberRepository.deleteMeetingMemberByMeetingIdAndMemberID(
             meetingDeleteRequestDto.getMemberid(),meetingDeleteRequestDto.getMeetingid());
+    }
+
+    /**
+     * 모임 상세정보를 수정한다.
+     * @param meetingUpdateRequestDto
+     */
+    @Transactional
+    public void updateMeeting(MeetingUpdateRequestDto meetingUpdateRequestDto){
+        final Meeting meeting = meetingRepository.findById(meetingUpdateRequestDto.getMeetingId())
+            .orElseThrow(() -> new NotFoundException(
+            ErrorCode.MEETING_NOT_FOUND));
+
+        if (meeting.getHost().getId() == meetingUpdateRequestDto.getHostId()) {
+            meeting.updateMeeting(meetingUpdateRequestDto);
+            meetingRepository.save(meeting);
+        }   else throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
     }
 }
