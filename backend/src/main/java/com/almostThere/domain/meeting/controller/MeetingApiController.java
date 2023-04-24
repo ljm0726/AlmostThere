@@ -80,4 +80,10 @@ public class MeetingApiController {
         meetingService.deleteMeeting(meetingDeleteRequestDto);
         return new BaseResponse(200, "SUCCESS",null);
     }
+
+    @DeleteMapping("/exit")
+    public BaseResponse exitMeeting(@RequestBody MeetingDeleteRequestDto meetingDeleteRequestDto){
+        meetingService.exitMeeting(meetingDeleteRequestDto);
+        return new BaseResponse(200, "SUCCESS",null);
+    }
 }

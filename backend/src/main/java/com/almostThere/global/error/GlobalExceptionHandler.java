@@ -1,5 +1,6 @@
 package com.almostThere.global.error;
 
+import com.almostThere.global.error.exception.AccessDeniedException;
 import com.almostThere.global.error.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,14 @@ public class GlobalExceptionHandler {
 
         final ErrorResponse response = ErrorResponse.of(e.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
+        log.error("handleAccessDeniedException", e);
+
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
 }

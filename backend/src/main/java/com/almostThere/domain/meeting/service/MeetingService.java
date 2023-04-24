@@ -15,6 +15,7 @@ import com.almostThere.domain.meeting.repository.MeetingRepository;
 import com.almostThere.domain.user.entity.Member;
 import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
+import com.almostThere.global.error.exception.AccessDeniedException;
 import com.almostThere.global.error.exception.NotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -104,7 +105,7 @@ public class MeetingService {
     }
 
     /**
-     * 모임을 삭제한다
+     * Host가 모임을 삭제한다.
      * @param meetingDeleteRequestDto
      */
     @Transactional
@@ -115,5 +116,16 @@ public class MeetingService {
 
         if (meeting.getHost().getId() == meetingDeleteRequestDto.getMemberid())
             meetingRepository.deleteById(meetingDeleteRequestDto.getMeetingid());
+        else throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
+    }
+
+    /**
+     * 모임에서 나간다.
+     * @param meetingDeleteRequestDto
+     */
+    @Transactional
+    public void exitMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto){
+        meetingMemberRepository.deleteMeetingMemberByMeetingIdAndMemberID(
+            meetingDeleteRequestDto.getMemberid(),meetingDeleteRequestDto.getMeetingid());
     }
 }
