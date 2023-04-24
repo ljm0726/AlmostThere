@@ -79,6 +79,13 @@ export default {
       },
     },
   },
+
+  beforecreated() {},
+
+  created() {
+    this.connect();
+  },
+
   mounted() {
     // Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
@@ -90,104 +97,53 @@ export default {
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
       document.head.appendChild(script);
     }
-  },
-  created() {
-    // this.connect();
-    this.connect = async () => {
-      if (navigator.geolocation) {
-        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-        navigator.geolocation.getCurrentPosition((position) => {
-          var lat = position.coords.latitude, // 위도
-            lng = position.coords.longitude; // 경도
-          this.lat = lat;
-          this.lng = lng;
-          console.log("받아온 위도", lat);
-          console.log("받아온 경도", lng);
-          //   memberLocation: [
-          //   // 각 member 별 현재 좌표
-          //   {
-          //     member: {
-          //       memberId: 1,
-          //       memberNickname: "김싸피",
-          //       memberLatLng: [37.5004, 127.0361], // 역삼역
-          //     },
-          //   },
-          // ],
-          const member = {
-            member: {
-              memberId: 1,
-              memberNickname: "김싸피",
-              memberLatLng: [lat, lng],
-            },
-          };
-          // this.memberLocation.push({
-          //   member: {
-          //     memberId: 1,
-          //     memberNickname: "김싸피",
-          //     memberLatLng: [lat, lng],
-          //   },
-          // });
-          this.memberLocation.push(member);
-          console.log("#21# geolocation 좌표: ", this.memberLocation);
-          this.send(member);
 
-          // var locPosition = new window.kakao.maps.LatLng(lat, lng), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-        });
-      } else {
-        console.log("# geolocation을 사용할수 없어요..");
-        // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-        // var locPosition = new window.kakao.maps.LatLng(33.450701, 126.570667),
-        //   message = "geolocation을 사용할수 없어요..";
-        // this.displayMarker(locPosition, message);
-      }
-    };
+    if (navigator.geolocation) {
+      // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+      navigator.geolocation.getCurrentPosition((position) => {
+        var lat = position.coords.latitude, // 위도
+          lng = position.coords.longitude; // 경도
+        this.lat = lat;
+        this.lng = lng;
+        console.log("받아온 위도", lat);
+        console.log("받아온 경도", lng);
+        //   memberLocation: [
+        //   // 각 member 별 현재 좌표
+        //   {
+        //     member: {
+        //       memberId: 1,
+        //       memberNickname: "김싸피",
+        //       memberLatLng: [37.5004, 127.0361], // 역삼역
+        //     },
+        //   },
+        // ],
+        const member = {
+          member: {
+            memberId: 1,
+            memberNickname: "김싸피",
+            memberLatLng: [lat, lng],
+          },
+        };
+        // this.memberLocation.push({
+        //   member: {
+        //     memberId: 1,
+        //     memberNickname: "김싸피",
+        //     memberLatLng: [lat, lng],
+        //   },
+        // });
+        this.memberLocation.push(member);
+        console.log("#21# geolocation 좌표: ", this.memberLocation);
+        this.send(member);
 
-    // if (navigator.geolocation) {
-    //   // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-    //   navigator.geolocation.getCurrentPosition((position) => {
-    //     var lat = position.coords.latitude, // 위도
-    //       lng = position.coords.longitude; // 경도
-    //     this.lat = lat;
-    //     this.lng = lng;
-    //     console.log("받아온 위도", lat);
-    //     console.log("받아온 경도", lng);
-    //     //   memberLocation: [
-    //     //   // 각 member 별 현재 좌표
-    //     //   {
-    //     //     member: {
-    //     //       memberId: 1,
-    //     //       memberNickname: "김싸피",
-    //     //       memberLatLng: [37.5004, 127.0361], // 역삼역
-    //     //     },
-    //     //   },
-    //     // ],
-    //     const member = {
-    //       member: {
-    //         memberId: 1,
-    //         memberNickname: "김싸피",
-    //         memberLatLng: [lat, lng],
-    //       },
-    //     };
-    //     // this.memberLocation.push({
-    //     //   member: {
-    //     //     memberId: 1,
-    //     //     memberNickname: "김싸피",
-    //     //     memberLatLng: [lat, lng],
-    //     //   },
-    //     // });
-    //     this.memberLocation.push(member);
-    //     console.log("#21# geolocation 좌표: ", this.memberLocation);
-    //     this.send(member);
-
-    //     // var locPosition = new window.kakao.maps.LatLng(lat, lng), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-    //   });
-    // } else {
-    //   console.log("# geolocation을 사용할수 없어요..");
-    //   // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-    //   // var locPosition = new window.kakao.maps.LatLng(33.450701, 126.570667),
-    //   //   message = "geolocation을 사용할수 없어요..";
-    //   // this.displayMarker(locPosition, message);
-    // }
+        // var locPosition = new window.kakao.maps.LatLng(lat, lng), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+      });
+    } else {
+      console.log("# geolocation을 사용할수 없어요..");
+      // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+      // var locPosition = new window.kakao.maps.LatLng(33.450701, 126.570667),
+      //   message = "geolocation을 사용할수 없어요..";
+      // this.displayMarker(locPosition, message);
+    }
   },
   methods: {
     connect() {
