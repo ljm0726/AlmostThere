@@ -1,7 +1,9 @@
 package com.almostThere.domain.meeting.entity;
 
 import com.almostThere.domain.user.entity.Member;
+import java.util.Set;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,7 +30,7 @@ public class MeetingMember {
     @Column(length = 100)
     private String startPlace;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 200)
     private String startAddress;
 
     @Column
@@ -41,5 +43,23 @@ public class MeetingMember {
     private StateType state;
 
     @Column
-    private double spentMoney;
+    private Double spentMoney;
+
+    public MeetingMember (Member member, Meeting meeting, StateType state){
+        this.member = member;
+        this.meeting = meeting;
+        this.state = state;
+    }
+    @Builder
+    public MeetingMember (Member member, Meeting meeting, String startPlace, String startAddress
+        ,Double startLat, Double startLng, StateType state, Double spentMoney) {
+        this.member = member;
+        this.meeting = meeting;
+        this.startPlace = startPlace;
+        this.startAddress = startAddress;
+        this.startLat = startLat;
+        this.startLng = startLng;
+        this.state = state;
+        this.spentMoney = spentMoney;
+    }
 }

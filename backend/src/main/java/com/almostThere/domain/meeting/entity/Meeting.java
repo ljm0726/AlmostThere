@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,7 +45,7 @@ public class Meeting {
     private double meetingLng;
 
     @Column
-    private int lateAmount;
+    private Integer lateAmount;
 
     @CreationTimestamp // DB에 insert할 때 현재시간 자동 지정
     @Column(nullable = false)
@@ -55,4 +56,20 @@ public class Meeting {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "meeting")
     private List<MeetingMember> meetingMembers = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meeting")
+    private List<CalculateDetail> calculateDetails = new ArrayList<>();
+
+    @Builder
+    public Meeting(Member host, String meetingName,String meetingPlace,String meetingAddress
+        , double meetingLat,double meetingLng, LocalDateTime meetingTime, int roomCode) {
+        this.meetingName = meetingName;
+        this.meetingTime = meetingTime;
+        this.meetingPlace = meetingPlace;
+        this.meetingAddress = meetingAddress;
+        this.meetingLat = meetingLat;
+        this.meetingLng = meetingLng;
+        this.host = host;
+        this.roomCode = roomCode;
+    }
 }
