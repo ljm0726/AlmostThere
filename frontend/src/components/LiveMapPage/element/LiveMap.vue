@@ -95,7 +95,6 @@ export default {
       const options = {
         center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
         level: 4,
-        // mapTypeId: kakao.maps.MapTypeId.ROADMAP, // 지도 타입 (ROADMAP, SATELLITE, HYBRID, TERRAIN 중 선택)
       };
 
       // 지도 객체 등록
@@ -203,25 +202,10 @@ export default {
           position: location,
           image: markerImage,
         });
-
         // marker 저장 (for. 삭제)
         const object = new Object();
         object[ml.member.memberId] = marker;
         this.memberMarkerList.push(object);
-        // const index = this.memberMarkerList.findIndex(
-        //   (obj) => Object.keys(obj)[0] == ml.member.memberId
-        // );
-        // // i) 해당 member의 marker가 이미 있는 경우 값 업데이트(삭제, 추가)
-        // if (index > -1) {
-        //   this.memberMarkerList[index][ml.member.memberId].setMap(null); // 기존 marker 삭제
-        //   this.memberMarkerList[index][ml.member.memberId] = marker; // 새로운 marker 추가
-        // }
-        // // ii) 없는 경우, marker 추가
-        // else {
-        //   const object = new Object();
-        //   object[ml.member.memberId] = marker;
-        //   this.memberMarkerList.push(object);
-        // }
 
         // marker 표시
         marker.setMap(this.map);
@@ -266,20 +250,6 @@ export default {
       const object = new Object();
       object[member.memberId] = customOverlay;
       this.memberNicknameOverlayList.push(object);
-      // const index = this.memberNicknameOverlayList.findIndex(
-      //   (obj) => Object.keys(obj)[0] == member.memberId
-      // );
-      // // i) 이미 있는 경우 값 업데이트(삭제, 추가)
-      // if (index > -1) {
-      //   this.memberNicknameOverlayList[index][member.memberId].setMap(null); // 기존 over-lay 삭제
-      //   this.memberNicknameOverlayList[index][member.memberId] = customOverlay; // 새로운 over-lay 추가
-      // }
-      // // ii) 없는 경우, marker 추가
-      // else {
-      //   const object = new Object();
-      //   object[member.memberId] = customOverlay;
-      //   this.memberNicknameOverlayList.push(object);
-      // }
 
       // 오버레이 표시
       customOverlay.setMap(this.map);
@@ -309,20 +279,6 @@ export default {
       const object = new Object();
       object[member.memberId] = polyline;
       this.memberPolylineList.push(object);
-      // const index = this.memberPolylineList.findIndex(
-      //   (obj) => Object.keys(obj)[0] == member.memberId
-      // );
-      // // i) 이미 있는 경우 값 업데이트(삭제, 추가)
-      // if (index > -1) {
-      //   this.memberPolylineList[index][member.memberId].setMap(null); // 기존 over-lay 삭제
-      //   this.memberPolylineList[index][member.memberId] = polyline; // 새로운 over-lay 추가
-      // }
-      // // ii) 없는 경우, marker 추가
-      // else {
-      //   const object = new Object();
-      //   object[member.memberId] = polyline;
-      //   this.memberPolylineList.push(object);
-      // }
 
       // 선 표시
       polyline.setMap(this.map);
@@ -347,22 +303,8 @@ export default {
       const object = new Object();
       object[member.memberId] = customOverlay;
       this.memberDistanceOverlayList.push(object);
-      // const index = this.memberDistanceOverlayList.findIndex(
-      //   (obj) => Object.keys(obj)[0] == member.memberId
-      // );
-      // // i) 이미 있는 경우 값 업데이트(삭제, 추가)
-      // if (index > -1) {
-      //   this.memberNicknameOverlayList[index][member.memberId].setMap(null); // 기존 over-lay 삭제
-      //   this.memberNicknameOverlayList[index][member.memberId] = customOverlay; // 새로운 over-lay 추가
-      // }
-      // // ii) 없는 경우, marker 추가
-      // else {
-      //   const object = new Object();
-      //   object[member.memberId] = customOverlay;
-      //   this.memberDistanceOverlayList.push(object);
-      // }
 
-      // 오버레이 표시
+      // over-lay 표시
       customOverlay.setMap(this.map);
     },
     // [@Method] chatting 내용 over-lay 표시
@@ -380,7 +322,7 @@ export default {
           memberMarkerLatLng[1]
         );
 
-        // 오버레이 생성
+        // over-lay 생성
         const customOverlay = new kakao.maps.CustomOverlay({
           position: position,
           content: content,
@@ -404,7 +346,7 @@ export default {
           this.memberChatOverlayList.push(object);
         }
 
-        // 오버레이 표시
+        // over-lay 표시
         customOverlay.setMap(this.map);
       }
     },
@@ -433,22 +375,10 @@ export default {
     },
     // [@Method] member의 위치 값 변경에 따른 marker, polyline, overlay 업데이트
     refreshMapOnLocationUpdate() {
-      console.log("#21# 위치 값 변경에 따른 refresh");
-      // 변경해야 하는 것: marker, polyline, 거리 overlay, 닉네임 overlay
-      // console.log(
-      //   "#21# marker, polyline, overlay 확인: ",
-      //   this.memberMarkerList,
-      //   this.memberPolylineList,
-      //   this.memberDistanceOverlayList,
-      //   this.memberNicknameOverlayList
-      // );
-      console.log(
-        "#21# marker, polyline, overlay 확인: ",
-        this.memberPolylineList
-      );
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
       // this.updateMemberInfo[1] = 변경된 memberId
+
       const newPosition = new kakao.maps.LatLng(
         refreshMember.member.memberLatLng[0],
         refreshMember.member.memberLatLng[1]
