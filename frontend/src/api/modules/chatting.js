@@ -9,8 +9,18 @@ async function getChatting(meetingId) {
     .then((res) => {
       result = res;
     })
-
+    .catch()
   return await Promise.resolve(result)
 }
 
-export { getChatting }
+async function getChattingLog(meetingId, lastNumber) {
+  var result = null;
+  await api.get(`/api/chat/${meetingId}/${lastNumber}`)
+    .then((res) => {
+      result = res;
+    })
+    .catch()
+  return await Promise.resolve(result);
+}
+
+export { getChatting, getChattingLog }

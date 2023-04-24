@@ -6,7 +6,7 @@
     style="position: fixed; margin: 0 auto; left: 0; right: 0; top: 0"
   >
     <back-button color="var(--main-col-1)"></back-button>
-    <span class="logo-font">Almost There</span>
+    <span class="point-font">{{ name }}</span>
     <detail-button></detail-button>
   </v-sheet>
 </template>
@@ -20,6 +20,9 @@ export default {
   components: {
     BackButton,
     DetailButton,
+  },
+  props: {
+    name: String,
   },
 };
 </script>
