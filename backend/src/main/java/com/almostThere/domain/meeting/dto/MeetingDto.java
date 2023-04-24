@@ -19,7 +19,7 @@ public class MeetingDto {
     private String meetingPlace;
     private double meetingLat;
     private double meetingLng;
-    private int lateAmount;
+    private Integer lateAmount;
     private String regdate;
     private int roomCode;
     private List<MeetingMemberDto> meetingMembers;

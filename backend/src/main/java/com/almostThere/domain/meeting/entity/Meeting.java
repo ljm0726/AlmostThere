@@ -44,7 +44,7 @@ public class Meeting {
     private double meetingLng;
 
     @Column
-    private int lateAmount;
+    private Integer lateAmount;
 
     @CreationTimestamp // DB에 insert할 때 현재시간 자동 지정
     @Column(nullable = false)
