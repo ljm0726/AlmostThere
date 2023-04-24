@@ -92,7 +92,11 @@
         </v-menu>
 
         <span class="point-font xxxxl-font main-col-1 text-left">장소</span>
-        <v-text-field dense v-model="meetingplace"></v-text-field>
+        <v-text-field
+          dense
+          v-model="meetingplace"
+          @click="movePlacePage"
+        ></v-text-field>
 
         <v-row>
           <v-col class="pr-1">
@@ -114,6 +118,8 @@
 
 <script>
 // 추가해야할 부분 -> 현재 시간 이전을 설정하면 불가능하게
+import { mapState } from "vuex";
+
 export default {
   name: "RegisterPage",
   data() {
@@ -129,13 +135,23 @@ export default {
       getCurMiliTimes: null,
     };
   },
+
+  computed: {
+    ...mapState("placeStore", ["placeX", "placeY", "placeName", "placeAddr"]),
+  },
   methods: {
+    movePlacePage() {
+      this.$router.push("/place");
+    },
+
     regist_meeting() {
       this.getCurTime();
 
       console.log(this.curDate, this.date, this.curTime, this.time);
       if (this.curDate >= this.date && this.curTime >= this.time) {
-        alert("이전 시간 불가능!");
+        alert("시간을 다시 설정해주세요!");
+      } else if (this.meetingname == null || this.meetingplace == null) {
+        alert("모든 정보를 입력해주세요!");
       } else {
         console.log(
           "Input value : ",
@@ -173,6 +189,10 @@ export default {
 
   mounted() {
     // this.date = new Date().toLocaleDateString();
+    if (this.placeName !== null && this.placeAddr !== null) {
+      this.meetingplace = this.placeName + ", " + this.placeAddr;
+    }
+
     this.getCurTime();
     const currentDate = new Date();
     const options = {
@@ -220,9 +240,5 @@ img {
 .row {
   /* width: 100%; */
   padding-right: 3%;
-}
-
-#menu2 {
-  margin-top: -100px;
 }
 </style>
