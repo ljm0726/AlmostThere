@@ -3,8 +3,12 @@ package com.almostThere.global.error;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.validation.FieldError;
 
+@Getter
 public class ErrorResponse {
 
     private String message;
