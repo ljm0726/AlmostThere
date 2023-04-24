@@ -14,11 +14,10 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@TableGenerator(name = "GENERATOR_NAME")
 public class Chatting {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "GENERATOR_NAME")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chatting_message_id")
     @Comment("채팅 메세지 ID")
     private Long id;

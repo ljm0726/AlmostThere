@@ -1,7 +1,8 @@
 package com.almostThere.domain.chatting.controller;
 
 import com.almostThere.domain.chatting.dto.ChattingDto;
-import com.almostThere.domain.chatting.dto.ChattingMemberDto;
+import com.almostThere.domain.chatting.dto.ChattingListDto;
+import com.almostThere.domain.chatting.dto.ChattingResponseDto;
 import com.almostThere.domain.chatting.service.ChattingService;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -63,10 +63,26 @@ public class ChattingController {
         // 해당 채팅방의 멤버가 맞는지 확인
         
         // 채팅 관련 정보 가져오기
+        ChattingResponseDto chattingResponseDto = chattingService.getChattingInfo(meetingId);
         
         // 채팅 기록 전부 가져오기
-        Map<Long, ChattingMemberDto> chattingMemberMap = chattingService.getChatting30(meetingId);
-        
-        return BaseResponse.fail();
+        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, memberId, -1L);
+        chattingResponseDto.setChattingListDto(chattingListDto);
+
+        return BaseResponse.success(chattingResponseDto);
+    }
+
+    @GetMapping("/api/chat/{meetingId}/{lastNumber}")
+    public BaseResponse getChattingLog(@PathVariable Long meetingId, @PathVariable Long lastNumber) {
+
+        // 사용자ID 임시값
+        Long memberId = 1L;
+
+        // 해당 채팅방의 멤버가 맞는지 확인
+
+        // 채팅 기록 전부 가져오기
+        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, memberId, lastNumber);
+
+        return BaseResponse.success(chattingListDto);
     }
 }

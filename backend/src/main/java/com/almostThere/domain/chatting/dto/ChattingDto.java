@@ -21,5 +21,4 @@ public class ChattingDto implements Serializable {
     
     // 채팅 입력 일시
     private LocalDateTime chattingTime;
-
 }
