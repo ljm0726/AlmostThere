@@ -1,5 +1,6 @@
 package com.almostThere.domain.meeting.controller;
 
+import com.almostThere.domain.meeting.dto.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
@@ -8,6 +9,7 @@ import com.almostThere.domain.meeting.service.MeetingService;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,5 +68,16 @@ public class MeetingApiController {
     public BaseResponse getMeetingDetail(@RequestBody MeetingDetailRequestDto meetingDetailRequestDto){
         MeetingDetailResponseDto meetingDetailResponseDto = meetingService.getMeetingDetail(meetingDetailRequestDto);
         return BaseResponse.success(meetingDetailResponseDto);
+    }
+
+    /**
+     * asng
+     * @param meetingDeleteRequestDto
+     * @return 모임을 삭제한다.
+     */
+    @DeleteMapping
+    public BaseResponse deleteMeeting(@RequestBody MeetingDeleteRequestDto meetingDeleteRequestDto){
+        meetingService.deleteMeeting(meetingDeleteRequestDto);
+        return new BaseResponse(200, "SUCCESS",null);
     }
 }

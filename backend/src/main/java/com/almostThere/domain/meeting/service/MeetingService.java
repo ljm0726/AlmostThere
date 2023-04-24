@@ -1,5 +1,6 @@
 package com.almostThere.domain.meeting.service;
 
+import com.almostThere.domain.meeting.dto.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
@@ -102,4 +103,17 @@ public class MeetingService {
         return new MeetingDetailResponseDto(meeting,meetingMembers,calculateDetails);
     }
 
+    /**
+     * 모임을 삭제한다
+     * @param meetingDeleteRequestDto
+     */
+    @Transactional
+    public void deleteMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto) {
+        final Meeting meeting = meetingRepository.findById(meetingDeleteRequestDto.getMeetingid())
+            .orElseThrow(() -> new NotFoundException(
+                ErrorCode.MEETING_NOT_FOUND));
+
+        if (meeting.getHost().getId() == meetingDeleteRequestDto.getMemberid())
+            meetingRepository.deleteById(meetingDeleteRequestDto.getMeetingid());
+    }
 }
