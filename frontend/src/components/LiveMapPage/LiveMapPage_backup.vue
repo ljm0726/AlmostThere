@@ -14,6 +14,8 @@
     </div>
     <div>{{ lat }}</div>
     <div>{{ lng }}</div>
+    <!-- HEE -->
+    <!-- <div><live-map></live-map></div> -->
   </div>
 </template>
 
@@ -23,8 +25,7 @@ import SockJS from "sockjs-client";
 import LiveMap from "./element/LiveMap.vue";
 
 export default {
-  // name: "KakaoMap",
-  name: "LiveMapPage",
+  name: "KakaoMap",
 
   LiveMapata() {
     return {
@@ -114,7 +115,6 @@ export default {
 
       // 마커 띄우기
 
-      // !!!!#21#
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition((position) => {

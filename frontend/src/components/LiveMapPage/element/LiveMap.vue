@@ -11,10 +11,13 @@
 </template>
 
 <script>
+import Stomp from "webstomp-client";
+import SockJS from "sockjs-client";
 export default {
   name: "LiveMap",
   data() {
     return {
+      isConnect: false,
       /* # marker 설정 */
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
@@ -25,30 +28,30 @@ export default {
       distanceOverlay: [-0.3, -0.1], // distance over-lay 좌표
       chatOverlay: [0.5, 4], // chat over-lay 좌표
       /* # 현재 좌표 */
-      placeLatLng: [37.5013, 127.0396], // 모임장소 좌표
+      placeLatLng: [37.5049, 127.0371], // 모임장소 좌표
       memberLocation: [
         // 각 member 별 현재 좌표
-        {
-          member: {
-            memberId: 1,
-            memberNickname: "김싸피",
-            memberLatLng: [37.5004, 127.0361], // 역삼역
-          },
-        },
-        {
-          member: {
-            memberId: 2,
-            memberNickname: "히정",
-            memberLatLng: [37.5048, 127.0413], // 역삼 신라스테이
-          },
-        },
-        {
-          member: {
-            memberId: 3,
-            memberNickname: "시카",
-            memberLatLng: [37.4912, 127.0557], // 도곡역
-          },
-        },
+        // {
+        //   member: {
+        //     memberId: 1,
+        //     memberNickname: "김싸피",
+        //     memberLatLng: [37.5004, 127.0361], // 역삼역
+        //   },
+        // },
+        // {
+        //   member: {
+        //     memberId: 2,
+        //     memberNickname: "히정",
+        //     memberLatLng: [37.5048, 127.0413], // 역삼 신라스테이
+        //   },
+        // },
+        // {
+        //   member: {
+        //     memberId: 3,
+        //     memberNickname: "시카",
+        //     memberLatLng: [37.4912, 127.0557], // 도곡역
+        //   },
+        // },
       ],
       /* # member 채팅 */
       testChatContent: "", // test용 (!추후 삭제)
@@ -88,7 +91,149 @@ export default {
       document.head.appendChild(script);
     }
   },
+  created() {
+    // this.connect();
+    this.connect = async () => {
+      if (navigator.geolocation) {
+        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+        navigator.geolocation.getCurrentPosition((position) => {
+          var lat = position.coords.latitude, // 위도
+            lng = position.coords.longitude; // 경도
+          this.lat = lat;
+          this.lng = lng;
+          console.log("받아온 위도", lat);
+          console.log("받아온 경도", lng);
+          //   memberLocation: [
+          //   // 각 member 별 현재 좌표
+          //   {
+          //     member: {
+          //       memberId: 1,
+          //       memberNickname: "김싸피",
+          //       memberLatLng: [37.5004, 127.0361], // 역삼역
+          //     },
+          //   },
+          // ],
+          const member = {
+            member: {
+              memberId: 1,
+              memberNickname: "김싸피",
+              memberLatLng: [lat, lng],
+            },
+          };
+          // this.memberLocation.push({
+          //   member: {
+          //     memberId: 1,
+          //     memberNickname: "김싸피",
+          //     memberLatLng: [lat, lng],
+          //   },
+          // });
+          this.memberLocation.push(member);
+          console.log("#21# geolocation 좌표: ", this.memberLocation);
+          this.send(member);
+
+          // var locPosition = new window.kakao.maps.LatLng(lat, lng), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+        });
+      } else {
+        console.log("# geolocation을 사용할수 없어요..");
+        // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+        // var locPosition = new window.kakao.maps.LatLng(33.450701, 126.570667),
+        //   message = "geolocation을 사용할수 없어요..";
+        // this.displayMarker(locPosition, message);
+      }
+    };
+
+    // if (navigator.geolocation) {
+    //   // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+    //   navigator.geolocation.getCurrentPosition((position) => {
+    //     var lat = position.coords.latitude, // 위도
+    //       lng = position.coords.longitude; // 경도
+    //     this.lat = lat;
+    //     this.lng = lng;
+    //     console.log("받아온 위도", lat);
+    //     console.log("받아온 경도", lng);
+    //     //   memberLocation: [
+    //     //   // 각 member 별 현재 좌표
+    //     //   {
+    //     //     member: {
+    //     //       memberId: 1,
+    //     //       memberNickname: "김싸피",
+    //     //       memberLatLng: [37.5004, 127.0361], // 역삼역
+    //     //     },
+    //     //   },
+    //     // ],
+    //     const member = {
+    //       member: {
+    //         memberId: 1,
+    //         memberNickname: "김싸피",
+    //         memberLatLng: [lat, lng],
+    //       },
+    //     };
+    //     // this.memberLocation.push({
+    //     //   member: {
+    //     //     memberId: 1,
+    //     //     memberNickname: "김싸피",
+    //     //     memberLatLng: [lat, lng],
+    //     //   },
+    //     // });
+    //     this.memberLocation.push(member);
+    //     console.log("#21# geolocation 좌표: ", this.memberLocation);
+    //     this.send(member);
+
+    //     // var locPosition = new window.kakao.maps.LatLng(lat, lng), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+    //   });
+    // } else {
+    //   console.log("# geolocation을 사용할수 없어요..");
+    //   // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+    //   // var locPosition = new window.kakao.maps.LatLng(33.450701, 126.570667),
+    //   //   message = "geolocation을 사용할수 없어요..";
+    //   // this.displayMarker(locPosition, message);
+    // }
+  },
   methods: {
+    connect() {
+      const serverURL = "http://localhost:8080/websocket";
+      let socket = new SockJS(serverURL);
+      this.stompClient = Stomp.over(socket);
+      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+      this.stompClient.connect(
+        {},
+        (frame) => {
+          // 소켓 연결 성공
+          this.connected = true;
+          this.isConnect = true;
+          console.log("소켓 연결 성공", frame);
+
+          // 서버의 메시지 전송 endpoint를 구독합니다.
+          // 이런형태를 pub sub 구조라고 합니다.
+          const meetingId = 1;
+          this.stompClient.subscribe(`/topic/${meetingId}`, (res) => {
+            console.log("#21# response 오디가써: ", res);
+            console.log("구독으로 받은 메시지 입니다.", res.body);
+          });
+        },
+        (error) => {
+          // 소켓 연결 실패
+          console.log("소켓 연결 실패", error);
+          this.connected = false;
+        }
+      );
+    },
+
+    send(member) {
+      // console.log("lat & lng", lat, lng);
+      console.log("# send message: ", member);
+
+      if (this.stompClient && this.stompClient.connected) {
+        // const msg = {
+        //   xloc: lat,
+        //   yloc: lng,
+        // };
+        const msg = member;
+        console.log("1 - send 동작 message: ", msg);
+        this.stompClient.send("/message/locShare/1", JSON.stringify(msg), {});
+        console.log("2 - send 동작 message: ", msg);
+      }
+    },
     // [@Method] Kakao Map 생성
     initMap() {
       const container = document.getElementById("map");
@@ -447,9 +592,9 @@ export default {
     chageLatLngTest() {
       const testMember = {
         member: {
-          memberId: 2,
-          memberNickname: "히정",
-          memberLatLng: [37.5049, 127.0371], // 역삼 충헌교회
+          memberId: 1,
+          memberNickname: "김싸피",
+          memberLatLng: [37.5004, 127.0361], // 역삼역
         },
       };
       // const testMember = {
