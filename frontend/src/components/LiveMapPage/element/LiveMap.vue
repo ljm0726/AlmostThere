@@ -39,13 +39,13 @@ export default {
         //     memberLatLng: [37.5004, 127.0361], // 역삼역
         //   },
         // },
-        {
-          member: {
-            memberId: 2,
-            memberNickname: "히정",
-            memberLatLng: [37.5048, 127.0413], // 역삼 신라스테이
-          },
-        },
+        // {
+        //   member: {
+        //     memberId: 2,
+        //     memberNickname: "히정",
+        //     memberLatLng: [37.5048, 127.0413], // 역삼 신라스테이
+        //   },
+        // },
         // {
         //   member: {
         //     memberId: 3,
@@ -71,14 +71,14 @@ export default {
     chatting() {
       this.updateChatOverlay(this.chatting);
     },
-    memberLocation: {
-      deep: true,
-      handler() {
-        // console.log("#21# memberLocation 변경 감지");
-        // 위치 값 변경에 따른 marker, polyline, overlay 재생성
-        this.refreshMapOnLocationUpdate();
-      },
-    },
+    // memberLocation: {
+    //   deep: true,
+    //   handler() {
+    //     console.log("#21# memberLocation 변경 감지");
+    //     // 위치 값 변경에 따른 marker, polyline, overlay 재생성
+    //     this.refreshMapOnLocationUpdate();
+    //   },
+    // },
   },
   mounted() {
     // Kakao Map Script import
@@ -92,38 +92,10 @@ export default {
       document.head.appendChild(script);
     }
   },
-  created() {
-    this.connect();
-  },
+  // created() {
+  //   // this.connect();
+  // },
   methods: {
-    // [@Method] 초기 접속위치 얻기 (GeoLocation)
-    getGeoLocation() {
-      if (navigator.geolocation) {
-        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-        navigator.geolocation.getCurrentPosition((position) => {
-          var lat = position.coords.latitude, // 위도
-            lng = position.coords.longitude; // 경도
-          this.lat = lat;
-          this.lng = lng;
-          console.log("# 받아온 위도", lat);
-          console.log("# 받아온 경도", lng);
-
-          const member = {
-            member: {
-              memberId: 1,
-              memberNickname: "김싸피",
-              memberLatLng: [lat, lng],
-            },
-          };
-          this.memberLocation.push(member);
-          console.log("#21# member 좌표 확인: ", this.memberLocation);
-
-          this.send(member);
-        });
-      } else {
-        console.log("# geolocation을 사용할수 없어요..");
-      }
-    },
     // [@Method] WebSocket 연결
     connect() {
       console.log("#21# socket 연결 시도");
@@ -145,9 +117,15 @@ export default {
           const meetingId = 1;
           this.stompClient.subscribe(`/topic/${meetingId}`, (res) => {
             console.log("구독으로 받은 메시지 입니다.", res.body);
+
+            // 현 사용자의 위치 저장
+            // this.updateMemberLocation(res.body);
+            // console.log("#21# response 확인: ", res.body.member);
+            // this.updateMemberLocation(res.body);
+            // this.updateMemberLocation(JSON.parse(res.body));
           });
 
-          // GeoLocation
+          // GeoLocation - 현 위치 얻기
           this.getGeoLocation();
         },
         (error) => {
@@ -157,6 +135,72 @@ export default {
         }
       );
     },
+    // [@Method] 현재 접속위치 얻기 (GeoLocation)
+    getGeoLocation() {
+      if (navigator.geolocation) {
+        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+        navigator.geolocation.getCurrentPosition((position) => {
+          // ! #21# TEST
+          const member = {
+            member: {
+              memberId: 1,
+              memberNickname: "김싸피",
+              memberLatLng: [
+                position.coords.latitude,
+                position.coords.longitude,
+              ],
+            },
+          };
+
+          // 현 사용자의 위치 저장
+          this.updateMemberLocation(member);
+        });
+      } else {
+        console.log("# geolocation을 사용할수 없어요..");
+      }
+    },
+    // [@Method] member 위치 update
+    updateMemberLocation(newMemberLocation) {
+      let memberIndex = -1;
+      // memberId를 통해 해당 member 찾기
+      for (let i = 0; i < this.memberLocation.length; i++) {
+        if (
+          this.memberLocation[i].member.memberId ==
+          newMemberLocation.member.memberId
+        ) {
+          memberIndex = i;
+          break;
+        }
+      }
+
+      // i) 새로운 member 위치 저장
+      if (memberIndex == -1) {
+        console.log("#21# 새로운 member");
+        this.memberLocation.push(newMemberLocation);
+        this.send(newMemberLocation);
+
+        // 멤버 별 marker 생성
+        this.createMemberMarker();
+      }
+      // i) 기존 member 위치 update
+      else {
+        console.log("#21# 기존 member 위치 값 update");
+        // 위치 값 update
+        this.memberLocation[memberIndex].member.memberLatLng =
+          newMemberLocation.member.memberLatLng;
+
+        // 변경된 member [index, id] 저장
+        this.updateMemberInfo = [
+          memberIndex, // memberLocation의 index값
+          this.memberLocation[memberIndex].member.memberId, // memberId 값
+        ];
+        // marker, polyline, overlay 재조정
+        this.refreshMapOnLocationUpdate();
+
+        // 변경된 memeber 객체 send
+        this.send(this.memberLocation[memberIndex]);
+      }
+    },
     // [@Method] send
     send(member) {
       console.log("# send message: ", member);
@@ -164,7 +208,7 @@ export default {
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
         this.stompClient.send("/message/locShare/1", JSON.stringify(msg), {});
-        console.log("#21# message 전송: ", msg);
+        // console.log("#21# message 전송: ", msg);
       }
     },
     // [@Method] Kakao Map 생성
@@ -182,7 +226,10 @@ export default {
       // i) 모임 장소 marker
       this.createPlaceMarker(options);
       // ii) 멤버 별 marker 생성
-      this.createMemberMarker();
+      if (this.memberLocation.length != 0) this.createMemberMarker();
+
+      // WebSocket 연결
+      this.connect();
     },
     // [@Method] Kakao Map 생성 + 배경화면 설정
     // initMap() {
@@ -428,32 +475,6 @@ export default {
         customOverlay.setMap(this.map);
       }
     },
-    // [@Method] member 위치 update
-    updateMemberLocation(newMemberLocation) {
-      let memberIndex = -1;
-      // memberId를 통해 해당 member 찾기
-      for (let i = 0; i < this.memberLocation.length; i++) {
-        if (
-          this.memberLocation[i].member.memberId ==
-          newMemberLocation.member.memberId
-        ) {
-          memberIndex = i;
-          break;
-        }
-      }
-      // 위치 값 update
-      this.memberLocation[memberIndex].member.memberLatLng =
-        newMemberLocation.member.memberLatLng;
-
-      // 변경된 member [index, id] 저장
-      this.updateMemberInfo = [
-        memberIndex, // memberLocation의 index값
-        this.memberLocation[memberIndex].member.memberId, // memberId 값
-      ];
-
-      // send
-      this.send(this.memberLocation[memberIndex]);
-    },
     // [@Method] member의 위치 값 변경에 따른 marker, polyline, overlay 업데이트
     refreshMapOnLocationUpdate() {
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
@@ -470,6 +491,7 @@ export default {
         this.memberMarkerList[this.updateMemberInfo[0]][
           this.updateMemberInfo[1]
         ];
+      console.log("#21# marker 확인: ", marker);
       marker.setPosition(newPosition);
       marker.setMap(this.map);
 
@@ -527,9 +549,18 @@ export default {
     // [@Method] TEST (!추후 삭제)
     chageLatLngTest() {
       // console.log("# router 확인: ", this.$route.params.id);
+      // const testMember = {
+      //   member: {
+      //     // memberId: this.$route.params.id,
+      //     memberId: 1,
+      //     memberNickname: "김싸피",
+      //     memberLatLng: [37.5004, 127.0361], // 역삼역
+      //   },
+      // };
       const testMember = {
         member: {
-          memberId: this.$route.params.id,
+          // memberId: this.$route.params.id,
+          memberId: 1,
           memberNickname: "김싸피",
           memberLatLng: [37.5004, 127.0361], // 역삼역
         },
