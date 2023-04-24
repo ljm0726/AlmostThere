@@ -4,6 +4,7 @@
     <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
     <v-btn @click="sendChatTest()">채팅 test</v-btn>
     <v-btn @click="resizeMapLevel()">범위 재조정</v-btn>
+    <v-btn @click="chageLatLngTest()">좌표 변경 TEST</v-btn>
     <!-- --- -->
     <div id="map"></div>
   </div>
@@ -63,6 +64,9 @@ export default {
   watch: {
     chatting() {
       this.updateChatOverlay(this.chatting);
+    },
+    memberLocation() {
+      this.updateMemberMarker(this.memberLocation);
     },
   },
   mounted() {
@@ -208,6 +212,10 @@ export default {
           object[ml.member.memberId] = marker;
           this.memberMarkerList.push(object);
         }
+        console.log(
+          "#21# 저장한 marker 확인: ",
+          this.memberMarkerList[0][1].getImage()
+        );
 
         // marker 표시
         marker.setMap(this.map);
@@ -385,6 +393,18 @@ export default {
           member: {
             memberId: 2,
             content: this.testChatContent,
+          },
+        },
+      ];
+    },
+    // [@Method] TEST (!추후 삭제)
+    chageLatLngTest() {
+      this.memberLocation = [
+        {
+          member: {
+            memberId: 2,
+            memberNickname: "히정",
+            memberLatLng: [37.5048, 127.0413], // 역삼 신라스테이
           },
         },
       ];
