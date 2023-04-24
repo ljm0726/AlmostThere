@@ -24,7 +24,7 @@ const meeting = [
     },
   },
   {
-    path: "/live-map-temp",
+    path: "/live-map-temp/:id",
     name: "live-map-temp",
     components: {
       header: LiveMapHeader,
