@@ -48,7 +48,7 @@ public class MeetingApiController {
 
     /**
      * asng
-     * @param meetingCreateDto
+     * @param meetingCreateRequestDto
      * @return 모임을 생성한다.
      */
     @PostMapping

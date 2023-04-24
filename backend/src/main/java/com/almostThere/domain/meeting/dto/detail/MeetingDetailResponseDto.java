@@ -18,7 +18,7 @@ public class MeetingDetailResponseDto {
     private String meetingAddress;
     private double meetingLat;
     private double meetingLng;
-    private int lateAmount;
+    private Integer lateAmount;
     private LocalDateTime regDate;
     private int roomCode;
     private List<MeetingMemberResponseDto> meetingMembers;
