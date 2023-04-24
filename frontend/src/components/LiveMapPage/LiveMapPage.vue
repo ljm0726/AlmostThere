@@ -2,13 +2,27 @@
   <div>
     <h1>카카오맵 테스트</h1>
     <div id="map"></div>
-    <button id="button" @click="sendMessage()"></button>
+
+    <div>
+      <div class="location">
+        <input v-model="xloc" />
+      </div>
+      <div class="location">
+        <input v-model="yloc" />
+      </div>
+      <button id="button" @click="sendMessage(xloc, yloc)"></button>
+    </div>
     <div>{{ lat }}</div>
     <div>{{ lng }}</div>
   </div>
 </template>
 
 <style scoped>
+.location {
+  width: 50px;
+  height: 50px;
+  border-color: black;
+}
 #map {
   width: 400px;
   height: 400px;
@@ -18,6 +32,7 @@
 #button {
   width: 50px;
   height: 50px;
+  background-color: black;
   margin: auto;
 }
 </style>
@@ -52,22 +67,22 @@ export default {
   },
 
   methods: {
-    sendMessage() {
+    sendMessage(lat, lng) {
       console.log("sendMessage 도착");
-      this.send();
+      this.send(lat, lng);
     },
-    send() {
-      console.log("lat & lng", this.lat, this.lng);
+    send(lat, lng) {
+      console.log("lat & lng", lat, lng);
       if (this.stompClient && this.stompClient.connected) {
         const msg = {
-          lat: this.lat,
-          lng: this.lng,
+          xloc: lat,
+          yloc: lng,
         };
         this.stompClient.send("/message/locShare/1", JSON.stringify(msg), {});
       }
     },
     connect() {
-      const serverURL = "http://localhost:9999/websocket";
+      const serverURL = "http://localhost:8080/websocket";
       let socket = new SockJS(serverURL);
       this.stompClient = Stomp.over(socket);
       console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
