@@ -1,10 +1,6 @@
 package com.almostThere.domain.meeting.dto.detail;
 
-import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
-import com.almostThere.domain.user.dto.MemberDto;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

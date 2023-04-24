@@ -1,10 +1,11 @@
 package com.almostThere.domain.meeting.controller;
 
-import com.almostThere.domain.meeting.dto.MeetingDeleteRequestDto;
+import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
+import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.service.MeetingService;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,9 +83,25 @@ public class MeetingApiController {
         return new BaseResponse(200, "SUCCESS",null);
     }
 
+    /**
+     * asng
+     * @param meetingDeleteRequestDto
+     * @return 모임방에서 나간다.
+     */
     @DeleteMapping("/exit")
     public BaseResponse exitMeeting(@RequestBody MeetingDeleteRequestDto meetingDeleteRequestDto){
         meetingService.exitMeeting(meetingDeleteRequestDto);
+        return new BaseResponse(200, "SUCCESS",null);
+    }
+
+    /**
+     * asng
+     * @param meetingUpdateRequestDto
+     * @return 모임 상세정보를 수정한다.
+     */
+    @PutMapping
+    public BaseResponse updateMeeting(@RequestBody MeetingUpdateRequestDto meetingUpdateRequestDto){
+        meetingService.updateMeeting(meetingUpdateRequestDto);
         return new BaseResponse(200, "SUCCESS",null);
     }
 }

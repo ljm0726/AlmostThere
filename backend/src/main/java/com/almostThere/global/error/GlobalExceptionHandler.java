@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         log.error("handleAccessDeniedException", e);
 
         final ErrorResponse response = ErrorResponse.of(e.getErrorCode());
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
 }

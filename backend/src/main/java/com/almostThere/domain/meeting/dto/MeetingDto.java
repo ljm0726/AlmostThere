@@ -1,6 +1,5 @@
 package com.almostThere.domain.meeting.dto;
 
-import com.almostThere.domain.meeting.entity.CalculateDetail;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.user.dto.MemberDto;
 import lombok.Data;
