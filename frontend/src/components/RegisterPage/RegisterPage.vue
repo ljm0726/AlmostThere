@@ -118,7 +118,8 @@
 
 <script>
 // 추가해야할 부분 -> 현재 시간 이전을 설정하면 불가능하게
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
+// const meetingStore = "meetingStore";
 
 export default {
   name: "RegisterPage",
@@ -132,7 +133,6 @@ export default {
       meetingplace: "",
       curDate: null,
       curTime: null,
-      getCurMiliTimes: null,
     };
   },
 
@@ -140,11 +140,12 @@ export default {
     ...mapState("placeStore", ["placeX", "placeY", "placeName", "placeAddr"]),
   },
   methods: {
+    ...mapActions("meetingStore", ["register"]),
     movePlacePage() {
       this.$router.push("/place");
     },
 
-    regist_meeting() {
+    async regist_meeting() {
       this.getCurTime();
 
       console.log(this.curDate, this.date, this.curTime, this.time);
@@ -158,11 +159,11 @@ export default {
           this.meetingname,
           this.date,
           this.time,
-          this.meetingplace,
-          this.getCurMiliTimes
+          this.meetingplace
         );
 
         // API 연결 하기
+        await this.register(this.meetingname, this.date + " " + this.time);
       }
     },
 
@@ -194,23 +195,8 @@ export default {
     }
 
     this.getCurTime();
-    const currentDate = new Date();
-    const options = {
-      timeZone: "Asia/Seoul",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    };
-    const dateArray = currentDate
-      .toLocaleDateString("en-GB", options)
-      .split("/");
-    this.date = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
-    this.time = currentDate.toLocaleTimeString("en-GB", {
-      timeZone: "Asia/Seoul",
-      hour12: false,
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    this.date = this.curDate;
+    this.time = this.curTime;
   },
 };
 </script>
