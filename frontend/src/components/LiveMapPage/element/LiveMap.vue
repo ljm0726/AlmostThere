@@ -7,9 +7,9 @@
     <v-btn @click="chageLatLngTest()">좌표 변경 TEST</v-btn>
     <!-- --- -->
     <div id="map"></div>
-    <div>{{ this.memberLocation }}</div>
+    <!-- <div>{{ this.memberLocation }}</div> -->
     <!-- <div>GeoLocation 가능여부: {{ this.isGeoLocation }}</div> -->
-    <div>Marker: {{ this.memberMarkerList }}</div>
+    <!-- <div>Marker: {{ this.memberMarkerList }}</div> -->
   </div>
 </template>
 
@@ -101,8 +101,8 @@ export default {
           });
 
           // GeoLocation - 1초마다 현 위치 얻기
-          this.getGeoLocation();
-          // this.startIntervalMemberLocation();
+          // this.getGeoLocation();
+          this.startIntervalMemberLocation();
         },
         (error) => {
           // 소켓 연결 실패
