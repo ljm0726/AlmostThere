@@ -119,7 +119,7 @@ springdoc:
 LOGIN_SUCCESS_URL: ${LOGIN_SUCCESS_URL}
 
 server:
-  port: 8080
+  port: 9999
 
 jwt:
   token:
