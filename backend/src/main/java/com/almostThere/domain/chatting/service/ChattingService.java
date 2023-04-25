@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChattingService {
 
-    private final RedisTemplate<Long, ChattingDto> redisTemplate;
+    private final RedisTemplate<Long, ChattingDto> redisTemplateDto;
 
     private final ChattingRepository chattingRepository;
 
@@ -52,7 +52,7 @@ public class ChattingService {
         ChattingDto chattingDto = new ChattingDto(meetingId, memberId, message, now);
 
         // redis에 ChattingDto 저장
-        ListOperations<Long, ChattingDto> listOperations = redisTemplate.opsForList();
+        ListOperations<Long, ChattingDto> listOperations = redisTemplateDto.opsForList();
         listOperations.rightPush(meetingId, chattingDto);
 
         return chattingDto;
@@ -71,8 +71,8 @@ public class ChattingService {
         // key 가져오기
         // 성능 향상 위해 keys() 대신 scan() 사용
         ScanOptions scanOptions = ScanOptions.scanOptions().build();
-        Cursor<Long> cursor = redisTemplate.scan(scanOptions);
-        ListOperations<Long, ChattingDto> listOperations = redisTemplate.opsForList();
+        Cursor<Long> cursor = redisTemplateDto.scan(scanOptions);
+        ListOperations<Long, ChattingDto> listOperations = redisTemplateDto.opsForList();
         
         // 가져온 key를 반복하며 각 key에 있는 값 MySQL에 저장하기
         while (cursor.hasNext()) {
@@ -123,7 +123,7 @@ public class ChattingService {
     public ChattingListDto getChattingLog(Long meetingId, Long memberId, Long lastNumber) {
 
         // redis에서 meetingId의 채팅 정보를 가져온다.
-        ListOperations<Long, ChattingDto> listOperations = redisTemplate.opsForList();
+        ListOperations<Long, ChattingDto> listOperations = redisTemplateDto.opsForList();
 
         // 꺼내야 하는 개수
         int default_num = 20;

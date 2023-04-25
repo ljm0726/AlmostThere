@@ -1,15 +1,17 @@
 package com.almostThere.domain.meeting.entity;
 
+import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.user.entity.Member;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.*;
-
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,6 +36,9 @@ public class Meeting {
     @Column(length = 100, nullable = false)
     private String meetingPlace;
 
+    @Column(length = 200, nullable = false)
+    private String meetingAddress;
+
     @Column
     private double meetingLat;
 
@@ -41,7 +46,7 @@ public class Meeting {
     private double meetingLng;
 
     @Column
-    private int lateAmount;
+    private Integer lateAmount;
 
     @CreationTimestamp // DB에 insert할 때 현재시간 자동 지정
     @Column(nullable = false)
@@ -52,4 +57,33 @@ public class Meeting {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "meeting")
     private List<MeetingMember> meetingMembers = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meeting")
+    private List<CalculateDetail> calculateDetails = new ArrayList<>();
+
+    @Builder
+    public Meeting(Member host, String meetingName,String meetingPlace,String meetingAddress
+        , double meetingLat,double meetingLng, LocalDateTime meetingTime, int roomCode, Integer lateAmount, LocalDateTime regdate) {
+        this.meetingName = meetingName;
+        this.meetingTime = meetingTime;
+        this.meetingPlace = meetingPlace;
+        this.meetingAddress = meetingAddress;
+        this.meetingLat = meetingLat;
+        this.meetingLng = meetingLng;
+        this.host = host;
+        this.roomCode = roomCode;
+        this.lateAmount = lateAmount;
+        this.regdate = regdate;
+    }
+
+    public void updateMeeting(MeetingUpdateRequestDto meetingUpdateRequestDto) {
+        this.meetingName = meetingUpdateRequestDto.getMeetingName();
+        this.meetingTime = meetingUpdateRequestDto.getMeetingTime();
+        this.meetingPlace = meetingUpdateRequestDto.getMeetingPlace();
+        this.meetingAddress = meetingUpdateRequestDto.getMeetingAddress();
+        this.meetingLat = meetingUpdateRequestDto.getMeetingLat();
+        this.meetingLng = meetingUpdateRequestDto.getMeetingLng();
+        this.lateAmount = meetingUpdateRequestDto.getLateAmount();;
+        this.regdate = LocalDateTime.now();
+    }
 }

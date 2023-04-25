@@ -1,12 +1,16 @@
 package com.almostThere.domain.meeting.entity;
 
 import com.almostThere.domain.user.entity.Member;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MeetingMember {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,18 +26,39 @@ public class MeetingMember {
     @JoinColumn(name = "meeting_id", foreignKey = @ForeignKey(name = "fk_meeting_member_meeting_idx"), nullable = false)
     private Meeting meeting;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String startPlace;
 
-    @Column
-    private double startLat;
+    @Column(length = 200)
+    private String startAddress;
 
     @Column
-    private double startLng;
+    private Double startLat;
+
+    @Column
+    private Double startLng;
 
     @Enumerated(EnumType.STRING)
     private StateType state;
 
     @Column
-    private double spentMoney;
+    private Double spentMoney;
+
+    public MeetingMember (Member member, Meeting meeting, StateType state){
+        this.member = member;
+        this.meeting = meeting;
+        this.state = state;
+    }
+    @Builder
+    public MeetingMember (Member member, Meeting meeting, String startPlace, String startAddress
+        ,Double startLat, Double startLng, StateType state, Double spentMoney) {
+        this.member = member;
+        this.meeting = meeting;
+        this.startPlace = startPlace;
+        this.startAddress = startAddress;
+        this.startLat = startLat;
+        this.startLng = startLng;
+        this.state = state;
+        this.spentMoney = spentMoney;
+    }
 }
