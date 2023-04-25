@@ -2,7 +2,7 @@
 FROM openjdk:11-jdk
 
 # 빌드 변수 설정
-ARG JAR_FILE=build/libs/CowEconomy-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=build/libs/almostThere-0.0.1-SNAPSHOT.jar
 
 # 파일 복사
 COPY ${JAR_FILE} app.jar
