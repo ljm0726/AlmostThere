@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'App',
+  name: "App",
 };
 </script>
 
@@ -29,6 +29,7 @@ export default {
 @import "@/assets/styles/override/button.css";
 @import "@/assets/styles/override/icon.css";
 @import "@/assets/styles/override/dialog.css";
+@import "@/assets/styles/override/infinite_scroll.css";
 
 html body {
   background: #fafafa;

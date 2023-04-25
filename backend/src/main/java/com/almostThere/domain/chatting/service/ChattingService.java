@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -133,11 +134,6 @@ public class ChattingService {
         // 전체 개수
         Long length = redisSize + mysqlSize;
         if (lastNumber < 0) lastNumber = length;
-        
-        // 100개가 있어 처음에는 lastNumber 100번이야
-        // 그럼 71번 ~ 100번을 가져와야지
-        // mysqlSize 80, redisSize 20
-        // mysql에 80개, redis에 20개가 있다고 생각하면서 작성
 
         // chattingDtoList 생성
         List<ChattingDetailDto> chattingDetailDtoList = new ArrayList<>();
@@ -150,39 +146,48 @@ public class ChattingService {
 
             // Redis에 저장된 값으로 충분한 경우
             if (redisIdx >= default_num) {
-                chattingDetailDtoList.addAll(listOperations.range(meetingId, redisIdx - default_num + 1, redisIdx).stream().map(m -> new ChattingDetailDto(m, memberId)).collect(Collectors.toList()));
+                chattingDetailDtoList.addAll(listOperations.range(meetingId, redisIdx - default_num + 1, redisIdx).stream()
+                        .map(m -> new ChattingDetailDto(m, memberId))
+                        .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
+                        .reversed()).collect(Collectors.toList()));
                 return new ChattingListDto(chattingDetailDtoList, redisIdx - default_num);
             }
             
             // Redis에 저장된 값으로 충분하지 않나, Redis에 저장된 값도 가져와야 하는 경우
             else {
-                chattingDetailDtoList.addAll(listOperations.range(meetingId, 0, redisIdx).stream().map(m -> new ChattingDetailDto(m, memberId)).collect(Collectors.toList()));
+                chattingDetailDtoList.addAll(listOperations.range(meetingId, 0, redisIdx).stream()
+                        .map(m -> new ChattingDetailDto(m, memberId))
+                        .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
+                        .reversed()).collect(Collectors.toList()));
                 lastNumber -= redisIdx;
             }
         }
 
         // MySQL에 저장된 값 가져오기
-        int page = (int) ((mysqlSize - lastNumber) / default_num);
-        PageRequest pageRequest = PageRequest.of(page, default_num);
-        Page<Chatting> chattingPage = chattingRepository.findAllByMeeting_IdOrderByChattingTimeAsc(meetingId, pageRequest);
-        chattingDetailDtoList.addAll(0, chattingPage.getContent().stream().map(m -> new ChattingDetailDto(m, memberId)).collect(Collectors.toList()));
+        if (lastNumber <= mysqlSize) {
 
-        lastNumber -= default_num;
+            // 100개가 있어 처음에는 lastNumber 80번이야
+            // 그럼 71번 ~ 100번을 가져와야지
+            // mysqlSize 80, redisSize 20
+            // mysql에 80개, redis에 20개가 있다고 생각하면서 작성
 
-//        else if (size < default_num*page && size > default_num*(page-1)) {
-//            chattingDetailDtoList.addAll(listOperations.range(meetingId, default_num*(page-1), size).stream().map(m -> new ChattingDetailDto(m, memberId)).collect(Collectors.toList()));
-//            num -= (size-default_num*(page-1));
-//        }
-//
-//        // MySQL에 저장된 값 가져오기
-//        Long length = chattingRepository.countByMeeting_Id(meetingId);
-//
-//        if (size + length >= default_num*page) {
-//            //
-//        }
-//        else if (size + length < default_num*page && size + length > default_num*(page-1)) {
-//            //
-//        }
+
+            // lastNumber 80일 때는 0, lastNumber 70일 때는 0, lastNumber 60일 때는 1
+            int page = (int) ((mysqlSize - lastNumber) / default_num);
+
+            // MySQL에서 Pagination으로 page번째 값 가져오기
+            PageRequest pageRequest = PageRequest.of(page, default_num);
+            Page<Chatting> chattingPage = chattingRepository.findAllByMeeting_IdOrderByChattingTimeDesc(meetingId, pageRequest);
+            
+            // MySQL에서 가져온 리스트
+            List<ChattingDetailDto> chattingDetailDtos = chattingPage.getContent().stream().map(m -> new ChattingDetailDto(m, memberId)).collect(Collectors.toList());
+
+            // 나눠 떨어지면 전체 반환, 그 외에는 이미 보여진 부분은 제외하고 잘라서 보여주기
+            int rest = (int) ((mysqlSize - lastNumber) % default_num);
+            if (rest != 0) chattingDetailDtos = chattingDetailDtos.subList(rest, chattingDetailDtos.size());
+            chattingDetailDtoList.addAll(chattingDetailDtos);
+            lastNumber -= chattingDetailDtos.size();
+        }
 
         return new ChattingListDto(chattingDetailDtoList, lastNumber);
     }

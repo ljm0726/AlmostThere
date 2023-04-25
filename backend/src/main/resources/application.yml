@@ -1,5 +1,5 @@
 server:
-  port: 9999
+  port: 8080
 
   servlet:
     context-path: /
@@ -57,7 +57,7 @@ spring:
       on-profile: "dev"
 
 server:
-  port: 9999
+  port: 8080
 
 #---
 #spring:

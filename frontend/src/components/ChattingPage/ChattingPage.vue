@@ -4,9 +4,14 @@
     style="padding: 55px 0px 72px 0px"
     min-height="100%"
   >
-    {{ last }}
     <chatting-header :name="meetingName"></chatting-header>
+    <scroll-bottom-button></scroll-bottom-button>
     <v-sheet class="d-flex flex-column">
+      <infinite-loading
+        direction="top"
+        @infinite="infiniteHandler"
+      ></infinite-loading>
+
       <div v-for="(item, idx) in chatList" :key="idx">
         <div
           class="d-flex flex-row justify-center sm-font main-col-1"
@@ -17,12 +22,12 @@
           "
         >
           {{ new Date(item.chattingTime).getFullYear() }}년
-          {{ new Date(item.chattingTime).getMonth() }}월
+          {{ new Date(item.chattingTime).getMonth() + 1 }}월
           {{ new Date(item.chattingTime).getDate() }}일
         </div>
         <!-- <chatting-message :item="item" :userId="userId"> </chatting-message> -->
         <div
-          class="mx-4 mt-1 d-flex flex-row"
+          class="mx-3 mt-1 d-flex flex-row"
           :class="item.memberId == memberId ? 'justify-end' : 'justify-start'"
         >
           <div v-if="item.memberId != memberId">
@@ -41,7 +46,7 @@
             </v-avatar>
             <v-sheet v-else class="mr-2" style="padding-left: 34px"> </v-sheet>
           </div>
-          <div class="d-flex flex-column">
+          <v-sheet class="d-flex flex-column" width="100%">
             <span
               class="xxxs-font"
               v-if="
@@ -54,15 +59,16 @@
             >
               <span>{{ members[item.memberId].nickname }}</span>
             </span>
-            <div
+            <v-sheet
               class="d-flex align-end"
               :class="
                 item.memberId == memberId ? 'flex-row-reverse' : 'flex-row'
               "
+              width="100%"
             >
               <v-sheet
                 class="pa-1 px-2 xs-font light-font d-flex flex-row"
-                max-width="55vw"
+                max-width="70%"
                 :dark="item.memberId == memberId"
                 :outlined="item.memberId != memberId"
                 :color="item.memberId == memberId ? 'var(--main-col-1)' : ''"
@@ -91,19 +97,21 @@
                   {{ new Date(item.chattingTime).getMinutes() }}분
                 </span>
               </span>
-            </div>
-          </div>
+            </v-sheet>
+          </v-sheet>
         </div>
       </div>
     </v-sheet>
 
     <!-- <div> -->
     <v-sheet
-      class="px-4 py-4"
+      class="px-3 pb-4"
       max-width="500"
+      color="transparent"
       style="position: fixed; margin: 0 auto; left: 0; right: 0; bottom: 0"
     >
       <v-text-field
+        style="background-color: white"
         v-model="message"
         @click:append-outer="sendMessage"
         @click:clear="message == ''"
@@ -126,19 +134,21 @@ import SockJS from "sockjs-client";
 import { getChatting, getChattingLog } from "@/api/modules/chatting.js";
 import ChattingHeader from "@/views/Header/ChattingHeader.vue";
 // import ChattingMessage from "./ChattingMessage.vue";
+import InfiniteLoading from "vue-infinite-loading";
+import ScrollBottomButton from "@/common/component/button/ScrollBottomButton.vue";
 
 export default {
-  components: { ChattingHeader },
+  components: { ChattingHeader, InfiniteLoading, ScrollBottomButton },
   name: "ChattingPage",
   data() {
     return {
       memberId: 2,
       message: "",
       chatList: [],
-      top: false,
       meetingName: null,
       members: {},
       last: -1,
+      page: 1,
     };
   },
   async created() {
@@ -153,28 +163,34 @@ export default {
       // 멤버 정보
       this.members = await info.chattingMemberMap;
       // 채팅 기록
-      this.chatList = await info.chattingListDto.chattingDetailDtoList;
+      this.chatList =
+        await info.chattingListDto.chattingDetailDtoList.reverse();
       // 마지막 기록
       this.last = await info.chattingListDto.lastNumber;
       // 스크롤 맨 아래로 이동
       await this.goBottom();
-      // 이벤트 추가
-      await window.addEventListener("scroll", this.onTheTop);
     });
   },
-  beforeDestroy() {
-    window.removeEventListener("scroll", this.onTheTop);
-  },
   methods: {
-    topVisible() {
-      const scrollY = window.scrollY;
-      // const visible = document.documentElement.clientHeight;
-      // const pageHeight = document.documentElement.scrollHeight;
-      // console.log(scrollY, visible, pageHeight);
-      // // + 73은 Footer의 높이
-      // const bottomOfPage = visible + scrollY + 73 >= pageHeight;
-      // return bottomOfPage || pageHeight < visible;
-      return scrollY < 10;
+    infiniteHandler($state) {
+      if (this.last <= 0) $state.complete();
+      else {
+        getChattingLog(this.$route.params.id, this.last).then(async (res) => {
+          const chat = await res.data.data;
+          console.log(chat);
+          // 채팅 기록
+          // this.chatList = concat(
+          //   chat.chattingDetailDtoList,
+          //   this.chatList
+          // );
+          // console.log("chatList", this.chatList);
+          this.page += 1;
+          this.chatList.unshift(...chat.chattingDetailDtoList.reverse());
+          // 마지막 기록
+          this.last = await chat.lastNumber;
+          $state.loaded();
+        });
+      }
     },
     // 맨 아래로 스크롤 이동
     goBottom() {
@@ -228,30 +244,6 @@ export default {
           this.connected = false;
         }
       );
-    },
-    onTheTop() {
-      this.top = this.topVisible();
-    },
-  },
-  watch: {
-    top() {
-      // console.log("dd");
-      if (this.top && this.last != 0) {
-        getChattingLog(this.$route.params.id, this.last).then(async (res) => {
-          const chat = await res.data.data;
-          console.log(chat);
-          // 채팅 기록
-          // this.chatList = concat(
-          //   chat.chattingDetailDtoList,
-          //   this.chatList
-          // );
-          console.log("chatList", this.chatList);
-          // 마지막 기록
-          this.last = await chat.lastNumber;
-          // 넣기
-          await this.addChat;
-        });
-      }
     },
   },
 };
