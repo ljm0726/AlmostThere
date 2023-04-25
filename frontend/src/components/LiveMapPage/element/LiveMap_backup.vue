@@ -98,6 +98,7 @@ export default {
   methods: {
     // [@Method] WebSocket 연결
     connect() {
+      console.log("#21# socket 연결 시도");
       const serverURL = "http://localhost:8080/websocket";
       let socket = new SockJS(serverURL);
       this.stompClient = Stomp.over(socket);
@@ -117,13 +118,16 @@ export default {
           this.stompClient.subscribe(`/topic/${meetingId}`, (res) => {
             console.log("구독으로 받은 메시지 입니다.", res.body);
 
-            // socket을 통해 받은 message(다른 사용자 좌표) 저장
-            // this.otherMemberSave();
+            // 현 사용자의 위치 저장
+            // this.updateMemberLocation(res.body);
+            // console.log("#21# response 확인: ", res.body.member);
+            // this.updateMemberLocation(res.body);
+            // this.updateMemberLocation(JSON.parse(res.body));
           });
 
           // GeoLocation - 1초마다 현 위치 얻기
-          this.getGeoLocation();
-          // this.startIntervalMemberLocation();
+          // this.getGeoLocation();
+          this.startIntervalMemberLocation();
         },
         (error) => {
           // 소켓 연결 실패
@@ -139,20 +143,10 @@ export default {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition((position) => {
           // ! #21# TEST
-          // const member = {
-          //   member: {
-          //     memberId: 1,
-          //     memberNickname: "김싸피",
-          //     memberLatLng: [
-          //       position.coords.latitude,
-          //       position.coords.longitude,
-          //     ],
-          //   },
           const member = {
             member: {
-              memberId: JSON.parse(localStorage.getItem("member")).memberId,
-              memberNickname: JSON.parse(localStorage.getItem("member"))
-                .memberNickname,
+              memberId: 1,
+              memberNickname: "김싸피",
               memberLatLng: [
                 position.coords.latitude,
                 position.coords.longitude,
@@ -215,7 +209,7 @@ export default {
         this.send(this.memberLocation[memberIndex]);
       }
     },
-    // [@Method] client에서 server로 message 보내기(send)
+    // [@Method] send
     send(member) {
       console.log("# send message: ", member);
 
