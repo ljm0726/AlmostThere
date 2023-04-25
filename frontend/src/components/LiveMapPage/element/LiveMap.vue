@@ -8,6 +8,8 @@
     <!-- --- -->
     <div id="map"></div>
     <div>{{ this.memberLocation }}</div>
+    <!-- <div>GeoLocation 가능여부: {{ this.isGeoLocation }}</div> -->
+    <div>Marker: {{ this.memberMarkerList }}</div>
   </div>
 </template>
 
@@ -19,7 +21,6 @@ export default {
   name: "LiveMap",
   data() {
     return {
-      isConnect: false,
       /* # marker 설정 */
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
@@ -76,7 +77,7 @@ export default {
   methods: {
     // [@Method] WebSocket 연결
     connect() {
-      const serverURL = "http://localhost:8080/websocket";
+      const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
       let socket = new SockJS(serverURL);
       this.stompClient = Stomp.over(socket);
 
@@ -96,26 +97,27 @@ export default {
             console.log("구독으로 받은 메시지 입니다.", res.body);
 
             // socket을 통해 받은 message(다른 사용자 좌표) 저장
-            this.saveOtherMemberLocation(JSON.parse(res.body));
+            // this.saveOtherMemberLocation(JSON.parse(res.body));
           });
 
           // GeoLocation - 1초마다 현 위치 얻기
-          // this.getGeoLocation();
-          this.startIntervalMemberLocation();
+          this.getGeoLocation();
+          // this.startIntervalMemberLocation();
         },
         (error) => {
           // 소켓 연결 실패
           console.log("소켓 연결 실패", error);
-          this.connected = false;
         }
       );
     },
     // [@Method] 현재 로그인한 사용자의 접속위치 얻기 (GeoLocation)
     getGeoLocation() {
       console.log("#21# getGeoLocation 현 위치 얻기 동작");
+      // alert("## geo", navigator.geolocation);
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition((position) => {
+          // alert("# isGeoLocation: " + position + " 확인");
           // ! #21# TEST
           // const member = {
           //   member: {
