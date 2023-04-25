@@ -97,7 +97,7 @@ export default {
             console.log("구독으로 받은 메시지 입니다.", res.body);
 
             // socket을 통해 받은 message(다른 사용자 좌표) 저장
-            // this.saveOtherMemberLocation(JSON.parse(res.body));
+            this.saveOtherMemberLocation(JSON.parse(res.body));
           });
 
           // GeoLocation - 1초마다 현 위치 얻기
@@ -519,11 +519,18 @@ export default {
       const markerIndex = this.memberMarkerList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
+      // const marker =
+      //   this.memberMarkerList[markerIndex][this.updateMemberInfo[1]];
+      // console.log("#21# marker 확인: ", marker);
+      // marker.setPosition(newPosition);
+      // marker.setMap(this.map);
       const marker =
         this.memberMarkerList[markerIndex][this.updateMemberInfo[1]];
-      console.log("#21# marker 확인: ", marker);
-      marker.setPosition(newPosition);
-      marker.setMap(this.map);
+      const newMarker =
+        this.memberMarkerList[markerIndex][this.updateMemberInfo[1]];
+      newMarker.setPosition(newPosition);
+      marker.setMap(null);
+      newMarker.setMap(this.map);
 
       // ii) over-lay & polyline
       // - 닉네임 over-lay
