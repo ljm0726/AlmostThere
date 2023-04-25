@@ -1,4 +1,6 @@
 import { meetingRegister } from "@/api/modules/meeting";
+import placeStore from "./place";
+import router from "@/router"; // 라우터 import
 
 const meetingStore = {
   namespaced: true,
@@ -18,21 +20,22 @@ const meetingStore = {
     // },
   },
   actions: {
-    async register(meeting_name, date_time) {
+    async register({ commit }, { meeting_name, date_time }) {
       //id, lat, lng는 store에서 가져오기
-      console.log(this.placeX, " ", this.placeY);
+      console.log(meeting_name);
+      commit;
       await meetingRegister(
         // this.,
         1,
         meeting_name,
         date_time,
-        this.place,
-        this.address,
-        this.placeX,
-        this.placeY,
+        placeStore.state.placeName,
+        placeStore.state.placeAddr,
+        placeStore.state.placeX,
+        placeStore.state.placeY,
         ({ data }) => {
           console.log(data);
-          this.$router.push("/home");
+          router.push({ name: "home" });
         },
         (error) => {
           console.log(error);

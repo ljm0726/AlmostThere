@@ -13,9 +13,10 @@ const isLogin = async (to, from, next) => {
   const access_token = localStorage.getItem("Authorization");
   if (to.query.login || access_token) {
     console.log("login 성공 ");
-    if (!access_token) {
-      localStorage.setItem("Authorization", to.query.login.substring(7));
-    }
+    // if (!access_token) {
+    // console.log(to.query.login.substring(7));
+    localStorage.setItem("Authorization", to.query.login.substring(7));
+    // }
     next({
       name: "home",
     });

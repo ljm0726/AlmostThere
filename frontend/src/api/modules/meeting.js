@@ -1,4 +1,4 @@
-import { apiInstance } from "./index.js";
+import { apiInstance } from "../index";
 
 const api = apiInstance();
 
@@ -13,6 +13,8 @@ async function meetingRegister(
   success,
   fail
 ) {
+  const Authorization = "Bearer " + localStorage.getItem("Authorization");
+  console.log(" at ", id, name, date_time, place, address, lat, lng);
   await api
     .post(
       `/meeting`,
@@ -27,7 +29,7 @@ async function meetingRegister(
       },
       {
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("Authorization"),
+          Authorization: Authorization,
         },
       }
     )

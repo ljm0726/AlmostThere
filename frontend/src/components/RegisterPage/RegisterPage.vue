@@ -125,7 +125,7 @@ export default {
   name: "RegisterPage",
   data() {
     return {
-      meetingname: null,
+      meetingname: "",
       date: null,
       menu: null,
       time: null,
@@ -137,7 +137,7 @@ export default {
   },
 
   computed: {
-    ...mapState("placeStore", ["placeX", "placeY", "placeName", "placeAddr"]),
+    ...mapState("placeStore", ["placeName", "placeAddr"]),
   },
   methods: {
     ...mapActions("meetingStore", ["register"]),
@@ -145,25 +145,20 @@ export default {
       this.$router.push("/place");
     },
 
-    async regist_meeting() {
+    regist_meeting() {
       this.getCurTime();
 
-      console.log(this.curDate, this.date, this.curTime, this.time);
       if (this.curDate >= this.date && this.curTime >= this.time) {
         alert("시간을 다시 설정해주세요!");
       } else if (this.meetingname == null || this.meetingplace == null) {
         alert("모든 정보를 입력해주세요!");
       } else {
-        console.log(
-          "Input value : ",
-          this.meetingname,
-          this.date,
-          this.time,
-          this.meetingplace
-        );
+        console.log(this.meetingname, this.date, this.time, this.meetingplace);
 
-        // API 연결 하기
-        await this.register(this.meetingname, this.date + " " + this.time);
+        const date_time = new Date(this.date + " " + this.time);
+        const meeting_name = this.meetingname;
+
+        this.register({ meeting_name, date_time });
       }
     },
 
