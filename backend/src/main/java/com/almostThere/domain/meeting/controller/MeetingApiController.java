@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/meeting")
+@RequestMapping("/api/meeting")
 public class MeetingApiController {
 
     private final MeetingService meetingService;
