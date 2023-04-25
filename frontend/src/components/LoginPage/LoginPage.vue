@@ -1,6 +1,6 @@
 <template>
   <v-sheet
-    class="narrow-font d-flex flex-column justify-center align-center hugelarge-font main-col-1 align-items: center"
+    class="narrow-font d-flex flex-column justify-center align-center hugelarge-font main-col-1"
     height="100%"
     color="transparent"
   >
@@ -9,10 +9,10 @@
     <img
       src="@/assets/images/page/login.png"
       height="450"
-      style="text-aling: center"
+      style="text-align: center"
       alt=""
     />
-    <div id="login-modal">
+    <div id="login-modal" class="d-flex flex-column align-center">
       <div>
         <img src="@/assets/images/component/login_modal.png" alt="" />
       </div>
@@ -44,20 +44,6 @@
   </v-sheet>
 </template>
 
-<script>
-export default {
-  name: "user_login",
-  data() {},
-  methods: {
-    kakaoLogin() {
-      window.location.replace(
-        "http://localhost:8080/oauth2/authorization/kakao"
-      );
-    },
-  },
-};
-</script>
-
 <style scoped>
 .my-sheet {
   margin-right: auto;
@@ -69,15 +55,14 @@ export default {
   position: absolute;
   /* background-image: url("@/assets/images/component/Rectangle21.png"); */
   top: 55%;
-  /* width: 200; */
+  /* transform: translateY(55%); */
   text-align: center;
+  align-self: center;
 }
 #text {
-  text-align: center;
   position: absolute;
-  top: 40%;
-  /* left: 50%; */
-  transform: translate(0, -50%);
+  text-align: center;
+  top: 30%;
   width: 400px;
   font-family: var(--regular-font);
 }
