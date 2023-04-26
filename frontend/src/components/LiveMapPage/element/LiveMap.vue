@@ -1,10 +1,9 @@
 <template>
   <div>
     <!-- test용 (!추후 삭제) -->
-    <!-- <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
+    <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
     <v-btn @click="sendChatTest()">채팅 test</v-btn>
     <v-btn @click="resizeMapLevel()">범위 재조정</v-btn>
-    <v-btn @click="chageLatLngTest()">좌표 변경 TEST</v-btn> -->
     <!-- --- -->
     <div id="map"></div>
   </div>
@@ -205,8 +204,8 @@ export default {
           });
 
           // GeoLocation - 1초마다 현 위치 얻기
-          this.getGeoLocation();
-          // this.startIntervalMemberLocation();
+          // this.getGeoLocation();
+          this.startIntervalMemberLocation();
         },
         (error) => {
           // 소켓 연결 실패
@@ -545,6 +544,10 @@ export default {
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
       // this.updateMemberInfo[1] = 변경된 memberId
+      console.log(
+        "#21# refresh memeber 확인: ",
+        refreshMember.member.memberNickname
+      );
 
       const newPosition = new kakao.maps.LatLng(
         refreshMember.member.memberLatLng[0],
@@ -596,6 +599,23 @@ export default {
       distanceOverlay.setPosition(newPosition);
       distanceOverlay.setContent(newContent);
       distanceOverlay.setMap(this.map);
+    },
+    // [@Method] TEST (!추후 삭제)
+    sendChatTest() {
+      this.chatting = [
+        {
+          member: {
+            memberId: 1,
+            content: "100m 남음~",
+          },
+        },
+        {
+          member: {
+            memberId: 2,
+            content: this.testChatContent,
+          },
+        },
+      ];
     },
   },
 };
