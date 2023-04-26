@@ -7,9 +7,7 @@
     <v-btn @click="chageLatLngTest()">좌표 변경 TEST</v-btn>
     <!-- --- -->
     <div id="map"></div>
-    <!-- <div>{{ this.memberLocation }}</div> -->
-    <!-- <div>GeoLocation 가능여부: {{ this.isGeoLocation }}</div> -->
-    <!-- <div>Marker: {{ this.memberMarkerList }}</div> -->
+    <div>로그인 닉네임: {{ this.check }}</div>
   </div>
 </template>
 
@@ -21,6 +19,7 @@ export default {
   name: "LiveMap",
   data() {
     return {
+      check: null,
       /* # marker 설정 */
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
@@ -75,6 +74,116 @@ export default {
   //   // this.connect();
   // },
   methods: {
+    // [@Method] Kakao Map 생성
+    // initMap() {
+    //   const container = document.getElementById("map");
+    //   const options = {
+    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+    //     level: 4,
+    //   };
+
+    //   // 지도 객체 등록
+    //   this.map = new kakao.maps.Map(container, options);
+
+    //   // 초기 marker 생성
+    //   // i) 모임 장소 marker
+    //   this.createPlaceMarker(options);
+    //   // ii) 멤버 별 marker 생성
+    //   if (this.memberLocation.length != 0) this.createMemberMarker();
+
+    //   // WebSocket 연결
+    //   this.connect();
+    // },
+    // [@Method] Kakao Map 생성 + 배경화면 설정
+    // initMap() {
+    //   const domain = "https://i1.daumcdn.net";
+    //   const path = "/dmaps/apis/openapi/sampleimg/";
+
+    //   const plan = (x, y, z) => {
+    //     y = -y - 1;
+    //     const limit = Math.ceil(3 / Math.pow(2, z));
+    //     if (0 <= y && y < limit && 0 <= x && x < limit) {
+    //       return domain + path + "planh" + z + "_" + y + "_" + x + ".png";
+    //     } else {
+    //       return "https://i1.daumcdn.net/dmaps/apis/white.png";
+    //     }
+    //   };
+
+    //   kakao.maps.Tileset.add(
+    //     "PLAN",
+    //     new kakao.maps.Tileset(512, 512, plan, "", false, 0, 10) // 0, 10으로 level 범위
+    //   );
+
+    //   const container = document.getElementById("map");
+    //   const options = {
+    //     projectionId: null,
+    //     mapTypeId: kakao.maps.MapTypeId.PLAN,
+    //     $scale: false,
+    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+    //     // center: new kakao.maps.Coords(650, -550),
+    //     level: 4,
+    //   };
+    //   // 지도 객체 등록
+    //   this.map = new kakao.maps.Map(container, options);
+
+    //   // marker 생성
+    //   // i) 모임 장소 marker
+    //   this.createPlaceMarker(options);
+    //   // ii) 멤버 별 marker 생성
+    //   this.createMemberMarker();
+
+    //   // WebSocket 연결
+    //   this.connect();
+    // },
+    initMap() {
+      const container = document.getElementById("map");
+      const options = {
+        center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+        // center: new kakao.maps.Coords(650, -550),
+        level: 3,
+      };
+      // 지도 객체 등록
+      this.map = new kakao.maps.Map(container, options);
+
+      // 배경화면 이미지 설정
+      // const backgroundImageUrl = require("@/assets/images/component/live-map-background.png");
+      // const backgroundBounds = new kakao.maps.LatLngBounds(
+      //   new kakao.maps.LatLng(37.5, 124.0),
+      //   new kakao.maps.LatLng(39.0, 132.0)
+      // );
+      // const backgroundOverlay = new kakao.maps.CustomOverlay({
+      //   bounds: backgroundBounds,
+      //   content: `<div style="width:100%;height:100%;background-image:url(${backgroundImageUrl});"></div>`,
+      //   zIndex: -4,
+      // });
+      // const content = `<div class="member-overlay point-font">배경화면</div>`;
+      const imageUrl = require("@/assets/images/component/live-map-background.png");
+      const content = `<div><img src="${imageUrl}" />BACK-GROUND</div>`;
+      // const bounds = new kakao.maps.LatLngBounds(
+      //   new kakao.maps.LatLng(37.5004, 127.0361),
+      //   new kakao.maps.LatLng(37.5048, 127.0413)
+      // );
+      const backgroundOverlay = new kakao.maps.CustomOverlay({
+        position: new kakao.maps.LatLng(37.5048, 127.0413),
+        // bounds: bounds,
+        content: content,
+        zIndex: -1,
+      });
+      // 배경화면 오버레이를 지도에 추가하고 bounds_changed 이벤트를 등록합니다.
+      backgroundOverlay.setMap(this.map);
+      // kakao.maps.event.addListener(this.map, "bounds_changed", () => {
+      //   backgroundOverlay.setMap(this.map);
+      // });
+
+      // marker 생성
+      // i) 모임 장소 marker
+      this.createPlaceMarker(options);
+      // ii) 멤버 별 marker 생성
+      this.createMemberMarker();
+
+      // WebSocket 연결
+      this.connect();
+    },
     // [@Method] WebSocket 연결
     connect() {
       const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
@@ -139,6 +248,7 @@ export default {
               ],
             },
           };
+          this.check = member.memberNickname;
 
           // 현 사용자의 위치 저장
           this.updateMemberLocation(member);
@@ -240,65 +350,6 @@ export default {
         // console.log("#21# message 전송: ", msg);
       }
     },
-    // [@Method] Kakao Map 생성
-    initMap() {
-      const container = document.getElementById("map");
-      const options = {
-        center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
-        level: 4,
-      };
-
-      // 지도 객체 등록
-      this.map = new kakao.maps.Map(container, options);
-
-      // 초기 marker 생성
-      // i) 모임 장소 marker
-      this.createPlaceMarker(options);
-      // ii) 멤버 별 marker 생성
-      if (this.memberLocation.length != 0) this.createMemberMarker();
-
-      // WebSocket 연결
-      this.connect();
-    },
-    // [@Method] Kakao Map 생성 + 배경화면 설정
-    // initMap() {
-    //   const domain = "https://i1.daumcdn.net";
-    //   const path = "/dmaps/apis/openapi/sampleimg/";
-    //   const plan = (x, y, z) => {
-    //     y = -y - 1;
-    //     const limit = Math.ceil(3 / Math.pow(2, z));
-
-    //     if (0 <= y && y < limit && 0 <= x && x < limit) {
-    //       return domain + path + "planh" + z + "_" + y + "_" + x + ".png";
-    //     } else {
-    //       return "https://i1.daumcdn.net/dmaps/apis/white.png";
-    //     }
-    //   };
-
-    //   kakao.maps.Tileset.add(
-    //     "PLAN",
-    //     new kakao.maps.Tileset(512, 512, plan, "", false, 0, 10) // 0, 10으로 level 범위
-    //   );
-
-    //   const container = document.getElementById("map");
-    //   const options = {
-    //     projectionId: null,
-    //     mapTypeId: kakao.maps.MapTypeId.PLAN,
-    //     $scale: false,
-    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
-    //     // center: new kakao.maps.Coords(650, -550),
-    //     level: 4,
-    //   };
-
-    //   // 지도 객체 등록
-    //   this.map = new kakao.maps.Map(container, options);
-
-    //   // marker 생성
-    //   // i) 모임 장소 marker
-    //   this.createPlaceMarker(options);
-    //   // ii) 멤버 별 marker 생성
-    //   this.createMemberMarker();
-    // },
     // [@Method] 모임장소 marker 생성
     createPlaceMarker(options) {
       const imageSrc = require("@/assets/images/page/pointer.png");
@@ -689,5 +740,10 @@ export default {
   bottom: -16px;
   left: 50%;
   margin-left: -8px;
+}
+
+.map-background-overlay {
+  width: 500px;
+  height: 500px;
 }
 </style>
