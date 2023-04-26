@@ -607,58 +607,6 @@ export default {
       distanceOverlay.setContent(newContent);
       distanceOverlay.setMap(this.map);
     },
-    // [@Method] TEST (!추후 삭제)
-    sendChatTest() {
-      this.chatting = [
-        {
-          member: {
-            memberId: 1,
-            content: "100m 남음~",
-          },
-        },
-        {
-          member: {
-            memberId: 2,
-            content: this.testChatContent,
-          },
-        },
-      ];
-    },
-    // [@Method] TEST (!추후 삭제)
-    chageLatLngTest() {
-      // console.log("# router 확인: ", this.$route.params.id);
-      // const testMember = {
-      //   member: {
-      //     // memberId: this.$route.params.id,
-      //     memberId: 1,
-      //     memberNickname: "김싸피",
-      //     memberLatLng: [37.5004, 127.0361], // 역삼역
-      //   },
-      // };
-      const testMember = {
-        member: {
-          // memberId: this.$route.params.id,
-          memberId: 1,
-          memberNickname: "김싸피",
-          memberLatLng: [37.5004, 127.0361], // 역삼역
-        },
-      };
-      // const testMember = {
-      //   member: {
-      //     memberId: 3,
-      //     memberNickname: "시카",
-      //     memberLatLng: [37.5049, 127.0371], // 역삼 충헌교회
-      //   },
-      // };
-
-      // console.log(
-      //     "#21# 저장한 marker 확인: ",
-      //     this.memberMarkerList[0][1].getImage()
-      //   );
-
-      // member 위치 업데이트
-      this.updateMemberLocation(testMember);
-    },
   },
 };
 </script>
