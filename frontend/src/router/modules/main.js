@@ -12,10 +12,13 @@ const isLogin = async (to, from, next) => {
   // console.log(to, " ", to.query);
   const access_token = localStorage.getItem("Authorization");
   if (to.query.login || access_token) {
-    console.log("login 성공 ");
+    console.log("login 성공 ", to.query);
     // if (!access_token) {
     // console.log(to.query.login.substring(7));
-    localStorage.setItem("Authorization", to.query.login.substring(7));
+    if (to.query !== 0) {
+      console.log(to.query.length);
+      localStorage.setItem("Authorization", to.query.login.substring(7));
+    }
     // }
     next({
       name: "home",

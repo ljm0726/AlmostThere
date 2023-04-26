@@ -14,7 +14,11 @@
     />
     <div id="login-modal" class="d-flex flex-column align-center">
       <div>
-        <img src="@/assets/images/component/login_modal.png" alt="" />
+        <img
+          src="@/assets/images/component/login_modal.png"
+          alt=""
+          style="width: 100%"
+        />
       </div>
 
       <div id="text" class="xs-font main-col-1">
@@ -26,10 +30,7 @@
         <span>만남 장소 추천부터 모임 정산 기능까지</span>
         <br />
         <span>더 편하게 모임을 즐겨보세요!</span>
-      </div>
-    </div>
-    <div>
-      <v-col>
+
         <v-btn
           elevation="5"
           color="var(--main-col-1)"
@@ -39,15 +40,26 @@
           @click="kakaoLogin"
           >카카오로 시작하기</v-btn
         >
-      </v-col>
+      </div>
     </div>
   </v-sheet>
 </template>
 
+<script>
+export default {
+  name: "user_login",
+  data() {},
+  methods: {
+    kakaoLogin() {
+      window.location.replace(
+        "http://localhost:8080/oauth2/authorization/kakao"
+      );
+    },
+  },
+};
+</script>
+
 <style scoped>
-.my-sheet {
-  margin-right: auto;
-}
 .logo-font {
   text-align: center;
 }
@@ -58,24 +70,23 @@
   /* transform: translateY(55%); */
   text-align: center;
   align-self: center;
+  /* min-height: 280px; */
 }
 #text {
   position: absolute;
   text-align: center;
-  top: 30%;
-  width: 400px;
-  font-family: var(--regular-font);
+  top: 25%;
+  width: auto;
 }
 
-#text span {
-  line-height: 15px;
+#text > span {
+  font-family: var(--regular-font);
+  line-height: 18px;
 }
 
 .v-btn {
-  text-align: center;
+  margin-top: 10%;
+  align-self: center;
   width: 213px;
-}
-.v-sheet {
-  position: relative;
 }
 </style>
