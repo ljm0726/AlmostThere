@@ -17,52 +17,53 @@ import org.springframework.stereotype.Controller;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Controller
+@RequiredArgsConstructor
 public class LocationController {
 
 
-    @MessageMapping("/locShare/{meetingId}")
-    @SendTo("/topic/{meetingId}")
-    public String customerRequestMessage(@DestinationVariable long meetingId, String message){
-        System.out.println("?????????????");
-        return message;
-    }
-
-
-//    private final SimpMessagingTemplate simpMessagingTemplate;
-//
-//    private final RedisTemplate redisTemplate;
 //    @MessageMapping("/locShare/{meetingId}")
 //    @SendTo("/topic/{meetingId}")
 //    public String customerRequestMessage(@DestinationVariable long meetingId, String message){
-//        System.out.println("????????????/");
-//        try {
-//            JSONParser jsonParser = new JSONParser();
-//            JSONObject jsonObject = (JSONObject) jsonParser.parse(message);
-//
-//            // Extract member object from JSONObject
-//            JSONObject memberObject = (JSONObject) jsonObject.get("member");
-//
-//            // Extract data from memberObject
-//            Long memberId = (Long) memberObject.get("memberId");
-//            String memberNickname = (String) memberObject.get("memberNickname");
-//            JSONArray memberLatLng = (JSONArray) memberObject.get("memberLatLng");
-//            Double memberLatitude = (Double) memberLatLng.get(0);
-//            Double memberLongitude = (Double) memberLatLng.get(1);
-//
-//            // Print the extracted data
-//            System.out.println("Member ID: " + memberId);
-//            System.out.println("Member Nickname: " + memberNickname);
-//            System.out.println("Member Latitude: " + memberLatitude);
-//            System.out.println("Member Longitude: " + memberLongitude);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-////        // Save an instance of MyClass to Redis
-////        UserLocation userLocation = new UserLocation(, 123);
-////        redisTemplate.opsForValue().set("myKey", myObject);
-//
-//        return "hi";
+//        System.out.println("?????????????");
+//        return message;
 //    }
+
+
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+    private final RedisTemplate redisTemplate;
+    @MessageMapping("/locShare/{meetingId}")
+    @SendTo("/topic/{meetingId}")
+    public String customerRequestMessage(@DestinationVariable long meetingId, String message){
+        System.out.println("????????????/");
+        try {
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(message);
+
+            // Extract member object from JSONObject
+            JSONObject memberObject = (JSONObject) jsonObject.get("member");
+
+            // Extract data from memberObject
+            Long memberId = (Long) memberObject.get("memberId");
+            String memberNickname = (String) memberObject.get("memberNickname");
+            JSONArray memberLatLng = (JSONArray) memberObject.get("memberLatLng");
+            Double memberLatitude = (Double) memberLatLng.get(0);
+            Double memberLongitude = (Double) memberLatLng.get(1);
+
+            // Print the extracted data
+            System.out.println("Member ID: " + memberId);
+            System.out.println("Member Nickname: " + memberNickname);
+            System.out.println("Member Latitude: " + memberLatitude);
+            System.out.println("Member Longitude: " + memberLongitude);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+//        // Save an instance of MyClass to Redis
+//        UserLocation userLocation = new UserLocation(, 123);
+//        redisTemplate.opsForValue().set("myKey", myObject);
+
+        return "hi";
+    }
 
 }
