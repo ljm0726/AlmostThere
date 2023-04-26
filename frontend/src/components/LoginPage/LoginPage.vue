@@ -51,9 +51,8 @@ export default {
   data() {},
   methods: {
     kakaoLogin() {
-      window.location.replace(
-        "http://localhost:8080/oauth2/authorization/kakao"
-      );
+      // console.log(`${process.env.VUE_APP_KAKAO_LOGIN_URL}`);
+      window.location.replace(`${process.env.VUE_APP_KAKAO_LOGIN_URL}`);
     },
   },
 };

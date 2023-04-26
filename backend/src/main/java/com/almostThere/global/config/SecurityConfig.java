@@ -37,21 +37,23 @@ public class SecurityConfig {
             .formLogin().disable() // 로그인 폼 미사용
             .httpBasic().disable() // Http basic Auth 기반으로 열리는 로그인 인증창 미사용
             .exceptionHandling()
-            .authenticationEntryPoint(jwtEntryPoint) //filter에서 잘못된 경우 token 문제임
+//            .authenticationEntryPoint(jwtEntryPoint) //filter에서 잘못된 경우 token 문제임
             .and()
             .sessionManagement().sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS)// jwt token으로 인증하므로 세션 사용하지 않음. stateless 하도록 처리.
             .and()
             .authorizeRequests()
-            .antMatchers("/api/token/**", "/oauth2/**", "/api-docs/**", "/swagger-ui/**").permitAll() //토큰 재발급 요청은 제외
-            .anyRequest().authenticated() // 그외의 모든 요청은 인증 필요.
+            .antMatchers("/api/token/**", "/api/oauth2/**", "/api-docs/**", "/swagger-ui/**").permitAll() //토큰 재발급 요청은 제외
+//            .anyRequest().authenticated() // 그외의 모든 요청은 인증 필요.
             .and()
 //            .addFilterBefore(new JwtAuthFilter(tokenService, memberRepository),
 //                OAuth2LoginAuthenticationFilter.class)
 //            .and()// 인증권한이 필요한 페이지.// 나머지 모든 요청 허용  ( 생략 가능 )
 //            .formLogin()
-//            .loginPage("http://localhost:5173")
             .oauth2Login()
+            .authorizationEndpoint().baseUri("/oauth2/authorization")
+            .and()
+//            .defaultSuccessUrl("/login/oauth2/code")
             .successHandler(successHandler)
             .userInfoEndpoint().userService(customOAuth2UserService);
 //            .failureHandler(failureHandler)
