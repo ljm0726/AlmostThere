@@ -21,6 +21,9 @@ public class RedisConfig {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
+        //redis 추가되면 데이터베이스 추가 ??
+//        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
+//        config.setDatabase(0); //0번 째 데이터 베이스에서 값 가져오기
         return new LettuceConnectionFactory(host, port);
     }
 
