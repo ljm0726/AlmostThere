@@ -215,7 +215,7 @@ export default {
     },
     // [@Method] 현재 로그인한 사용자의 접속위치 얻기 (GeoLocation)
     getGeoLocation() {
-      // console.log("#21# getGeoLocation 현 위치 얻기 동작");
+      console.log("#21# getGeoLocation 현 위치 얻기 동작");
       // alert("## geo", navigator.geolocation);
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
