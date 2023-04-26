@@ -17,6 +17,7 @@ public class MeetingDto {
     private String meetingName;
     private String meetingTime;
     private String meetingPlace;
+    private String meetingAddress;
     private double meetingLat;
     private double meetingLng;
     private Integer lateAmount;
@@ -30,6 +31,7 @@ public class MeetingDto {
         this.meetingName = meeting.getMeetingName();
         this.meetingTime = meeting.getMeetingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.meetingPlace = meeting.getMeetingPlace();
+        this.meetingAddress = meeting.getMeetingAddress();
         this.meetingLat = meeting.getMeetingLat();
         this.meetingLng = meeting.getMeetingLng();
         this.lateAmount = meeting.getLateAmount();

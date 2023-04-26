@@ -13,11 +13,17 @@
   border-radius: 10px;
   border-width: 1px;
 }
+#square-btn.v-btn.v-btn--outlined.theme--light.v-size--small {
+  padding: 1px;
+  min-width: 30px;
+  border-radius: 10px;
+  border-width: 1px;
+}
 #square-btn .v-icon__component.theme--light {
   height: 18px !important;
   width: 18px!important;
 }
-#round-btn.v-btn.v-btn--outlined.theme--light.v-size--default{
+#round-btn.v-btn.v-btn--outlined.theme--light{
   border-width: 3px;
 }
 #round-btn .v-icon__component.theme--light {

@@ -28,7 +28,7 @@ public class MeetingMember {
     @Column(length = 100)
     private String startPlace;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 200)
     private String startAddress;
 
     @Column

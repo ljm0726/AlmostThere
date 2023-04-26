@@ -37,9 +37,11 @@ public class MeetingService {
      * @return 모임 리스트
      */
     public List<MeetingDto> findUpcomingMeeting(Long memberId){
-        LocalDateTime afterDate = LocalDateTime.now().plusMonths(1);
-        System.out.println(afterDate);
-        List<Meeting> meetings = meetingRepository.findUpcomingMeetings(memberId,afterDate);
+        LocalDateTime oneMonthAfterDate = LocalDateTime.now().plusMonths(1);
+        LocalDateTime oneDayAfterDate = LocalDateTime.now().plusDays(1);
+        System.out.println(oneDayAfterDate);
+        System.out.println(oneMonthAfterDate);
+        List<Meeting> meetings = meetingRepository.findUpcomingMeetings(memberId,oneDayAfterDate,oneMonthAfterDate);
         List<MeetingDto> result = meetings.stream().map(m->new MeetingDto(m)).collect(Collectors.toList());
         return result;
     }
