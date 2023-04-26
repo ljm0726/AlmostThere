@@ -1,7 +1,7 @@
-import MeetingPage from "@/components/MeetingPage/MeetingPage.vue"
-import MeetingHeader from "@/views/Header/MeetingHeader.vue"
-import LiveMapPage from "@/components/LiveMapPage/LiveMapPage.vue"
-import LiveMapHeader from "@/views/Header/LiveMapHeader.vue"
+import MeetingPage from "@/components/MeetingPage/MeetingPage.vue";
+import MeetingHeader from "@/views/Header/MeetingHeader.vue";
+import LiveMapPage from "@/components/LiveMapPage/LiveMapPage.vue";
+import LiveMapHeader from "@/views/Header/LiveMapHeader.vue";
 
 const meeting = [
   {
@@ -20,6 +20,6 @@ const meeting = [
       default: LiveMapPage,
     },
   },
-]
+];
 
 export default meeting;
