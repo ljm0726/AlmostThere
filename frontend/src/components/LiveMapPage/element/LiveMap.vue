@@ -143,46 +143,42 @@ export default {
       // 지도 객체 등록
       this.map = new kakao.maps.Map(container, options);
 
-      // back-ground over-lay 표시
-      this.setBackGround(options);
       // marker 생성
       // i) 모임 장소 marker
       this.createPlaceMarker(options);
       // ii) 멤버 별 marker 생성
       this.createMemberMarker();
 
+      // back-ground over-lay 표시
+      this.setBackGround();
+
       // WebSocket 연결
       this.connect();
     },
     // [@Method] kakao-map BackGround over-lay 표시
-    setBackGround(options) {
+    setBackGround() {
       // 배경화면 이미지 설정
       const imageUrl = require("@/assets/images/component/live-map-background.png");
-      const content = `<div class="background-over-lay"><img src="${imageUrl}" /></div>`;
-      // const backgroundOverlay = new kakao.maps.CustomOverlay({
-      //   position: options.center,
-      //   content: content,
-      //   zIndex: -1,
-      // });
-      // // 배경화면 오버레이를 지도에 추가하고 bounds_changed 이벤트를 등록합니다.
-      // backgroundOverlay.setMap(this.map);
-      options;
-      const bounds = this.map.getBounds();
-      console.log("#21# bounds 확인: ", bounds);
-      // const swLatLng = bounds.getSouthWest();
-      // const neLatLng = bounds.getNorthEast();
+      const content = `<div><img src="${imageUrl}" /></div>`;
+
+      const overlaySize = new kakao.maps.Size(800, 800);
+
       const backgroundOverlay = new kakao.maps.CustomOverlay({
-        position: this.map.getCenter(),
         content: content,
         xAnchor: 0.5,
-        yAnchor: 0.5,
+        // yAnchor: 0.5,
         clickable: false,
         zIndex: -9999,
-        opacity: 0.5,
-        // bounds: new kakao.maps.LatLngBounds(swLatLng, neLatLng),
+        size: overlaySize,
       });
-      // 배경화면 오버레이를 지도에 추가하고 bounds_changed 이벤트를 등록합니다.
+
+      backgroundOverlay.setPosition(this.map.getCenter());
       backgroundOverlay.setMap(this.map);
+
+      // kakao-map 중심 변경 시 back-ground over-lay 위치 update
+      kakao.maps.event.addListener(this.map, "center_changed", () => {
+        backgroundOverlay.setPosition(this.map.getCenter());
+      });
     },
     // [@Method] WebSocket 연결
     connect() {
@@ -467,7 +463,6 @@ export default {
         strokeColor: "var(--main-col-1)",
         strokeOpacity: 1, // 불투명도 (0에 가까울수록 투명)
         strokeStyle: "solid",
-        zIndex: 3,
       });
 
       // polyline 저장 (for. 삭제)
@@ -678,10 +673,5 @@ export default {
   bottom: -16px;
   left: 50%;
   margin-left: -8px;
-}
-
-.background-over-lay {
-  width: 100%;
-  height: 100%;
 }
 </style>
