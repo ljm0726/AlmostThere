@@ -1,7 +1,7 @@
 <template>
-  <!-- <v-btn @click="ssafyLogin()">싸피 로그인</v-btn>
-    <v-btn @click="heeLogin()">희정 로그인</v-btn> -->
   <div class="live-map">
+    <v-btn @click="ssafyLogin()">싸피 로그인</v-btn>
+    <v-btn @click="heeLogin()">희정 로그인</v-btn>
     <live-map></live-map>
   </div>
 </template>
