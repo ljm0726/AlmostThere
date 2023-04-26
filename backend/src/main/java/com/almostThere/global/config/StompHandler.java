@@ -9,6 +9,7 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
+// WebSocket 메시지 처리 전 필요한 로직 수행하는 클래스 ex) JWT 토큰 검증
 @Component
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
