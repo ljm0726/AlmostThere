@@ -1,6 +1,6 @@
 <template>
   <v-sheet
-    class="narrow-font d-flex flex-column justify-center align-center hugelarge-font main-col-1 align-items: center"
+    class="narrow-font d-flex flex-column justify-center align-center hugelarge-font main-col-1"
     height="100%"
     color="transparent"
   >
@@ -9,12 +9,16 @@
     <img
       src="@/assets/images/page/login.png"
       height="450"
-      style="text-aling: center"
+      style="text-align: center"
       alt=""
     />
-    <div id="login-modal">
+    <div id="login-modal" class="d-flex flex-column align-center">
       <div>
-        <img src="@/assets/images/component/login_modal.png" alt="" />
+        <img
+          src="@/assets/images/component/login_modal.png"
+          alt=""
+          style="width: 100%"
+        />
       </div>
 
       <div id="text" class="xs-font main-col-1">
@@ -26,10 +30,7 @@
         <span>만남 장소 추천부터 모임 정산 기능까지</span>
         <br />
         <span>더 편하게 모임을 즐겨보세요!</span>
-      </div>
-    </div>
-    <div>
-      <v-col>
+
         <v-btn
           elevation="5"
           color="var(--main-col-1)"
@@ -39,7 +40,7 @@
           @click="kakaoLogin"
           >카카오로 시작하기</v-btn
         >
-      </v-col>
+      </div>
     </div>
   </v-sheet>
 </template>
@@ -50,18 +51,14 @@ export default {
   data() {},
   methods: {
     kakaoLogin() {
-      window.location.replace(
-        "http://localhost:8080/oauth2/authorization/kakao"
-      );
+      // console.log(`${process.env.VUE_APP_KAKAO_LOGIN_URL}`);
+      window.location.replace(`${process.env.VUE_APP_KAKAO_LOGIN_URL}`);
     },
   },
 };
 </script>
 
 <style scoped>
-.my-sheet {
-  margin-right: auto;
-}
 .logo-font {
   text-align: center;
 }
@@ -69,28 +66,44 @@ export default {
   position: absolute;
   /* background-image: url("@/assets/images/component/Rectangle21.png"); */
   top: 55%;
-  /* width: 200; */
+  /* transform: translateY(55%); */
   text-align: center;
+  align-self: center;
+  /* min-height: 280px; */
 }
 #text {
-  text-align: center;
   position: absolute;
-  top: 40%;
-  /* left: 50%; */
-  transform: translate(0, -50%);
-  width: 400px;
-  font-family: var(--regular-font);
+  text-align: center;
+  top: 25%;
+  width: auto;
 }
 
-#text span {
-  line-height: 15px;
+#text > span {
+  font-family: var(--regular-font);
+  line-height: 18px;
 }
 
 .v-btn {
-  text-align: center;
+  margin-top: 10%;
+  align-self: center;
   width: 213px;
 }
 .v-sheet {
   position: relative;
+}
+.logo-font {
+  animation: jump 1s infinite;
+}
+
+@keyframes jump {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 </style>
