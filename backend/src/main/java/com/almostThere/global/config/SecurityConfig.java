@@ -44,7 +44,7 @@ public class SecurityConfig {
             .and()
             .authorizeRequests()
             .antMatchers("/api/token/**", "/api/oauth2/**", "/api-docs/**", "/swagger-ui/**").permitAll() //토큰 재발급 요청은 제외
-//            .anyRequest().authenticated() // 그외의 모든 요청은 인증 필요.
+//            .anyRequest().authenticated() // 그외의 모든 요청은 인증 필요. => token으로 인증하므로 계속 로그인할 필요 없음.
             .and()
 //            .addFilterBefore(new JwtAuthFilter(tokenService, memberRepository),
 //                OAuth2LoginAuthenticationFilter.class)
