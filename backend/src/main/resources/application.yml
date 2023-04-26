@@ -67,7 +67,7 @@ spring:
       on-profile: "server"
 
   datasource:
-    url: jdbc:mysql://${DATABASE_URL}/almostthere?serverTimeZone=Asia/Seoul
+    url: jdbc:mysql://${DATABASE_URL}/almost_there?serverTimeZone=Asia/Seoul
     username: ${DATABASE_ID}
     password: ${DATABASE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
