@@ -308,8 +308,8 @@ export default {
   position: absolute;
   width: 160px;
   height: 70px;
-  left: 88px !important;
-  top: 569px !important;
+  left: 86px !important;
+  top: 590px !important;
   padding: 12px;
   background: #ffffff;
   -webkit-border-radius: 10px;

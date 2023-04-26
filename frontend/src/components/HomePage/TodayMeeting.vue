@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="px-4" color="transparent">
+  <v-sheet class="px-4 mt-6" color="transparent">
     <div>
       <span class="point-font xxxxl-font main-col-1">오늘의 모임</span>
       <button>
@@ -111,8 +111,8 @@ export default {
   position: absolute;
   width: 160px;
   height: 70px;
-  left: 86px !important;
-  top: 325px !important;
+  left: 84px !important;
+  top: 350px !important;
   padding: 12px;
   background: #ffffff;
   -webkit-border-radius: 10px;

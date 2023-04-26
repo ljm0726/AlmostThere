@@ -1,6 +1,5 @@
 <template>
-  <div></div>
-  <!-- <swiper class="swiper" :options="swiperOption">
+  <swiper class="swiper" :options="swiperOption">
     <swiper-slide>
       <v-sheet width="100%" height="200">Slide 1</v-sheet>
     </swiper-slide>
@@ -11,7 +10,7 @@
       <v-sheet width="100%" height="200">Slide 3</v-sheet>
     </swiper-slide>
     <div class="swiper-pagination" slot="pagination"></div>
-  </swiper> -->
+  </swiper>
 </template>
 
 <script>
