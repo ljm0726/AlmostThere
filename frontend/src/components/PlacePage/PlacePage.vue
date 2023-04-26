@@ -13,7 +13,7 @@
       ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
     >
     <div id="map" class="maps"></div>
-    <div v-if="isSelect">
+    <div v-if="isSelect" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
   </div>
@@ -74,6 +74,10 @@ export default {
   },
 
   methods: {
+    moveRegisterPage() {
+      this.$router.push("/register");
+    },
+
     goToPage(url) {
       this.$router.push(url);
     },
