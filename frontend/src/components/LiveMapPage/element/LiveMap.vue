@@ -28,30 +28,7 @@ export default {
       chatOverlay: [0.5, 4], // chat over-lay 좌표
       /* # 현재 좌표 */
       placeLatLng: [37.5049, 127.0371], // 모임장소 좌표
-      memberLocation: [
-        // 각 member 별 현재 좌표
-        {
-          member: {
-            memberId: 1,
-            memberNickname: "김싸피",
-            memberLatLng: [37.5004, 127.0361], // 역삼역
-          },
-        },
-        {
-          member: {
-            memberId: 2,
-            memberNickname: "히정",
-            memberLatLng: [37.5048, 127.0413], // 역삼 신라스테이
-          },
-        },
-        // {
-        //   member: {
-        //     memberId: 3,
-        //     memberNickname: "시카",
-        //     memberLatLng: [37.4912, 127.0557], // 도곡역
-        //   },
-        // },
-      ],
+      memberLocation: [], // 사용자들의 좌표 (memberId, memberNickname, LatLng)
       /* # member 채팅 */
       testChatContent: "", // test용 (!추후 삭제)
       chatting: [], // 멤버 별 실시간 chatting 내용
@@ -78,9 +55,6 @@ export default {
     //   },
     // },
   },
-  created() {
-    this.connect();
-  },
   mounted() {
     // Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
@@ -93,7 +67,9 @@ export default {
       document.head.appendChild(script);
     }
   },
-
+  // created() {
+  //   // this.connect();
+  // },
   methods: {
     // [@Method] Kakao Map 생성
     initMap() {
@@ -204,7 +180,6 @@ export default {
     },
     // [@Method] WebSocket 연결
     connect() {
-      console.log("#21# socket 연결 시도");
       const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
       let socket = new SockJS(serverURL);
       this.stompClient = Stomp.over(socket);
@@ -225,11 +200,12 @@ export default {
             console.log("구독으로 받은 메시지 입니다.", res.body);
 
             // socket을 통해 받은 message(다른 사용자 좌표) 저장
-            // this.saveOtherMemberLocation(JSON.parse(res.body));
+            this.saveOtherMemberLocation(JSON.parse(res.body));
           });
 
-          // GeoLocation
-          this.getGeoLocation();
+          // GeoLocation - 1초마다 현 위치 얻기
+          // this.getGeoLocation();
+          this.startIntervalMemberLocation();
         },
         (error) => {
           // 소켓 연결 실패
@@ -353,9 +329,8 @@ export default {
 
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
-
-        this.stompClient.send("message/locShare/1", JSON.stringify(msg), {});
-        console.log("#21# message 전송: ", msg);
+        this.stompClient.send("/message/locShare/1", JSON.stringify(msg), {});
+        // console.log("#21# message 전송: ", msg);
       }
     },
     // [@Method] 모임장소 marker 생성
@@ -564,38 +539,8 @@ export default {
         customOverlay.setMap(this.map);
       }
     },
-    // [@Method] member 위치 update
-    updateMemberLocation(newMemberLocation) {
-      console.log("updateMember 도착", newMemberLocation);
-      let memberIndex = -1;
-      console.log("memberLocation", this.memberLocation);
-
-      // memberId를 통해 해당 member 찾기
-      for (let i = 0; i < this.memberLocation.length; i++) {
-        if (
-          this.memberLocation[i].member.memberId ==
-          newMemberLocation.member.memberId
-        ) {
-          memberIndex = i;
-          break;
-        }
-      }
-      // 위치 값 update
-      this.memberLocation[memberIndex].member.memberLatLng =
-        newMemberLocation.member.memberLatLng;
-
-      // 변경된 member [index, id] 저장
-      this.updateMemberInfo = [
-        memberIndex, // memberLocation의 index값
-        this.memberLocation[memberIndex].member.memberId, // memberId 값
-      ];
-    },
-
     // [@Method] member의 위치 값 변경에 따른 marker, polyline, overlay 업데이트
     refreshMapOnLocationUpdate() {
-      console.log("this.updateMemberInfo[0]", this.updateMemberInfo[0]);
-      console.log("this.updateMemberInfo[1]", this.updateMemberInfo[1]);
-      console.log("this.memberMarkerList", this.memberMarkerList);
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
       // this.updateMemberInfo[1] = 변경된 memberId
