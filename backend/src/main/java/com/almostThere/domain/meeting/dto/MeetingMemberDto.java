@@ -12,6 +12,7 @@ public class MeetingMemberDto {
     private Long id;
     private MemberDto member;
     private String startPlace;
+    private String startAddress;
     private Double startLat;
     private Double startLng;
     private StateType state;
@@ -21,6 +22,7 @@ public class MeetingMemberDto {
         this.id = m.getId();
         this.member = new MemberDto(m.getMember());
         this.startPlace = m.getStartPlace();
+        this.startAddress = m.getStartAddress();
         this.startLat = m.getStartLat();
         this.startLng = m.getStartLng();
         this.state = m.getState();
