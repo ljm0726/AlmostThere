@@ -2,7 +2,7 @@ server:
   port: 8080
 
   servlet:
-    context-path: /
+    context-path: /api
     encoding:
       charset: utf-8
       enabled: true
@@ -60,35 +60,71 @@ spring:
 server:
   port: 8080
 
-#---
-#spring:
-#  config:
-#    activate:
-#      on-profile: "server"
-#
-#  datasource:
-#    url: jdbc:mysql://${DATABASE_URL}/almostThere?serverTimeZone=Asia/Seoul
-#    username: ${DATABASE_ID}
-#    password: ${DATABASE_PASSWORD}
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#
-#
-#
-#servers:
-#  url: https://j8a401.p.ssafy.io/
-#  description: Production server
-#
-#springdoc:
-#  swagger-ui:
-#    path: /api-docs
-#    tags-sorter: alpha
-#    operations-sorter: alpha
-#  packages-to-scan: com.almostThere.domain
-#  api-docs:
-#    path: /api-docs/json
-#    groups:
-#      enabled: true
-#  cache:
-#    disabled: true
-#  default-consumes-media-type: application/json;charset=UTF-8
-#  default-produces-media-type: application/json;charset=UTF-8
+---
+spring:
+  config:
+    activate:
+      on-profile: "server"
+
+  datasource:
+    url: jdbc:mysql://${DATABASE_URL}/almost_there?serverTimeZone=Asia/Seoul
+    username: ${DATABASE_ID}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            redirect-uri: ${KAKAO_REDIRECT_URL}
+            client-authentication-method: POST
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            scope:
+              - profile_nickname
+              - account_email
+              - profile_image
+              - gender
+              - age_range
+            client_name: kakao
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+
+servers:
+  url: https://k8a401.p.ssafy.io/
+  description: Production server
+
+springdoc:
+  swagger-ui:
+    path: /api-docs
+    tags-sorter: alpha
+    operations-sorter: alpha
+  packages-to-scan: com.almostThere.domain
+  api-docs:
+    path: /api-docs/json
+    groups:
+      enabled: true
+  cache:
+    disabled: true
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+
+LOGIN_SUCCESS_URL: ${LOGIN_SUCCESS_URL}
+
+server:
+  port: 9999
+
+jwt:
+  token:
+    secret-key: ${JWT_TOKEN_SECRET_KEY}
+  access-token:
+    expire-length: 1800000 # 300000 #5분
+  refresh-token:
+    expire-length: 1209600000 #14일
