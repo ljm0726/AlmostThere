@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- test용 (!추후 삭제) -->
-    <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
+    <!-- <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
     <v-btn @click="sendChatTest()">채팅 test</v-btn>
     <v-btn @click="resizeMapLevel()">범위 재조정</v-btn>
-    <v-btn @click="chageLatLngTest()">좌표 변경 TEST</v-btn>
+    <v-btn @click="chageLatLngTest()">좌표 변경 TEST</v-btn> -->
     <!-- --- -->
     <div id="map"></div>
   </div>
@@ -143,25 +143,8 @@ export default {
       // 지도 객체 등록
       this.map = new kakao.maps.Map(container, options);
 
-      // 배경화면 이미지 설정
-      const imageUrl = require("@/assets/images/component/live-map-background.png");
-      const content = `<div><img src="${imageUrl}" />BACK-GROUND</div>`;
-      // const bounds = new kakao.maps.LatLngBounds(
-      //   new kakao.maps.LatLng(37.5004, 127.0361),
-      //   new kakao.maps.LatLng(37.5048, 127.0413)
-      // );
-      const backgroundOverlay = new kakao.maps.CustomOverlay({
-        position: new kakao.maps.LatLng(37.5048, 127.0413),
-        // bounds: bounds,
-        content: content,
-        zIndex: -1,
-      });
-      // 배경화면 오버레이를 지도에 추가하고 bounds_changed 이벤트를 등록합니다.
-      backgroundOverlay.setMap(this.map);
-      // kakao.maps.event.addListener(this.map, "bounds_changed", () => {
-      //   backgroundOverlay.setMap(this.map);
-      // });
-
+      // back-ground over-lay 표시
+      this.setBackGround(options);
       // marker 생성
       // i) 모임 장소 marker
       this.createPlaceMarker(options);
@@ -170,6 +153,36 @@ export default {
 
       // WebSocket 연결
       this.connect();
+    },
+    // [@Method] kakao-map BackGround over-lay 표시
+    setBackGround(options) {
+      // 배경화면 이미지 설정
+      const imageUrl = require("@/assets/images/component/live-map-background.png");
+      const content = `<div class="background-over-lay"><img src="${imageUrl}" /></div>`;
+      // const backgroundOverlay = new kakao.maps.CustomOverlay({
+      //   position: options.center,
+      //   content: content,
+      //   zIndex: -1,
+      // });
+      // // 배경화면 오버레이를 지도에 추가하고 bounds_changed 이벤트를 등록합니다.
+      // backgroundOverlay.setMap(this.map);
+      options;
+      const bounds = this.map.getBounds();
+      console.log("#21# bounds 확인: ", bounds);
+      // const swLatLng = bounds.getSouthWest();
+      // const neLatLng = bounds.getNorthEast();
+      const backgroundOverlay = new kakao.maps.CustomOverlay({
+        position: this.map.getCenter(),
+        content: content,
+        xAnchor: 0.5,
+        yAnchor: 0.5,
+        clickable: false,
+        zIndex: -9999,
+        opacity: 0.5,
+        // bounds: new kakao.maps.LatLngBounds(swLatLng, neLatLng),
+      });
+      // 배경화면 오버레이를 지도에 추가하고 bounds_changed 이벤트를 등록합니다.
+      backgroundOverlay.setMap(this.map);
     },
     // [@Method] WebSocket 연결
     connect() {
@@ -657,7 +670,7 @@ export default {
 } */
 #map {
   width: 100%;
-  height: 500px;
+  height: 800px;
 }
 
 /* member nickname 오버레이 */
@@ -719,8 +732,8 @@ export default {
   margin-left: -8px;
 }
 
-.map-background-overlay {
-  width: 500px;
-  height: 500px;
+.background-over-lay {
+  width: 100%;
+  height: 100%;
 }
 </style>
