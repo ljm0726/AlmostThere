@@ -73,25 +73,25 @@ export default {
   // },
   methods: {
     // [@Method] Kakao Map 생성
-    // initMap() {
-    //   const container = document.getElementById("map");
-    //   const options = {
-    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
-    //     level: 4,
-    //   };
+    initMap() {
+      const container = document.getElementById("map");
+      const options = {
+        center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+        level: 4,
+      };
 
-    //   // 지도 객체 등록
-    //   this.map = new kakao.maps.Map(container, options);
+      // 지도 객체 등록
+      this.map = new kakao.maps.Map(container, options);
 
-    //   // 초기 marker 생성
-    //   // i) 모임 장소 marker
-    //   this.createPlaceMarker(options);
-    //   // ii) 멤버 별 marker 생성
-    //   if (this.memberLocation.length != 0) this.createMemberMarker();
+      // 초기 marker 생성
+      // i) 모임 장소 marker
+      this.createPlaceMarker(options);
+      // ii) 멤버 별 marker 생성
+      if (this.memberLocation.length != 0) this.createMemberMarker();
 
-    //   // WebSocket 연결
-    //   this.connect();
-    // },
+      // WebSocket 연결
+      this.connect();
+    },
     // [@Method] Kakao Map 생성 + 배경화면 설정
     // initMap() {
     //   const domain = "https://i1.daumcdn.net";
@@ -109,7 +109,7 @@ export default {
 
     //   kakao.maps.Tileset.add(
     //     "PLAN",
-    //     new kakao.maps.Tileset(512, 512, plan, "", false, 0, 10) // 0, 10으로 level 범위
+    //     new kakao.maps.Tileset(512, 512, plan, "", false, 0, 4) // 0, 10으로 level 범위
     //   );
 
     //   const container = document.getElementById("map");
@@ -133,28 +133,28 @@ export default {
     //   // WebSocket 연결
     //   this.connect();
     // },
-    initMap() {
-      const container = document.getElementById("map");
-      const options = {
-        center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
-        // center: new kakao.maps.Coords(650, -550),
-        level: 3,
-      };
-      // 지도 객체 등록
-      this.map = new kakao.maps.Map(container, options);
+    // initMap() {
+    //   const container = document.getElementById("map");
+    //   const options = {
+    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+    //     // center: new kakao.maps.Coords(650, -550),
+    //     level: 3,
+    //   };
+    //   // 지도 객체 등록
+    //   this.map = new kakao.maps.Map(container, options);
 
-      // marker 생성
-      // i) 모임 장소 marker
-      this.createPlaceMarker(options);
-      // ii) 멤버 별 marker 생성
-      this.createMemberMarker();
+    //   // marker 생성
+    //   // i) 모임 장소 marker
+    //   this.createPlaceMarker(options);
+    //   // ii) 멤버 별 marker 생성
+    //   this.createMemberMarker();
 
-      // back-ground over-lay 표시
-      this.setBackGround();
+    //   // back-ground over-lay 표시
+    //   this.setBackGround();
 
-      // WebSocket 연결
-      this.connect();
-    },
+    //   // WebSocket 연결
+    //   this.connect();
+    // },
     // [@Method] kakao-map BackGround over-lay 표시
     setBackGround() {
       // 배경화면 이미지 설정
@@ -166,7 +166,6 @@ export default {
       const backgroundOverlay = new kakao.maps.CustomOverlay({
         content: content,
         xAnchor: 0.5,
-        // yAnchor: 0.5,
         clickable: false,
         zIndex: -9999,
         size: overlaySize,
@@ -463,6 +462,7 @@ export default {
         strokeColor: "var(--main-col-1)",
         strokeOpacity: 1, // 불투명도 (0에 가까울수록 투명)
         strokeStyle: "solid",
+        zIndex: 9999,
       });
 
       // polyline 저장 (for. 삭제)
@@ -555,11 +555,6 @@ export default {
       const markerIndex = this.memberMarkerList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
-      // const marker =
-      //   this.memberMarkerList[markerIndex][this.updateMemberInfo[1]];
-      // console.log("#21# marker 확인: ", marker);
-      // marker.setPosition(newPosition);
-      // marker.setMap(this.map);
       const marker =
         this.memberMarkerList[markerIndex][this.updateMemberInfo[1]];
       const newMarker =
