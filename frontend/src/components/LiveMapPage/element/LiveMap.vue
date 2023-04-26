@@ -147,7 +147,7 @@ export default {
     // [@Method] WebSocket 연결
     connect() {
       console.log("#21# socket 연결 시도");
-      const serverURL = "http://localhost:8080/websocket";
+      const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
       let socket = new SockJS(serverURL);
       this.stompClient = Stomp.over(socket);
 
@@ -190,13 +190,8 @@ export default {
 
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
-        const meetingIds = [1, 2, 3, 4];
-        const meetingIdsString = JSON.stringify(meetingIds);
-        this.stompClient.send(
-          `/message/locShare/${meetingIdsString}`,
-          JSON.stringify(msg),
-          {}
-        );
+
+        this.stompClient.send("message/locShare/1", JSON.stringify(msg), {});
         console.log("#21# message 전송: ", msg);
       }
     },

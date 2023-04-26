@@ -21,6 +21,7 @@ const meeting = [
       default: LiveMapPage,
     },
   },
+
   {
     path: "/live-map-temp/:id",
     name: "live-map-temp",
