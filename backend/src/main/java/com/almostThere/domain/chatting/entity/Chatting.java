@@ -1,6 +1,5 @@
 package com.almostThere.domain.chatting.entity;
 
-import com.almostThere.domain.chatting.dto.ChattingDto;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.user.entity.Member;
 import lombok.AccessLevel;
@@ -18,7 +17,7 @@ public class Chatting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chatting_message_id")
+    @Column(name = "chatting_id")
     @Comment("채팅 메세지 ID")
     private Long id;
 
@@ -39,9 +38,4 @@ public class Chatting {
     @Column(nullable = false)
     @Comment("채팅 작성 일시")
     private LocalDateTime chattingTime;
-
-    public Chatting(ChattingDto chattingDto) {
-        this.message = chattingDto.getMessage();
-        this.chattingTime = chattingDto.getChattingTime();
-    }
 }

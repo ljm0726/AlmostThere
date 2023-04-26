@@ -4,6 +4,8 @@ import com.almostThere.domain.chatting.dto.ChattingDto;
 import com.almostThere.domain.chatting.dto.ChattingListDto;
 import com.almostThere.domain.chatting.dto.ChattingResponseDto;
 import com.almostThere.domain.chatting.service.ChattingService;
+import com.almostThere.domain.meeting.entity.MeetingMember;
+import com.almostThere.domain.meeting.repository.MeetingMemberRepository;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -23,6 +26,8 @@ import java.time.ZoneId;
 public class ChattingController {
 
     private final ChattingService chattingService;
+
+    private final MeetingMemberRepository meetingMemberRepository;
 
     /**
      * jeey0124
@@ -36,9 +41,7 @@ public class ChattingController {
 
         // 사용자ID 임시값
         Long memberId = 1L;
-        
-        // 해당 채팅방의 멤버가 맞는지 확인
-        
+
         // 현재 시간 가져오기
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
@@ -61,17 +64,28 @@ public class ChattingController {
         Long memberId = 1L;
 
         // 해당 채팅방의 멤버가 맞는지 확인
-        
-        // 채팅 관련 정보 가져오기
-        ChattingResponseDto chattingResponseDto = chattingService.getChattingInfo(meetingId);
-        
-        // 채팅 기록 전부 가져오기
-        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, memberId, -1L);
-        chattingResponseDto.setChattingListDto(chattingListDto);
+        Optional<MeetingMember> optionalMeetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(memberId, meetingId);
+        if (optionalMeetingMember.isPresent()) {
 
-        return BaseResponse.success(chattingResponseDto);
+            // 채팅 관련 정보 가져오기
+            ChattingResponseDto chattingResponseDto = chattingService.getChattingInfo(meetingId);
+
+            // 채팅 기록 전부 가져오기
+            ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, memberId, -1L);
+            chattingResponseDto.setChattingListDto(chattingListDto);
+
+            return BaseResponse.success(chattingResponseDto);
+        }
+        // 입장 불가
+        return BaseResponse.customSuccess(401, "UNAUTHORIZED", null);
     }
 
+    /**
+     * jeey0124
+     * @param meetingId 미팅ID
+     * @param lastNumber 마지막으로 조회했던 채팅 index
+     * @return 채팅 기록 최소 30개를 조회한다.
+     * **/
     @GetMapping("/api/chat/{meetingId}/{lastNumber}")
     public BaseResponse getChattingLog(@PathVariable Long meetingId, @PathVariable Long lastNumber) {
 

@@ -62,8 +62,8 @@ public class ChattingService {
      * @return 1시간마다 Redis의 채팅을 MySQL에 저장한다.
      * **/
 //    @Scheduled(cron = "0 0 0/1 * * *") // 1시간 주기
-//    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
-    @Scheduled(cron = "0 0/10 * * * *") // 10분 주기
+    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
+//    @Scheduled(cron = "0 0/10 * * * *") // 10분 주기
     @Transactional
     public void addChattingMysql() {
         System.out.println("# Scheduled 실행 #");
@@ -88,6 +88,7 @@ public class ChattingService {
                 List<ChattingDto> chattingDtoList = listOperations.range(key, 0, listOperations.size(key));
 
                 System.out.println("# chattingList size # "+chattingDtoList.size());
+                System.out.println("# #"+chattingDtoList.get(0).getMemberId() + " " + chattingDtoList.get(0).getMeetingId() + " " + chattingDtoList.get(0).getMessage());
 
                 // mysql에 저장 - batchInsert 여러 행을 한 번에 넣기
                 // 성능 관련 참고자료 https://datamoney.tistory.com/319
