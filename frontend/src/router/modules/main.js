@@ -11,18 +11,22 @@ import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
 const isLogin = async (to, from, next) => {
   // console.log(to, " ", to.query);
   const access_token = localStorage.getItem("Authorization");
-  if (to.query.accessToken || access_token) {
+  if (to.query.login || access_token) {
     console.log("login 성공 ");
-    if (!access_token) {
+    // if (!access_token) {
+    // console.log(to.query.login.substring(7));
+    if (Object.keys(to.query).length !== 0) {
+      // console.log(to.query);
       localStorage.setItem("Authorization", to.query.login.substring(7));
     }
+    // }
     next({
       name: "home",
     });
   } else {
     console.log("로그인 하러 옴");
     // console.log("로그인 했다!!!!!!!!!!!!!.");
-    next();
+    next({ name: "login" });
   }
 };
 
