@@ -13,6 +13,11 @@
 <script>
 export default {
   name: "TheLanding",
+  mounted() {
+    setTimeout(() => {
+      this.$router.push("/login");
+    }, 2500);
+  },
 };
 </script>
 
