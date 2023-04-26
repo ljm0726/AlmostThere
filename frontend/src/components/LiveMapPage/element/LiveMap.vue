@@ -7,7 +7,6 @@
     <v-btn @click="chageLatLngTest()">좌표 변경 TEST</v-btn>
     <!-- --- -->
     <div id="map"></div>
-    <div>로그인 닉네임: {{ this.check }}</div>
   </div>
 </template>
 
@@ -19,7 +18,6 @@ export default {
   name: "LiveMap",
   data() {
     return {
-      check: null,
       /* # marker 설정 */
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
@@ -146,17 +144,6 @@ export default {
       this.map = new kakao.maps.Map(container, options);
 
       // 배경화면 이미지 설정
-      // const backgroundImageUrl = require("@/assets/images/component/live-map-background.png");
-      // const backgroundBounds = new kakao.maps.LatLngBounds(
-      //   new kakao.maps.LatLng(37.5, 124.0),
-      //   new kakao.maps.LatLng(39.0, 132.0)
-      // );
-      // const backgroundOverlay = new kakao.maps.CustomOverlay({
-      //   bounds: backgroundBounds,
-      //   content: `<div style="width:100%;height:100%;background-image:url(${backgroundImageUrl});"></div>`,
-      //   zIndex: -4,
-      // });
-      // const content = `<div class="member-overlay point-font">배경화면</div>`;
       const imageUrl = require("@/assets/images/component/live-map-background.png");
       const content = `<div><img src="${imageUrl}" />BACK-GROUND</div>`;
       // const bounds = new kakao.maps.LatLngBounds(
@@ -226,17 +213,7 @@ export default {
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition((position) => {
-          // alert("# isGeoLocation: " + position + " 확인");
-          // ! #21# TEST
-          // const member = {
-          //   member: {
-          //     memberId: 1,
-          //     memberNickname: "김싸피",
-          //     memberLatLng: [
-          //       position.coords.latitude,
-          //       position.coords.longitude,
-          //     ],
-          //   },
+          // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
           const member = {
             member: {
               memberId: JSON.parse(localStorage.getItem("member")).memberId,
@@ -248,7 +225,6 @@ export default {
               ],
             },
           };
-          this.check = member.memberNickname;
 
           // 현 사용자의 위치 저장
           this.updateMemberLocation(member);
@@ -478,6 +454,7 @@ export default {
         strokeColor: "var(--main-col-1)",
         strokeOpacity: 1, // 불투명도 (0에 가까울수록 투명)
         strokeStyle: "solid",
+        zIndex: 3,
       });
 
       // polyline 저장 (for. 삭제)
