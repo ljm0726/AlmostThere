@@ -14,12 +14,6 @@ public class ChattingDetailDto extends ChattingDto {
 
     public ChattingDetailDto(ChattingDto chattingDto, Long memberId, Long meetingId) {
         super(chattingDto.getMemberId(), chattingDto.getMessage(), chattingDto.getChattingTime());
-
-//        System.out.println("# check # " + chattingDto.getMessage() + " " + memberId.toString() + " " + chattingDto.getMemberId().toString());
-//        System.out.println(memberId.getClass().getName());
-//        System.out.println(chattingDto.getMemberId().getClass().getName());
-//        System.out.println(memberId == chattingDto.getMemberId());
-
         this.meetingId = meetingId;
         if (chattingDto.getMemberId().equals(memberId)) this.isMine = true;
         else this.isMine = false;

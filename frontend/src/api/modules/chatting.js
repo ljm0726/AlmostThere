@@ -6,7 +6,7 @@ const api = apiInstance();
 async function getChatting(meetingId) {
   var result = null;
   await api
-    .get(`/api/chat/${meetingId}`)
+    .get(`/chat/${meetingId}`)
     .then((res) => {
       result = res;
     })
@@ -16,7 +16,7 @@ async function getChatting(meetingId) {
 
 async function getChattingLog(meetingId, lastNumber) {
   var result = null;
-  await api.get(`/api/chat/${meetingId}/${lastNumber}`)
+  await api.get(`/chat/${meetingId}/${lastNumber}`)
     .then((res) => {
       result = res;
     })

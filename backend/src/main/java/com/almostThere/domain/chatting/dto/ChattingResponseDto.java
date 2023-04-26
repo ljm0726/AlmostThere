@@ -27,7 +27,7 @@ public class ChattingResponseDto {
         this.meetingId = meeting.getId();
         this.meetingName = meeting.getMeetingName();
         this.chattingMemberMap = meeting.getMeetingMembers().stream()
-                                        .map(m -> new ChattingMemberDto(m))
+                                        .map(m -> new ChattingMemberDto(m.getMember()))
                                         .collect(Collectors.toMap(m -> m.getMemberId(), n -> n));
     }
 }

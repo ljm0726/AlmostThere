@@ -1,7 +1,35 @@
 <template>
   <v-sheet height="100%">
     <!-- header -->
-    <chatting-header :name="meetingName"></chatting-header>
+    <chatting-header
+      @openDrawer="openDrawer"
+      :name="meetingName"
+    ></chatting-header>
+    <v-navigation-drawer
+      v-model="drawer"
+      class="d-flex flex-column justify-space-between"
+      fixed
+      temporary
+      right
+    >
+      <div>
+        <div class="pa-2 point-font">
+          {{ meetingName }}
+        </div>
+        <v-divider></v-divider>
+        <v-list-item v-for="member in member_list" :key="member.memberId">
+          <v-list-item-avatar>
+            <v-img :src="member.profile"></v-img>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ member.nickname }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </div>
+
+      <detail-button></detail-button>
+    </v-navigation-drawer>
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
     <v-sheet
@@ -103,6 +131,7 @@
                   class="mx-1 xxxxs-font thin-font d-flex flex-row"
                   v-if="
                     idx == chatList.length - 1 ||
+                    item.memberId != chatList[idx + 1].memberId ||
                     item.chattingTime.split('T')[1].substr(0, 5) !=
                       chatList[idx + 1].chattingTime.split('T')[1].substr(0, 5)
                   "
@@ -170,6 +199,7 @@ import InfiniteLoading from "vue-infinite-loading";
 import ScrollBottomButton from "@/common/component/button/ScrollBottomButton.vue";
 import InternetError from "@/common/component/dialog/InternetError.vue";
 import ChattingLoading from "./ChattingLoading.vue";
+import DetailButton from "@/common/component/button/DetailButton.vue";
 
 export default {
   components: {
@@ -178,6 +208,7 @@ export default {
     ScrollBottomButton,
     InternetError,
     ChattingLoading,
+    DetailButton,
   },
   name: "ChattingPage",
   data() {
@@ -190,7 +221,13 @@ export default {
       last: -1, // 무한 스크롤 마지막에 불러온 Index
       page: 1, // 무한 스크롤 페이지
       loading: true, // 페이지 로딩 여부
+      drawer: null,
     };
+  },
+  computed: {
+    member_list() {
+      return Object.keys(this.members).map((item) => this.members[item]);
+    },
   },
   async created() {
     this.loading = true;
@@ -220,6 +257,9 @@ export default {
     });
   },
   methods: {
+    openDrawer() {
+      this.drawer = !this.drawer;
+    },
     // 무한 스크롤 함수
     infiniteHandler($state) {
       // 마지막 Index가 0이나 음수면 값을 다 가져왔다고 판단

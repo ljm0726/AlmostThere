@@ -1,9 +1,6 @@
 package com.almostThere.domain.chatting.service;
 
-import com.almostThere.domain.chatting.dto.ChattingDetailDto;
-import com.almostThere.domain.chatting.dto.ChattingDto;
-import com.almostThere.domain.chatting.dto.ChattingListDto;
-import com.almostThere.domain.chatting.dto.ChattingResponseDto;
+import com.almostThere.domain.chatting.dto.*;
 import com.almostThere.domain.chatting.entity.Chatting;
 import com.almostThere.domain.chatting.repository.ChattingJDBCRepository;
 import com.almostThere.domain.chatting.repository.ChattingRepository;
@@ -11,6 +8,8 @@ import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.repository.MeetingMemberRepository;
 import com.almostThere.domain.meeting.repository.MeetingRepository;
+import com.almostThere.domain.user.entity.Member;
+import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
@@ -43,10 +42,13 @@ public class ChattingService {
 
     private final MeetingRepository meetingRepository;
 
+    private final MemberRepository memberRepository;
+
     private final MeetingMemberRepository meetingMemberRepository;
 
     /**
-     *
+     * @param meetingId 미팅ID
+     * @param memberId 멤버ID
      * **/
     public void isChattingMember(Long meetingId, Long memberId) {
 
@@ -75,11 +77,11 @@ public class ChattingService {
     }
 
     /**
-     * @return 1시간마다 Redis의 채팅을 MySQL에 저장한다.
+     * @return 일정 시간마다 Redis에 저장해 둔 채팅을 MySQL에 저장한다.
      * **/
 //    @Scheduled(cron = "0 0 0/1 * * *") // 1시간 주기
-    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
 //    @Scheduled(cron = "0 0/10 * * * *") // 10분 주기
+    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
     @Transactional
     public void addChattingMysql() {
         System.out.println("# Scheduled 실행 #");
@@ -103,15 +105,13 @@ public class ChattingService {
             if (size > 0) {
                 List<ChattingDto> chattingDtoList = listOperations.range(key, 0, listOperations.size(key));
 
-                System.out.println("# chattingList size # "+chattingDtoList.size());
-//                System.out.println("# #"+chattingDtoList.get(0).getMemberId() + " " + chattingDtoList.get(0).getMeetingId() + " " + chattingDtoList.get(0).getMessage());
-
                 // mysql에 저장 - batchInsert 여러 행을 한 번에 넣기
+                // 48초에 10만 건
                 // 성능 관련 참고자료 https://datamoney.tistory.com/319
                 chattingJDBCRepository.batchInsert(chattingDtoList, key);
 
                 // 가져온 값 redis에서 삭제
-//                listOperations.leftPop(key, size);
+                // listOperations.leftPop(key, size); Redis 버전 호환 불가
                 for (int i=0; i<size; i++) listOperations.leftPop(key);
             }
         }
@@ -122,15 +122,25 @@ public class ChattingService {
      * @return 미팅 정보를 가져온다.
      * **/
     public ChattingResponseDto getChattingInfo(Long meetingId) {
+        
+        // ID에 해당하는 meeting 정보 가져오기
         Optional<Meeting> optionalMeeting = meetingRepository.findById(meetingId);
-        if (optionalMeeting.isPresent()) {
-            
-            // 채팅 리스트를 제외한 모든 정보 가져오기
-            Meeting meeting = optionalMeeting.get();
-            ChattingResponseDto chattingResponseDto = new ChattingResponseDto(meeting);
-            return chattingResponseDto;
-        }
-        return null;
+        if (!optionalMeeting.isPresent()) throw new AccessDeniedException(ErrorCode.MEETING_NOT_FOUND);
+
+        // 채팅 리스트를 제외한 모든 정보 가져오기
+        Meeting meeting = optionalMeeting.get();
+        ChattingResponseDto chattingResponseDto = new ChattingResponseDto(meeting);
+        return chattingResponseDto;
+    }
+
+    /**
+     * @param memberId 멤버ID
+     * @return 입장한 멤버의 정보를 조회한다.
+     * **/
+    public ChattingMemberDto getChattingMember(Long memberId) {
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        if (optionalMember.isPresent()) return new ChattingMemberDto(optionalMember.get());
+        else throw new AccessDeniedException(ErrorCode.MEMBER_NOT_FOUND);
     }
 
     /**

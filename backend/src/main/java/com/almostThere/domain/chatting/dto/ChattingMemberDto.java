@@ -1,6 +1,5 @@
 package com.almostThere.domain.chatting.dto;
 
-import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.user.entity.Member;
 import lombok.Getter;
 
@@ -16,8 +15,7 @@ public class ChattingMemberDto {
     // 닉네임
     private String nickname;
 
-    public ChattingMemberDto(MeetingMember meetingMember) {
-        Member member = meetingMember.getMember();
+    public ChattingMemberDto(Member member) {
         this.memberId = member.getId();
         this.profile = member.getMemberProfileImg();
         this.nickname = member.getMemberNickname();

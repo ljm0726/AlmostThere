@@ -1,9 +1,6 @@
 package com.almostThere.domain.chatting.controller;
 
-import com.almostThere.domain.chatting.dto.ChattingDetailDto;
-import com.almostThere.domain.chatting.dto.ChattingDto;
-import com.almostThere.domain.chatting.dto.ChattingListDto;
-import com.almostThere.domain.chatting.dto.ChattingResponseDto;
+import com.almostThere.domain.chatting.dto.*;
 import com.almostThere.domain.chatting.service.ChattingService;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashMap;
 
 @RestController
 @CrossOrigin
@@ -38,7 +36,7 @@ public class ChattingController {
         // 메세지 내용은 최대 255자 이하
         if (message.length() <= 255) {
 
-            // 사용자ID 임시값
+            // 사용자ID 임시값 (Header로 받아오는 거 제대로 되는지 확인 필요)
             Long memberId = 1L;
 
             // 현재 시간 가져오기
@@ -55,10 +53,26 @@ public class ChattingController {
 
     /**
      * jeey0124
-     * @param meetingId 미팅ID
-     * @return 채팅 정보 및 채팅 기록 30개를 조회한다.
+     * @return 입장한 사용자 정보를 반환한다.
      * **/
-    @GetMapping("/api/chat/{meetingId}")
+    @MessageMapping("/welcome/{meetingId}") // 메시지를 받을 endpoint 설정
+    @SendTo("/enter/{meetingId}") // 모임 입장
+    public BaseResponse enterMeeting() {
+
+        // 사용자ID 임시값
+        Long memberId = 1L;
+
+        // 사용자 프로필, 닉네임 가져오기
+        ChattingMemberDto chattingMemberDto = chattingService.getChattingMember(memberId);
+        return BaseResponse.success(new HashMap<>(){{put(memberId, chattingMemberDto);}});
+    }
+
+    /**
+     * jeey0124
+     * @param meetingId 미팅ID
+     * @return 채팅 정보 및 채팅 메시지 최대 30개를 조회한다.
+     * **/
+    @GetMapping("/chat/{meetingId}")
     public BaseResponse getChattingAll(@PathVariable Long meetingId) {
 
         // 사용자ID 임시값
@@ -70,7 +84,7 @@ public class ChattingController {
         // 채팅 관련 정보 가져오기
         ChattingResponseDto chattingResponseDto = chattingService.getChattingInfo(meetingId);
 
-        // 채팅 기록 전부 가져오기
+        // 채팅 메시지 전부 가져오기
         ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, memberId, -1L);
         chattingResponseDto.setChattingListDto(chattingListDto);
 
@@ -81,9 +95,9 @@ public class ChattingController {
      * jeey0124
      * @param meetingId 미팅ID
      * @param lastNumber 마지막으로 조회했던 채팅 index
-     * @return 채팅 기록 최소 30개를 조회한다.
+     * @return 채팅 메시지 최대 30개를 조회한다.
      * **/
-    @GetMapping("/api/chat/{meetingId}/{lastNumber}")
+    @GetMapping("/chat/{meetingId}/{lastNumber}")
     public BaseResponse getChattingLog(@PathVariable Long meetingId, @PathVariable Long lastNumber) {
 
         // 사용자ID 임시값
