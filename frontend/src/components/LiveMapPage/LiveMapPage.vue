@@ -16,7 +16,7 @@ export default {
   methods: {
     ssafyLogin() {
       // 현 로그인한 member의 정보
-      console.log("#21# ssafy 로그인");
+      // console.log("#21# ssafy 로그인");
       const memberStore = {
         memberId: 1,
         memberNickname: "김싸피",
@@ -24,7 +24,7 @@ export default {
       localStorage.setItem("member", JSON.stringify(memberStore));
     },
     heeLogin() {
-      console.log("#21# hee 로그인");
+      // console.log("#21# hee 로그인");
       const memberStore = {
         memberId: 2,
         memberNickname: "희정",

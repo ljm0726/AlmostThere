@@ -215,7 +215,7 @@ export default {
     },
     // [@Method] 현재 로그인한 사용자의 접속위치 얻기 (GeoLocation)
     getGeoLocation() {
-      console.log("#21# getGeoLocation 현 위치 얻기 동작");
+      // console.log("#21# getGeoLocation 현 위치 얻기 동작");
       // alert("## geo", navigator.geolocation);
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
@@ -262,7 +262,7 @@ export default {
 
       // i) 새로운 member 위치 저장
       if (memberIndex == -1) {
-        console.log("#21# 새로운 member");
+        // console.log("#21# 새로운 member");
         this.memberLocation.push(newMemberLocation);
         this.send(newMemberLocation);
 
@@ -271,7 +271,7 @@ export default {
       }
       // i) 기존 member 위치 update
       else {
-        console.log("#21# 기존 member 위치 값 update");
+        // console.log("#21# 기존 member 위치 값 update");
         // 위치 값 update
         this.memberLocation[memberIndex].member.memberLatLng =
           newMemberLocation.member.memberLatLng;
@@ -303,13 +303,13 @@ export default {
       }
 
       if (memberIndex == -1) {
-        console.log("#21# 새로운 다른 member");
+        // console.log("#21# 새로운 다른 member");
         this.memberLocation.push(otherMemberLocation);
 
         // 멤버 별 marker 생성
         this.createMemberMarker();
       } else {
-        console.log("#21# 기존 다른 member 위치 값 update");
+        // console.log("#21# 기존 다른 member 위치 값 update");
         // 위치 값 update
         this.memberLocation[memberIndex].member.memberLatLng =
           otherMemberLocation.member.memberLatLng;
@@ -544,10 +544,10 @@ export default {
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
       // this.updateMemberInfo[1] = 변경된 memberId
-      console.log(
-        "#21# refresh memeber 확인: ",
-        refreshMember.member.memberNickname
-      );
+      // console.log(
+      //   "#21# refresh memeber 확인: ",
+      //   refreshMember.member.memberNickname
+      // );
 
       const newPosition = new kakao.maps.LatLng(
         refreshMember.member.memberLatLng[0],
