@@ -154,6 +154,7 @@
           dense
           hide-details
           clearable
+          maxlength="255"
         ></v-text-field>
       </v-sheet>
     </v-sheet>
@@ -195,7 +196,7 @@ export default {
     this.loading = true;
     // 저장된 채팅 정보를 가져옵니다.
     await getChatting(this.$route.params.id).then(async (res) => {
-      if (res.data.statusCode == 200) {
+      if (res && res.data.statusCode == 200) {
         const info = await res.data.data;
         // 방 이름
         this.meetingName = await info.meetingName;
@@ -280,10 +281,26 @@ export default {
             `/send/${this.$route.params.id}`,
             (res) => {
               // console.log("구독으로 받은 메시지 입니다.", res.body);
-              // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-              this.chatList.push(JSON.parse(res.body).data);
-              // 스크롤 맨 아래로 이동
-              window.setTimeout(this.goBottom, 50);
+              const data = JSON.parse(res.body);
+              if (data.statusCode == 200) {
+                // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+                this.chatList.push(data.data);
+                // 스크롤 맨 아래로 이동
+                window.setTimeout(this.goBottom, 50);
+              }
+            }
+          );
+          this.stompClient.subscribe(
+            `/send/${this.$route.params.id}/mine`,
+            (res) => {
+              console.log("/me 구독으로 받은 메시지 입니다.", res.body);
+              const data = JSON.parse(res.body);
+              if (data.statusCode == 200) {
+                // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+                this.chatList.push(data.data);
+                // 스크롤 맨 아래로 이동
+                window.setTimeout(this.goBottom, 50);
+              }
             }
           );
         },

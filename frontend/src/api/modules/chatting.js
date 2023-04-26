@@ -5,11 +5,12 @@ const api = apiInstance();
 
 async function getChatting(meetingId) {
   var result = null;
-  await api.get(`/api/chat/${meetingId}`)
+  await api
+    .get(`/api/chat/${meetingId}`)
     .then((res) => {
       result = res;
     })
-    .catch()
+    .catch((e) => { e })
   return await Promise.resolve(result)
 }
 
@@ -19,7 +20,7 @@ async function getChattingLog(meetingId, lastNumber) {
     .then((res) => {
       result = res;
     })
-    .catch()
+    .catch((e) => { e })
   return await Promise.resolve(result);
 }
 

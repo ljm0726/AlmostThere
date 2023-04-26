@@ -10,9 +10,6 @@ import java.time.LocalDateTime;
 @Getter
 public class ChattingDto implements Serializable {
 
-    // 모임 ID
-    private Long meetingId;
-
     // 채팅 입력한 멤버 ID
     private Long memberId;
     

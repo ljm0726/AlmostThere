@@ -10,7 +10,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      padding: 0 10px 70px 0;
+      padding: 0 10px 65px 0;
     "
   >
     <v-btn
@@ -22,6 +22,7 @@
       @click="toBottom"
       icon
       outlined
+      small
     >
       <v-icon>mdi-arrow-down</v-icon>
     </v-btn>

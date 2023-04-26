@@ -18,7 +18,7 @@ public class ChattingJDBCRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void batchInsert(List<ChattingDto> chattingList) {
+    public void batchInsert(List<ChattingDto> chattingList, Long meetingId) {
 
         jdbcTemplate.batchUpdate(
             "INSERT INTO chatting (message, meeting_id, member_id, chatting_time)" +
@@ -28,7 +28,7 @@ public class ChattingJDBCRepository {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         ps.setString(1, chattingList.get(i).getMessage());
-                        ps.setLong(2, chattingList.get(i).getMeetingId());
+                        ps.setLong(2, meetingId);
                         ps.setLong(3, chattingList.get(i).getMemberId());
                         ps.setString(4, chattingList.get(i).getChattingTime().toString());
                     }
