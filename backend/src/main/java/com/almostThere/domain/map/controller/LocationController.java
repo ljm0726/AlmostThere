@@ -9,6 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -20,50 +21,29 @@ import org.springframework.data.redis.core.RedisTemplate;
 @RequiredArgsConstructor
 public class LocationController {
 
-
-//    @MessageMapping("/locShare/{meetingId}")
-//    @SendTo("/topic/{meetingId}")
-//    public String customerRequestMessage(@DestinationVariable long meetingId, String message){
-//        System.out.println("?????????????");
-//        return message;
-//    }
-
-
     private final SimpMessagingTemplate simpMessagingTemplate;
-
-    private final RedisTemplate redisTemplate;
+    @Qualifier("redisTemplateForLocation")
+    private final RedisTemplate redisTemplateForLocation;
     @MessageMapping("/locShare/{meetingId}")
     @SendTo("/topic/{meetingId}")
-    public String customerRequestMessage(@DestinationVariable long meetingId, String message){
-        System.out.println("????????????/");
-        try {
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(message);
+    public String customerRequestMessage(@DestinationVariable long meetingId, String message) throws ParseException {
 
-            // Extract member object from JSONObject
-            JSONObject memberObject = (JSONObject) jsonObject.get("member");
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(message);
+        JSONObject memberObject = (JSONObject) jsonObject.get("member");
 
-            // Extract data from memberObject
-            Long memberId = (Long) memberObject.get("memberId");
-            String memberNickname = (String) memberObject.get("memberNickname");
-            JSONArray memberLatLng = (JSONArray) memberObject.get("memberLatLng");
-            Double memberLatitude = (Double) memberLatLng.get(0);
-            Double memberLongitude = (Double) memberLatLng.get(1);
+        String memberId =  String.valueOf(memberObject.get("memberId"));
+        String memberNickname = (String) memberObject.get("memberNickname");
+        JSONArray memberLatLng = (JSONArray) memberObject.get("memberLatLng");
+        Double memberLatitude = (Double) memberLatLng.get(0);
+        Double memberLongitude = (Double) memberLatLng.get(1);
 
-            // Print the extracted data
-            System.out.println("Member ID: " + memberId);
-            System.out.println("Member Nickname: " + memberNickname);
-            System.out.println("Member Latitude: " + memberLatitude);
-            System.out.println("Member Longitude: " + memberLongitude);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        UserLocation userLocation = new UserLocation(memberNickname, memberLatitude,memberLongitude);
 
-//        // Save an instance of MyClass to Redis
-//        UserLocation userLocation = new UserLocation(, 123);
-//        redisTemplate.opsForValue().set("myKey", myObject);
+        //RedisTemplate의 opsFor* 메소드들은 특정 컬렉션의 커맨드(Operation)을 호출할 수 있는 기능을 모아둔 *Operations 인터페이스를 반환
+        redisTemplateForLocation.opsForValue().set(memberId, userLocation);
 
-        return "hi";
+        return message;
     }
 
 }

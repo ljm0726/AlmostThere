@@ -13,4 +13,14 @@ public class UserLocation implements Serializable {
         this.lat = lat;
         this.lng = lng;
     }
+
+    @Override
+    public String toString() {
+        return "UserLocation{" +
+            "nickName='" + nickName + '\'' +
+            ", lat=" + lat +
+            ", lng=" + lng +
+            '}';
+    }
 }
+
