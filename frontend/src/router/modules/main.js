@@ -15,7 +15,10 @@ const isLogin = async (to, from, next) => {
     console.log("login 성공 ");
     // if (!access_token) {
     // console.log(to.query.login.substring(7));
-    localStorage.setItem("Authorization", to.query.login.substring(7));
+    if (Object.keys(to.query).length !== 0) {
+      // console.log(to.query);
+      localStorage.setItem("Authorization", to.query.login.substring(7));
+    }
     // }
     next({
       name: "home",
@@ -23,7 +26,7 @@ const isLogin = async (to, from, next) => {
   } else {
     console.log("로그인 하러 옴");
     // console.log("로그인 했다!!!!!!!!!!!!!.");
-    next();
+    next({ name: "login" });
   }
 };
 

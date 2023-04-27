@@ -9,13 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MeetingCntDto {
     private Long id;
-//    private MemberDto myMember;
     private MemberDto friend;
     private int cnt;
 
     public MeetingCntDto(MeetingCnt meetingCnt) {
         this.id = meetingCnt.getId();
-//        this.myMember = new MemberDto(meetingCnt.getMyMember());
         this.friend = new MemberDto(meetingCnt.getFriend());
         this.cnt = meetingCnt.getCnt();
     }

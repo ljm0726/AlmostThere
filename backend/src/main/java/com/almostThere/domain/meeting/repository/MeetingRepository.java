@@ -22,7 +22,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     @Query("select m.meeting " +
             " from MeetingMember m " +
             "where m.member.id=:memberId " +
-            "  and m.meeting.meetingTime between now() and :oneMonthAfterDate")
-    List <Meeting> findUpcomingMeetings(@Param("memberId") Long memberId, @Param("oneMonthAfterDate") LocalDateTime oneMonthAfterDate);
-
+            "  and m.meeting.meetingTime between :oneDayAfterDate and :oneMonthAfterDate")
+    List <Meeting> findUpcomingMeetings(@Param("memberId") Long memberId, @Param("oneDayAfterDate") LocalDateTime oneDayAfterDate, @Param("oneMonthAfterDate") LocalDateTime oneMonthAfterDate);
 }
