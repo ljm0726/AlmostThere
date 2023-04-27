@@ -1,5 +1,6 @@
 package com.almostThere.domain.meeting.service;
 
+import com.almostThere.domain.meeting.dto.MeetingMemberDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
@@ -19,6 +20,7 @@ import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import com.almostThere.global.error.exception.NotFoundException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -146,5 +148,18 @@ public class MeetingService {
             meeting.updateMeeting(meetingUpdateRequestDto);
             meetingRepository.save(meeting);
         }   else throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
+    }
+
+    /**
+     * 멤버가 참여한 모든 모임을 조회한다.
+     * @param memberId
+     * @return 모임 리스트
+     */
+    public List<MeetingMember> findAllMeeting(Long memberId) {
+        // i) member가 참여한 모임ID List 찾기
+        List<MeetingMember> meetingMembers = meetingMemberRepository.findByMemberId(memberId);
+
+//        Optional<MeetingMember> meetingMembers = meetingMemberRepository.findById(memberId);
+        return meetingMembers;
     }
 }

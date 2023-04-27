@@ -3,6 +3,7 @@ package com.almostThere.domain.user.controller;
 import com.almostThere.domain.meeting.dto.MeetingCntDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.entity.Meeting;
+import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.service.MeetingService;
 import com.almostThere.domain.user.dto.MemberAccessDto;
 import com.almostThere.domain.user.dto.MemberInfoDto;
@@ -57,11 +58,10 @@ public class MemberController {
         // ii) member의 모든 모임 이력 정보
         //     - 모든 모임 이력, [모임-멤버] 테이블에 멤버ID가 있는 모임ID 정보 가져오기
 //        List<MeetingDto> meetingIdList = memberService.findMeetingList(memberId);
-        meetingService.findMeetingList(memberId);
-
+        List<MeetingMember> meetings = meetingService.findAllMeeting(memberId);
 
 //        return BaseResponse.success(new MemberInfoDto(
 //        ));
-        return BaseResponse.success(null);
+        return BaseResponse.success(meetings);
     }
 }
