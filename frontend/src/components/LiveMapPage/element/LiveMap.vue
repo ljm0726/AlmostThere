@@ -93,22 +93,18 @@ export default {
     // },
     // [@Method] Kakao Map 생성 + 배경화면 설정
     initMap() {
-      const domain = "https://i1.daumcdn.net";
-      const path = "/dmaps/apis/openapi/sampleimg/";
-
       const plan = (x, y, z) => {
         y = -y - 1;
         const limit = Math.ceil(3 / Math.pow(2, z));
         if (0 <= y && y < limit && 0 <= x && x < limit) {
-          return domain + path + "planh" + z + "_" + y + "_" + x + ".png";
+          return "https://i1.daumcdn.net/dmaps/apis/white.png";
         } else {
           return "https://i1.daumcdn.net/dmaps/apis/white.png";
         }
       };
-
       kakao.maps.Tileset.add(
         "PLAN",
-        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 4) // 0, 10으로 level 범위
+        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 10) // 0, 10으로 level 범위
       );
 
       const container = document.getElementById("map");
