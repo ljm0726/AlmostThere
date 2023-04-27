@@ -9,11 +9,18 @@
             :key="index"
             class="d-flex flex-row justify-space-between align-center"
             @click="showDetailModel(index)"
+            style="cursor: pointer"
           >
-            <td class="px-1 d-flex align-center light-font">
+            <td
+              class="px-1 d-flex align-center light-font main-col-1"
+              style="border-bottom: none"
+            >
               {{ calculate.storeName }}
             </td>
-            <td class="px-1 d-flex align-center light-font">
+            <td
+              class="px-1 d-flex align-center light-font main-col-1"
+              style="border-bottom: none"
+            >
               {{
                 calculate.price
                   .toString()
@@ -26,17 +33,25 @@
     </v-simple-table>
     <v-divider class="mb-1"></v-divider>
     <div class="d-flex flex-row justify-space-between">
-      <span class="px-1 medium-font sm-font">합계</span>
-      <span class="px-1 medium-font sm-font">10000원</span>
+      <span class="px-1 pb-1 medium-font sm-font">합계</span>
+      <span class="px-1 pb-1 medium-font sm-font"
+        >{{ total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}원</span
+      >
     </div>
     <div class="d-flex flex-row justify-space-between">
       <span class="px-1 light-font sm-font">지각비</span>
-      <span class="px-1 light-font sm-font">10000원</span>
+      <span class="px-1 light-font sm-font"
+        >{{
+          lateTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        }}원</span
+      >
     </div>
     <v-divider class="my-1"></v-divider>
     <div class="d-flex flex-row justify-space-between">
       <span class="px-1 bold-font sm-font">내가 내야 하는 금액</span>
-      <span class="px-1 bold-font sm-font">10000원</span>
+      <span class="px-1 bold-font sm-font"
+        >{{ myTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}원</span
+      >
     </div>
     <v-btn class="my-3" color="var(--main-col-1)" dark rounded @click="open()">
       영수증 및 카드내역 추가
@@ -97,10 +112,13 @@
         <v-btn color="var(--main-col-1)" rounded dark>등록</v-btn>
       </v-sheet>
     </vue-bottom-sheet>
+    <meeting-cost-detail></meeting-cost-detail>
   </v-sheet>
 </template>
 
 <script>
+import MeetingCostDetail from "./MeetingCostDetail.vue";
+
 export default {
   name: "MeetingCost",
   methods: {
@@ -110,6 +128,9 @@ export default {
     showDetailModel(index) {
       index;
     },
+  },
+  components: {
+    MeetingCostDetail,
   },
   computed: {
     imageUrl() {
@@ -136,6 +157,9 @@ export default {
           price: 26200,
         },
       ],
+      total: 10000,
+      lateTotal: 100000,
+      myTotal: 10000,
       receipt: null,
     };
   },
