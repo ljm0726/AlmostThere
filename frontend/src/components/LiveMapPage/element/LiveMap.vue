@@ -24,7 +24,7 @@ export default {
       memberMarkerOption: [60, 85], // member - image marker 위치
       /* # over-lay 설정 */
       memberOverlay: [0.5, 3.2], // member over-lay (x, y) 위치 좌표
-      distanceOverlay: [-0.3, -0.1], // distance over-lay 좌표
+      distanceOverlay: [-0.4, -0.1], // distance over-lay 좌표
       chatOverlay: [0.5, 4], // chat over-lay 좌표
       /* # 현재 좌표 */
       placeLatLng: [37.5049, 127.0371], // 모임장소 좌표
