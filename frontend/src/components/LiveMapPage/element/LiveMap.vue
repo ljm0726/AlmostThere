@@ -38,8 +38,11 @@ export default {
       memberDistanceOverlayList: [], // 거리(m) over-lay
       memberNicknameOverlayList: [], // nickname over-lay
       memberPolylineList: [], // polyline
+      circleList: [], // 모임장소 반경 circle
       /* # 위치 변경된 member[index, id] */
       updateMemberInfo: [], // [index, id] 위치 업데이트 된 member의 > memberLocation index와 memberId 저장
+      /* # 가장 먼 곳에 있는 memeber distance */
+      maxMemberDistance: 2500,
     };
   },
   watch: {
@@ -104,7 +107,7 @@ export default {
       };
       kakao.maps.Tileset.add(
         "PLAN",
-        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 4) // 0, 10으로 level 범위
+        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 10) // 0, 10으로 level 범위
       );
 
       const container = document.getElementById("map");
@@ -120,7 +123,7 @@ export default {
       this.map = new kakao.maps.Map(container, options);
 
       // 모임장소로 부터 원 표시
-      this.createCircle(options);
+      this.createCircle();
 
       // marker 생성
       // i) 모임 장소 marker
@@ -132,14 +135,26 @@ export default {
       this.connect();
     },
     // [@Method] 모임장소로 부터 원 표시
-    createCircle(options) {
-      // (unit)m 단위로 circle 생성
-      let radius = 2500; // circle 반지름
+    createCircle() {
+      // 가장 먼 곳에 있는 member를 기준으로 (unit)m 단위 circle 생성
       const unit = 500; // m 단위
+      const maxRadius = Math.ceil(this.maxMemberDistance / unit) * unit; // 반지름
 
-      for (let r = 0; radius != 0; r++) {
+      // 기존에 있던 cirecle 삭제
+      if (this.circleList.length != 0) {
+        for (const circle of this.circleList) {
+          circle.setMap(null);
+        }
+        this.circleList = [];
+      }
+
+      for (let radius = unit; radius <= maxRadius; radius += unit) {
         const circle = new kakao.maps.Circle({
-          center: options.center,
+          // center: options.center,
+          center: new kakao.maps.LatLng(
+            this.placeLatLng[0],
+            this.placeLatLng[1]
+          ),
           radius: radius, // m 단위의 원 반지름
           strokeWeight: 0.5, // 선의 두께
           strokeColor: "var(--main-col-2)",
@@ -149,7 +164,8 @@ export default {
 
         // circle 표시
         circle.setMap(this.map);
-        radius -= unit;
+        // circle 저장 (for. 삭제)
+        this.circleList.push(circle);
       }
     },
     // [@Method] WebSocket 연결
@@ -207,6 +223,8 @@ export default {
             },
           };
 
+          // 초기값 set
+          this.setInitValue();
           // 현 사용자의 위치 저장
           this.updateMemberLocation(member);
         });
@@ -452,6 +470,9 @@ export default {
     },
     // [@Method] member와 모임장소 거리 - 오버레이 표시
     createDistanceOverlay(distance, marker, member) {
+      // 가장 먼 거리의 member distance 저장
+      this.maxMemberDistance = Math.max(this.maxMemberDistance, distance);
+
       const content = `<div class="distance-overlay logo-font">${distance.toLocaleString(
         "ko-KR"
       )}m</div>`;
@@ -568,6 +589,9 @@ export default {
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
       const distance = Math.round(polyline.getLength());
+      // 가장 먼 거리의 member distance 저장
+      this.maxMemberDistance = Math.max(this.maxMemberDistance, distance);
+
       const newContent = `<div class="distance-overlay logo-font">${distance.toLocaleString(
         "ko-KR"
       )}m</div>`;
@@ -576,6 +600,14 @@ export default {
       distanceOverlay.setPosition(newPosition);
       distanceOverlay.setContent(newContent);
       distanceOverlay.setMap(this.map);
+
+      // iii) circle
+      this.createCircle();
+    },
+    // [@Method] 초기값 설정
+    setInitValue() {
+      // circle를 생성하기 위한 maxMemberDistance 기본값
+      this.maxMemberDistance = 2500;
     },
     // [@Method] TEST (!추후 삭제)
     sendChatTest() {
