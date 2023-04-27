@@ -15,4 +15,6 @@ public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Lo
         "where m.member.id=:memberId " +
         "and m.meeting.id=:meetingId")
     void deleteMeetingMemberByMeetingIdAndMemberID(@Param("memberId") Long memberId, @Param("meetingId") Long meetingId);
+
+
 }

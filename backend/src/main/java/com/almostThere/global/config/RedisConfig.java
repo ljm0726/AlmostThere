@@ -1,11 +1,13 @@
 package com.almostThere.global.config;//package com.ddockddack.domain.member.oauth;
 
 import com.almostThere.domain.map.entity.UserLocation;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 //import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -39,10 +41,10 @@ public class RedisConfig {
     }
 
     @Bean(name = "redisTemplateForLocation")
-    public RedisTemplate<String, Object> redisTemplateForLocation() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, ?> redisTemplateForLocation() {
+        RedisTemplate<String, ?> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(new ObjectMapper()));
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }

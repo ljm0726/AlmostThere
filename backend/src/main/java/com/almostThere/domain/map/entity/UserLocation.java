@@ -1,26 +1,21 @@
 package com.almostThere.domain.map.entity;
 
 import java.io.Serializable;
+import lombok.Data;
+import org.springframework.data.redis.core.RedisHash;
 
+@Data
 public class UserLocation implements Serializable {
 
-    private String nickName;
-    private double lat;
-    private double lng;
+    private long memberId;
+    private String memberNickName;
+    private double[] memberLatLng;
 
-    public UserLocation(String nickName, double lat, double lng){
-        this.nickName = nickName;
-        this.lat = lat;
-        this.lng = lng;
+    public UserLocation(long memberId, String memberNickName, double[] memberLatLng){
+        this.memberId = memberId;
+        this.memberNickName = memberNickName;
+        this.memberLatLng = memberLatLng;
     }
 
-    @Override
-    public String toString() {
-        return "UserLocation{" +
-            "nickName='" + nickName + '\'' +
-            ", lat=" + lat +
-            ", lng=" + lng +
-            '}';
-    }
 }
 
