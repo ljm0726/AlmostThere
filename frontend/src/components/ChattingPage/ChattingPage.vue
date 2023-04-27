@@ -5,30 +5,28 @@
       @openDrawer="openDrawer"
       :name="meetingName"
     ></chatting-header>
-    <v-navigation-drawer
-      v-model="drawer"
-      class="d-flex flex-column justify-space-between"
-      fixed
-      temporary
-      right
-    >
-      <div>
-        <div class="pa-2 point-font">
-          {{ meetingName }}
+    <v-navigation-drawer v-model="drawer" fixed temporary right>
+      <v-sheet height="100%" class="d-flex flex-column justify-space-between">
+        <div>
+          <div
+            class="px-3 py-2 bold-font xxl-font main-col-1"
+            style="word-break: break-all"
+          >
+            {{ meetingName }}
+          </div>
+          <v-divider></v-divider>
+          <v-list-item v-for="member in member_list" :key="member.memberId">
+            <v-list-item-avatar rounded="lg">
+              <v-img :src="member.profile"></v-img>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ member.nickname }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </div>
-        <v-divider></v-divider>
-        <v-list-item v-for="member in member_list" :key="member.memberId">
-          <v-list-item-avatar>
-            <v-img :src="member.profile"></v-img>
-          </v-list-item-avatar>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ member.nickname }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </div>
-
-      <detail-button></detail-button>
+        <detail-button></detail-button>
+      </v-sheet>
     </v-navigation-drawer>
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
