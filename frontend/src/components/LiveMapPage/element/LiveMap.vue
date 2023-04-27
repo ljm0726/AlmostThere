@@ -72,111 +72,65 @@ export default {
   // },
   methods: {
     // [@Method] Kakao Map 생성
+    // initMap() {
+    //   const container = document.getElementById("map");
+    //   const options = {
+    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+    //     level: 4,
+    //   };
+
+    //   // 지도 객체 등록
+    //   this.map = new kakao.maps.Map(container, options);
+
+    //   // 초기 marker 생성
+    //   // i) 모임 장소 marker
+    //   this.createPlaceMarker(options);
+    //   // ii) 멤버 별 marker 생성
+    //   if (this.memberLocation.length != 0) this.createMemberMarker();
+
+    //   // WebSocket 연결
+    //   this.connect();
+    // },
+    // [@Method] Kakao Map 생성 + 배경화면 설정
     initMap() {
-      const container = document.getElementById("map");
-      const options = {
-        center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
-        level: 4,
+      const domain = "https://i1.daumcdn.net";
+      const path = "/dmaps/apis/openapi/sampleimg/";
+
+      const plan = (x, y, z) => {
+        y = -y - 1;
+        const limit = Math.ceil(3 / Math.pow(2, z));
+        if (0 <= y && y < limit && 0 <= x && x < limit) {
+          return domain + path + "planh" + z + "_" + y + "_" + x + ".png";
+        } else {
+          return "https://i1.daumcdn.net/dmaps/apis/white.png";
+        }
       };
 
+      kakao.maps.Tileset.add(
+        "PLAN",
+        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 4) // 0, 10으로 level 범위
+      );
+
+      const container = document.getElementById("map");
+      const options = {
+        projectionId: null,
+        mapTypeId: kakao.maps.MapTypeId.PLAN,
+        $scale: false,
+        center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+        // center: new kakao.maps.Coords(650, -550),
+        level: 4,
+      };
       // 지도 객체 등록
       this.map = new kakao.maps.Map(container, options);
 
-      // 초기 marker 생성
+      // marker 생성
       // i) 모임 장소 marker
       this.createPlaceMarker(options);
       // ii) 멤버 별 marker 생성
-      if (this.memberLocation.length != 0) this.createMemberMarker();
+      this.createMemberMarker();
 
       // WebSocket 연결
       this.connect();
-    },
-    // [@Method] Kakao Map 생성 + 배경화면 설정
-    // initMap() {
-    //   const domain = "https://i1.daumcdn.net";
-    //   const path = "/dmaps/apis/openapi/sampleimg/";
-
-    //   const plan = (x, y, z) => {
-    //     y = -y - 1;
-    //     const limit = Math.ceil(3 / Math.pow(2, z));
-    //     if (0 <= y && y < limit && 0 <= x && x < limit) {
-    //       return domain + path + "planh" + z + "_" + y + "_" + x + ".png";
-    //     } else {
-    //       return "https://i1.daumcdn.net/dmaps/apis/white.png";
-    //     }
-    //   };
-
-    //   kakao.maps.Tileset.add(
-    //     "PLAN",
-    //     new kakao.maps.Tileset(512, 512, plan, "", false, 0, 4) // 0, 10으로 level 범위
-    //   );
-
-    //   const container = document.getElementById("map");
-    //   const options = {
-    //     projectionId: null,
-    //     mapTypeId: kakao.maps.MapTypeId.PLAN,
-    //     $scale: false,
-    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
-    //     // center: new kakao.maps.Coords(650, -550),
-    //     level: 4,
-    //   };
-    //   // 지도 객체 등록
-    //   this.map = new kakao.maps.Map(container, options);
-
-    //   // marker 생성
-    //   // i) 모임 장소 marker
-    //   this.createPlaceMarker(options);
-    //   // ii) 멤버 별 marker 생성
-    //   this.createMemberMarker();
-
-    //   // WebSocket 연결
-    //   this.connect();
-    // },
-    // initMap() {
-    //   const container = document.getElementById("map");
-    //   const options = {
-    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
-    //     // center: new kakao.maps.Coords(650, -550),
-    //     level: 3,
-    //   };
-    //   // 지도 객체 등록
-    //   this.map = new kakao.maps.Map(container, options);
-
-    //   // marker 생성
-    //   // i) 모임 장소 marker
-    //   this.createPlaceMarker(options);
-    //   // ii) 멤버 별 marker 생성
-    //   this.createMemberMarker();
-
-    //   // back-ground over-lay 표시
-    //   this.setBackGround();
-
-    //   // WebSocket 연결
-    //   this.connect();
-    // },
-    // [@Method] kakao-map BackGround over-lay 표시
-    setBackGround() {
-      // 배경화면 이미지 설정
-      const imageUrl = require("@/assets/images/component/live-map-background.png");
-      const content = `<div><img src="${imageUrl}" /></div>`;
-
-      const overlaySize = new kakao.maps.Size(800, 800);
-
-      const backgroundOverlay = new kakao.maps.CustomOverlay({
-        content: content,
-        xAnchor: 0.5,
-        clickable: false,
-        zIndex: -9999,
-        size: overlaySize,
-      });
-
-      backgroundOverlay.setPosition(this.map.getCenter());
-      backgroundOverlay.setMap(this.map);
-
-      // kakao-map 중심 변경 시 back-ground over-lay 위치 update
-      kakao.maps.event.addListener(this.map, "center_changed", () => {
-        backgroundOverlay.setPosition(this.map.getCenter());
-      });
     },
     // [@Method] WebSocket 연결
     connect() {
