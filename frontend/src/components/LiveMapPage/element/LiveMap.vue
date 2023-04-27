@@ -452,7 +452,9 @@ export default {
     },
     // [@Method] member와 모임장소 거리 - 오버레이 표시
     createDistanceOverlay(distance, marker, member) {
-      const content = `<div class="distance-overlay logo-font">${distance}m</div>`;
+      const content = `<div class="distance-overlay logo-font">${distance.toLocaleString(
+        "ko-KR"
+      )}m</div>`;
       const position = marker.getPosition();
 
       // 오버레이 생성
@@ -565,8 +567,9 @@ export default {
       const distanceIndex = this.memberDistanceOverlayList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
-      const newContent = `<div class="distance-overlay logo-font">${Math.round(
-        polyline.getLength()
+      const distance = Math.round(polyline.getLength());
+      const newContent = `<div class="distance-overlay logo-font">${distance.toLocaleString(
+        "ko-KR"
       )}m</div>`;
       const distanceOverlay =
         this.memberDistanceOverlayList[distanceIndex][this.updateMemberInfo[1]];
