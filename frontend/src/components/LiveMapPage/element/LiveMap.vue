@@ -26,6 +26,7 @@ export default {
       memberOverlay: [0.5, 3.2], // member over-lay (x, y) 위치 좌표
       distanceOverlay: [-0.4, -0.1], // distance over-lay 좌표
       chatOverlay: [0.5, 4], // chat over-lay 좌표
+      warningOverlay: [6.0, 3.5], // GPS 수신불가 over-lay 좌표
       /* # 현재 좌표 */
       placeLatLng: [37.5049, 127.0371], // 모임장소 좌표
       memberLocation: [], // 사용자들의 좌표 (memberId, memberNickname, LatLng)
@@ -222,23 +223,47 @@ export default {
       // alert("## geo", navigator.geolocation);
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-        navigator.geolocation.getCurrentPosition((position) => {
-          // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
-          const member = {
-            member: {
-              memberId: JSON.parse(localStorage.getItem("member")).memberId,
-              memberNickname: JSON.parse(localStorage.getItem("member"))
-                .memberNickname,
-              memberLatLng: [
-                position.coords.latitude,
-                position.coords.longitude,
-              ],
-            },
-          };
+        navigator.geolocation.getCurrentPosition(
+          // i) GPS 얻어온 경우
+          (position) => {
+            // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
+            const member = {
+              member: {
+                memberId: JSON.parse(localStorage.getItem("member")).memberId,
+                memberNickname: JSON.parse(localStorage.getItem("member"))
+                  .memberNickname,
+                memberLatLng: [
+                  position.coords.latitude,
+                  position.coords.longitude,
+                ],
+              },
+            };
 
-          // 현 사용자의 위치 저장
-          this.updateMemberLocation(member);
-        });
+            // 현 사용자의 위치 저장
+            this.updateMemberLocation(member);
+          },
+          // ii) GPS를 가져올 수 없는 경우
+          (error) => {
+            console.log("# GeoLocation 위치 부정확 error: ", error);
+            let memberIndex = -1;
+            for (let i = 0; i < this.memberLocation.length; i++) {
+              if (
+                this.memberLocation[i].member.memberId ==
+                JSON.parse(localStorage.getItem("member")).memberId.toString()
+              ) {
+                memberIndex = i;
+                break;
+              }
+            }
+
+            if (memberIndex != -1) {
+              // 위치 부정확 over-lay 표시 (변경된 member [index, id])
+              this.showLocationUnavailableOverlay(
+                this.memberLocation[memberIndex].member.memberId
+              );
+            }
+          }
+        );
       } else {
         console.log("# geolocation을 사용할수 없어요..");
       }
@@ -613,6 +638,38 @@ export default {
     setInitValue() {
       // circle를 생성하기 위한 maxMemberDistance 기본값
       this.maxMemberDistance = 2500;
+    },
+    // [@Method] GeoLocation 위치 부정확 over-lay 표시
+    showLocationUnavailableOverlay(memberId) {
+      // 현 로그인 사용자의 marker
+      const markerIndex = this.memberMarkerList.findIndex(
+        (obj) => Object.keys(obj)[0] == memberId
+      );
+      const marker = this.memberMarkerList[markerIndex][memberId];
+
+      // over-lay 생성
+      // const imageUrl = require("@/assets/images/dialog/warning.png");
+      // const imageUrl = require("@/assets/images/dialog/x.png");
+      // const content = `<div><img src="${imageUrl}" /></div>`;
+      const content =
+        '<div><i class="fas fa-exclamation-triangle" style="color:red; font-size:20px;">!</i></div>';
+      const position = marker.getPosition();
+      const overlaySize = new kakao.maps.Size(100, 100);
+
+      const customOverlay = new kakao.maps.CustomOverlay({
+        content: content,
+        position: position,
+        xAnchor: this.warningOverlay[0], // 오버레이 표시 x, y 위치
+        yAnchor: this.warningOverlay[1],
+        size: overlaySize,
+      });
+      // over-lay 저장 (for. 삭제)
+      // const object = new Object();
+      // object[member.memberId] = customOverlay;
+      // this.memberNicknameOverlayList.push(object);
+
+      // 오버레이 표시
+      customOverlay.setMap(this.map);
     },
     // [@Method] TEST (!추후 삭제)
     sendChatTest() {
