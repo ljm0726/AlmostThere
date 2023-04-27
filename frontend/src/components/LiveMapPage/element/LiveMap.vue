@@ -136,6 +136,19 @@ export default {
     },
     // [@Method] 모임장소로 부터 원 표시
     createCircle() {
+      this.setInitValue();
+      for (let i = 0; i < this.memberDistanceOverlayList.length; i++) {
+        const memberId = Object.keys(this.memberDistanceOverlayList[i])[0];
+        const overlay = this.memberDistanceOverlayList[i][memberId];
+
+        // distance 추출
+        const contentEl = overlay.getContent();
+        const distanceStr = contentEl.replace(/[^\d]/g, "");
+        const distance = parseInt(distanceStr);
+
+        // 가장 먼 곳에 있는 member distance 저장
+        this.maxMemberDistance = Math.max(this.maxMemberDistance, distance);
+      }
       // 가장 먼 곳에 있는 member를 기준으로 (unit)m 단위 circle 생성
       const unit = 500; // m 단위
       const maxRadius = Math.ceil(this.maxMemberDistance / unit) * unit; // 반지름
@@ -223,8 +236,6 @@ export default {
             },
           };
 
-          // 초기값 set
-          this.setInitValue();
           // 현 사용자의 위치 저장
           this.updateMemberLocation(member);
         });
@@ -470,9 +481,6 @@ export default {
     },
     // [@Method] member와 모임장소 거리 - 오버레이 표시
     createDistanceOverlay(distance, marker, member) {
-      // 가장 먼 거리의 member distance 저장
-      this.maxMemberDistance = Math.max(this.maxMemberDistance, distance);
-
       const content = `<div class="distance-overlay logo-font">${distance.toLocaleString(
         "ko-KR"
       )}m</div>`;
@@ -589,9 +597,6 @@ export default {
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
       const distance = Math.round(polyline.getLength());
-      // 가장 먼 거리의 member distance 저장
-      this.maxMemberDistance = Math.max(this.maxMemberDistance, distance);
-
       const newContent = `<div class="distance-overlay logo-font">${distance.toLocaleString(
         "ko-KR"
       )}m</div>`;
