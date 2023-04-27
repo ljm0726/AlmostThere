@@ -9,9 +9,11 @@
       v-on:click="goToPage('/search')"
     />
 
-    <v-btn class="find-place-btn"
+    <v-btn class="find-place-btn" @click="logout()"
       ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
     >
+    <halfway-modal ref="halfway"></halfway-modal>
+
     <div id="map" class="maps"></div>
     <div v-if="isSelect" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
@@ -22,9 +24,10 @@
 <script>
 import { mapState } from "vuex";
 import placeInfo from "./placeInfo.vue";
+import HalfwayModal from "./placeModal/HalfwayModal.vue";
 
 export default {
-  components: { placeInfo },
+  components: { placeInfo, HalfwayModal },
   name: "PlacePage",
   data() {
     return {
@@ -74,6 +77,9 @@ export default {
   },
 
   methods: {
+    logout() {
+      this.$refs.halfway.openDialog();
+    },
     moveRegisterPage() {
       this.$router.push("/register");
     },
@@ -119,7 +125,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .place-info {
   z-index: 2;
   position: absolute;
