@@ -104,7 +104,7 @@ export default {
       };
       kakao.maps.Tileset.add(
         "PLAN",
-        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 10) // 0, 10으로 level 범위
+        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 4) // 0, 10으로 level 범위
       );
 
       const container = document.getElementById("map");
@@ -119,6 +119,9 @@ export default {
       // 지도 객체 등록
       this.map = new kakao.maps.Map(container, options);
 
+      // 모임장소로 부터 원 표시
+      this.createCircle(options);
+
       // marker 생성
       // i) 모임 장소 marker
       this.createPlaceMarker(options);
@@ -127,6 +130,27 @@ export default {
 
       // WebSocket 연결
       this.connect();
+    },
+    // [@Method] 모임장소로 부터 원 표시
+    createCircle(options) {
+      // (unit)m 단위로 circle 생성
+      let radius = 2500; // circle 반지름
+      const unit = 500; // m 단위
+
+      for (let r = 0; radius != 0; r++) {
+        const circle = new kakao.maps.Circle({
+          center: options.center,
+          radius: radius, // m 단위의 원 반지름
+          strokeWeight: 0.5, // 선의 두께
+          strokeColor: "var(--main-col-2)",
+          strokeOpacity: 1, // 선 불투명도
+          strokeStyle: "solid", // 선 스타일
+        });
+
+        // circle 표시
+        circle.setMap(this.map);
+        radius -= unit;
+      }
     },
     // [@Method] WebSocket 연결
     connect() {
