@@ -16,22 +16,20 @@
       </v-card-title>
 
       <input
-        v-for="i in 3"
-        :key="i"
+        v-for="(start, index) in starts"
+        :key="index"
         class="search-box"
-        :placeholder="i + '. 출발지를 입력하세요!'"
+        :placeholder="`${index + 1}. 출발지를 입력하세요!`"
         v-on:click="goToPage('/search')"
       />
 
-      <div class="plusPlace" style="text-align: center">
-        <div style="display: inline-block">
-          <img
-            src="@/assets/images/dialog/Plus.png"
-            style="margin-bottom: 10%; float: left"
-            alt=""
-          />
-          출발지 추가하기
-        </div>
+      <div style="align-self: center; margin: 2% 0" @click="plusStart">
+        <img
+          src="@/assets/images/dialog/Plus.png"
+          style="margin-bottom: 10%; float: left"
+          alt=""
+        />
+        출발지 추가하기
       </div>
 
       <v-card-text>
@@ -55,6 +53,7 @@ export default {
   data() {
     return {
       dialog: false,
+      starts: [null, null],
     };
   },
   methods: {
@@ -63,6 +62,11 @@ export default {
     },
     closeDialog() {
       this.dialog = false;
+    },
+
+    plusStart() {
+      console.log("@@@");
+      this.starts.push(null);
     },
   },
 };
@@ -78,7 +82,6 @@ export default {
   height: 33px;
   align-self: center;
   /* bottom: unset; 추가 */
-
   background: #ffffff;
   border: 1px solid #092a49;
   border-radius: 10px;
