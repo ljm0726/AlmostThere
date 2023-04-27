@@ -1,3 +1,5 @@
+// import meetingStore from "./meeting";
+
 const placeStore = {
   namespaced: true,
   state: {
@@ -18,6 +20,15 @@ const placeStore = {
   actions: {
     updatePlace({ commit }, placeMap) {
       commit("UPDATE_PLACE", placeMap);
+      console.log(placeMap.get("name"));
+
+      // meetingStore.commit("SET_PLACE_NAME", placeMap.get("name"));
+      commit("meetingStore/SET_PLACE_NAME", placeMap.get("name"), {
+        root: true,
+      });
+      commit("meetingStore/SET_PLACE_ADDR", placeMap.get("addr"), {
+        root: true,
+      });
     },
   },
 };
