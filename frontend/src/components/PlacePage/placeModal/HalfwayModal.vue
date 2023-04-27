@@ -8,7 +8,8 @@
         <img
           src="@/assets/images/dialog/earth.png"
           width="60%"
-          style="margin-bottom: 7%"
+          style="margin-bottom: 7%; height: 82px; width: 102px"
+          alt=""
         />
         <span class="regular-font md-font">출발지를 입력해</span>
         <span class="regular-font md-font">중간 위치를 추천 받아보세요!</span>
@@ -22,9 +23,20 @@
         v-on:click="goToPage('/search')"
       />
 
+      <div class="plusPlace" style="text-align: center">
+        <div style="display: inline-block">
+          <img
+            src="@/assets/images/dialog/Plus.png"
+            style="margin-bottom: 10%; float: left"
+            alt=""
+          />
+          출발지 추가하기
+        </div>
+      </div>
+
       <v-card-text>
         <v-row>
-          <v-col class="">
+          <v-col class="search_halfway">
             <v-btn elevation="0" color="var(--main-col-1)" dark rounded block
               >중간 위치 찾기</v-btn
             >
@@ -74,15 +86,18 @@ export default {
 
   margin-bottom: 13px;
 }
+.plusPlace {
+  /* align-self: center; */
+  margin: 2% 0;
+}
+.search_halfway {
+  margin-bottom: 5px;
+}
 
-input::placeholder {
+/* input::placeholder {
   font-style: var(--regular-font);
   font-size: var(--sm-font);
-}
-
-.v-btn {
-  margin-top: 5%;
-}
+} */
 span {
   line-height: 18px;
 }
