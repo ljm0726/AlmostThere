@@ -2,6 +2,7 @@
   <div class="live-map">
     <v-btn @click="ssafyLogin()">싸피 로그인</v-btn>
     <v-btn @click="heeLogin()">희정 로그인</v-btn>
+    <v-btn @click="seoLogin()">서찰스 로그인</v-btn>
     <live-map></live-map>
   </div>
 </template>
@@ -28,6 +29,14 @@ export default {
       const memberStore = {
         memberId: 2,
         memberNickname: "희정",
+      };
+      localStorage.setItem("member", JSON.stringify(memberStore));
+    },
+    seoLogin() {
+      // console.log("#21# hee 로그인");
+      const memberStore = {
+        memberId: 3,
+        memberNickname: "찰스",
       };
       localStorage.setItem("member", JSON.stringify(memberStore));
     },
