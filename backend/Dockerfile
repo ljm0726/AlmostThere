@@ -8,4 +8,4 @@ ARG JAR_FILE=build/libs/almostThere-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
 
 # 프로젝트 파일 실행
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar", "/app.jar"]
