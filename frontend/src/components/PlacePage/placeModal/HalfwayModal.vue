@@ -15,13 +15,26 @@
         <span class="regular-font md-font">중간 위치를 추천 받아보세요!</span>
       </v-card-title>
 
-      <input
+      <div
         v-for="(start, index) in starts"
         :key="index"
-        class="search-box"
-        :placeholder="`${index + 1}. 출발지를 입력하세요!`"
-        v-on:click="goToPage('/search')"
-      />
+        class="input-container"
+      >
+        <input
+          class="search-box"
+          :value="`${index + 1}. 출발지를 입력하세요!`"
+          @click="goToPage('/search')"
+        />
+        <div class="img-container">
+          <img
+            v-if="index > 1"
+            src="@/assets/images/dialog/close_btn_small.png"
+            class="close-btn-small"
+            alt=""
+            @click="cancelStart(index)"
+          />
+        </div>
+      </div>
 
       <div style="align-self: center; margin: 2% 0" @click="plusStart">
         <img
@@ -68,6 +81,10 @@ export default {
       console.log("@@@");
       this.starts.push(null);
     },
+
+    cancelStart(index) {
+      this.starts.splice(index, 1);
+    },
   },
 };
 </script>
@@ -75,17 +92,13 @@ export default {
 <style scoped>
 .search-box {
   box-sizing: border-box;
-  z-index: 2;
-  display: flex;
-  /* margin-left: 10%; */
   width: 85%;
   height: 33px;
-  align-self: center;
-  /* bottom: unset; 추가 */
   background: #ffffff;
   border: 1px solid #092a49;
   border-radius: 10px;
   padding-left: 20px;
+  padding-right: 25px;
 
   margin-bottom: 13px;
 }
@@ -103,5 +116,22 @@ export default {
 } */
 span {
   line-height: 18px;
+}
+
+.input-container {
+  text-align: center;
+  width: 100%;
+}
+.input-container {
+  position: relative;
+}
+
+.img-container {
+  position: absolute;
+  top: 48%;
+  right: 8%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
 }
 </style>
