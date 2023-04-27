@@ -43,8 +43,8 @@ export default {
     return {
       loading: true,
       meetingName: "파이썬 알고리즘 스터디",
-      meetingDate: "2023년 04월 04일",
-      meetingTime: "오후 15시 30분",
+      meetingDate: "2023-04-04",
+      meetingTime: "15:30",
       meetingPlace: "멀티캠퍼스 역삼",
       meetingAddress: "서울 강남구 테헤란로 212",
       startPlace: "배곧신도시SK뷰아파트",

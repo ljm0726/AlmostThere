@@ -28,8 +28,8 @@
           <span class="point-font xxxl-font main-col-1">일시</span>
           <div class="d-flex flex-row">
             <v-dialog
-              ref="dialog"
-              v-model="modal"
+              ref="dateDialog"
+              v-model="dateDialog"
               :return-value.sync="date"
               width="290px"
               style="z-index: 1000000"
@@ -46,22 +46,36 @@
                   hide-details
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="date" scrollable>
+              <v-date-picker
+                locale="ko"
+                v-model="date"
+                scrollable
+                color="var(--main-col-1)"
+                :day-format="(date) => new Date(date).getDate()"
+              >
                 <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="modal = false">
-                  Cancel
+                <v-btn
+                  text
+                  color="var(--main-col-1)"
+                  @click="dateDialog = false"
+                >
+                  닫기
                 </v-btn>
-                <v-btn text color="primary" @click="$refs.dialog.save(date)">
-                  OK
+                <v-btn
+                  text
+                  color="var(--main-col-1)"
+                  @click="$refs.dateDialog.save(date)"
+                >
+                  확인
                 </v-btn>
               </v-date-picker>
             </v-dialog>
             <v-dialog
-              ref="dialog"
-              v-model="modal2"
+              ref="timeDialog"
+              v-model="timeDialog"
               :return-value.sync="time"
               width="290px"
-              style="z-index: 100000"
+              style="z-index: 1000000"
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
@@ -75,13 +89,25 @@
                   hide-details
                 ></v-text-field>
               </template>
-              <v-time-picker v-model="time" full-width>
+              <v-time-picker
+                v-model="time"
+                full-width
+                color="var(--main-col-1)"
+              >
                 <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="modal2 = false">
-                  Cancel
+                <v-btn
+                  text
+                  color="var(--main-col-1)"
+                  @click="timeDialog = false"
+                >
+                  닫기
                 </v-btn>
-                <v-btn text color="primary" @click="$refs.dialog.save(time)">
-                  OK
+                <v-btn
+                  text
+                  color="var(--main-col-1)"
+                  @click="$refs.timeDialog.save(time)"
+                >
+                  확인
                 </v-btn>
               </v-time-picker>
             </v-dialog>
@@ -89,7 +115,7 @@
         </v-sheet>
         <v-sheet class="mx-5 my-2 d-flex flex-column">
           <span class="point-font xxxl-font main-col-1">장소</span>
-          <v-btn outlined block>
+          <v-btn outlined block color="var(--main-col-1)">
             <span>{{ meetingPlace }}</span>
             <span>({{ meetingAddress }})</span>
           </v-btn>
@@ -149,11 +175,13 @@ export default {
   data() {
     return {
       name: "",
-      date: "",
-      time: "",
+      date: null,
+      time: null,
       place: "",
       address: "",
       amount: 0,
+      dateDialog: false,
+      timeDialog: false,
     };
   },
   created() {
