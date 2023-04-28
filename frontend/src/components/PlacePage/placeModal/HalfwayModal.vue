@@ -21,7 +21,7 @@
         <span class="regular-font md-font">중간 위치를 추천 받아보세요!</span>
       </v-card-title>
 
-      <div class="input-container">
+      <div class="input-container" ref="inputContainer">
         <div v-for="(start, index) in starts" :key="index" class="input-list">
           <input
             class="search-box2"
@@ -128,11 +128,22 @@ export default {
     plusStart() {
       console.log("@@@");
       this.starts.push(null);
+      setTimeout(() => {
+        this.scrollToBottom();
+      }, 100);
     },
 
     cancelStart(index) {
       this.removePlaceList(index);
       // this.starts.splice(index, 1);
+    },
+
+    scrollToBottom() {
+      const inputContainer = this.$refs.inputContainer;
+      inputContainer.scrollTo({
+        top: inputContainer.scrollHeight - inputContainer.clientHeight,
+        behavior: "smooth", // 부드러운 애니메이션 적용
+      });
     },
   },
 };
