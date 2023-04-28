@@ -4,6 +4,7 @@ import com.almostThere.domain.meeting.entity.Meeting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -24,4 +25,10 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             "where m.member.id=:memberId " +
             "  and m.meeting.meetingTime between :oneDayAfterDate and :oneMonthAfterDate")
     List <Meeting> findUpcomingMeetings(@Param("memberId") Long memberId, @Param("oneDayAfterDate") LocalDateTime oneDayAfterDate, @Param("oneMonthAfterDate") LocalDateTime oneMonthAfterDate);
+
+    /**
+     * member가 참석한 모든 meeting 조회 (List)
+     * **/
+    @Query("select mt from Meeting mt where mt.id in :meetingId")
+    List<Meeting> findAttendAllMeetingById(@Param("meetingId") List<Long> attendMeetingIdList);
 }

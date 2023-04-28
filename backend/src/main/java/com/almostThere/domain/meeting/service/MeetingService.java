@@ -155,11 +155,19 @@ public class MeetingService {
      * @param memberId
      * @return 모임 리스트
      */
-    public List<MeetingMember> findAllMeeting(Long memberId) {
-        // i) member가 참여한 모임ID List 찾기
-        List<MeetingMember> meetingMembers = meetingMemberRepository.findByMemberId(memberId);
+    public List<MeetingDto> findAllMeeting(Long memberId) {
+        // i) member가 참여한 모임ID List 조회
+//        List<MeetingMember> meetingMembers = meetingMemberRepository.findByMemberId(memberId);
+        List<MeetingMemberDto> meetingMemberDtos = meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new MeetingMemberDto(m)).collect(Collectors.toList());
 
-//        Optional<MeetingMember> meetingMembers = meetingMemberRepository.findById(memberId);
-        return meetingMembers;
+        // ii) 모임 id에 해당되는 모임 List 조회
+        List<Long> attendMeetingIdList = new ArrayList<>();
+        for (MeetingMemberDto meetingMember: meetingMemberDtos) {
+            attendMeetingIdList.add(meetingMember.getId());
+        }
+//        List<Meeting> meetings = meetingRepository.findAttendAllMeetingById(attendMeetingIdList);
+        List<MeetingDto> result = meetingRepository.findAttendAllMeetingById(attendMeetingIdList).stream().map(m -> new MeetingDto(m)).collect(Collectors.toList());
+
+        return result;
     }
 }

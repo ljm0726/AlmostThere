@@ -35,7 +35,7 @@ public class MemberService {
      * @param memberId
      * @return Member 회원 Entity
      */
-    public MemberInfoDto getMemberByMemberId(Long memberId) {
-        return new MemberInfoDto(memberRepository.findByid(memberId));
+    public Member getMemberByMemberId(Long memberId) {
+        return memberRepository.findByid(memberId);
     }
 }
