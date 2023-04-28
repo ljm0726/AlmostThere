@@ -35,6 +35,8 @@ public class LocationController {
     @MessageMapping("/locShare")
     public void saveLocation(String message) throws ParseException {
 
+        System.out.println("# redis 저장: " + message);
+
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(message);
         JSONObject memberObject = (JSONObject) jsonObject.get("member");
