@@ -20,10 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -63,38 +59,12 @@ public class MemberController {
 //        Member member = memberService.getMemberByMemberId(memberId);
         // ii) member의 모든 모임 이력 정보
         //     - 모든 모임 이력, [모임-멤버] 테이블에 멤버ID가 있는 모임ID 정보 가져오기
-        List<MeetingDto> meetingDtoList = meetingService.findAllMeeting(memberId);
+//        List<MeetingDto> meetingDtoList = meetingService.findAllMeeting(memberId);
         // iii) 모임 data 요약 정보
         //      - 이번달 x번의 모임을 잡았는 지
-        Integer attendMeetingCnt = 0;
         //      - 누적 x번 약속 중 y번 지각
-        Integer totalLateCnt = 0;
         //      - 지난달 모임에서 150,000원 소비
-        Integer lastMonthTotalSpendMoney = 0;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        for (MeetingDto meetingDto: meetingDtoList) {
-            LocalDateTime meetingTime = LocalDateTime.parse(meetingDto.getMeetingTime(), formatter);
-            // 이번달 - 모임 개수
-            if (meetingTime.getMonthValue() == LocalDate.now().getMonthValue()) {
-                attendMeetingCnt++;
-            }
-            // 지난달 - 모임 소비 가격
-            else if (meetingTime.getMonthValue() == LocalDate.now().minusMonths(1).getMonthValue()) {
-                lastMonthTotalSpendMoney += meetingDto.getCalculateDetails().get(0).getPrice();
-            }
 
-            // 총 모임 중 지각 횟수
-            if (meetingDto.getMeetingMembers().get(0).getState().equals("LATE"))
-                totalLateCnt++;
-        }
-
-//        return BaseResponse.success(new MemberInfoDto(memberService.getMemberByMemberId(memberId), meetingService.findAllMeeting(memberId)));
-        return BaseResponse.success(new MemberInfoDto(
-                memberService.getMemberByMemberId(memberId),
-                meetingDtoList,
-                attendMeetingCnt,
-                meetingDtoList.size(),
-                totalLateCnt,
-                lastMonthTotalSpendMoney));
+        return BaseResponse.success(new MemberInfoDto(memberService.getMemberByMemberId(memberId), meetingService.findAllMeeting(memberId)));
     }
 }
