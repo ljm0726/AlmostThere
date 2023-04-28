@@ -9,7 +9,7 @@
       v-on:click="goToPage('/search')"
     />
 
-    <v-btn class="find-place-btn" @click="logout()"
+    <v-btn class="find-place-btn" @click="findHalfway()"
       ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
     >
     <halfway-modal ref="halfway"></halfway-modal>
@@ -74,10 +74,15 @@ export default {
         new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
       );
     }
+
+    if (localStorage.getItem("findHalfwayModal") !== null) {
+      this.$refs.halfway.openDialog();
+    }
   },
 
   methods: {
-    logout() {
+    findHalfway() {
+      localStorage.setItem("findHalfwayModal", true);
       this.$refs.halfway.openDialog();
     },
     moveRegisterPage() {

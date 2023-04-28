@@ -7,6 +7,7 @@ import TheLanding from "@/views/TheLanding.vue";
 import LoginPage from "@/components/LoginPage/LoginPage.vue";
 import PlacePage from "@/components/PlacePage/PlacePage.vue";
 import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
+import SearchPlacePage2 from "@/components/PlacePage/SearchPlace/SearchPlacePage2";
 
 const isLogin = async (to, from, next) => {
   console.log(to, " ", to.query);
@@ -75,6 +76,14 @@ const home = [
     name: "search",
     components: {
       default: SearchPlacePage,
+      navigation: TheNavigation,
+    },
+  },
+  {
+    path: "/search2",
+    name: "search2",
+    components: {
+      default: SearchPlacePage2,
       navigation: TheNavigation,
     },
   },

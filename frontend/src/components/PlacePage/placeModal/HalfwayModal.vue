@@ -1,5 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" scrollable max-width="300px" rounded="xl">
+  <v-dialog
+    v-model="dialog"
+    scrollable
+    max-width="300px"
+    rounded="xl"
+    v-if="!isSearchPage"
+  >
     <v-card rounded="xl">
       <v-card-title class="d-flex flex-column" style="margin-bottom: 2%">
         <div class="align-self-end">
@@ -21,9 +27,14 @@
         class="input-container"
       >
         <input
-          class="search-box"
-          :value="`${index + 1}. 출발지를 입력하세요!`"
-          @click="goToPage('/search')"
+          class="search-box2"
+          :value="
+            start
+              ? `${index + 1}. ` + start.get('name')
+              : `${index + 1}. 출발지를 입력하세요!`
+          "
+          @click="goToSearchPage(`${index + 1}`)"
+          readonly
         />
         <div class="img-container">
           <img
@@ -60,21 +71,60 @@
 
 <script>
 import CloseButton from "@/common/component/button/CloseButton.vue";
+import { mapActions, mapState } from "vuex";
+// import  from "../SearchPlace/SearchPlacePage2.vue";
+
 export default {
-  name: "LogoutDialog",
+  name: "HalfwayModal",
   components: { CloseButton },
   data() {
     return {
       dialog: false,
       starts: [null, null],
+      isSearchPage: false,
+      selectedPlace: {},
     };
   },
+  computed: {
+    ...mapState("halfwayStore", ["startPlaces"]),
+  },
+  mounted() {
+    console.log(this.startPlaces);
+    this.starts = this.startPlaces;
+  },
+  watch: {
+    dialog() {
+      if (!this.dialog) {
+        localStorage.removeItem("findHalfwayModal");
+      }
+    },
+  },
   methods: {
+    ...mapActions("meetingStore", [
+      "updateHalfway",
+      "addPlaceList",
+      "removePlaceList",
+    ]),
+    ...mapActions("halfwayStore", ["removePlaceList"]),
     openDialog() {
       this.dialog = true;
     },
     closeDialog() {
+      localStorage.removeItem("findHalfwayModal");
       this.dialog = false;
+    },
+
+    goToSearchPage(index) {
+      // this.$router.push(url);
+      console.log(index);
+      localStorage.setItem("listIndex", index);
+      // this.isSearchPage = true; // dialog를 닫고 SearchPlacePage2로 이동
+      this.$router.push("/search2");
+    },
+
+    updateSelectedPlace(place) {
+      this.selectedPlace = place;
+      this.isSearchPage = false; // dialog를 다시 열어줌
     },
 
     plusStart() {
@@ -83,16 +133,17 @@ export default {
     },
 
     cancelStart(index) {
-      this.starts.splice(index, 1);
+      this.removePlaceList(index);
+      // this.starts.splice(index, 1);
     },
   },
 };
 </script>
 
 <style scoped>
-.search-box {
+.search-box2 {
   box-sizing: border-box;
-  width: 85%;
+  /* width: 85%; */
   height: 33px;
   background: #ffffff;
   border: 1px solid #092a49;
@@ -117,7 +168,8 @@ export default {
 span {
   line-height: 18px;
 }
-
+input {
+}
 .input-container {
   text-align: center;
   width: 100%;
