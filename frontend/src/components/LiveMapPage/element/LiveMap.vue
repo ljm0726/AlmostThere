@@ -195,8 +195,8 @@ export default {
 
           // 서버의 메시지 전송 endpoint를 구독합니다.
           // 이런형태를 pub sub 구조라고 합니다.
-          const memberId = 1;
-          this.stompClient.subscribe(`/topic/${memberId}`, (res) => {
+          const meetingId = 1;
+          this.stompClient.subscribe(`/topic/${meetingId}`, (res) => {
             console.log("구독으로 받은 메시지 입니다.", res.body);
 
             // socket을 통해 받은 message(다른 사용자 좌표) 저장
@@ -329,11 +329,7 @@ export default {
 
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
-        this.stompClient.send(
-          "/message/locShare/meetingId/1/memberId/1",
-          JSON.stringify(msg),
-          {}
-        );
+        this.stompClient.send("/message/locShare/1", JSON.stringify(msg), {});
         // console.log("#21# message 전송: ", msg);
       }
     },
