@@ -59,7 +59,13 @@
       <v-card-text>
         <v-row>
           <v-col class="search_halfway">
-            <v-btn elevation="0" color="var(--main-col-1)" dark rounded block
+            <v-btn
+              elevation="0"
+              color="var(--main-col-1)"
+              dark
+              rounded
+              block
+              @click="findHalfway"
               >중간 위치 찾기</v-btn
             >
           </v-col>
@@ -83,6 +89,7 @@ export default {
       starts: [null, null],
       isSearchPage: false,
       selectedPlace: {},
+      size: 0,
     };
   },
   computed: {
@@ -135,6 +142,64 @@ export default {
     cancelStart(index) {
       this.removePlaceList(index);
       // this.starts.splice(index, 1);
+    },
+
+    combine(arr, k) {
+      const result = [];
+
+      function dfs(start, comb) {
+        if (comb.length === k) {
+          result.push(comb.slice());
+          return;
+        }
+
+        for (let i = start; i < arr.length; i++) {
+          comb.push(arr[i]);
+          dfs(i + 1, comb);
+          comb.pop();
+        }
+      }
+
+      dfs(0, []);
+      return result;
+    },
+
+    findHalfway() {
+      this.size = this.startPlaces.length;
+
+      const combinations = [];
+      for (let i = 1; i <= this.size; i++) {
+        const result = this.combine(this.startPlaces, i);
+        combinations.push(...result);
+      }
+
+      // console.log("combi: ", combinations);
+
+      const middlePlace = [];
+      combinations.forEach((combination) => {
+        let xSum = 0;
+        let ySum = 0;
+        combination.forEach((place) => {
+          xSum += parseFloat(place.get("x"));
+          ySum += parseFloat(place.get("y"));
+        });
+        const middleX = xSum / (combination.length * 1.0);
+        const middleY = ySum / (combination.length * 1.0);
+        console.log("Sum: ", xSum, ySum);
+        middlePlace.push({ middleX, middleY });
+      });
+      console.log("middle: ", middlePlace);
+      let middleAvergeX = 0;
+      let middleAvergeY = 0;
+      middlePlace.forEach((place) => {
+        middleAvergeX += place.middleX;
+        middleAvergeY += place.middleY;
+      });
+      middleAvergeX /= middlePlace.length;
+      middleAvergeY /= middlePlace.length;
+
+      console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
+      // store.commit('setMiddlePlace', [middleAvergeX, middleAvergeY]);
     },
   },
 };
