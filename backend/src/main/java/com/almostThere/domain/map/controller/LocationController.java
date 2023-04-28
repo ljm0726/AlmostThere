@@ -31,8 +31,7 @@ public class LocationController {
     public void saveLocation(String message) throws ParseException {
 
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) jsonParser.parse(message);
-        JSONObject memberObject = (JSONObject) jsonObject.get("member");
+        JSONObject memberObject = (JSONObject) jsonParser.parse(message);
 
         String memberId =  String.valueOf(memberObject.get("memberId"));
         String memberNickname = (String) memberObject.get("memberNickname");
