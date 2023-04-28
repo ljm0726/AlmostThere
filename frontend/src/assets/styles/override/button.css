@@ -4,7 +4,8 @@
 #nav .theme--light.v-btn.v-btn--has-bg {
   background-color: transparent !important;
 }
-#nav .v-btn.v-btn--is-elevated.v-btn--has-bg.v-btn--router.theme--light.v-size--default {
+#nav
+  .v-btn.v-btn--is-elevated.v-btn--has-bg.v-btn--router.theme--light.v-size--default {
   height: 100%;
 }
 #square-btn.v-btn.v-btn--outlined.theme--light.v-size--default {
@@ -13,14 +14,36 @@
   border-radius: 10px;
   border-width: 1px;
 }
+#square-btn.v-btn.v-btn--outlined.theme--light.v-size--small {
+  padding: 1px;
+  min-width: 30px;
+  border-radius: 10px;
+  border-width: 1px;
+}
 #square-btn .v-icon__component.theme--light {
   height: 18px !important;
-  width: 18px!important;
+  width: 18px !important;
 }
-#round-btn.v-btn.v-btn--outlined.theme--light.v-size--default{
+#square-big-btn.v-btn.v-btn--outlined.theme--light.v-size--default {
+  padding: 1px;
+  min-width: 38px;
+  border-radius: 10px;
+  border-width: 1px;
+}
+#square-big-btn.v-btn.v-btn--outlined.theme--light.v-size--small {
+  padding: 1px;
+  min-width: 30px;
+  border-radius: 10px;
+  border-width: 1px;
+}
+#square-big-btn .v-icon__component.theme--light {
+  height: 25px !important;
+  width: 25px !important;
+}
+#round-btn.v-btn.v-btn--outlined.theme--light {
   border-width: 3px;
 }
 #round-btn .v-icon__component.theme--light {
   height: 13px !important;
-  width: 13px!important;
+  width: 13px !important;
 }

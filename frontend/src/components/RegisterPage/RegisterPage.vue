@@ -27,7 +27,11 @@
       <v-card-text style="padding: 38px 24px 0 24px">
         <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
         <span class="point-font xxxxl-font main-col-1 text-left">제목</span>
-        <v-text-field dense v-model="meetingname"></v-text-field>
+        <v-text-field
+          dense
+          v-model="meetingname"
+          @keyup="setMeetingName"
+        ></v-text-field>
         <span class="point-font xxxxl-font main-col-1 text-left">일시</span>
         <!-- <v-text-field dense></v-text-field> -->
         <v-menu
@@ -94,7 +98,7 @@
         <span class="point-font xxxxl-font main-col-1 text-left">장소</span>
         <v-text-field
           dense
-          v-model="meetingplace"
+          v-model="meeting_place"
           @click="movePlacePage"
         ></v-text-field>
 
@@ -125,22 +129,60 @@ export default {
   name: "RegisterPage",
   data() {
     return {
-      meetingname: "",
+      meetingname: null,
       date: null,
       menu: null,
       time: null,
       menu2: null,
-      meetingplace: "",
+      meeting_place: "",
       curDate: null,
       curTime: null,
     };
   },
 
   computed: {
-    ...mapState("placeStore", ["placeName", "placeAddr"]),
+    ...mapState("meetingStore", [
+      "meeting_name",
+      "meeting_date",
+      "meeting_time",
+      "place_name",
+      "place_addr",
+    ]),
+  },
+  watch: {
+    date: {
+      handler: function () {
+        this.setMeetingDate();
+      },
+      deep: true,
+    },
+    time: {
+      handler: function () {
+        this.setMeetingDate();
+      },
+      deep: true,
+    },
   },
   methods: {
     ...mapActions("meetingStore", ["register"]),
+    ...mapActions("meetingStore", [
+      "SET_MEETING_NAME",
+      "SET_MEETING_DATE",
+      "SET_MEETING_TIME",
+    ]),
+
+    setMeetingName() {
+      console.log(this.meetingname);
+      this.SET_MEETING_NAME(this.meetingname);
+    },
+    setMeetingDate() {
+      this.getCurTime();
+
+      console.log(this.date + " " + this.time);
+      this.SET_MEETING_DATE(this.date);
+      this.SET_MEETING_TIME(this.time);
+    },
+
     movePlacePage() {
       this.$router.push("/place");
     },
@@ -150,15 +192,18 @@ export default {
 
       if (this.curDate >= this.date && this.curTime >= this.time) {
         alert("시간을 다시 설정해주세요!");
-      } else if (this.meetingname == null || this.meetingplace == null) {
+      } else if (this.meetingname == null || this.meeting_place == null) {
         alert("모든 정보를 입력해주세요!");
       } else {
-        console.log(this.meetingname, this.date, this.time, this.meetingplace);
-
-        const date_time = new Date(this.date + " " + this.time);
+        console.log(this.date, " ", this.time);
+        const date_time = new Date(this.date + " " + this.time); //LocalDate 타입에 맞게 변환
         const meeting_name = this.meetingname;
+        const place_name = this.place_name;
+        const place_addr = this.place_addr;
 
-        this.register({ meeting_name, date_time });
+        console.log(meeting_name, " ", date_time);
+
+        this.register({ meeting_name, date_time, place_name, place_addr });
       }
     },
 
@@ -185,13 +230,28 @@ export default {
 
   mounted() {
     // this.date = new Date().toLocaleDateString();
-    if (this.placeName !== null && this.placeAddr !== null) {
-      this.meetingplace = this.placeName + ", " + this.placeAddr;
+    if (this.place_name !== null && this.place_addr !== null) {
+      this.meeting_place = this.place_name + ", " + this.place_addr;
     }
 
-    this.getCurTime();
-    this.date = this.curDate;
-    this.time = this.curTime;
+    console.log(
+      this.meeting_name,
+      " ",
+      this.meeting_date,
+      " ",
+      this.meeting_time
+    );
+
+    this.meetingname = this.meeting_name;
+    this.date = this.meeting_date;
+    this.time = this.meeting_time;
+
+    // console.log(this.name, " ", this.date, " ", this.time);
+    if (this.date === null || this.time === null) {
+      this.getCurTime();
+      this.date = this.curDate;
+      this.time = this.curTime;
+    }
   },
 };
 </script>

@@ -9,24 +9,23 @@ import PlacePage from "@/components/PlacePage/PlacePage.vue";
 import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
 
 const isLogin = async (to, from, next) => {
-  // console.log(to, " ", to.query);
+  console.log(to, " ", to.query);
   const access_token = localStorage.getItem("Authorization");
+  if (to.name === "landing") {
+    next();
+  }
+
   if (to.query.login || access_token) {
     console.log("login 성공 ");
-    // if (!access_token) {
-    // console.log(to.query.login.substring(7));
     if (Object.keys(to.query).length !== 0) {
-      // console.log(to.query);
       localStorage.setItem("Authorization", to.query.login.substring(7));
     }
-    // }
     next({
       name: "home",
     });
-  } else {
-    console.log("로그인 하러 옴");
-    // console.log("로그인 했다!!!!!!!!!!!!!.");
-    next({ name: "login" });
+  } else if (to.name !== "landing") {
+    // console.log("로그인 하러 옴");
+    next({ name: "landing" });
   }
 };
 
