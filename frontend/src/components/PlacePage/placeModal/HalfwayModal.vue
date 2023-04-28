@@ -126,11 +126,15 @@ export default {
     },
 
     plusStart() {
-      console.log("@@@");
-      this.starts.push(null);
-      setTimeout(() => {
-        this.scrollToBottom();
-      }, 100);
+      console.log("@@@", this.starts.length);
+      if (this.starts.length > 9) {
+        alert("최대 10명 까지 가능 합니다! ");
+      } else {
+        this.starts.push(null);
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 100);
+      }
     },
 
     cancelStart(index) {
@@ -181,7 +185,7 @@ span {
 }
 .input-container {
   overflow-y: auto;
-  max-height: 250px;
+  max-height: 200px;
 }
 
 .img-container {
