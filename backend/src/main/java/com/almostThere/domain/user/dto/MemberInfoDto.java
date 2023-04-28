@@ -18,9 +18,25 @@ public class MemberInfoDto {
 
     // 회원이 참석한 모든 모임
     private List<MeetingDto> meetingDtoList;
+    
+    // 이번달에 참석한 모임 개수
+    private Integer attendMeetingCnt;
 
-    public MemberInfoDto(Member member, List<MeetingDto> meetingDtoList) {
+    // 누적(총) 모임 개수
+    private Integer totalMeetingCnt;
+
+    // 누적(총) 모임 중 지각 횟수
+    private Integer totalLateCnt;
+
+    // 지난달 모임에서 소비한 총 가격
+    private Integer lastMonthTotalSpendMoney;
+
+    public MemberInfoDto(Member member, List<MeetingDto> meetingDtoList, Integer attendMeetingCnt, Integer totalMeetingCnt, Integer totalLateCnt, Integer lastMonthTotalSpendMoney) {
         this.member = member;
         this.meetingDtoList = meetingDtoList;
+        this.attendMeetingCnt = attendMeetingCnt;
+        this.totalMeetingCnt = totalMeetingCnt;
+        this.totalLateCnt = totalLateCnt;
+        this.lastMonthTotalSpendMoney = lastMonthTotalSpendMoney;
     }
 }
