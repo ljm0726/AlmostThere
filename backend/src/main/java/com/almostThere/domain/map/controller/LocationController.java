@@ -10,6 +10,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.connection.RedisStringCommands.SetOption;
+import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -41,7 +43,9 @@ public class LocationController {
 
         UserLocation userLocation = new UserLocation(Long.parseLong(memberId), memberNickname, new double[] {lat, lng});
         //RedisTemplate의 opsFor* 메소드들은 특정 컬렉션의 커맨드(Operation)을 호출할 수 있는 기능을 모아둔 *Operations 인터페이스를 반환
-        redisTemplateForLocation.opsForValue().set(memberId, userLocation);
+        redisTemplateForLocation.opsForValue().
+            .set(memberId, userLocation, Expiration.keepTtl(),
+            SetOption.UPSERT);
 
     }
     /*
