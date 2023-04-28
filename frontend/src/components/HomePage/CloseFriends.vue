@@ -1,26 +1,17 @@
 <template>
-  <v-sheet class="px-4 mt-6" color="transparent">
-    <span class="point-font xxxxl-font main-col-1">자주 만나는 친구</span>
+  <v-sheet class="mt-6" color="transparent">
+    <span class="px-4 point-font xxxxl-font main-col-1">자주 만나는 친구</span>
     <swiper
       v-if="members.length > 0"
-      class="swiper mt-1"
+      class="mt-2 mb-5 swiper"
       :options="swiperOption"
-      style="height: 270px"
     >
-      <swiper-slide
-        v-for="(member, idx) in members"
-        :key="idx"
-        class="mt-1"
-        style="height: 30%"
-      >
-        <v-card
-          width="100%"
-          height="100%"
-          class="card-gradient mx-auto my-2 d-flex flex-row"
-          elevation="0"
-          rounded="lg"
-        >
-          <v-sheet
+      <swiper-slide v-for="(member, idx) in members" :key="idx">
+        <v-sheet class="d-flex flex-row">
+          <v-avatar rounded="lg" size="77">
+            <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+          </v-avatar>
+          <!-- <v-sheet
             width="100"
             :style="{
               // backgroundImage: `url(${member.friend.memberProfileImg})`,
@@ -30,22 +21,23 @@
               borderBottomLeftRadius: 'inherit',
               backgroundPosition: 'center',
             }"
-          ></v-sheet>
-          <div class="d-flex flex-row justify-space-between">
-            <div class="px-6 mx-auto d-flex justify-center align-center">
-              <span class="point-font xxxl-font">{{ idx + 1 }}</span>
-            </div>
-            <div class="mt-1">
+          ></v-sheet> -->
+          <div class="d-flex flex-row justify-center align-center">
+            <!-- <div class="px-6 mx-auto d-flex justify-center align-center"> -->
+            <span class="mb-1 mx-5 point-font xxxl-font">{{ idx + 1 }}</span>
+            <!-- </div> -->
+            <div>
               <div class="xxxxs-font" style="color: #7e7e7e">
-                <span>총 누적 만남 횟수&nbsp;</span>
+                <span>총 누적 만남 횟수 </span>
                 <span class="medium-font">{{ member.cnt }}회</span>
               </div>
-              <div>
-                <span class="xl-font">{{ member.friend.memberNickname }}</span>
-              </div>
+              <!-- <div> -->
+              <span class="xl-font">{{ member.friend.memberNickname }}</span>
+              <!-- </div> -->
+              <v-sheet height="12"></v-sheet>
             </div>
           </div>
-        </v-card>
+        </v-sheet>
       </swiper-slide>
     </swiper>
     <div v-else class="d-flex justify-center align-center">
@@ -68,19 +60,32 @@ export default {
     return {
       members: [],
       swiperOption: {
-        slidesPerView: 1,
+        slidesPerView: "auto",
         slidesPerColumn: 3,
-        spaceBetween: 3,
+        spaceBetween: 10,
+        centeredSlides: true,
       },
     };
   },
   created() {
     getBestMember().then((res) => {
       this.members = res;
-      console.log(this.members.length);
+      // console.log(this.members.length);
     });
   },
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.swiper {
+  height: 240px;
+  margin-left: auto;
+  margin-right: auto;
+
+  .swiper-slide {
+    height: 30%;
+    width: 90vw;
+    max-width: 460px;
+  }
+}
+</style>

@@ -1,127 +1,148 @@
 <template>
-  <v-sheet class="px-4 mt-6" color="transparent">
-    <div>
-      <span class="point-font xxxxl-font main-col-1">다가올 모임</span>
-      <button>
-        <img
-          height="15"
-          class="ml-2 justify-center align-center"
-          :src="require('@/assets/images/icons/info.png')"
-          @click="show = !show"
-        />
-      </button>
-      <v-tooltip location="right" v-model="show">
-        <span class="main-col-1 xxxs-font"
-          >지금으로부터 한 달 내의<br />
-          나의 모임을 보여줍니다.</span
-        >
-      </v-tooltip>
-      <swiper
-        v-if="meetings.length > 0"
-        class="swiper mt-2"
-        :options="swiperOption"
+  <v-sheet class="pl-4 mt-6" color="transparent">
+    <!-- <div> -->
+    <span class="point-font xxxxl-font main-col-1">다가올 모임</span>
+    <v-btn class="ml-1" icon x-small @click="show = !show">
+      <v-icon>$vuetify.icons.info_outline</v-icon>
+    </v-btn>
+    <!-- <button>
+      <img
+        height="15"
+        class="ml-2 justify-center align-center"
+        :src="require('@/assets/images/icons/info.png')"
+        @click="show = !show"
+      />
+    </button> -->
+    <v-tooltip location="right" v-model="show">
+      <span class="main-col-1 xxxs-font"
+        >지금으로부터 한 달 내의<br />
+        나의 모임을 보여줍니다.</span
       >
-        <swiper-slide v-for="(meeting, idx) in meetings" :key="idx">
-          <div>
-            <v-card
-              class="ma-0"
-              :class="{
-                'upcoming-ellipse': idx % 4 === 0,
-                'upcoming-polygon': idx % 4 === 1,
-                'upcoming-rectangle': idx % 4 === 2,
-                'upcoming-star': idx % 4 === 3,
-              }"
-              elevation="0"
-            >
-              <div class="d-flex flex-row justify-end">
-                <div
-                  class="mr-5"
-                  :class="{
-                    'mt-5 ellipse rounded-circle': idx % 4 === 0,
-                    'mt-5 triangle-first': idx % 4 === 1,
-                    'mt-5 rectangle-first': idx % 4 === 2,
-                    'mt-4 star-first': idx % 4 === 3,
-                  }"
-                ></div>
-                <div
-                  class="mr-2 mt-2"
-                  :class="{
-                    'ellipse rounded-circle': idx % 4 === 0,
-                    'triangle-second': idx % 4 === 1,
-                    'rectangle-second': idx % 4 === 2,
-                    'mr-3 star-second': idx % 4 === 3,
-                  }"
-                ></div>
-              </div>
-              <v-sheet width="91%" class="white-col-1 pa-4" color="transparent">
-                <div>
-                  <span
-                    class="mt-1 extralight-font md-font white-font d-flex flex-row justify-space-between"
-                    >{{ meeting.meetingTime | remainDay }}</span
-                  >
-                  <div class="line"></div>
-                </div>
-                <span
-                  class="mt-3 d-flex flex-row bold-font md-font white-font"
-                  >{{ meeting.meetingPlace }}</span
-                >
-                <div class="d-flex flex-row justify-end">
-                  <span
-                    class="mt-1 mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
-                    >{{ meeting.meetingPlace }}</span
-                  >
-                </div>
-                <div class="d-flex flex-row justify-end">
-                  <span
-                    class="mt-1 mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
-                    >{{ meeting.meetingTime | formatDate }}</span
-                  >
-                </div>
-                <div class="d-flex flex-row justify-end">
-                  <span
-                    class="mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
-                    >{{ meeting.meetingTime | formatTime }}</span
-                  >
-                </div>
-              </v-sheet>
-            </v-card>
-          </div>
-        </swiper-slide>
-      </swiper>
-      <div v-else class="none mt-2 d-flex justify-center align-center">
-        <v-sheet width="91%" class="white-col-1 pa-4" color="transparent">
-          <div>
-            <div class="d-flex flex-row justify-space-between">
-              <div class="d-flex justify-center align-center">
-                <img
-                  :src="require('@/assets/images/component/cards.png')"
-                  class="mt-1 extralight-font md-font white-font"
-                  height="88"
-                />
-              </div>
-              <div>
-                <div class="ml-2 mt-3">
-                  <span class="semibold-font xl-font white-font"
-                    >다가올 모임이 없습니다.</span
-                  >
-                </div>
-                <div>
-                  <pre class="ml-2 mt-2 regular-font xxs-font white-font">
-스터디, 식사 약속 등
-다양한 모임을 잡아보세요!</pre
-                  >
-                </div>
-                <v-chip class="ma-2" small color="white" text-color="main-col-1"
-                  ><span class="ma-3 regular-font xxxs-font"
-                    >모임 방 만들기</span
-                  ></v-chip
-                >
-              </div>
+    </v-tooltip>
+    <!-- <swiper
+      v-if="meetings.length > 0"
+      class="swiper mt-2"
+      :options="swiperOption"
+    > -->
+    <!-- <swiper-slide> -->
+    <!-- <div> -->
+    <v-sheet
+      v-for="(meeting, idx) in meetings"
+      :key="idx"
+      class="px-3 py-1"
+      :class="{
+        'upcoming-ellipse': idx % 4 === 0,
+        'upcoming-polygon': idx % 4 === 1,
+        'upcoming-rectangle': idx % 4 === 2,
+        'upcoming-star': idx % 4 === 3,
+      }"
+    >
+      <div class="d-flex flex-row justify-space-between align-center">
+        <span
+          class="mt-1 extralight-font md-font white-font d-flex flex-row justify-space-between"
+        >
+          {{ meeting.meetingTime | remainDay }}
+        </span>
+        <div class="d-flex flex-row justify-end">
+          <div
+            class="mr-5"
+            :class="{
+              'mt-5 ellipse rounded-circle': idx % 4 === 0,
+              'mt-5 triangle-first': idx % 4 === 1,
+              'mt-5 rectangle-first': idx % 4 === 2,
+              'mt-4 star-first': idx % 4 === 3,
+            }"
+          ></div>
+          <div
+            class="mr-2 mt-2"
+            :class="{
+              'ellipse rounded-circle': idx % 4 === 0,
+              'triangle-second': idx % 4 === 1,
+              'rectangle-second': idx % 4 === 2,
+              'mr-3 star-second': idx % 4 === 3,
+            }"
+          ></div>
+        </div>
+      </div>
+
+      <v-sheet width="91%" class="white-col-1 pa-4" color="transparent">
+        <div></div>
+        <span class="mt-3 d-flex flex-row bold-font md-font white-font">{{
+          meeting.meetingPlace
+        }}</span>
+        <div class="d-flex flex-row justify-end">
+          <span
+            class="mt-1 mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
+            >{{ meeting.meetingPlace }}</span
+          >
+        </div>
+        <div class="d-flex flex-row justify-end">
+          <span
+            class="mt-1 mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
+            >{{ meeting.meetingTime | formatDate }}</span
+          >
+        </div>
+        <div class="d-flex flex-row justify-end">
+          <span
+            class="mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
+            >{{ meeting.meetingTime | formatTime }}</span
+          >
+        </div>
+      </v-sheet>
+    </v-sheet>
+    <!-- </div> -->
+    <!-- </swiper-slide> -->
+    <!-- </swiper> -->
+    <div class="none pa-3 mt-2 d-flex justify-center align-center">
+      <v-sheet
+        width="100%"
+        height="100%"
+        class="empty white-col-1 pa-4 d-flex justify-end align-center"
+        color="transparent"
+        max-width="330"
+      >
+        <!-- <div> -->
+        <v-sheet
+          class="d-flex flex-row justify-end align-center"
+          color="transparent"
+          height="100%"
+        >
+          <!-- <div class="d-flex justify-center align-center"> -->
+          <!-- <img
+                :src="require('@/assets/images/component/cards.png')"
+                class="mt-1 extralight-font md-font white-font"
+                height="88"
+              /> -->
+          <!-- </div> -->
+          <div class="d-flex flex-column align-start">
+            <!-- <div class="ml-2 mt-3"> -->
+            <span class="semibold-font xl-font white-font">
+              다가올 모임이 없습니다.
+            </span>
+            <!-- </div> -->
+            <div class="d-flex flex-column regular-font xxs-font white-font">
+              <!-- <pre class="ml-2 mt-2 regular-font xxs-font white-font">
+              스터디, 식사 약속 등
+              다양한 모임을 잡아보세요!</pre
+              > -->
+              <span>지금 바로</span>
+              <span>스터디, 식사 약속 등</span>
+              <span>다양한 모임을 잡아보세요!</span>
             </div>
+            <!-- <v-chip class="ma-2" small color="white" text-color="main-col-1">
+              <span class="ma-3 regular-font xxxs-font"> 모임 방 만들기 </span>
+            </v-chip> -->
+            <v-btn class="mt-1" small rounded @click="goRegister()">
+              <span class="px-5 regular-font xxxs-font main-col-1">
+                모임 방 만들기
+              </span>
+            </v-btn>
           </div>
         </v-sheet>
-      </div>
+        <!-- </div> -->
+      </v-sheet>
     </div>
+    <!-- </div> -->
   </v-sheet>
 </template>
 
@@ -135,7 +156,6 @@ export default {
       meetings: [],
       swiperOption: {
         slidesPerView: "auto",
-        spaceBetween: 3,
       },
       show: false,
     };
@@ -144,6 +164,11 @@ export default {
     getUpcomingMeetings().then((res) => {
       this.meetings = res;
     });
+  },
+  methods: {
+    goRegister() {
+      this.$router.push("/register");
+    },
   },
   filters: {
     formatDate(value) {
@@ -178,9 +203,15 @@ export default {
 </script>
 
 <style scoped>
-.swiper-slide {
-  width: 33%;
+.empty {
+  background-image: url("@/assets/images/component/cards.png");
+  background-size: 120px;
+  background-position-x: left;
+  background-position-y: center;
 }
+/* .swiper-slide {
+  width: 33%;
+} */
 .upcoming-ellipse {
   width: 160px;
   height: 150px;
@@ -218,8 +249,9 @@ export default {
   border-radius: 15px;
 }
 .none {
-  width: 353px;
-  height: 150px;
+  height: 175px;
+  /* width: 353px; */
+  /* height: 150px; */
   background: linear-gradient(180deg, rgba(9, 42, 73, 0.8) 0%, #092a49 100%);
   box-shadow: 0px 5px 20px -10px #000000;
   border-radius: 15px;
