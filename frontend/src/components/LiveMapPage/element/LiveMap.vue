@@ -21,6 +21,7 @@ export default {
       memberId: JSON.parse(localStorage.getItem("member")).memberId,
       meetingId: 1, // !! 추후 모임 id에 따라 변경되도록 구현 필요
       /* # marker 설정 */
+      markerType: 0, // marker 이미지 순서
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
       placeMarkerOption: [25, 65], // 모임장소 - image marker 위치 (좌표 X)
@@ -117,11 +118,8 @@ export default {
       // 모임장소로 부터 원 표시
       this.createCircle();
 
-      // marker 생성
-      // i) 모임 장소 marker
+      // 모임 장소 marker 생성
       this.createPlaceMarker(options);
-      // ii) 멤버 별 marker 생성
-      this.createMemberMarker();
 
       // WebSocket 연결
       this.connect();
@@ -312,7 +310,7 @@ export default {
         this.send(newMemberLocation);
 
         // 멤버 별 marker 생성
-        this.createMemberMarker();
+        this.createMemberMarker(newMemberLocation);
       }
       // i) 기존 member 위치 update
       else {
@@ -344,6 +342,8 @@ export default {
         const msg = member;
         this.stompClient.send(`/message/locShare`, JSON.stringify(msg), {});
       }
+
+      this.send(member);
     },
     // [@Method] client에서 server로 message 보내기(send)
     send(member) {
@@ -359,50 +359,67 @@ export default {
       }
     },
     // [@Method] 멤버 별 캐릭터 marker 생성
-    createMemberMarker() {
-      var markerType = 0;
+    createMemberMarker(member) {
+      // i) marker option 설정
+      const imageSrc = require(`@/assets/images/animals/${this.markerType}.png`);
+      if (this.markerType == 10) this.markerType = 0;
+      else this.markerType += 1;
 
-      for (var ml of this.memberLocation) {
-        // i) marker option 설정
-        const imageSrc = require(`@/assets/images/animals/${markerType}.png`);
-        markerType += 1;
+      const imageSize = new kakao.maps.Size(
+        this.memberMarkerSize[0],
+        this.memberMarkerSize[1]
+      );
+      const imageOption = {
+        offset: new kakao.maps.Point(
+          this.memberMarkerOption[0],
+          this.memberMarkerOption[1]
+        ),
+      };
+      const markerImage = new kakao.maps.MarkerImage(
+        imageSrc,
+        imageSize,
+        imageOption
+      );
+      const location = new kakao.maps.LatLng(
+        member.memberLatLng[0],
+        member.memberLatLng[1]
+      );
+      // ii) marker 생성
+      const marker = new kakao.maps.Marker({
+        position: location,
+        image: markerImage,
+      });
+      // marker 저장 (for. 삭제)
+      const object = new Object();
+      object[member.memberId] = marker;
+      this.memberMarkerList.push(object);
 
-        const imageSize = new kakao.maps.Size(
-          this.memberMarkerSize[0],
-          this.memberMarkerSize[1]
-        );
-        const imageOption = {
-          offset: new kakao.maps.Point(
-            this.memberMarkerOption[0],
-            this.memberMarkerOption[1]
-          ),
-        };
-        const markerImage = new kakao.maps.MarkerImage(
-          imageSrc,
-          imageSize,
-          imageOption
-        );
-        const location = new kakao.maps.LatLng(
-          ml.memberLatLng[0],
-          ml.memberLatLng[1]
-        );
-        // ii) marker 생성
-        const marker = new kakao.maps.Marker({
-          position: location,
-          image: markerImage,
-        });
-        // marker 저장 (for. 삭제)
-        const object = new Object();
-        object[ml.memberId] = marker;
-        this.memberMarkerList.push(object);
+      // marker 표시
+      marker.setMap(this.map);
 
-        // marker 표시
-        marker.setMap(this.map);
-
-        // iii) 멤버 별 over-lay, polyline 생성 (닉네임, 모임장소와의 거리)
-        this.createMemberOverlay(ml, marker);
-        this.createDistance(ml, marker);
+      // iii) 멤버 별 over-lay, polyline 생성 (닉네임, 모임장소와의 거리)
+      this.createMemberOverlay(member, marker);
+      this.createDistance(member, marker);
+    },
+    // [@Method] member marker 존재여부 확인
+    checkMemberMarker(member) {
+      // memberId를 통해 해당 member의 marker 찾기
+      let markerIndex = -1;
+      for (let i = 0; i < this.memberMarkerList.length; i++) {
+        if (this.memberMarkerList[i].memberId == member.memberId) {
+          markerIndex = i;
+          break;
+        }
       }
+
+      if (markerIndex == -1) return false;
+      else return true;
+      // markerIndex = this.memberMarkerList.findIndex(
+      //   (obj) => Object.keys(obj)[0] == member.memberId
+      // );
+      // // 기존 marker
+      // const marker =
+      //   this.memberMarkerList[markerIndex][this.updateMemberInfo[1]];
     },
     // [@Method] member 별 닉네임 over-lay 생성
     createMemberOverlay(member, marker) {
@@ -488,22 +505,18 @@ export default {
 
       // memberId를 통해 해당 member 찾기
       for (let i = 0; i < this.memberLocation.length; i++) {
-        if (
-          // this.memberLocation[i].member.memberId ==
-          // otherMemberLocation.member.memberId
-          this.memberLocation[i].memberId == newMemberLocation[0].memberId
-        ) {
+        if (this.memberLocation[i].memberId == newMemberLocation[0].memberId) {
           memberIndex = i;
           break;
         }
       }
 
       if (memberIndex == -1) {
-        console.log("#21# 새로운 다른 member");
-        this.memberLocation.push(newMemberLocation);
+        console.log("#21# 새로운 다른 member: ", newMemberLocation[0]);
+        this.memberLocation.push(newMemberLocation[0]);
 
         // 멤버 별 marker 생성
-        // this.createMemberMarker();
+        this.createMemberMarker(newMemberLocation[0]);
       } else {
         console.log(
           "#21# 기존 다른 member 위치 값 update: ",
