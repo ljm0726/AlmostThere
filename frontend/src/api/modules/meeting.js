@@ -62,4 +62,9 @@ async function getBestMember() {
   return await Promise.resolve(result);
 }
 
-export { meetingRegister, getTodayMeetings, getUpcomingMeetings, getBestMember };
+export {
+  meetingRegister,
+  getTodayMeetings,
+  getUpcomingMeetings,
+  getBestMember,
+};
