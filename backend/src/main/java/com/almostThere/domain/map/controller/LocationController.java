@@ -38,8 +38,7 @@ public class LocationController {
         System.out.println("# redis 저장: " + message);
 
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) jsonParser.parse(message);
-        JSONObject memberObject = (JSONObject) jsonObject.get("member");
+        JSONObject memberObject = (JSONObject) jsonParser.parse(message);
 
         String memberId =  String.valueOf(memberObject.get("memberId"));
         String memberNickname = (String) memberObject.get("memberNickname");

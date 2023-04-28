@@ -24,9 +24,11 @@ public class LocationService {
     @Qualifier("redisTemplateForLocation")
     private final RedisTemplate redisTemplateForLocation;
 
-    //{"member":{"memberId":1,"memberNickname":"김싸피","memberLatLng":[37.5016923,127.0393868]}}
-
-
+    /**
+     * 모임의 모든 참가자 목록을 My-SQL에서 조회 후 redis에서 해당 참가자들의 실시간 위치를 조회한다.
+     * @param meetingId
+     * @return List<UserLocation>
+     */
     public List<UserLocation> getAllMemberLocationsByMeetingId(long meetingId){
         ObjectMapper objectMapper = new ObjectMapper();
         Meeting meeting = meetingRepository.findById(meetingId)
