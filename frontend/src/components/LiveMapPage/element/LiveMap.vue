@@ -17,6 +17,9 @@ export default {
   name: "LiveMap",
   data() {
     return {
+      /* # memberId, meetingId */
+      memberId: JSON.parse(localStorage.getItem("member")).memberId,
+      meetingId: 1, // !! 추후 모임 id에 따라 변경되도록 구현 필요
       /* # marker 설정 */
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
       memberMarkerSize: [120, 120], // member marker 크기
@@ -199,8 +202,8 @@ export default {
 
           // 서버의 메시지 전송 endpoint를 구독합니다.
           // 이런형태를 pub sub 구조라고 합니다.
-          const meetingId = 1;
-          this.stompClient.subscribe(`/topic/${meetingId}`, (res) => {
+          //this.stompClient.subscribe(`/topic/${meetingId}`, (res) => {
+          this.stompClient.subscribe(`/topic/${this.memberId}`, (res) => {
             console.log("구독으로 받은 메시지 입니다.", res.body);
 
             // socket을 통해 받은 message(다른 사용자 좌표) 저장
@@ -209,7 +212,7 @@ export default {
 
           // GeoLocation - 1초마다 현 위치 얻기
           // this.getGeoLocation();
-          // this.startIntervalMemberLocation();
+          this.startIntervalMemberLocation();
         },
         (error) => {
           // 소켓 연결 실패
@@ -357,7 +360,12 @@ export default {
 
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
-        this.stompClient.send("/message/locShare/1", JSON.stringify(msg), {});
+        // this.stompClient.send("/message/locShare/1", JSON.stringify(msg), {});
+        this.stompClient.send(
+          `/message/locShare/meetingId/${this.meetingId}/memberId/${this.memberId}`,
+          JSON.stringify(msg),
+          {}
+        );
         // console.log("#21# message 전송: ", msg);
       }
     },

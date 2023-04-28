@@ -27,6 +27,11 @@ public class LocationController {
     private final RedisTemplate<String, UserLocation> redisTemplateForLocation;
     private final LocationService locationService;
 
+    /**
+     * 사용자의 위치를 server로 보내준다. (사용자의 정보는 redis로 저장)
+     * @param message
+     * @return
+     */
     @MessageMapping("/locShare")
     public void saveLocation(String message) throws ParseException {
 
@@ -45,6 +50,12 @@ public class LocationController {
         redisTemplateForLocation.opsForValue().set(memberId, userLocation);
 
     }
+
+    /**
+     * 모임방의 참가자들의 위치를 조회한다. (redis에서 조회함)
+     * @param meetingId, memberId
+     * @return
+     */
     /*
         유저가 위치값을 보낸 적이 없어서 redis에 위치 정보가 저장되어 있지 않을 수가 있나?
         위치 정보를 언제부터 전송하지.? 자신이 속한 모임 중 약속시간이 3시간 이내로 남은 모임이 있으면 전송
@@ -52,8 +63,8 @@ public class LocationController {
         전송을 안 해서 저장이 안 되어 있으면 그 사람의 위치는 모르겠네?
         그럼 그때는 출발위치로 찍어 놓기? 출발위치도 없으면 안 찍고
      */
-    @MessageMapping("/locShare/meetingId/{meetingId}/memberId/{memberId}")
-    @SendTo("/topic/{memberId}")
+    @MessageMapping("/locShare/meetingId/{meetingId}/memberId/{memberId}") // front -> back
+    @SendTo("/topic/{memberId}") // back -> front
     public List<UserLocation> getAllUsersLocations(@DestinationVariable long meetingId, @DestinationVariable long memberId, String message) throws ParseException {
 
         System.out.println("meetingId: "+meetingId);
