@@ -69,8 +69,8 @@ public class SecurityConfig {
      * security filter 를 무시한다.
      * ex) /** => 모든 요청, /static 등
      */
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/**");
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().antMatchers("/**");
+//    }
 }
