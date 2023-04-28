@@ -8,7 +8,6 @@ import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,11 +37,8 @@ public class LocationService {
 
         for(MeetingMember meetingMember : meetingMembers){
             String memberId = String.valueOf(meetingMember.getMember().getId());
-             LinkedHashMap result = (LinkedHashMap)redisTemplateForLocation.opsForValue().get(memberId);
-            System.out.println(result.get("memberId"));
-            UserLocation userLocation = new UserLocation((long)result.get("memberId"), (String)result.get("memberNickName"),(double[])result.get("memberLatLng"));
-            System.out.println(userLocation);
-//            userLocations.add(userLocation);
+             UserLocation userLocation = (UserLocation)redisTemplateForLocation.opsForValue().get(memberId);
+            userLocations.add(userLocation);
         }
 
         return userLocations;

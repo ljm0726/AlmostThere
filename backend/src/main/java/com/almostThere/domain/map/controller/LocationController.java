@@ -3,9 +3,6 @@ package com.almostThere.domain.map.controller;
 import com.almostThere.domain.map.Service.LocationService;
 import com.almostThere.domain.map.entity.UserLocation;
 import com.almostThere.global.response.BaseResponse;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -57,12 +54,12 @@ public class LocationController {
      */
     @MessageMapping("/locShare/meetingId/{meetingId}/memberId/{memberId}")
     @SendTo("/topic/{memberId}")
-    public BaseResponse getAllUsersLocations(@DestinationVariable long meetingId, @DestinationVariable long memberId, String message) throws ParseException {
+    public List<UserLocation> getAllUsersLocations(@DestinationVariable long meetingId, @DestinationVariable long memberId, String message) throws ParseException {
 
         System.out.println("meetingId: "+meetingId);
         System.out.println("memberId: "+memberId);
 
-        return BaseResponse.success(locationService.getAllMemberLocationsByMeetingId(meetingId));
+        return locationService.getAllMemberLocationsByMeetingId(meetingId);
     }
 
 }

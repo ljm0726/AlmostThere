@@ -44,7 +44,7 @@ public class RedisConfig {
     public RedisTemplate<String, ?> redisTemplateForLocation() {
         RedisTemplate<String, ?> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(new ObjectMapper()));
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
