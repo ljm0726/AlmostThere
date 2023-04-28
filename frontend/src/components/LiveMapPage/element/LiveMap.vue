@@ -209,7 +209,7 @@ export default {
 
           // GeoLocation - 1초마다 현 위치 얻기
           // this.getGeoLocation();
-          this.startIntervalMemberLocation();
+          // this.startIntervalMemberLocation();
         },
         (error) => {
           // 소켓 연결 실패
