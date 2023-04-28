@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="overlay">
     <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
       <v-icon>$vuetify.icons.arrow_left</v-icon>
     </v-btn>
@@ -22,10 +22,11 @@
 </template>
 
 <script>
+// index를 props로 받고 결과를 emit으로 저장 하던지, state에 저장하던지 해야함..
 import { mapActions } from "vuex";
 
 export default {
-  name: "SearchPlacePage",
+  name: "SearchPlacePage2",
   data() {
     return {
       map: null,
@@ -37,16 +38,20 @@ export default {
       regCode: "",
       residentResults: [],
       isListOpen: false,
+      selectedPlace: {
+        type: Object,
+        required: true,
+      },
     };
   },
   mounted() {
     this.loadScript();
     this.$refs.myInput.focus();
-    console.log(1);
+    console.log(" page 2");
   },
 
   methods: {
-    ...mapActions("placeStore", ["updatePlace"]),
+    ...mapActions("halfwayStore", ["updateHalfway"]),
     goBack() {
       this.$router.go(-1);
     },
@@ -117,20 +122,9 @@ export default {
             placeMap.set("y", y);
             placeMap.set("name", this.place);
             placeMap.set("addr", this.address);
-            this.openDialog(); // SearchPlacePage2를 닫음
-            this.$emit("place-selected", this.placeMap); // 이벤트를 발생시켜 부모 컴포넌트로 선택한 장소 정보 전달
-            // console.log(
-            //   "x,y좌표는 ",
-            //   child.attributes["data-x"].value,
-            //   child.attributes["data-y"].value
-            // );
-            // console.log("address는 ", child.attributes["data-address"].value);
-            // console.log("place는 ", child.attributes["data-place"].value);
-            // console.log("이건뭐지? ", this.address);
-            // this.introduceValue = this.address;
-            // var bounds = new window.kakao.maps.LatLngBounds();
-            // bounds.extend(new window.kakao.maps.LatLng(y, x));
-            // console.log("bound는 뭐지? ", bounds);
+            console.log(placeMap);
+            this.updateHalfway(placeMap);
+            // this.$router.push("/place");
           });
         });
       } else {
@@ -170,7 +164,16 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 1);
+  z-index: 9999;
+}
 .lists {
   overflow: scroll;
   margin-top: 25%;
