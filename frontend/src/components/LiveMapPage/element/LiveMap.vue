@@ -244,7 +244,7 @@ export default {
     },
     // [@Method] 현재 로그인한 사용자의 접속위치 얻기 (GeoLocation)
     getGeoLocation() {
-      console.log("#21# getGeoLocation 현 위치 얻기 동작");
+      console.log("# getGeoLocation 현 위치 얻기 동작");
 
       if (navigator.geolocation) {
         const memberId = JSON.parse(localStorage.getItem("member")).memberId;
@@ -307,7 +307,7 @@ export default {
     },
     // [@Method] client에서 server로 현 로그인 member의 정보 객체 send (redis에 저장)
     saveSend(member) {
-      console.log("# save send message: ", member);
+      // console.log("# save send message: ", member);
 
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
@@ -316,7 +316,7 @@ export default {
     },
     // [@Method] client에서 server로 message 보내기(send)
     send(member) {
-      console.log("# send message: ", member);
+      // console.log("# send message: ", member);
 
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
@@ -328,53 +328,53 @@ export default {
       }
     },
     // [@Method] socket을 통해 받은 message(사용자 좌표) 저장
-    saveMembersLocation(newMemberLocation) {
-      console.log(
-        "#21# socket을 통해 받은 사용자 정보 state에 저장 ",
-        newMemberLocation
-      );
-      // console.log("#21# memberLocaiton 확인: ", this.memberLocation);
+    saveMembersLocation(membersLocation) {
+      // console.log(
+      //   "#21# socket을 통해 받은 사용자 정보 state에 저장 ",
+      //   membersLocation
+      // );
 
-      // memberId를 통해 해당 member 찾기
-      let memberIndex = -1;
-      for (let i = 0; i < this.memberLocation.length; i++) {
-        if (this.memberLocation[i].memberId == newMemberLocation[0].memberId) {
-          memberIndex = i;
-          break;
+      for (const member of membersLocation) {
+        // memberId를 통해 해당 member 찾기
+        let memberIndex = -1;
+        for (let i = 0; i < this.memberLocation.length; i++) {
+          if (this.memberLocation[i].memberId == member.memberId) {
+            memberIndex = i;
+            break;
+          }
         }
-      }
 
-      if (memberIndex == -1) {
-        console.log(
-          "#21# 현 memberLocaion에 저장되어 있지 않은 새로운 member 확인",
-          newMemberLocation[0]
-        );
-        this.memberLocation.push(newMemberLocation[0]);
+        if (memberIndex == -1) {
+          console.log(
+            "#21# 현 memberLocaion에 저장되어 있지 않은 새로운 member 확인",
+            member
+          );
+          this.memberLocation.push(member);
 
-        // 멤버 별 marker 생성
-        this.createMemberMarker(newMemberLocation[0]);
-      } else {
-        console.log(
-          "#21# 이미 저장되어 있는 member 위치 값 update: ",
-          this.memberLocation[memberIndex]
-        );
-        // 위치 값 update
-        this.memberLocation[memberIndex].memberLatLng =
-          newMemberLocation[0].memberLatLng;
+          // 멤버 별 marker 생성
+          this.createMemberMarker(member);
+        } else {
+          console.log(
+            "#21# 이미 저장되어 있는 member 위치 값 update: ",
+            this.memberLocation[memberIndex]
+          );
+          // 위치 값 update
+          this.memberLocation[memberIndex].memberLatLng = member.memberLatLng;
 
-        // 변경된 member [index, id] 저장
-        this.updateMemberInfo = [
-          memberIndex, // memberLocation의 index값
-          this.memberLocation[memberIndex].memberId, // memberId 값
-        ];
+          // 변경된 member [index, id] 저장
+          this.updateMemberInfo = [
+            memberIndex, // memberLocation의 index값
+            this.memberLocation[memberIndex].memberId, // memberId 값
+          ];
 
-        // marker, polyline, overlay 재조정
-        this.refreshMapOnLocationUpdate();
+          // marker, polyline, overlay 재조정
+          this.refreshMapOnLocationUpdate();
+        }
       }
     },
     // [@Method] 멤버 별 캐릭터 marker 생성
     createMemberMarker(member) {
-      console.log("#21# member 캐릭터 marker 생성 ", member);
+      // console.log("#21# member 캐릭터 marker 생성 ", member);
 
       // i) marker option 설정
       const imageSrc = require(`@/assets/images/animals/${this.markerType}.png`);
@@ -419,7 +419,7 @@ export default {
     },
     // [@Method] member 별 닉네임 over-lay 생성
     createMemberOverlay(member, marker) {
-      console.log("#21# member 닉네임 over-lay 생성 ", member);
+      // console.log("#21# member 닉네임 over-lay 생성 ", member);
 
       const content = `<div class="member-overlay point-font">${member.memberNickName}</div>`;
       const position = marker.getPosition();
@@ -441,7 +441,7 @@ export default {
     },
     // [@Method] 모임장소와의 거리 계산 및 표시
     createDistance(member, marker) {
-      console.log("#21# member 선(polyline) 생성 ", member);
+      // console.log("#21# member 선(polyline) 생성 ", member);
 
       // i) 선을 그릴 좌표 setting [모임장소 좌표, 현재 member 좌표]
       const distancePath = [
@@ -476,7 +476,7 @@ export default {
     },
     // [@Method] member와 모임장소 거리 - 오버레이 표시
     createDistanceOverlay(distance, marker, member) {
-      console.log("#21# member 거리 over-lay 생성 ", member);
+      // console.log("#21# member 거리 over-lay 생성 ", member);
 
       const content = `<div class="distance-overlay logo-font">${distance.toLocaleString(
         "ko-KR"
@@ -500,7 +500,7 @@ export default {
     },
     // [@Method] member의 위치 값 변경에 따른 marker, polyline, overlay 업데이트
     refreshMapOnLocationUpdate() {
-      console.log("#21# member 위치 update에 따른 marker, over-lay 등 update");
+      // console.log("#21# member 위치 update에 따른 marker, over-lay 등 update");
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
       // this.updateMemberInfo[1] = 변경된 memberId
@@ -583,10 +583,10 @@ export default {
     },
     // [@Method] GeoLocation 위치 부정확 over-lay 표시
     showLocationUnavailableOverlay(memberId) {
-      console.log(
-        "#21# GeoLocation 부정확 over-lay 생성 - memberId: ",
-        memberId
-      );
+      // console.log(
+      //   "#21# GeoLocation 부정확 over-lay 생성 - memberId: ",
+      //   memberId
+      // );
 
       // 현 로그인 사용자의 marker
       const markerIndex = this.memberMarkerList.findIndex(
@@ -614,10 +614,6 @@ export default {
       const object = new Object();
       object[memberId] = customOverlay;
       this.geoWarningOverlayList.push(object);
-      console.log(
-        "#21# geoWarningOverlayList 확인: ",
-        this.geoWarningOverlayList
-      );
 
       // 오버레이 표시
       customOverlay.setMap(this.map);
