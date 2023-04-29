@@ -20,7 +20,7 @@ export default {
       // console.log("#21# ssafy 로그인");
       const memberStore = {
         memberId: 1,
-        memberNickname: "김싸피",
+        memberNickName: "김싸피",
       };
       localStorage.setItem("member", JSON.stringify(memberStore));
     },
@@ -28,7 +28,7 @@ export default {
       // console.log("#21# hee 로그인");
       const memberStore = {
         memberId: 2,
-        memberNickname: "희정",
+        memberNickName: "희정",
       };
       localStorage.setItem("member", JSON.stringify(memberStore));
     },
@@ -36,7 +36,7 @@ export default {
       // console.log("#21# hee 로그인");
       const memberStore = {
         memberId: 3,
-        memberNickname: "찰스",
+        memberNickName: "찰스",
       };
       localStorage.setItem("member", JSON.stringify(memberStore));
     },

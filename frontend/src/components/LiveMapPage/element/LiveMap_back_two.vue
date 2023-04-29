@@ -44,7 +44,6 @@ export default {
       memberNicknameOverlayList: [], // nickname over-lay
       memberPolylineList: [], // polyline
       circleList: [], // 모임장소 반경 circle
-      geoWarningOverlayList: [], // GeoLocation 경고 over-lay
       /* # 위치 변경된 member[index, id] */
       updateMemberInfo: [], // [index, id] 위치 업데이트 된 member의 > memberLocation index와 memberId 저장
       /* # 가장 먼 곳에 있는 memeber distance */
@@ -223,7 +222,7 @@ export default {
             console.log("구독으로 받은 메시지 입니다.", res.body);
 
             // socket을 통해 받은 message(사용자 좌표) 저장
-            this.saveMembersLocation(JSON.parse(res.body));
+            this.saveOtherMemberLocation(JSON.parse(res.body));
           });
 
           // GeoLocation - 1초마다 현 위치 얻기
@@ -247,55 +246,42 @@ export default {
       console.log("#21# getGeoLocation 현 위치 얻기 동작");
 
       if (navigator.geolocation) {
-        const memberId = JSON.parse(localStorage.getItem("member")).memberId;
-
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition(
           // i) GPS 얻어온 경우
           (position) => {
-            // GeoLocation 경고 over-lay 삭제
-            const warningOverlayIndex = this.checkGeoWarningOverlay(memberId);
-            if (warningOverlayIndex != -1) {
-              const warningOverlay =
-                this.geoWarningOverlayList[warningOverlayIndex][memberId];
-              warningOverlay.setMap(null);
-            }
-
             // 현 로그인한 사용자의 정보(id, nickname, latlng[]) 객체 생성
             const member = {
-              memberId: memberId,
+              memberId: JSON.parse(localStorage.getItem("member")).memberId,
               memberNickname: JSON.parse(localStorage.getItem("member"))
-                .memberNickName,
+                .memberNickname,
               memberLatLng: [
                 position.coords.latitude,
                 position.coords.longitude,
               ],
             };
-            // console.log("#21# 현 로그인한 사용자 정보: ", member);
 
-            // - 현 사용자의 위치 저장 (redis)
-            this.saveSend(member);
-            // - 해당 모임룸 redis 저장되어 있는 member의 info 조회 (topic에서 받음)
-            this.send(member);
+            // 현 사용자의 위치 저장
+            this.updateMemberLocation(member);
           },
           // ii) GPS를 가져올 수 없는 경우
           (error) => {
             console.log("# GeoLocation 위치 부정확 error: ", error);
-
             let memberIndex = -1;
             for (let i = 0; i < this.memberLocation.length; i++) {
-              if (this.memberLocation[i].memberId == memberId) {
+              if (
+                this.memberLocation[i].memberId ==
+                JSON.parse(localStorage.getItem("member")).memberId.toString()
+              ) {
                 memberIndex = i;
                 break;
               }
             }
 
-            if (
-              memberIndex != -1 &&
-              this.checkGeoWarningOverlay(memberId) == -1
-            ) {
-              // 위치 부정확 over-lay 표시 (변경된 memberId])
+            if (memberIndex != -1) {
+              // 위치 부정확 over-lay 표시 (변경된 member [index, id])
               this.showLocationUnavailableOverlay(
+                // this.memberLocation[memberIndex].member.memberId
                 this.memberLocation[memberIndex].memberId
               );
             }
@@ -305,14 +291,59 @@ export default {
         console.log("#error# geolocation 사용불가");
       }
     },
-    // [@Method] client에서 server로 현 로그인 member의 정보 객체 send (redis에 저장)
-    saveSend(member) {
-      console.log("# save send message: ", member);
+    // [@Method] member들의 위치 저장 or update -> send()
+    updateMemberLocation(newMemberLocation) {
+      let memberIndex = -1;
+
+      // memberId를 통해 해당 member 찾기
+      for (let i = 0; i < this.memberLocation.length; i++) {
+        if (this.memberLocation[i].memberId == newMemberLocation.memberId) {
+          memberIndex = i;
+          break;
+        }
+      }
+
+      // i) 새로운 member 위치 저장
+      if (memberIndex == -1) {
+        console.log("#21# 새로운 member");
+        this.memberLocation.push(newMemberLocation);
+        this.send(newMemberLocation);
+
+        // 멤버 별 marker 생성
+        this.createMemberMarker(newMemberLocation);
+      }
+      // i) 기존 member 위치 update
+      else {
+        console.log("#21# 기존 member 위치 값 update");
+        // 위치 값 update
+        this.memberLocation[memberIndex].memberLatLng[0] =
+          newMemberLocation.memberLatLng[0];
+        this.memberLocation[memberIndex].memberLatLng[1] =
+          newMemberLocation.memberLatLng[1];
+
+        // 변경된 member [index, id] 저장
+        this.updateMemberInfo = [
+          memberIndex, // memberLocation의 index값
+          this.memberLocation[memberIndex].memberId, // memberId 값
+        ];
+
+        // marker, polyline, overlay 재조정
+        this.refreshMapOnLocationUpdate();
+
+        // 좌표가 변경된 memeber 객체 send
+        this.updateSend(this.memberLocation[memberIndex]);
+      }
+    },
+    // [@Method] client에서 server로 update 된 member의 객체 send (redis에 위치 저장)
+    updateSend(member) {
+      console.log("#update send message: ", member);
 
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
         this.stompClient.send(`/message/locShare`, JSON.stringify(msg), {});
       }
+
+      this.send(member);
     },
     // [@Method] client에서 server로 message 보내기(send)
     send(member) {
@@ -327,55 +358,9 @@ export default {
         );
       }
     },
-    // [@Method] socket을 통해 받은 message(사용자 좌표) 저장
-    saveMembersLocation(newMemberLocation) {
-      console.log(
-        "#21# socket을 통해 받은 사용자 정보 state에 저장 ",
-        newMemberLocation
-      );
-      // console.log("#21# memberLocaiton 확인: ", this.memberLocation);
-
-      // memberId를 통해 해당 member 찾기
-      let memberIndex = -1;
-      for (let i = 0; i < this.memberLocation.length; i++) {
-        if (this.memberLocation[i].memberId == newMemberLocation[0].memberId) {
-          memberIndex = i;
-          break;
-        }
-      }
-
-      if (memberIndex == -1) {
-        console.log(
-          "#21# 현 memberLocaion에 저장되어 있지 않은 새로운 member 확인",
-          newMemberLocation[0]
-        );
-        this.memberLocation.push(newMemberLocation[0]);
-
-        // 멤버 별 marker 생성
-        this.createMemberMarker(newMemberLocation[0]);
-      } else {
-        console.log(
-          "#21# 이미 저장되어 있는 member 위치 값 update: ",
-          this.memberLocation[memberIndex]
-        );
-        // 위치 값 update
-        this.memberLocation[memberIndex].memberLatLng =
-          newMemberLocation[0].memberLatLng;
-
-        // 변경된 member [index, id] 저장
-        this.updateMemberInfo = [
-          memberIndex, // memberLocation의 index값
-          this.memberLocation[memberIndex].memberId, // memberId 값
-        ];
-
-        // marker, polyline, overlay 재조정
-        this.refreshMapOnLocationUpdate();
-      }
-    },
     // [@Method] 멤버 별 캐릭터 marker 생성
     createMemberMarker(member) {
-      console.log("#21# member 캐릭터 marker 생성 ", member);
-
+      console.log("#21# 멤버 별 캐릭터 marker 생성");
       // i) marker option 설정
       const imageSrc = require(`@/assets/images/animals/${this.markerType}.png`);
       if (this.markerType == 10) this.markerType = 0;
@@ -409,6 +394,7 @@ export default {
       const object = new Object();
       object[member.memberId] = marker;
       this.memberMarkerList.push(object);
+      console.log("#21# marker 확인: ", this.memberMarkerList);
 
       // marker 표시
       marker.setMap(this.map);
@@ -417,11 +403,33 @@ export default {
       this.createMemberOverlay(member, marker);
       this.createDistance(member, marker);
     },
+    // [@Method] member marker 존재여부 확인
+    checkMemberMarker(member) {
+      // memberId를 통해 해당 member의 marker 찾기
+      let markerIndex = -1;
+      for (let i = 0; i < this.memberMarkerList.length; i++) {
+        if (this.memberMarkerList[i].memberId == member.memberId) {
+          markerIndex = i;
+          break;
+        }
+      }
+
+      if (markerIndex == -1) return false;
+      else return true;
+      // markerIndex = this.memberMarkerList.findIndex(
+      //   (obj) => Object.keys(obj)[0] == member.memberId
+      // );
+      // // 기존 marker
+      // const marker =
+      //   this.memberMarkerList[markerIndex][this.updateMemberInfo[1]];
+    },
     // [@Method] member 별 닉네임 over-lay 생성
     createMemberOverlay(member, marker) {
-      console.log("#21# member 닉네임 over-lay 생성 ", member);
-
-      const content = `<div class="member-overlay point-font">${member.memberNickName}</div>`;
+      console.log("#21# 설마? : ", member.memberNickname);
+      if (member.memberNickname == "null") {
+        console.log("#21# nickanme null 발생: ", member);
+      }
+      const content = `<div class="member-overlay point-font">${member.memberNickname}</div>`;
       const position = marker.getPosition();
 
       // over-lay 생성
@@ -435,14 +443,16 @@ export default {
       const object = new Object();
       object[member.memberId] = customOverlay;
       this.memberNicknameOverlayList.push(object);
+      console.log(
+        "#21# nickname 오버레이 확인: ",
+        this.memberNicknameOverlayList
+      );
 
       // 오버레이 표시
       customOverlay.setMap(this.map);
     },
     // [@Method] 모임장소와의 거리 계산 및 표시
     createDistance(member, marker) {
-      console.log("#21# member 선(polyline) 생성 ", member);
-
       // i) 선을 그릴 좌표 setting [모임장소 좌표, 현재 member 좌표]
       const distancePath = [
         new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
@@ -476,8 +486,6 @@ export default {
     },
     // [@Method] member와 모임장소 거리 - 오버레이 표시
     createDistanceOverlay(distance, marker, member) {
-      console.log("#21# member 거리 over-lay 생성 ", member);
-
       const content = `<div class="distance-overlay logo-font">${distance.toLocaleString(
         "ko-KR"
       )}m</div>`;
@@ -498,13 +506,59 @@ export default {
       // over-lay 표시
       customOverlay.setMap(this.map);
     },
+    // [@Method] socket을 통해 받은 message(사용자 좌표) 저장
+    saveOtherMemberLocation(newMemberLocation) {
+      console.log(
+        "#21# saveOtherMemberLocation, socket을 통해 받은 message(사용자 좌표) 저장: ",
+        newMemberLocation
+      );
+      let memberIndex = -1;
+
+      // memberId를 통해 해당 member 찾기
+      for (let i = 0; i < this.memberLocation.length; i++) {
+        if (this.memberLocation[i].memberId == newMemberLocation[0].memberId) {
+          memberIndex = i;
+          break;
+        }
+      }
+
+      console.log("#21# memberLocaiton 확인: ", this.memberLocation);
+      if (memberIndex == -1) {
+        console.log("#21# 새로운 다른 member 확인: ", newMemberLocation[0]);
+        this.memberLocation.push(newMemberLocation[0]);
+        console.log("#21# memberLocation 확인: ", this.memberLocation);
+
+        // 멤버 별 marker 생성
+        this.createMemberMarker(newMemberLocation[0]);
+      } else {
+        console.log(
+          "#21# 기존 다른 member 위치 값 update: ",
+          this.memberLocation[memberIndex]
+        );
+        // 위치 값 update
+        this.memberLocation[memberIndex].memberLatLng =
+          newMemberLocation[0].memberLatLng;
+
+        // 변경된 member [index, id] 저장
+        this.updateMemberInfo = [
+          memberIndex, // memberLocation의 index값
+          this.memberLocation[memberIndex].memberId, // memberId 값
+        ];
+
+        // marker, polyline, overlay 재조정
+        this.refreshMapOnLocationUpdate();
+      }
+    },
     // [@Method] member의 위치 값 변경에 따른 marker, polyline, overlay 업데이트
     refreshMapOnLocationUpdate() {
-      console.log("#21# member 위치 update에 따른 marker, over-lay 등 update");
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
-      // this.updateMemberInfo[1] = 변경된 memberId
-      console.log("#21# refresh member 확인: ", refreshMember);
+      // this.updateMemberInfo[1] = 변경된 memberIds
+      console.log(
+        "#21# refresh memeber 확인: ",
+        // refreshMember.member.memberNickname
+        refreshMember
+      );
 
       const newPosition = new kakao.maps.LatLng(
         refreshMember.memberLatLng[0],
@@ -512,6 +566,7 @@ export default {
       );
 
       // i) marker
+      console.log("#21# memberMaker 확인: ", this.memberMarkerList);
       const markerIndex = this.memberMarkerList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
@@ -526,15 +581,22 @@ export default {
       newMarker.setMap(this.map);
 
       // ii) over-lay & polyline
-      // - 닉네임 over-lay
+      //     - 닉네임 over-layconst content = `<div class="member-overlay point-font">${member.memberNickname}</div>`;
+      //       const position = marker.getPosition();
       const nickIndex = this.memberNicknameOverlayList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
       const nickOverlay =
         this.memberNicknameOverlayList[nickIndex][this.updateMemberInfo[1]];
+      let newNicknameContent = null;
+      console.log("#21# Nickanme 어디갓냐: ", refreshMember.memberNickName);
+      if (refreshMember.memberNickname != null) {
+        newNicknameContent = `<div class="member-overlay point-font">${refreshMember.memberNickname}</div>`;
+        nickOverlay.setContent(newNicknameContent);
+      }
       nickOverlay.setPosition(newPosition);
       nickOverlay.setMap(this.map);
-      // - 거리 polyline(선)
+      //     - 거리 polyline(선)
       const polyIndex = this.memberPolylineList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
@@ -546,7 +608,7 @@ export default {
       ];
       polyline.setPath(newPath);
       polyline.setMap(this.map);
-      // - 거리 over-lay
+      //     - 거리 over-lay
       const distanceIndex = this.memberDistanceOverlayList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
@@ -563,31 +625,8 @@ export default {
       // iii) circle
       this.createCircle();
     },
-    // [@Method] 지도 범위 조정
-    resizeMapLevel() {
-      const bounds = new kakao.maps.LatLngBounds(); // 지도 재설정할 범위정보 LatLngBounds 객체
-      // LatLngBounds 객체에 좌표 추가 (모임장소, 멤버)
-      const place = new kakao.maps.LatLng(
-        this.placeLatLng[0],
-        this.placeLatLng[1]
-      );
-      bounds.extend(place);
-
-      for (const marker of this.memberMarkerList) {
-        const memberId = Object.keys(marker)[0];
-        bounds.extend(marker[memberId].getPosition());
-      }
-
-      // 좌표를 기준으로 지도 범위 재설정
-      this.map.setBounds(bounds);
-    },
     // [@Method] GeoLocation 위치 부정확 over-lay 표시
     showLocationUnavailableOverlay(memberId) {
-      console.log(
-        "#21# GeoLocation 부정확 over-lay 생성 - memberId: ",
-        memberId
-      );
-
       // 현 로그인 사용자의 marker
       const markerIndex = this.memberMarkerList.findIndex(
         (obj) => Object.keys(obj)[0] == memberId
@@ -611,28 +650,30 @@ export default {
         // size: overlaySize,
       });
       // over-lay 저장 (for. 삭제)
-      const object = new Object();
-      object[memberId] = customOverlay;
-      this.geoWarningOverlayList.push(object);
-      console.log(
-        "#21# geoWarningOverlayList 확인: ",
-        this.geoWarningOverlayList
-      );
+      // const object = new Object();
+      // object[member.memberId] = customOverlay;
+      // this.memberNicknameOverlayList.push(object);
 
       // 오버레이 표시
       customOverlay.setMap(this.map);
     },
-    // [@Method] GeoLocation 위치 부정확 경고 over-lay 존재 확인 (true - 이미 존재함)
-    checkGeoWarningOverlay(memberId) {
-      let index = -1;
-      for (let i = 0; i < this.geoWarningOverlayList.length; i++) {
-        if (Object.keys(this.geoWarningOverlayList[i]) == memberId) {
-          index = i;
-          break;
-        }
+    // [@Method] 지도 범위 조정
+    resizeMapLevel() {
+      const bounds = new kakao.maps.LatLngBounds(); // 지도 재설정할 범위정보 LatLngBounds 객체
+      // LatLngBounds 객체에 좌표 추가 (모임장소, 멤버)
+      const place = new kakao.maps.LatLng(
+        this.placeLatLng[0],
+        this.placeLatLng[1]
+      );
+      bounds.extend(place);
+
+      for (const marker of this.memberMarkerList) {
+        const memberId = Object.keys(marker)[0];
+        bounds.extend(marker[memberId].getPosition());
       }
 
-      return index;
+      // 좌표를 기준으로 지도 범위 재설정
+      this.map.setBounds(bounds);
     },
     // [@Method] chatting 내용 over-lay 표시
     updateChatOverlay() {
