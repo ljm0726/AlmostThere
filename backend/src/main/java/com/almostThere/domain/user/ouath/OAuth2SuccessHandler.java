@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
@@ -26,7 +27,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final TokenService tokenService;
     private final MemberRepository memberRepository;
-    private final RedisTemplate redisTemplate;
+    @Qualifier("redisTemplateForToken")
+    private final RedisTemplate redisTemplateForToken;
     @Value("${LOGIN_SUCCESS_URL}")
     private String loginSuccessUrl;
 
@@ -72,7 +74,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         // add cookie to response
         response.addCookie(cookie);
 
-        redisTemplate.opsForValue() //redis에 refreshToken 저장
+        redisTemplateForToken.opsForValue() //redis에 refreshToken 저장
             .set(member.getMemberEmail(),
                 token.getRefreshToken(),
                 refreshTokenExpiretime, //만료 기간

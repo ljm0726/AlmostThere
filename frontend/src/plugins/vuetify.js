@@ -25,6 +25,7 @@ import CheckRoundIcon from '@/common/component/icons/CheckRoundIcon.vue'
 import InfoOutlineIcon from '@/common/component/icons/InfoOutlineIcon.vue'
 import MapOutlineIcon from '@/common/component/icons/MapOutlineIcon.vue'
 import CameraOutlineIcon from '@/common/component/icons/CameraOutlineIcon.vue'
+import ChattingOutlineIcon from '@/common/component/icons/ChattingOutlineIcon.vue'
 
 Vue.use(Vuetify);
 
@@ -73,7 +74,7 @@ export default new Vuetify({
       edit_outline: {
         component: EditOutlineIcon
       },
-      user_invite_outline_icon: {
+      user_invite_outline: {
         component: UserInviteOutlineIcon
       },
       delete_outline: {
@@ -102,6 +103,9 @@ export default new Vuetify({
       },
       camera_outline: {
         component: CameraOutlineIcon
+      },
+      chatting_outline: {
+        component: ChattingOutlineIcon
       }
     }
   }
