@@ -1,26 +1,30 @@
 package com.almostThere.domain.user.dto;
 
+import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
-import com.almostThere.domain.meeting.entity.Meeting;
-import com.almostThere.domain.user.entity.Member;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class MemberInfoDto {
 
-    // 회원 정보
-    private Member member;
+//    private MemberDto member;
+//
+//    private List<MeetingDto> meetings;
+//
+//    public MemberInfoDto(MemberDto member, List<MeetingDto> meetings) {
+//        this.member = member;
+//        this.meetings = meetings;
+//    }
+    private MemberDto member;
 
-    // 회원이 참석한 모든 모임
-    private List<MeetingDto> meetingDtoList;
+    private List<AttendMeetingMemberDto> attendMeetingMemebers;
 
-    public MemberInfoDto(Member member, List<MeetingDto> meetingDtoList) {
+    public MemberInfoDto(MemberDto member, List<AttendMeetingMemberDto> attendMeetingMemebers) {
         this.member = member;
-        this.meetingDtoList = meetingDtoList;
+        this.attendMeetingMemebers = attendMeetingMemebers;
     }
 }

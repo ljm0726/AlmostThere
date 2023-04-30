@@ -3,6 +3,7 @@ package com.almostThere.domain.user.service;
 import com.almostThere.domain.meeting.dto.MeetingCntDto;
 import com.almostThere.domain.meeting.entity.MeetingCnt;
 import com.almostThere.domain.meeting.repository.MeetingCntRepository;
+import com.almostThere.domain.user.dto.MemberDto;
 import com.almostThere.domain.user.dto.MemberInfoDto;
 import com.almostThere.domain.user.entity.Member;
 import com.almostThere.domain.user.repository.MemberRepository;
@@ -35,7 +36,7 @@ public class MemberService {
      * @param memberId
      * @return Member 회원 Entity
      */
-    public Member getMemberByMemberId(Long memberId) {
-        return memberRepository.findByid(memberId);
+    public MemberDto getMemberByMemberId(Long memberId) {
+        return new MemberDto(memberRepository.findByid(memberId));
     }
 }

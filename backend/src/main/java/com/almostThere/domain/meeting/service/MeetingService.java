@@ -1,5 +1,6 @@
 package com.almostThere.domain.meeting.service;
 
+import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
 import com.almostThere.domain.meeting.dto.MeetingMemberDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
@@ -14,6 +15,7 @@ import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
 import com.almostThere.domain.meeting.repository.MeetingMemberRepository;
 import com.almostThere.domain.meeting.repository.MeetingRepository;
+import com.almostThere.domain.user.controller.MemberController;
 import com.almostThere.domain.user.entity.Member;
 import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +38,8 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MeetingService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MeetingService.class);
 
     private final MeetingRepository meetingRepository;
     private final MemberRepository memberRepository;
@@ -155,19 +161,11 @@ public class MeetingService {
      * @param memberId
      * @return 모임 리스트
      */
-    public List<MeetingDto> findAllMeeting(Long memberId) {
+    public List<AttendMeetingMemberDto> findAttendAllMeetingById(Long memberId) {
         // i) member가 참여한 모임ID List 조회
-//        List<MeetingMember> meetingMembers = meetingMemberRepository.findByMemberId(memberId);
-        List<MeetingMemberDto> meetingMemberDtos = meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new MeetingMemberDto(m)).collect(Collectors.toList());
+        List<AttendMeetingMemberDto> meetingMembers = meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new AttendMeetingMemberDto(m)).collect(Collectors.toList());
+        logger.info("#21# member가 참여한 meetingMembers: {}", meetingMembers);
 
-        // ii) 모임 id에 해당되는 모임 List 조회
-        List<Long> attendMeetingIdList = new ArrayList<>();
-        for (MeetingMemberDto meetingMember: meetingMemberDtos) {
-            attendMeetingIdList.add(meetingMember.getId());
-        }
-//        List<Meeting> meetings = meetingRepository.findAttendAllMeetingById(attendMeetingIdList);
-        List<MeetingDto> result = meetingRepository.findAttendAllMeetingById(attendMeetingIdList).stream().map(m -> new MeetingDto(m)).collect(Collectors.toList());
-
-        return result;
+        return meetingMembers;
     }
 }

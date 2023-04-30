@@ -1,5 +1,6 @@
 package com.almostThere.domain.user.controller;
 
+import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
 import com.almostThere.domain.meeting.dto.MeetingCntDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.entity.Meeting;
@@ -49,7 +50,7 @@ public class MemberController {
      * @return
      */
     @GetMapping("/info")
-    public BaseResponse<?> getMemberPageInfo() {
+    public BaseResponse getMemberPageInfo() {
         logger.info("#[MemberController]# getMemberPageInfo - 마이페이지 회원정보 조회 동작");
 
         // ! 추후 token을 활용해 memeberId 추출
@@ -57,16 +58,23 @@ public class MemberController {
 
         // i) member Profile 정보
 //        Member member = memberService.getMemberByMemberId(memberId);
+
         // ii) member의 모든 모임 이력 정보
         //     - 모든 모임 이력, [모임-멤버] 테이블에 멤버ID가 있는 모임ID 정보 가져오기
-        List<MeetingDto> meetingDtoList = meetingService.findAllMeeting(memberId);
-        logger.info("#21# 범인 찾기: ", meetingDtoList);
+//        meetingService.findAttendAllMeetingById(memberId);
+
+
         // iii) 모임 data 요약 정보
         //      - 이번달 x번의 모임을 잡았는 지
         //      - 누적 x번 약속 중 y번 지각
         //      - 지난달 모임에서 150,000원 소비
 
-//        return BaseResponse.success(new MemberInfoDto(memberService.getMemberByMemberId(memberId), meetingService.findAllMeeting(memberId)));
-        return BaseResponse.success(null);
+//        return BaseResponse.success(null);
+//        return BaseResponse.success(meetingService.findAttendAllMeetingById(memberId));
+//        return meetingService.findAttendAllMeetingById(memberId);
+//        return BaseResponse.success(new MemberInfoDto(memberService.getMemberByMemberId(memberId)));
+        return BaseResponse.success(new MemberInfoDto(
+                memberService.getMemberByMemberId(memberId),
+                meetingService.findAttendAllMeetingById(memberId)));
     }
 }
