@@ -52,7 +52,6 @@ public class LocationController {
         double lng = (double) memberLatLngJson.get(1);
 
         UserLocation findUserLocation = (UserLocation) redisTemplateForLocation.opsForValue().get(memberId);
-        System.out.println(">> " + findUserLocation.getMemberId());
         UserLocation userLocation = new UserLocation(Long.parseLong(memberId), memberNickname, new double[] {lat, lng});
         System.out.println(locationExpiretime);
         if(findUserLocation != null){

@@ -14,6 +14,9 @@ public class ChattingResponseDto {
     // 모임 ID
     private Long meetingId;
 
+    // 모임 코드
+    private String roomCode;
+
     // 모임 이름
     private String meetingName;
     
@@ -29,5 +32,6 @@ public class ChattingResponseDto {
         this.chattingMemberMap = meeting.getMeetingMembers().stream()
                                         .map(m -> new ChattingMemberDto(m.getMember()))
                                         .collect(Collectors.toMap(m -> m.getMemberId(), n -> n));
+//        this.roomCode = meeting.getRoomCode();
     }
 }
