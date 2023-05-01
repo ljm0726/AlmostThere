@@ -63,7 +63,7 @@ public class MemberController {
 
         // iii) 모임 data 요약 정보
         //      - 이번달 x번의 모임을 잡았는 지
-        Integer thisMonthattendMeetingCnt = 0;
+        Integer thisMonthAttendMeetingCnt = 0;
         //      - 누적 x번 약속 중 y번 지각
         Integer totalLateCnt = 0;
         //      - 지난달 모임에서 150,000원 소비
@@ -76,7 +76,7 @@ public class MemberController {
             if (meeting.getState() == StateType.LATE) totalLateCnt++;
 
             // 이번달 모임개수
-            if (meetingTime.getMonthValue() == LocalDateTime.now().getMonthValue()) thisMonthattendMeetingCnt++;
+            if (meetingTime.getMonthValue() == LocalDateTime.now().getMonthValue()) thisMonthAttendMeetingCnt++;
             // 지난달 모임 총 소비가격
             else if (meetingTime.getMonthValue() == LocalDateTime.now().minusMonths(1).getMonthValue()) lastMonthTotalSpentMoney += meeting.getSpentMoney();
         }
@@ -84,6 +84,6 @@ public class MemberController {
         return BaseResponse.success(new MemberInfoDto(
                 memberService.getMemberByMemberId(memberId),
                 meetings,
-                thisMonthattendMeetingCnt, totalLateCnt, lastMonthTotalSpentMoney));
+                thisMonthAttendMeetingCnt, totalLateCnt, lastMonthTotalSpentMoney));
     }
 }

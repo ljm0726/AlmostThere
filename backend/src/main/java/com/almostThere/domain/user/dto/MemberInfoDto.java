@@ -14,7 +14,7 @@ public class MemberInfoDto {
     private List<AttendMeetingMemberDto> attendMeetings;
 
     // 이번달 모임개수
-    private Integer thisMonthattendMeetingCnt;
+    private Integer thisMonthAttendMeetingCnt;
 
     // 총 모임 지각횟수
     private Integer totalLateCnt;
@@ -25,12 +25,12 @@ public class MemberInfoDto {
     public MemberInfoDto(
             MemberDto member,
             List<AttendMeetingMemberDto> attendMeetings,
-            Integer thisMonthattendMeetingCnt,
+            Integer thisMonthAttendMeetingCnt,
             Integer totalLateCnt,
             Double lastMonthTotalSpentMoney) {
         this.member = member;
         this.attendMeetings = attendMeetings;
-        this.thisMonthattendMeetingCnt = thisMonthattendMeetingCnt;
+        this.thisMonthAttendMeetingCnt = thisMonthAttendMeetingCnt;
         this.totalLateCnt = totalLateCnt;
         this.lastMonthTotalSpentMoney = lastMonthTotalSpentMoney;
     }
