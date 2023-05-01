@@ -178,7 +178,7 @@ export default {
     },
 
     findHalfway() {
-      for (let i = 0; i <= this.starts.length; i++) {
+      for (let i = 0; i < this.starts.length; i++) {
         if (this.starts[i] == null) {
           alert("출발지를 입력하세요!");
           return;
