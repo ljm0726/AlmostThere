@@ -34,40 +34,6 @@ public class LocationController {
     @Value("${redis.locationData.expire-length}")
     private long locationExpiretime;
 
-    /**
-     * 3시간 이내 모임이 존재하는 회원의 위치를 3초마다 REDIS에 저장한다.
-     * 만약 이미 위치값이 존재하면 만료시간을 조회하여 해당 만료시간을 가지고 저장
-     * 최초 저장이라면 만료시간을 3시간으로(현재는 60초로 지정) 저장
-     * @param message
-     * @throws ParseException
-     */
-    @MessageMapping("/locShare")
-    public void saveLocation(String message) throws ParseException {
-
-        JSONParser jsonParser = new JSONParser();
-        JSONObject memberObject = (JSONObject) jsonParser.parse(message);
-
-        String memberId =  String.valueOf(memberObject.get("memberId"));
-        String memberNickname = (String) memberObject.get("memberNickname");
-        JSONArray memberLatLngJson = (JSONArray) memberObject.get("memberLatLng");
-        double lat = (double) memberLatLngJson.get(0);
-        double lng = (double) memberLatLngJson.get(1);
-
-        UserLocation findUserLocation = (UserLocation) redisTemplateForLocation.opsForValue().get(memberId);
-        UserLocation userLocation = new UserLocation(Long.parseLong(memberId), memberNickname, new double[] {lat, lng});
-        System.out.println(locationExpiretime);
-        if(findUserLocation != null){
-            long maintainExpiretime = redisTemplateForLocation.getExpire(memberId);
-            System.out.println("findUserLocation 이 널이 아닐 때 :"+ maintainExpiretime);
-            redisTemplateForLocation.opsForValue()
-                .set(memberId, userLocation, maintainExpiretime, TimeUnit.SECONDS);
-        }else{
-            System.out.println("findUserLocation 이 널일 때 :" + locationExpiretime);
-            redisTemplateForLocation.opsForValue()
-                .set(memberId, userLocation, locationExpiretime, TimeUnit.SECONDS);
-        }
-
-    }
     /*
         유저가 위치값을 보낸 적이 없어서 redis에 위치 정보가 저장되어 있지 않을 수가 있나?
         위치 정보를 언제부터 전송하지.? 자신이 속한 모임 중 약속시간이 3시간 이내로 남은 모임이 있으면 전송
@@ -75,7 +41,6 @@ public class LocationController {
         전송을 안 해서 저장이 안 되어 있으면 그 사람의 위치는 모르겠네?
         그럼 그때는 출발위치로 찍어 놓기? 출발위치도 없으면 안 찍고
      */
-
     /**
      * 회원이 참요하고 있는 모임에 참여한 모든 회원들의 실시간 위치를 List에 담아 리턴한다.
      * @param meetingId
@@ -94,4 +59,39 @@ public class LocationController {
         return locationService.getAllMemberLocationsByMeetingId(meetingId);
     }
 
+    /**
+     * 3시간 이내 모임이 존재하는 회원의 위치를 3초마다 REDIS에 저장한다.
+     * 만약 이미 위치값이 존재하면 만료시간을 조회하여 해당 만료시간을 가지고 저장
+     * 최초 저장이라면 만료시간을 3시간으로(현재는 60초로 지정) 저장
+     * @param message
+     * @throws ParseException
+     */
+    @MessageMapping("/locShare")
+    public void saveLocation(String message) throws ParseException {
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject memberObject = (JSONObject) jsonParser.parse(message);
+
+        String memberId = String.valueOf(memberObject.get("memberId"));
+        String memberNickname = (String) memberObject.get("memberNickname");
+        JSONArray memberLatLngJson = (JSONArray) memberObject.get("memberLatLng");
+        double lat = (double) memberLatLngJson.get(0);
+        double lng = (double) memberLatLngJson.get(1);
+
+        UserLocation findUserLocation = (UserLocation) redisTemplateForLocation.opsForValue()
+            .get(memberId);
+        UserLocation userLocation = new UserLocation(Long.parseLong(memberId), memberNickname,
+            new double[]{lat, lng});
+
+        long expiretime = 0;
+        if (findUserLocation != null) {
+            expiretime = redisTemplateForLocation.getExpire(memberId);
+        } else {
+            expiretime = locationExpiretime;
+        }
+
+        redisTemplateForLocation.opsForValue()
+            .set(memberId, userLocation, expiretime, TimeUnit.SECONDS);
+
+    }
 }
