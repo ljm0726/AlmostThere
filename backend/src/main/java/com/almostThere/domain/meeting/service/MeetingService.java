@@ -42,16 +42,6 @@ public class MeetingService {
     private final MemberRepository memberRepository;
     private final MeetingMemberRepository meetingMemberRepository;
 
-    /**
-     * 멤버가 참여중인 모임 중 약속시간이 3시간 이내에 있는 모임의 수를 조회한다.
-     * @param memberId
-     * @return 모임의 수
-     */
-    public int countMeetingWithin3hours(Long memberId){
-        LocalDateTime afterDate = LocalDateTime.now().plusHours(3);
-        System.out.println(afterDate);
-        return meetingRepository.countMeetingsWithin3hours(memberId,afterDate);
-    }
 
     /**
      * 멤버가 참여한 오늘 예정인 모임을 조회한다.
