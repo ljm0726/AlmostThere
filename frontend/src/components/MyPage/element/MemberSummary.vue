@@ -14,7 +14,7 @@
       <!-- text -->
       <div class="light-font main-col-1">
         <!-- 이번달 모임개수 -->
-        <div class="d-flex align-center mb-1 mt-3">
+        <div class="d-flex align-center mb-1 mt-2">
           <span
             ><img height="15" width="15" src="@/assets/images/dialog/check.png"
           /></span>
@@ -73,7 +73,7 @@ export default {
 .image-container {
   position: absolute;
   margin-left: 55%;
-  margin-top: -30%;
+  margin-top: -31%;
   /* top: 100;
   right: 0;
   margin-right: 2rem; */
