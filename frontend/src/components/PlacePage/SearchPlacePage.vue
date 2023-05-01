@@ -25,7 +25,7 @@
 import { mapActions } from "vuex";
 
 export default {
-  name: "PlacePage",
+  name: "SearchPlacePage",
   data() {
     return {
       map: null,
@@ -42,6 +42,7 @@ export default {
   mounted() {
     this.loadScript();
     this.$refs.myInput.focus();
+    console.log(1);
   },
 
   methods: {
@@ -118,6 +119,7 @@ export default {
             placeMap.set("addr", this.address);
             this.updatePlace(placeMap);
             this.$router.push("/place");
+
             // console.log(
             //   "x,y좌표는 ",
             //   child.attributes["data-x"].value,
@@ -187,5 +189,49 @@ export default {
   font-family: var(--medium-font);
   border-bottom: 2px solid #000;
   padding-block: 5px;
+}
+
+input {
+  padding-left: 10px; /* 여백 크기 조절 */
+  font-family: var(--medium-font);
+}
+.find-place-btn {
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 2;
+  right: 5%;
+  top: 7.5%;
+  font-family: var(--extrabold-font);
+  background: #ffffff;
+  border: 1px solid #092a49;
+  box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
+  border-radius: 18px;
+}
+.back-btn {
+  display: flex;
+  position: absolute;
+  z-index: 2;
+  background: #ffffff;
+  left: 2.2%;
+  top: 1.7%;
+  bottom: unset; /* 추가 */
+}
+.search-box {
+  box-sizing: border-box;
+  z-index: 2;
+  display: flex;
+  position: absolute;
+  margin-left: 5%;
+  width: 80%;
+  height: 37px;
+  left: 10%; /* 수정 */
+  right: 10%; /* 추가 */
+  top: 1.7%;
+  bottom: unset; /* 추가 */
+
+  background: #ffffff;
+  border: 1px solid #092a49;
+  box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
+  border-radius: 10px;
 }
 </style>

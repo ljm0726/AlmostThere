@@ -9,9 +9,11 @@
       v-on:click="goToPage('/search')"
     />
 
-    <v-btn class="find-place-btn"
+    <v-btn class="find-place-btn" @click="findHalfway()"
       ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
     >
+    <halfway-modal ref="halfway"></halfway-modal>
+
     <div id="map" class="maps"></div>
     <div v-if="isSelect" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
@@ -22,9 +24,10 @@
 <script>
 import { mapState } from "vuex";
 import placeInfo from "./placeInfo.vue";
+import HalfwayModal from "./placeModal/HalfwayModal.vue";
 
 export default {
-  components: { placeInfo },
+  components: { placeInfo, HalfwayModal },
   name: "PlacePage",
   data() {
     return {
@@ -71,9 +74,17 @@ export default {
         new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
       );
     }
+
+    if (localStorage.getItem("findHalfwayModal") !== null) {
+      this.$refs.halfway.openDialog();
+    }
   },
 
   methods: {
+    findHalfway() {
+      localStorage.setItem("findHalfwayModal", true);
+      this.$refs.halfway.openDialog();
+    },
     moveRegisterPage() {
       this.$router.push("/register");
     },
@@ -119,7 +130,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .place-info {
   z-index: 2;
   position: absolute;

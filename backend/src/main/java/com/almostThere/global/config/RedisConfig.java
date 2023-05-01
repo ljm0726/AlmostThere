@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -24,8 +25,8 @@ public class RedisConfig {
         return new LettuceConnectionFactory(host, port);
     }
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    @Bean(name = "redisTemplateForToken")
+    public RedisTemplate<String, Object> redisTemplateForToken() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
@@ -33,11 +34,19 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    @Bean
-    public RedisTemplate<?, ?> redisTemplateDto() {
-        RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
+    @Bean(name = "redisTemplateForLocation")
+    public RedisTemplate<String, ?> redisTemplateForLocation() {
+        RedisTemplate<String, ?> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
 
+    @Bean(name = "redisTemplateForChatting")
+    public RedisTemplate<?, ?> redisTemplateForChatting() {
+        RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        return redisTemplate;
+    }
 }

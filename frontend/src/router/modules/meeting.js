@@ -3,6 +3,7 @@ import MeetingHeader from "@/views/Header/MeetingHeader.vue"
 import LiveMapPage from "@/components/LiveMapPage/LiveMapPage.vue"
 import LiveMapHeader from "@/views/Header/LiveMapHeader.vue"
 import ChattingPage from "@/components/ChattingPage/ChattingPage.vue"
+import LiveMap from "@/components/LiveMapPage/element/LiveMap.vue";
 
 const meeting = [
   {
@@ -28,6 +29,14 @@ const meeting = [
       default: ChattingPage,
     },
   },
-]
+  {
+    path: "/live-map-temp/:id",
+    name: "live-map-temp",
+    components: {
+      header: LiveMapHeader,
+      default: LiveMap,
+    },
+  },
+];
 
 export default meeting;
