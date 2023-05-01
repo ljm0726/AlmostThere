@@ -1,20 +1,13 @@
 package com.almostThere.domain.user.controller;
 
-import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
 import com.almostThere.domain.meeting.dto.MeetingCntDto;
-import com.almostThere.domain.meeting.dto.MeetingDto;
-import com.almostThere.domain.meeting.entity.Meeting;
-import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.service.MeetingService;
-import com.almostThere.domain.user.dto.MemberAccessDto;
 import com.almostThere.domain.user.dto.MemberInfoDto;
-import com.almostThere.domain.user.entity.Member;
 import com.almostThere.domain.user.service.MemberService;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,24 +50,25 @@ public class MemberController {
         Long memberId = Long.valueOf("1");
 
         // i) member Profile 정보
-//        Member member = memberService.getMemberByMemberId(memberId);
+//        memberService.getMemberByMemberId(memberId);
 
         // ii) member의 모든 모임 이력 정보
         //     - 모든 모임 이력, [모임-멤버] 테이블에 멤버ID가 있는 모임ID 정보 가져오기
 //        meetingService.findAttendAllMeetingById(memberId);
-
 
         // iii) 모임 data 요약 정보
         //      - 이번달 x번의 모임을 잡았는 지
         //      - 누적 x번 약속 중 y번 지각
         //      - 지난달 모임에서 150,000원 소비
 
-//        return BaseResponse.success(null);
+//        #21# member가 참여한 meetingMembers: [AttendMeetingMemberDto
+//        (meetingMemberId=1, spendMoney=12500.0, state=ARRIVE, meeting=Meeting(id=1, host=com.almostThere.domain.user.entity.Member@709ce129, meetingName=스터디, meetingTime=2023-04-28T16:53:08, meetingPlace=역삼역, meetingAddress=역삼역, meetingLat=37.5004, meetingLng=127.0361, lateAmount=1000, regdate=2023-04-27T16:53:08, roomCode=10000, meetingMembers=[com.almostThere.domain.meeting.entity.MeetingMember@717afd5c, com.almostThere.domain.meeting.entity.MeetingMember@35951b4], calculateDetails=[com.almostThere.domain.meeting.entity.CalculateDetail@529ec18b])),
+//        (meetingMemberId=2, spendMoney=85000.0, state=LATE, meeting=Meeting(id=2, host=com.almostThere.domain.user.entity.Member@709ce129, meetingName=롯데월드, meetingTime=2023-03-29T16:53:08, meetingPlace=잠실역, meetingAddress=잠실역, meetingLat=37.5134, meetingLng=127.1001, lateAmount=5000, regdate=2023-04-27T16:53:08, roomCode=20000, meetingMembers=[com.almostThere.domain.meeting.entity.MeetingMember@376ec65a], calculateDetails=[com.almostThere.domain.meeting.entity.CalculateDetail@752681b1]))]
+
+//        return BaseResponse.success(new MemberInfoDto(
+//                memberService.getMemberByMemberId(memberId),
+//                meetingService.findAttendAllMeetingById(memberId)));
 //        return BaseResponse.success(meetingService.findAttendAllMeetingById(memberId));
-//        return meetingService.findAttendAllMeetingById(memberId);
-//        return BaseResponse.success(new MemberInfoDto(memberService.getMemberByMemberId(memberId)));
-        return BaseResponse.success(new MemberInfoDto(
-                memberService.getMemberByMemberId(memberId),
-                meetingService.findAttendAllMeetingById(memberId)));
+        return BaseResponse.success(new MemberInfoDto(memberService.getMemberByMemberId(memberId)))
     }
 }

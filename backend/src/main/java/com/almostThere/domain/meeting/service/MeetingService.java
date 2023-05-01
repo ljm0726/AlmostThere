@@ -1,7 +1,6 @@
 package com.almostThere.domain.meeting.service;
 
 import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
-import com.almostThere.domain.meeting.dto.MeetingMemberDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
@@ -15,14 +14,12 @@ import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
 import com.almostThere.domain.meeting.repository.MeetingMemberRepository;
 import com.almostThere.domain.meeting.repository.MeetingRepository;
-import com.almostThere.domain.user.controller.MemberController;
 import com.almostThere.domain.user.entity.Member;
 import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import com.almostThere.global.error.exception.NotFoundException;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -162,10 +159,9 @@ public class MeetingService {
      * @return 모임 리스트
      */
     public List<AttendMeetingMemberDto> findAttendAllMeetingById(Long memberId) {
-        // i) member가 참여한 모임ID List 조회
-        List<AttendMeetingMemberDto> meetingMembers = meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new AttendMeetingMemberDto(m)).collect(Collectors.toList());
-        logger.info("#21# member가 참여한 meetingMembers: {}", meetingMembers);
+        // member가 참여한 모임ID List 조회
+//        List<AttendMeetingMemberDto> attendMeetings = meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new AttendMeetingMemberDto(m)).collect(Collectors.toList());
 
-        return meetingMembers;
+        return meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new AttendMeetingMemberDto(m)).collect(Collectors.toList());
     }
 }
