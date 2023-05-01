@@ -14,8 +14,10 @@
         />
       </button> -->
     <v-tooltip location="right" v-model="show">
-      <span class="main-col-1 xxxs-font"> 지금으로부터 24시간 내의 </span>
-      <span class="main-col-1 xxxs-font"> 나의 모임을 보여줍니다. </span>
+      <span class="main-col-1 xxxs-font">
+        지금으로부터 24시간 내의<br />
+        나의 모임을 보여줍니다.
+      </span>
     </v-tooltip>
     <swiper
       v-if="meetings.length > 0"
@@ -144,7 +146,7 @@ export default {
   background: white;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
-  border-radius: 15px;
+  border-radius: 10px;
   border: var(--main-col-1) solid 1px;
   display: flex;
   justify-content: center;
