@@ -47,5 +47,4 @@ public class MapController {
         }
         else return BaseResponse.fail();
     }
-
 }

@@ -14,10 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MapService {
 
@@ -86,10 +86,21 @@ public class MapService {
         meetingMemberRepository.save(meetingMember);
     }
 
+    /**
+     * 현재 시간 기준 1분 전이 모임 시간이었던 경우 GOING을 전부 LATE로 변경
+     * **/
     @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
     @Transactional
     public void changeState() {
-        System.out.println("# Scheduled 실행 #");
-//        System.out.println("현재 시간은 " + new Date());
+
+        // 현재 시간 1분 전
+        LocalDateTime nowBefore1Minute = LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusMinutes(1).withNano(0);
+        
+        // 현재 시간 1분 전에 끝난 meeting 가져오기
+        List<Meeting> meetingList = meetingRepository.findAllByMeetingTime(nowBefore1Minute);
+        for (Meeting meeting : meetingList) {
+            Long meetingId = meeting.getId();
+            meetingMemberRepository.updateMeetingMemberState(meetingId);
+        }
     }
 }
