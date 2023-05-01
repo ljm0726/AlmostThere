@@ -7,14 +7,14 @@
         height="90"
         width="90"
         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-        :src="member.memberProfileImg"
+        :src="this.member.memberProfileImg"
       >
       </v-img>
     </v-card>
     <div class="ml-5 xxxxl-font thin-font main-col-1">
       안녕하세요!
       <div>
-        <span class="bold-font">{{ member.memberNickname }}</span
+        <span class="bold-font">{{ this.member.memberNickname }}</span
         >님
       </div>
       <!-- 로그아웃 -->
@@ -36,19 +36,16 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import LogoutDialog from "./LogoutDialog.vue";
 
 export default {
   name: "MemberProfile",
   data() {
-    return {
-      member: {
-        memberProfileImg:
-          "https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2023/04/16/56055563-5446-4847-b730-1e90f86509aa.jpg",
-        memberNickname: "안유진",
-        state: "GOING",
-      },
-    };
+    return {};
+  },
+  computed: {
+    ...mapState("memberStore", ["member"]),
   },
   components: { LogoutDialog },
   methods: {

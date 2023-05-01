@@ -7,15 +7,18 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import MemberProfile from "./element/MemberProfile.vue";
 
 export default {
   name: "MyPage",
   components: { MemberProfile },
+  created() {
+    // [@Method] 회원정보 조회
+    this.excuteGetMemberInfo();
+  },
   methods: {
-    logout() {
-      this.$refs.logout.openDialog();
-    },
+    ...mapActions("memberStore", ["excuteGetMemberInfo"]),
   },
 };
 </script>
