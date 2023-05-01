@@ -68,6 +68,29 @@ export default {
             )
           );
         }
+        var mp = new Map();
+        mp.set("title", "중간지점");
+        mp.set(
+          "latlng",
+          new window.kakao.maps.LatLng(
+            this.middlePlace.middleAvergeY,
+            this.middlePlace.middleAvergeX
+          )
+        );
+        positions.push(mp);
+        this.ps = new window.kakao.maps.services.Places();
+        var center = new window.kakao.maps.LatLng(
+          this.middlePlace.middleAvergeY,
+          this.middlePlace.middleAvergeX
+        ); // 현재 지도 중심 좌표를 가져옵니다
+
+        console.log(center);
+        var radius = 5000; // 검색 반경을 10km로 설정합니다
+        this.ps.categorySearch("sw8", this.placesSearchCB, {
+          location: center,
+          radius: radius,
+          useMapBounds: false,
+        });
 
         if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
         for (var i = 0; i < positions.length; i++) {
@@ -160,6 +183,40 @@ export default {
       this.curIntroduceMarker = new window.kakao.maps.Marker({
         map: this.map,
         position: new window.kakao.maps.LatLng(y, x),
+      });
+    },
+
+    placesSearchCB(data, status) {
+      if (status === window.kakao.maps.services.Status.OK) {
+        for (var i = 0; i < data.length; i++) {
+          this.displayMarker2(data[1]);
+        }
+      }
+    },
+    displayMarker2(place) {
+      var infowindow = new window.kakao.maps.InfoWindow({ zIndex: 3 });
+      var imageSrc =
+        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+      var imageSize = new window.kakao.maps.Size(24, 35);
+
+      // 마커 이미지를 생성합니다
+      var markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
+      // 마커를 생성하고 지도에 표시합니다
+      var marker = new window.kakao.maps.Marker({
+        map: this.map,
+        position: new window.kakao.maps.LatLng(place.y, place.x),
+        image: markerImage,
+      });
+
+      // 마커에 클릭이벤트를 등록합니다
+      window.kakao.maps.event.addListener(marker, "click", function () {
+        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+        infowindow.setContent(
+          '<div style="padding:5px;font-size:12px;">' +
+            place.place_name +
+            "</div>"
+        );
+        infowindow.open(this.map, marker);
       });
     },
   },
