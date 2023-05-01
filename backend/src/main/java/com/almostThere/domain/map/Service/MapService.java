@@ -1,0 +1,95 @@
+package com.almostThere.domain.map.Service;
+
+import com.almostThere.domain.meeting.entity.Meeting;
+import com.almostThere.domain.meeting.entity.MeetingMember;
+import com.almostThere.domain.meeting.entity.StateType;
+import com.almostThere.domain.meeting.repository.MeetingMemberRepository;
+import com.almostThere.domain.meeting.repository.MeetingRepository;
+import com.almostThere.global.error.ErrorCode;
+import com.almostThere.global.error.exception.AccessDeniedException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Optional;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class MapService {
+
+    private final MeetingMemberRepository meetingMemberRepository;
+
+    private final MeetingRepository meetingRepository;
+
+    private final double earthRadius = 6400;
+
+    /**
+     * @param  meetingId 모임ID
+     * @param memberId 멤버ID
+     * @return memberId에 해당하는 MeetingMember Entity
+     * **/
+    public MeetingMember isMeetingMember(Long meetingId, Long memberId) {
+
+        // memberId가 meetingMember에 속해 있는지 확인
+        Optional<MeetingMember> meetingMemberOptional = meetingMemberRepository.findByMeeting_IdAndMember_Id(meetingId, memberId);
+        if (meetingMemberOptional.isPresent()) return meetingMemberOptional.get();
+        else throw new AccessDeniedException(ErrorCode.NOT_AUTHENTICATION);
+    }
+
+    /**
+     * @param  meetingId 모임ID
+     * @return meetingId에 해당하는 Meeting
+     * **/
+    public Meeting isMeeting(Long meetingId) {
+        Optional<Meeting> meetingOptional = meetingRepository.findById(meetingId);
+        if (meetingOptional.isPresent()) return meetingOptional.get();
+        else throw new AccessDeniedException(ErrorCode.MEETING_NOT_FOUND);
+    }
+
+    /**
+     * @param  meetingTime 모임 시간
+     * @return 모임 시간이 현재 시간 이후인지 판단
+     * **/
+    public void isMeetingTimeAfterNow(LocalDateTime meetingTime) {
+        boolean result = meetingTime.isAfter(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
+        if (!result) throw new AccessDeniedException(ErrorCode.TIMEOVER);
+    }
+
+    /**
+     * @param x1 첫 번째 좌표의 위도
+     * @param y1 첫 번째 좌표의 경도
+     * @param x2 두 번째 좌표의 위도
+     * @param y2 두 번째 좌표의 경도
+     * @return 두 좌표 사이의 거리 (단위 m)
+     * **/
+    public double calculateDistance(double x1, double y1, double x2, double y2) {
+
+        // x 위도(latitude), y 경도(longitude) 간의 거리 구하기
+        double dLat = Math.toRadians(x2 - x1);
+        double dLon = Math.toRadians(y2 - y1);
+        double a = Math.sin(dLat/2)* Math.sin(dLat/2)+ Math.cos(Math.toRadians(x1))* Math.cos(Math.toRadians(x2))* Math.sin(dLon/2)* Math.sin(dLon/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = earthRadius * c * 1000;
+        return distance;
+    }
+
+    /**
+     * @param meetingMember 업데이트할 meetingMember Entity
+     * @param stateType 업데이트 후의 값
+     * **/
+    public void updateMemberState(MeetingMember meetingMember, StateType stateType) {
+        meetingMember.updateState(stateType);
+        meetingMemberRepository.save(meetingMember);
+    }
+
+    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
+    @Transactional
+    public void changeState() {
+        System.out.println("# Scheduled 실행 #");
+//        System.out.println("현재 시간은 " + new Date());
+    }
+}

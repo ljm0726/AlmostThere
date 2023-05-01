@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Long> {
     @Modifying
@@ -16,5 +18,5 @@ public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Lo
         "and m.meeting.id=:meetingId")
     void deleteMeetingMemberByMeetingIdAndMemberID(@Param("memberId") Long memberId, @Param("meetingId") Long meetingId);
 
-
+    Optional<MeetingMember> findByMeeting_IdAndMember_Id(Long meetingId, Long memberId);
 }
