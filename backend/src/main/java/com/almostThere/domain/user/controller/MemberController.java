@@ -1,6 +1,8 @@
 package com.almostThere.domain.user.controller;
 
+import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
 import com.almostThere.domain.meeting.dto.MeetingCntDto;
+import com.almostThere.domain.meeting.entity.StateType;
 import com.almostThere.domain.meeting.service.MeetingService;
 import com.almostThere.domain.user.dto.MemberInfoDto;
 import com.almostThere.domain.user.service.MemberService;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.Inet4Address;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -54,21 +59,31 @@ public class MemberController {
 
         // ii) member의 모든 모임 이력 정보
         //     - 모든 모임 이력, [모임-멤버] 테이블에 멤버ID가 있는 모임ID 정보 가져오기
-//        meetingService.findAttendAllMeetingById(memberId);
+        List<AttendMeetingMemberDto> meetings = meetingService.findAttendAllMeetingById(memberId);
 
         // iii) 모임 data 요약 정보
         //      - 이번달 x번의 모임을 잡았는 지
+        Integer thisMonthattendMeetingCnt = 0;
         //      - 누적 x번 약속 중 y번 지각
+        Integer totalLateCnt = 0;
         //      - 지난달 모임에서 150,000원 소비
+        Double lastMonthTotalSpentMoney = 0.0;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (AttendMeetingMemberDto meeting: meetings) {
+            LocalDateTime meetingTime = LocalDateTime.parse(meeting.getMeetingDto().getMeetingTime(), formatter);
 
-//        #21# member가 참여한 meetingMembers: [AttendMeetingMemberDto
-//        (meetingMemberId=1, spendMoney=12500.0, state=ARRIVE, meeting=Meeting(id=1, host=com.almostThere.domain.user.entity.Member@709ce129, meetingName=스터디, meetingTime=2023-04-28T16:53:08, meetingPlace=역삼역, meetingAddress=역삼역, meetingLat=37.5004, meetingLng=127.0361, lateAmount=1000, regdate=2023-04-27T16:53:08, roomCode=10000, meetingMembers=[com.almostThere.domain.meeting.entity.MeetingMember@717afd5c, com.almostThere.domain.meeting.entity.MeetingMember@35951b4], calculateDetails=[com.almostThere.domain.meeting.entity.CalculateDetail@529ec18b])),
-//        (meetingMemberId=2, spendMoney=85000.0, state=LATE, meeting=Meeting(id=2, host=com.almostThere.domain.user.entity.Member@709ce129, meetingName=롯데월드, meetingTime=2023-03-29T16:53:08, meetingPlace=잠실역, meetingAddress=잠실역, meetingLat=37.5134, meetingLng=127.1001, lateAmount=5000, regdate=2023-04-27T16:53:08, roomCode=20000, meetingMembers=[com.almostThere.domain.meeting.entity.MeetingMember@376ec65a], calculateDetails=[com.almostThere.domain.meeting.entity.CalculateDetail@752681b1]))]
+            // 총 모임 중 지각횟수
+            if (meeting.getState() == StateType.LATE) totalLateCnt++;
 
-//        return BaseResponse.success(new MemberInfoDto(
-//                memberService.getMemberByMemberId(memberId),
-//                meetingService.findAttendAllMeetingById(memberId)));
-//        return BaseResponse.success(meetingService.findAttendAllMeetingById(memberId));
-        return BaseResponse.success(new MemberInfoDto(memberService.getMemberByMemberId(memberId)))
+            // 이번달 모임개수
+            if (meetingTime.getMonthValue() == LocalDateTime.now().getMonthValue()) thisMonthattendMeetingCnt++;
+            // 지난달 모임 총 소비가격
+            else if (meetingTime.getMonthValue() == LocalDateTime.now().minusMonths(1).getMonthValue()) lastMonthTotalSpentMoney += meeting.getSpentMoney();
+        }
+
+        return BaseResponse.success(new MemberInfoDto(
+                memberService.getMemberByMemberId(memberId),
+                meetings,
+                thisMonthattendMeetingCnt, totalLateCnt, lastMonthTotalSpentMoney));
     }
 }

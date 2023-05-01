@@ -15,14 +15,12 @@ public class AttendMeetingMemberDto {
 
     private Double spentMoney;
 
-//    private MeetingDto meetingDto;
     private AttendMeetingDto meetingDto;
 
     public AttendMeetingMemberDto(MeetingMember meetingMember) {
         this.meetingMemberId = meetingMember.getId();
         this.state = meetingMember.getState();
         this.spentMoney = meetingMember.getSpentMoney();
-//        this.meetingDto = new AttendMeetingDto(meetingMember.getMeeting());
         this.meetingDto = new AttendMeetingDto(meetingMember.getMeeting());
     }
 }

@@ -25,10 +25,4 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             "where m.member.id=:memberId " +
             "  and m.meeting.meetingTime between :oneDayAfterDate and :oneMonthAfterDate")
     List <Meeting> findUpcomingMeetings(@Param("memberId") Long memberId, @Param("oneDayAfterDate") LocalDateTime oneDayAfterDate, @Param("oneMonthAfterDate") LocalDateTime oneMonthAfterDate);
-
-    /**
-     * member가 참석한 모든 meeting 조회 (List)
-     * **/
-    @Query("select mt from Meeting mt where mt.id in :meetingId")
-    List<Meeting> findAttendAllMeetingById(@Param("meetingId") List<Long> attendMeetingIdList);
 }

@@ -159,9 +159,7 @@ public class MeetingService {
      * @return 모임 리스트
      */
     public List<AttendMeetingMemberDto> findAttendAllMeetingById(Long memberId) {
-        // member가 참여한 모임ID List 조회
-//        List<AttendMeetingMemberDto> attendMeetings = meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new AttendMeetingMemberDto(m)).collect(Collectors.toList());
-
+        // member가 참여한 모임멤버(+ 모임) List 조회
         return meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new AttendMeetingMemberDto(m)).collect(Collectors.toList());
     }
 }
