@@ -45,6 +45,8 @@ export default {
   },
 
   watch: {
+    // 중간 위치 찾기 후 출발지 마커
+    // 나중에 장소 추천지 있으면 여기에 추천장소 마커 추가해야함.
     middlePlace() {
       if (this.middlePlace != null) {
         console.log("감지함?");
