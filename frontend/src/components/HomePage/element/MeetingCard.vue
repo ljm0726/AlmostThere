@@ -3,6 +3,7 @@
     height="175"
     width="300"
     elevation="0"
+    @click="goDetail(meeting.id)"
     class="mb-6 d-flex flex-column"
     style="
       border: 1px solid var(--main-col-1);
@@ -24,7 +25,7 @@
       </span>
     </v-sheet>
     <!-- </div> -->
-    <v-sheet class="px-6" color="transparent">
+    <v-sheet class="px-6 pt-1" color="transparent">
       <!-- <div> -->
       <span class="lg-font bold-font main-col-1">
         {{ meeting.meetingName }}
@@ -58,8 +59,8 @@
           >
             <v-avatar size="27px">
               <v-img
-                src="https://cdn.vuetifyjs.com/images/john.jpg"
-                alt="John"
+                :src="avatar.member.memberProfileImg"
+                alt="Profile"
               ></v-img>
             </v-avatar>
           </div>
