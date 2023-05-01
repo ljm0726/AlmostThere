@@ -7,8 +7,10 @@ import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.service.MeetingService;
+import com.almostThere.domain.user.dto.MemberAccessDto;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,15 @@ import java.util.List;
 public class MeetingApiController {
 
     private final MeetingService meetingService;
+
+    @GetMapping("/3hours")
+    public BaseResponse getMeetingsWithin3hours(Authentication authentication){
+
+//        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
+        int meetingCnt = meetingService.countMeetingWithin3hours(1L);
+
+        return BaseResponse.success(meetingCnt >= 1? true : false);
+    }
     /**
      * dyeon7310
      * @param request
