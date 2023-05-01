@@ -90,8 +90,8 @@ public class MeetingService {
         Random rand = new Random();
         int roomCode = (int)(rand.nextLong()%100000000L);
         roomCode = Math.abs(roomCode);
-
-        Meeting meeting = meetingCreateRequestDto.toEntity(meetingCreateRequestDto, meetingHost,roomCode);
+        String rc = Integer.toString(roomCode);
+        Meeting meeting = meetingCreateRequestDto.toEntity(meetingCreateRequestDto, meetingHost,rc);
         meeting = meetingRepository.save(meeting);
         MeetingMember meetingMember = new MeetingMember(meetingHost, meeting, StateType.GOING);
         meetingMemberRepository.save(meetingMember);

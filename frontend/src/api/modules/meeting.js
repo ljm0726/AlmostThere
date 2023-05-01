@@ -26,6 +26,7 @@ async function meetingRegister(
         meetingAddress: address,
         meetingLat: lat,
         meetingLng: lng,
+        roomCode: "",
       },
       {
         headers: {
