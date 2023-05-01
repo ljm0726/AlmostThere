@@ -53,6 +53,14 @@ async function getUpcomingMeetings() {
   return await Promise.resolve(result);
 }
 
+async function getcntMeetingsWithin3hours() {
+  var result = null;
+  await api.get("/meeting/3hours").then((res) => {
+    result = res.data.data;
+  });
+  return await Promise.resolve(result);
+}
+
 async function getBestMember() {
   var result = null;
   await api.get("/member/best-member").then((res) => {
@@ -66,5 +74,6 @@ export {
   meetingRegister,
   getTodayMeetings,
   getUpcomingMeetings,
+  getcntMeetingsWithin3hours,
   getBestMember,
 };
