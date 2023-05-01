@@ -1,7 +1,7 @@
 <template>
-  <v-sheet class="pl-4 mt-6" color="transparent">
+  <v-sheet color="transparent">
     <!-- <div> -->
-    <span class="point-font xxxxl-font main-col-1">다가올 모임</span>
+    <span class="pl-4 point-font xxxxl-font main-col-1">다가올 모임</span>
     <v-btn class="ml-1" icon x-small @click="show = !show">
       <v-icon>$vuetify.icons.info_outline</v-icon>
     </v-btn>
@@ -19,81 +19,85 @@
         나의 모임을 보여줍니다.</span
       >
     </v-tooltip>
-    <!-- <swiper
+    <swiper
       v-if="meetings.length > 0"
-      class="swiper mt-2"
+      class="swiper mt-2 px-2"
       :options="swiperOption"
-    > -->
-    <!-- <swiper-slide> -->
-    <!-- <div> -->
-    <v-sheet
-      v-for="(meeting, idx) in meetings"
-      :key="idx"
-      class="px-3 py-1"
-      :class="{
-        'upcoming-ellipse': idx % 4 === 0,
-        'upcoming-polygon': idx % 4 === 1,
-        'upcoming-rectangle': idx % 4 === 2,
-        'upcoming-star': idx % 4 === 3,
-      }"
     >
-      <div class="d-flex flex-row justify-space-between align-center">
-        <span
-          class="mt-1 extralight-font md-font white-font d-flex flex-row justify-space-between"
+      <swiper-slide class="px-2" v-for="(meeting, idx) in meetings" :key="idx">
+        <!-- <div> -->
+        <v-sheet
+          class="mb-6 px-3 py-1"
+          :class="{
+            'upcoming-ellipse': idx % 4 === 0,
+            'upcoming-polygon': idx % 4 === 1,
+            'upcoming-rectangle': idx % 4 === 2,
+            'upcoming-star': idx % 4 === 3,
+          }"
         >
-          {{ meeting.meetingTime | remainDay }}
-        </span>
-        <div class="d-flex flex-row justify-end">
-          <div
-            class="mr-5"
-            :class="{
-              'mt-5 ellipse rounded-circle': idx % 4 === 0,
-              'mt-5 triangle-first': idx % 4 === 1,
-              'mt-5 rectangle-first': idx % 4 === 2,
-              'mt-4 star-first': idx % 4 === 3,
-            }"
-          ></div>
-          <div
-            class="mr-2 mt-2"
-            :class="{
-              'ellipse rounded-circle': idx % 4 === 0,
-              'triangle-second': idx % 4 === 1,
-              'rectangle-second': idx % 4 === 2,
-              'mr-3 star-second': idx % 4 === 3,
-            }"
-          ></div>
-        </div>
-      </div>
+          <div class="d-flex flex-row justify-space-between align-center">
+            <div>
+              <span
+                class="mt-1 extralight-font md-font white-font d-flex flex-row justify-space-between"
+              >
+                {{ meeting.meetingTime | remainDay }}
+              </span>
+              <v-divider width="40" style="border-color: white"></v-divider>
+            </div>
 
-      <v-sheet width="91%" class="white-col-1 pa-4" color="transparent">
-        <div></div>
-        <span class="mt-3 d-flex flex-row bold-font md-font white-font">{{
-          meeting.meetingPlace
-        }}</span>
-        <div class="d-flex flex-row justify-end">
-          <span
-            class="mt-1 mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
-            >{{ meeting.meetingPlace }}</span
-          >
-        </div>
-        <div class="d-flex flex-row justify-end">
-          <span
-            class="mt-1 mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
-            >{{ meeting.meetingTime | formatDate }}</span
-          >
-        </div>
-        <div class="d-flex flex-row justify-end">
-          <span
-            class="mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
-            >{{ meeting.meetingTime | formatTime }}</span
-          >
-        </div>
-      </v-sheet>
-    </v-sheet>
-    <!-- </div> -->
-    <!-- </swiper-slide> -->
-    <!-- </swiper> -->
-    <div class="none pa-3 mt-2 d-flex justify-center align-center">
+            <div class="d-flex flex-row justify-end">
+              <div
+                class="mr-5"
+                :class="{
+                  'mt-5 ellipse rounded-circle': idx % 4 === 0,
+                  'mt-5 triangle-first': idx % 4 === 1,
+                  'mt-5 rectangle-first': idx % 4 === 2,
+                  'mt-4 star-first': idx % 4 === 3,
+                }"
+              ></div>
+              <div
+                class="mr-2 mt-2"
+                :class="{
+                  'ellipse rounded-circle': idx % 4 === 0,
+                  'triangle-second': idx % 4 === 1,
+                  'rectangle-second': idx % 4 === 2,
+                  'mr-3 star-second': idx % 4 === 3,
+                }"
+              ></div>
+            </div>
+          </div>
+          <v-sheet class="white-col-1 pa-4" color="transparent">
+            <div></div>
+            <span class="mt-3 d-flex flex-row bold-font md-font white-font">{{
+              meeting.meetingPlace
+            }}</span>
+            <div class="d-flex flex-row justify-end">
+              <span
+                class="mt-1 mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
+                >{{ meeting.meetingPlace }}</span
+              >
+            </div>
+            <div class="d-flex flex-row justify-end">
+              <span
+                class="mt-1 mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
+                >{{ meeting.meetingTime | formatDate }}</span
+              >
+            </div>
+            <div class="d-flex flex-row justify-end">
+              <span
+                class="mr-5 xxxxs-font extralight-font white-font d-flex flex-row justify-space-between"
+                >{{ meeting.meetingTime | formatTime }}</span
+              >
+            </div>
+          </v-sheet>
+        </v-sheet>
+        <!-- </div> -->
+      </swiper-slide>
+    </swiper>
+    <div
+      v-else
+      class="mb-6 none pa-3 mx-4 mt-2 d-flex justify-center align-center"
+    >
       <v-sheet
         width="100%"
         height="100%"
@@ -209,9 +213,9 @@ export default {
   background-position-x: left;
   background-position-y: center;
 }
-/* .swiper-slide {
-  width: 33%;
-} */
+.swiper-slide {
+  /* width: 100%; */
+}
 .upcoming-ellipse {
   width: 160px;
   height: 150px;

@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="mt-6" color="transparent">
+  <v-sheet color="transparent">
     <span class="px-4 point-font xxxxl-font main-col-1">자주 만나는 친구</span>
     <swiper
       v-if="members.length > 0"
