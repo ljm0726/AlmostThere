@@ -55,11 +55,18 @@ public class LocationController {
 
         UserLocation findUserLocation = (UserLocation) redisTemplateForLocation.opsForValue().get(memberId);
         UserLocation userLocation = new UserLocation(Long.parseLong(memberId), memberNickname, new double[] {lat, lng});
+        System.out.println(locationExpiretime);
         if(findUserLocation != null){
-            locationExpiretime = redisTemplateForLocation.getExpire(memberId);
+            long maintainExpiretime = redisTemplateForLocation.getExpire(memberId);
+            System.out.println("findUserLocation 이 널이 아닐 때 :"+ maintainExpiretime);
+            redisTemplateForLocation.opsForValue()
+                .set(memberId, userLocation, maintainExpiretime, TimeUnit.SECONDS);
+        }else{
+            System.out.println("findUserLocation 이 널일 때 :" + locationExpiretime);
+            redisTemplateForLocation.opsForValue()
+                .set(memberId, userLocation, locationExpiretime, TimeUnit.SECONDS);
         }
-        redisTemplateForLocation.opsForValue()
-            .set(memberId, userLocation, locationExpiretime, TimeUnit.SECONDS);
+
     }
     /*
         유저가 위치값을 보낸 적이 없어서 redis에 위치 정보가 저장되어 있지 않을 수가 있나?

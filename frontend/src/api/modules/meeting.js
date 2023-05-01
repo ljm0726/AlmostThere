@@ -53,12 +53,21 @@ async function getUpcomingMeetings() {
   return await Promise.resolve(result);
 }
 
-async function getcntMeetingsWithin3hours() {
-  var result = null;
-  await api.get("/meeting/3hours").then((res) => {
-    result = res.data.data;
+function getcntMeetingsWithin3hours() {
+  return new Promise((resolve, reject) => {
+    api
+      .get("/meeting/3hours", {
+        headers: {
+          Authorization: localStorage.getItem("Authorization"),
+        },
+      })
+      .then((response) => {
+        resolve(response.data.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
   });
-  return await Promise.resolve(result);
 }
 
 async function getBestMember() {
