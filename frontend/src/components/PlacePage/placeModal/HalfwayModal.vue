@@ -110,7 +110,7 @@ export default {
       "addPlaceList",
       "removePlaceList",
     ]),
-    ...mapActions("halfwayStore", ["removePlaceList"]),
+    ...mapActions("halfwayStore", ["removePlaceList", "addMiddlePlace"]),
     openDialog() {
       this.dialog = true;
     },
@@ -147,6 +147,14 @@ export default {
     cancelStart(index) {
       this.removePlaceList(index);
       // this.starts.splice(index, 1);
+    },
+
+    scrollToBottom() {
+      const inputContainer = this.$refs.inputContainer;
+      inputContainer.scrollTo({
+        top: inputContainer.scrollHeight - inputContainer.clientHeight,
+        behavior: "smooth", // 부드러운 애니메이션 적용
+      });
     },
 
     combine(arr, k) {
@@ -204,7 +212,8 @@ export default {
       middleAvergeY /= middlePlace.length;
 
       console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
-      // store.commit('setMiddlePlace', [middleAvergeX, middleAvergeY]);
+      this.addMiddlePlace({ middleAvergeX, middleAvergeY });
+      this.dialog = false;
     },
   },
 };
