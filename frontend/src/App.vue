@@ -16,13 +16,28 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
+import { getcntMeetingsWithin3hours } from "@/api/modules/meeting.js";
 
 export default {
   name: "App",
 
+  data() {
+    return {
+      hasMeetingsWithin3hours: false,
+    };
+  },
+
+  created() {
+    getcntMeetingsWithin3hours().then((res) => {
+      if (res == true) {
+        this.hasMeetingsWithin3hours = true;
+      }
+    });
+  },
+
   mounted() {
     const access_token = localStorage.getItem("Authorization");
-    if (access_token) {
+    if (access_token && this.hasMeetingsWithin3hours) {
       this.connect();
     }
   },
