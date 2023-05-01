@@ -6,6 +6,7 @@ const memberStore = {
     member: null, // member 객체
     attendMeetings: [], // 해당 member가 참여한 모든 meeting
     thisMonthAttendMeetingCnt: null, // 이번달 모임개수
+    // attendMeetingCnt: null, // 참여한 총 모임개수
     totalLateCnt: null, // 총 지각횟수
     lastMonthTotalSpentMoney: null, // 지난달 총 소비금액
   },
@@ -20,6 +21,9 @@ const memberStore = {
     SET_THIS_MONTH_ATTEND_MEETING_CNT(state, thisMonthAttendMeetingCnt) {
       state.thisMonthAttendMeetingCnt = thisMonthAttendMeetingCnt;
     },
+    // SET_ATTEND_MEETING_CNT(state, attendMeetingCnt) {
+    //   state.attendMeetingCnt = attendMeetingCnt;
+    // },
     SET_TOTAL_LATE_CNT(state, totalLateCnt) {
       state.totalLateCnt = totalLateCnt;
     },
