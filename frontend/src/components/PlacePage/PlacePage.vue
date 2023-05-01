@@ -75,14 +75,14 @@ export default {
       );
     }
 
-    if (localStorage.getItem("findHalfwayModal") !== null) {
+    if (sessionStorage.getItem("findHalfwayModal") !== null) {
       this.$refs.halfway.openDialog();
     }
   },
 
   methods: {
     findHalfway() {
-      localStorage.setItem("findHalfwayModal", true);
+      sessionStorage.setItem("findHalfwayModal", true);
       this.$refs.halfway.openDialog();
     },
     moveRegisterPage() {

@@ -93,7 +93,7 @@ export default {
   watch: {
     dialog() {
       if (!this.dialog) {
-        localStorage.removeItem("findHalfwayModal");
+        sessionStorage.removeItem("findHalfwayModal");
       }
     },
   },
@@ -108,7 +108,7 @@ export default {
       this.dialog = true;
     },
     closeDialog() {
-      localStorage.removeItem("findHalfwayModal");
+      sessionStorage.removeItem("findHalfwayModal");
       this.dialog = false;
     },
 
