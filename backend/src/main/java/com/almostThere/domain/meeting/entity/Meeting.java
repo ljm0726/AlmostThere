@@ -53,8 +53,8 @@ public class Meeting {
     @Column(nullable = false)
     private LocalDateTime regdate;
 
-    @Column(nullable = false)
-    private int roomCode;
+    @Column(nullable = false, length = 10)
+    private String roomCode;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "meeting")
     private List<MeetingMember> meetingMembers = new ArrayList<>();
@@ -64,7 +64,7 @@ public class Meeting {
 
     @Builder
     public Meeting(Member host, String meetingName,String meetingPlace,String meetingAddress
-        , double meetingLat,double meetingLng, LocalDateTime meetingTime, int roomCode, Integer lateAmount, LocalDateTime regdate) {
+        , double meetingLat,double meetingLng, LocalDateTime meetingTime, String roomCode, Integer lateAmount, LocalDateTime regdate) {
         this.meetingName = meetingName;
         this.meetingTime = meetingTime;
         this.meetingPlace = meetingPlace;
