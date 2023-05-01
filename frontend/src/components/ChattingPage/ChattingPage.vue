@@ -9,19 +9,21 @@
       <v-sheet height="100%" class="d-flex flex-column justify-space-between">
         <div>
           <div
-            class="px-3 py-2 bold-font xxl-font main-col-1"
+            class="px-4 py-3 bold-font xxl-font main-col-1"
             style="word-break: break-all"
           >
             {{ meetingName }}
           </div>
           <v-divider></v-divider>
           <v-list-item v-for="member in member_list" :key="member.memberId">
-            <v-list-item-avatar rounded="lg">
+            <v-list-item-avatar rounded="lg" size="40">
               <v-img :src="member.profile"></v-img>
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title>{{ member.nickname }}</v-list-item-title>
+              <v-list-item-title class="xs-font main-col-1">{{
+                member.nickname
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </div>
