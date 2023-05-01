@@ -1,58 +1,56 @@
 <template>
   <v-card
-    width="325px"
-    height="176px"
+    height="175"
+    width="300"
     elevation="0"
+    @click="goDetail(meeting.id)"
+    class="mb-6 d-flex flex-column"
     style="
-      border: 1px solid #092a49;
+      border: 1px solid var(--main-col-1);
       border-radius: 15px;
-      box-shadow: 0px 5px 20px -10px #092a49;
+      box-shadow: 0px 5px 20px -10px var(--main-col-1) !important;
     "
   >
-    <div
-      style="
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-items: flex-end;
-      "
+    <!-- <div class="d-flex flex-column justify-end align-end"> -->
+    <v-sheet
+      width="150"
+      class="align-self-end"
+      color="var(--main-col-1)"
+      style="border-radius: 0px 13px"
     >
-      <div
-        style="
-          background: #092a49;
-          border-radius: 0px 13px;
-          width: 150px;
-          height: 30px;
-          font-size: 10px;
-        "
+      <span
+        class="py-1 d-flex justify-center align-center white-font xxxxs-font"
       >
-        <span class="mt-2 d-flex justify-center align-center white-font"
-          >약 {{ meeting.meetingTime | remainTime }} 후 예정</span
-        >
+        약 {{ meeting.meetingTime | remainTime }} 후 예정
+      </span>
+    </v-sheet>
+    <!-- </div> -->
+    <v-sheet class="px-6 pt-1" color="transparent">
+      <!-- <div> -->
+      <span class="lg-font bold-font main-col-1">
+        {{ meeting.meetingName }}
+      </span>
+      <v-divider
+        class="my-2"
+        width="30"
+        style="border-color: var(--main-col-1)"
+      ></v-divider>
+      <!-- </div> -->
+      <!-- <div class="mt-2"> -->
+      <div class="xxxs-font main-col-1">
+        <span class="medium-font">장소</span>
+        <span class="ml-1 light-font">
+          {{ meeting.meetingPlace }}
+        </span>
       </div>
-    </div>
-    <v-sheet width="91%" class="white-col-1 ml-5" color="transparent">
-      <div>
-        <span class="lg-font bold-font main-col-1">{{
-          meeting.meetingName
-        }}</span>
-        <v-divider class="mt-2 border-opacity-25" style="width: 5"></v-divider>
+      <div class="xxxs-font main-col-1">
+        <span class="medium-font">일시</span>
+        <span class="ml-1 light-font">
+          {{ meeting.meetingTime | formatDate }}
+        </span>
       </div>
-      <div class="mt-2">
-        <div>
-          <span class="xxxs-font medium-font main-col-1">장소</span>
-          <span class="ml-1 xxxs-font light-font main-col-1">{{
-            meeting.meetingPlace
-          }}</span>
-        </div>
-        <div>
-          <span class="xxxs-font medium-font main-col-1">일시</span>
-          <span class="ml-1 xxxs-font light-font main-col-1">{{
-            meeting.meetingTime | formatDate
-          }}</span>
-        </div>
-      </div>
-      <div class="mt-2 d-flex flex-row justify-space-between">
+      <!-- </div> -->
+      <div class="d-flex flex-row justify-space-between">
         <section class="avatars-group stacked">
           <div
             v-for="avatar in avatarsStackedLimited"
@@ -61,8 +59,8 @@
           >
             <v-avatar size="27px">
               <v-img
-                src="https://cdn.vuetifyjs.com/images/john.jpg"
-                alt="John"
+                :src="avatar.member.memberProfileImg"
+                alt="Profile"
               ></v-img>
             </v-avatar>
           </div>
@@ -85,18 +83,19 @@
             </div>
           </div>
         </section>
-        <div class="d-flex flex-column justify-flex-end align-flex-end">
-          <v-btn
-            class="d-flex justify-center align-center"
-            id="square-btn"
-            outlined
-            color="var(--main-col-1)"
-            rounded
-            small
-          >
-            <v-icon>$vuetify.icons.map_outline</v-icon>
-          </v-btn>
-        </div>
+        <!-- <div class="d-flex flex-column justify-flex-end align-flex-end"> -->
+        <v-btn
+          class="ml-1 mt-4"
+          id="square-btn"
+          outlined
+          color="var(--main-col-1)"
+          rounded
+          small
+          @click="goLiveMap(meeting.id)"
+        >
+          <v-icon>$vuetify.icons.map_outline</v-icon>
+        </v-btn>
+        <!-- </div> -->
       </div>
     </v-sheet>
   </v-card>
@@ -152,6 +151,14 @@ export default {
         : null;
     },
   },
+  methods: {
+    goLiveMap(id) {
+      this.$router.push(`/live-map/${id}`);
+    },
+    goDetail(id) {
+      this.$router.push(`/meeting/${id}`);
+    },
+  },
 };
 </script>
 
@@ -172,6 +179,7 @@ $border-width = $base-unit / 4
     max-width 100%
     overflow hidden
     white-space nowrap
+    padding-top 15px
     > *
       margin-right -($base-unit)
       &:last-of-type
@@ -181,6 +189,8 @@ $border-width = $base-unit / 4
     transition all .1s ease-out
     &.more
       align-items center
+      border-radius 50%
+      border: 2px solid var(--main-col-1)
       display flex
       &:hover
         transform none
@@ -188,7 +198,7 @@ $border-width = $base-unit / 4
       transform translateY(-($base-unit / 2))
       z-index 1
   .v-avatar
-    border: 2px solid #092a49
+    border: 2px solid var(--main-col-1)
     img
       padding $border-width
     span
