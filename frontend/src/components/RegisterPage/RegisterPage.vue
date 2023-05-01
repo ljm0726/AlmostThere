@@ -1,8 +1,8 @@
 <template>
-  <div style="margin: 0px 16px">
+  <div style="margin: 0px 16px; margin-bottom: 76px" class="main-form">
     <div
       class="point-font xxxxxxl-font main-col-1"
-      style="margin: 20% 0 13% 5%"
+      style="margin: 15% 0 13% 5%"
     >
       <p>많은 사람들과</p>
       <p>모임을</p>
@@ -15,7 +15,7 @@
       />
     </div>
     <!-- nav 자리 -->
-    <v-card rounded="xl" elevation="5">
+    <v-card rounded="xl" elevation="5" height="100%">
       <v-card-title>
         <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
         <!-- <span class="point-font xxxxl-font main-col-1 text-left">제목</span>
@@ -268,7 +268,7 @@ img {
   height: 200px;
   z-index: 100;
   right: 16px;
-  top: 3%;
+  top: 1%;
 }
 
 .v-input {

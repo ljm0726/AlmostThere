@@ -21,42 +21,40 @@
         <span class="regular-font md-font">중간 위치를 추천 받아보세요!</span>
       </v-card-title>
 
-      <div
-        v-for="(start, index) in starts"
-        :key="index"
-        class="input-container"
-      >
-        <input
-          class="search-box2"
-          :value="
-            start
-              ? `${index + 1}. ` + start.get('name')
-              : `${index + 1}. 출발지를 입력하세요!`
-          "
-          @click="goToSearchPage(`${index + 1}`)"
-          readonly
-        />
-        <div class="img-container">
-          <img
-            v-if="index > 1"
-            src="@/assets/images/dialog/close_btn_small.png"
-            class="close-btn-small"
-            alt=""
-            @click="cancelStart(index)"
+      <div class="input-container" ref="inputContainer">
+        <div v-for="(start, index) in starts" :key="index" class="input-list">
+          <input
+            class="search-box2"
+            :value="
+              start
+                ? `${index + 1}. ` + start.get('name')
+                : `${index + 1}. 출발지를 입력하세요!`
+            "
+            @click="goToSearchPage(`${index + 1}`)"
+            readonly
           />
+          <div class="img-container">
+            <img
+              v-if="index > 1"
+              src="@/assets/images/dialog/close_btn_small.png"
+              class="close-btn-small"
+              alt=""
+              @click="cancelStart(index)"
+            />
+          </div>
         </div>
       </div>
 
-      <div style="align-self: center; margin: 2% 0" @click="plusStart">
+      <div style="align-self: center; margin: 4% 0" @click="plusStart">
         <img
           src="@/assets/images/dialog/Plus.png"
-          style="margin-bottom: 10%; float: left"
+          style="margin-bottom: 8%; float: left"
           alt=""
         />
         출발지 추가하기
       </div>
 
-      <v-card-text>
+      <v-card-text style="overflow: visible">
         <v-row>
           <v-col class="search_halfway">
             <v-btn elevation="0" color="var(--main-col-1)" dark rounded block
@@ -128,13 +126,28 @@ export default {
     },
 
     plusStart() {
-      console.log("@@@");
-      this.starts.push(null);
+      console.log("@@@", this.starts.length);
+      if (this.starts.length > 9) {
+        alert("최대 10명 까지 가능 합니다! ");
+      } else {
+        this.starts.push(null);
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 100);
+      }
     },
 
     cancelStart(index) {
       this.removePlaceList(index);
       // this.starts.splice(index, 1);
+    },
+
+    scrollToBottom() {
+      const inputContainer = this.$refs.inputContainer;
+      inputContainer.scrollTo({
+        top: inputContainer.scrollHeight - inputContainer.clientHeight,
+        behavior: "smooth", // 부드러운 애니메이션 적용
+      });
     },
   },
 };
@@ -143,7 +156,7 @@ export default {
 <style scoped>
 .search-box2 {
   box-sizing: border-box;
-  /* width: 85%; */
+  width: 85%;
   height: 33px;
   background: #ffffff;
   border: 1px solid #092a49;
@@ -157,9 +170,6 @@ export default {
   /* align-self: center; */
   margin: 2% 0;
 }
-.search_halfway {
-  margin-bottom: 5px;
-}
 
 /* input::placeholder {
   font-style: var(--regular-font);
@@ -168,14 +178,14 @@ export default {
 span {
   line-height: 18px;
 }
-input {
-}
-.input-container {
+.input-list {
+  position: relative;
   text-align: center;
   width: 100%;
 }
 .input-container {
-  position: relative;
+  overflow-y: auto;
+  max-height: 200px;
 }
 
 .img-container {
