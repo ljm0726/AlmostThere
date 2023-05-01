@@ -9,7 +9,7 @@
       <swiper-slide v-for="(member, idx) in members" :key="idx">
         <v-sheet class="d-flex flex-row">
           <v-avatar rounded="lg" size="77">
-            <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+            <img :src="member.friend.memberProfileImg" alt="John" />
           </v-avatar>
           <!-- <v-sheet
             width="100"

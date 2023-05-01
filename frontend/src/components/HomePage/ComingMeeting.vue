@@ -14,10 +14,10 @@
       />
     </button> -->
     <v-tooltip location="right" v-model="show">
-      <span class="main-col-1 xxxs-font"
-        >지금으로부터 한 달 내의<br />
-        나의 모임을 보여줍니다.</span
-      >
+      <span class="main-col-1 xxxs-font">
+        지금으로부터 한 달 내의<br />
+        나의 모임을 보여줍니다.
+      </span>
     </v-tooltip>
     <swiper
       v-if="meetings.length > 0"
@@ -271,7 +271,11 @@ export default {
   height: 150px;
   /* width: 353px; */
   /* height: 150px; */
-  background: linear-gradient(180deg, rgba(9, 42, 73, 0.8) 0%, #092a49 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(9, 42, 73, 0.8) 0%,
+    var(--main-col-1) 100%
+  );
   box-shadow: 0px 5px 20px -10px #000000;
   border-radius: 15px;
 }
@@ -375,11 +379,11 @@ export default {
   left: 86px !important;
   top: 590px !important;
   padding: 12px;
-  background: #ffffff;
+  background: white;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
-  border: #092a49 solid 1px;
+  border: var(--main-col-1) solid 1px;
   display: flex;
   justify-content: center;
   align-content: center;
@@ -390,7 +394,7 @@ export default {
   position: absolute;
   border-style: solid;
   border-width: 0 8px 9px;
-  border-color: #ffffff transparent;
+  border-color: white transparent;
   display: block;
   width: 0;
   z-index: 1;
@@ -403,7 +407,7 @@ export default {
   position: absolute;
   border-style: solid;
   border-width: 0 8px 9px;
-  border-color: #092a49 transparent;
+  border-color: var(--main-col-1) transparent;
   display: block;
   width: 0;
   z-index: 0;
