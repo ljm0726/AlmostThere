@@ -99,20 +99,15 @@ async function postReceiptInfo(receipt) {
   return await Promise.resolve(result);
 }
 
-async function saveCalculateDetail(
-  meetingId,
-  filePath,
-  fileName,
-  storeName,
-  totalPrice
-) {
+async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
+  var formData = new FormData();
+  formData.append("meetingId", meetingId);
+  formData.append("receipt", receipt);
+  formData.append("storeName", storeName);
+  formData.append("price", totalPrice);
   await api
-    .post(`/meeting-calculate/detail`, {
-      meetingId: meetingId,
-      filePath: filePath,
-      fileName: fileName,
-      storeName: storeName,
-      price: totalPrice,
+    .post(`/meeting-calculate/detail`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     })
     .then((res) => {
       console.log(res);

@@ -10,10 +10,7 @@ import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
@@ -100,7 +97,8 @@ public class MeetingCalculateApiController {
     }
 
     @PostMapping("/detail")
-    public BaseResponse addCalculateDetail(@RequestBody CalculateDetailRequestDto detailDto){
+    public BaseResponse addCalculateDetail(CalculateDetailRequestDto detailDto) throws IOException {
+        System.out.println(detailDto.getReceipt().getName());
         calculateDetailService.saveCalculateDetail(detailDto);  //정산 내역 저장
         return BaseResponse.success(null);
     }
