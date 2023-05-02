@@ -31,10 +31,11 @@ const memberStore = {
     // [@Method] my-page 회원정보 조회
     async excuteGetMemberInfo({ commit }) {
       console.log("#21# 회원정보 조회 동작");
+      var result = false;
       await getMemberInfo(
         async ({ data }) => {
           if (data.statusCode == 200) {
-            // console.log("#21# data 확인: ", data);
+            console.log("#21# data 확인: ", data);
 
             commit("SET_MEMBER", data.data.member);
             commit("SET_ATTEND_MEETINGS", data.data.attendMeetings);
@@ -47,12 +48,14 @@ const memberStore = {
               "SET_LAST_MONTH_TOTAL_SPENT_MONEY",
               data.data.lastMonthTotalSpentMoney
             );
+            result = true;
           }
         },
         (error) => {
           console.log(error);
         }
       );
+      return await Promise.resolve(result);
     },
   },
 };
