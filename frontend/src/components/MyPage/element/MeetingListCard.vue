@@ -1,15 +1,15 @@
 <template>
-  <v-sheet class="d-flex align-center">
+  <v-sheet class="d-flex align-center mt-3">
     <v-timeline align-top dense style="margin-left: -20px">
       <v-timeline-item
-        v-for="meeting in meetings"
+        v-for="(meeting, index) in meetings"
         :key="meeting.id"
-        :color="`var(--main-col-1)`"
+        :color="colorSet[index % colorSet.length].color"
         small
       >
         <div>
           <v-card>
-            <div class="red">
+            <div :class="`${colorSet[index % colorSet.length].bgColor}`">
               <v-app-bar flat color="rgba(0, 0, 0, 0)">
                 <v-toolbar-title class="light-font white--text ml-3">{{
                   meeting.meetingName
@@ -63,7 +63,14 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      colorSet: [
+        { color: "var(--red-col)", bgColor: "red lighten-1" },
+        { color: "var(--yellow-col)", bgColor: "yellow lighten-1" },
+        { color: "var(--green-col)", bgColor: "green lighten-1" },
+        { color: "var(--blue-col)", bgColor: "blue lighten-1" },
+      ],
+    };
   },
   methods: {
     // [@Method] DateTime을 원하는 format으로 변경
