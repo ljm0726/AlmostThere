@@ -49,9 +49,9 @@
           </v-card>
         </div>
       </v-timeline-item>
+      <!-- 무한스크롤 감지 -->
+      <infinite-loading @infinite="infiniteHandler"></infinite-loading>
     </v-timeline>
-    <!-- 무한스크롤 감지 -->
-    <infinite-loading @infinite="infiniteHandler"></infinite-loading>
   </v-sheet>
 </template>
 
