@@ -14,7 +14,7 @@
       <!-- text -->
       <div class="light-font main-col-1">
         <!-- 이번달 모임개수 -->
-        <div class="d-flex align-center mb-1 mt-2">
+        <div class="d-flex align-center mb-1 mt-3">
           <span
             ><img height="15" width="15" src="@/assets/images/dialog/check.png"
           /></span>
