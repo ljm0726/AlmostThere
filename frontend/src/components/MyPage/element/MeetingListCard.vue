@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="d-flex align-center">
+  <v-sheet class="d-flex align-center mr-4">
     <v-timeline align-top dense style="margin-left: -20px">
       <v-timeline-item
         v-for="(meeting, index) in meetings"
@@ -7,7 +7,7 @@
         :color="colorSet[index % colorSet.length].color"
         small
       >
-        <div>
+        <div style="margin-left: -8%">
           <v-card>
             <div :class="`${colorSet[index % colorSet.length].bgColor}`">
               <v-app-bar flat color="rgba(0, 0, 0, 0)">
@@ -51,11 +51,7 @@
       </v-timeline-item>
     </v-timeline>
     <!-- 무한스크롤 감지 -->
-    <!-- <div
-      v-infinite-scroll="loadMore"
-      infinite-scroll-disabled="loading"
-      infinite-scroll-distance="10"
-    ></div> -->
+    <!-- <infinite-loading @infinite="infiniteHandler"></infinite-loading> -->
   </v-sheet>
 </template>
 
