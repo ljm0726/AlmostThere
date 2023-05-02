@@ -44,8 +44,9 @@ public class RedisConfig {
     }
 
     @Bean(name = "redisTemplateForChatting")
-    public RedisTemplate<?, ?> redisTemplateForChatting() {
-        RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, ?> redisTemplateForChatting() {
+        RedisTemplate<String, byte[]> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
