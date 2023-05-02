@@ -30,12 +30,12 @@ const memberStore = {
   actions: {
     // [@Method] my-page 회원정보 조회
     async excuteGetMemberInfo({ commit }) {
-      console.log("#21# 회원정보 조회 동작");
+      // console.log("#21# 회원정보 조회 동작");
       var result = false;
       await getMemberInfo(
         async ({ data }) => {
           if (data.statusCode == 200) {
-            console.log("#21# data 확인: ", data);
+            // console.log("#21# data 확인: ", data);
 
             commit("SET_MEMBER", data.data.member);
             commit("SET_ATTEND_MEETINGS", data.data.attendMeetings);
