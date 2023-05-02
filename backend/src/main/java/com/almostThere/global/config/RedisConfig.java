@@ -1,6 +1,5 @@
 package com.almostThere.global.config;//package com.ddockddack.domain.member.oauth;
 
-import com.almostThere.domain.chatting.dto.ChattingDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,8 +44,8 @@ public class RedisConfig {
     }
 
     @Bean(name = "redisTemplateForChatting")
-    public RedisTemplate<String, ChattingDto> redisTemplateForChatting() {
-        RedisTemplate<String, ChattingDto> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<?, ?> redisTemplateForChatting() {
+        RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }

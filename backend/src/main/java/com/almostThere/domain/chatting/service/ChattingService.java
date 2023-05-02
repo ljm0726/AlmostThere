@@ -13,7 +13,6 @@ import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.Cursor;
@@ -35,7 +34,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChattingService {
 
-    @Autowired
     private final RedisTemplate<String, ChattingDto> redisTemplateForChatting;
 
     private final ChattingRepository chattingRepository;
@@ -117,8 +115,8 @@ public class ChattingService {
                 chattingJDBCRepository.batchInsert(chattingDtoList, meetingOptional.get().getId());
 
                 // 가져온 값 redis에서 삭제
-                // listOperations.leftPop(key, size); Redis 버전 호환 불가
-                for (int i=0; i<size; i++) listOperations.leftPop(key);
+                 listOperations.leftPop(key, size); //Redis 버전 호환 불가
+//                for (int i=0; i<size; i++) listOperations.leftPop(key);
             }
         }
     }
