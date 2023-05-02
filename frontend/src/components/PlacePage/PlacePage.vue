@@ -188,9 +188,9 @@ export default {
 
     placesSearchCB(data, status) {
       if (status === window.kakao.maps.services.Status.OK) {
-        for (var i = 0; i < data.length; i++) {
-          this.displayMarker2(data[1]);
-        }
+        // for (var i = 0; i < data.length; i++) {
+        this.displayMarker2(data[0]);
+        // }
       }
     },
     displayMarker2(place) {
