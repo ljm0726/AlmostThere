@@ -6,7 +6,7 @@
     </div>
 
     <v-sheet
-      class="mt-5 ml-6 mr-6 pa-4 d-flex flex-column detail-shadow"
+      class="mt-5 pa-4 d-flex flex-column detail-shadow"
       height="130"
       outlined
       rounded="xl"
@@ -72,7 +72,7 @@ export default {
 <style scoped>
 .image-container {
   position: absolute;
-  margin-left: 55%;
+  margin-left: 50%;
   margin-top: -31%;
   /* top: 100;
   right: 0;

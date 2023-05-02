@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="ml-6 my-2 d-flex flex-row align-center">
+  <v-sheet class="my-2 d-flex flex-row align-center">
     <!-- 회원 프로필 -->
     <v-card style="border-radius: 18px" elevation="0">
       <v-img
