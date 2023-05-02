@@ -225,7 +225,7 @@ export default {
       chatList: [], // 채팅 리스트
       meetingName: null, // 미팅 제목
       members: {}, // 미팅에 참여하는 멤버
-      last: -1, // 무한 스크롤 마지막에 불러온 Index
+      last: -1, // 무한 스크롤 마지막에 불러온 Indexss
       page: 1, // 무한 스크롤 페이지
       loading: true, // 페이지 로딩 여부
       drawer: null, // 오른쪽 프로필 목록 창
@@ -243,7 +243,7 @@ export default {
     // 저장된 채팅 정보를 가져옵니다.
     await getChatting(this.$route.params.id).then(async (res) => {
       if (res && res.data.statusCode == 200) {
-        console.log(">> 결과 ", res);
+        // console.log(">> 결과 ", res);
         const info = await res.data.data;
         // 룸 코드
         this.roomCode = await info.roomCode;
@@ -260,9 +260,7 @@ export default {
         // this.goBottom();
         await setTimeout(this.goBottom, 100);
         // 요청 값을 받아오면 소켓 연결을 시도합니다.
-        await this.connect();
-        // loading 상태 변경
-        this.loading = await false;
+        this.connect();
       } else {
         this.$refs.error.openDialog();
       }
@@ -282,7 +280,7 @@ export default {
       else {
         // ChattingLog를 가져오는 API 요청
         getChattingLog(this.$route.params.id, this.last).then(async (res) => {
-          console.log(">> 22.222", res);
+          // console.log(">> 22.222", res);
           // chat 정보 저장
           const chat = await res.data.data;
           // 무한 스크롤 페이지
@@ -359,6 +357,8 @@ export default {
             this.updateConnected(true);
             this.subscribe();
             this.getMember();
+            // loading 상태 변경
+            this.loading = false;
           },
           (error) => {
             console.log("소켓 연결 실패", error);
@@ -368,6 +368,7 @@ export default {
       } else {
         this.subscribe();
         this.getMember();
+        this.loading = false;
       }
     },
   },

@@ -13,6 +13,7 @@ import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.Cursor;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChattingService {
 
+    @Autowired
     private final RedisTemplate<String, ChattingDto> redisTemplateForChatting;
 
     private final ChattingRepository chattingRepository;
@@ -95,7 +97,7 @@ public class ChattingService {
         // 가져온 key를 반복하며 각 key에 있는 값 MySQL에 저장하기
         while (cursor.hasNext()) {
 
-            // key 값
+            // key 값 여기 오류 남
             String key = cursor.next();
 
             // redis에서 key 해당하는 모든 값 가져오기
