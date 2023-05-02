@@ -81,7 +81,7 @@ public class ChattingService {
      * **/
 //    @Scheduled(cron = "0 0 0/1 * * *") // 1시간 주기
 //    @Scheduled(cron = "0 0/10 * * * *") // 10분 주기
-    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
+//    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
     @Transactional
     public void addChattingMysql() {
         System.out.println("# Scheduled 실행 #");
