@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Long> {
@@ -20,4 +21,5 @@ public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Lo
     void deleteMeetingMemberByMeetingIdAndMemberID(@Param("memberId") Long memberId, @Param("meetingId") Long meetingId);
 
     List<MeetingMember> findByMeetingIdAndState(@Param("meetingId") Long meetingId, @Param("state")StateType state);
+    Optional<MeetingMember> findByMeeting_IdAndMember_Id(Long meetingId, Long memberId);
 }
