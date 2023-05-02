@@ -50,6 +50,12 @@
         </div>
       </v-timeline-item>
     </v-timeline>
+    <!-- 무한스크롤 감지 -->
+    <!-- <div
+      v-infinite-scroll="loadMore"
+      infinite-scroll-disabled="loading"
+      infinite-scroll-distance="10"
+    ></div> -->
   </v-sheet>
 </template>
 
