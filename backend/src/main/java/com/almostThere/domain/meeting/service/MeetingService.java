@@ -1,5 +1,6 @@
 package com.almostThere.domain.meeting.service;
 
+import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
@@ -21,6 +22,8 @@ import com.almostThere.global.error.exception.NotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +35,8 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MeetingService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MeetingService.class);
 
     private final MeetingRepository meetingRepository;
     private final MemberRepository memberRepository;
@@ -156,5 +161,15 @@ public class MeetingService {
             meeting.updateMeeting(meetingUpdateRequestDto);
             meetingRepository.save(meeting);
         }   else throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
+    }
+
+    /**
+     * 멤버가 참여한 모든 모임을 조회한다.
+     * @param memberId
+     * @return 모임 리스트
+     */
+    public List<AttendMeetingMemberDto> findAttendAllMeetingById(Long memberId) {
+        // member가 참여한 모임멤버(+ 모임) List 조회
+        return meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new AttendMeetingMemberDto(m)).collect(Collectors.toList());
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,6 +21,10 @@ public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Lo
             "and m.meeting.id=:meetingId")
     void deleteMeetingMemberByMeetingIdAndMemberID(@Param("memberId") Long memberId, @Param("meetingId") Long meetingId);
 
+    @Query("select m from MeetingMember m where m.member.id = :memberId")
+    List<MeetingMember> findByMemberId(@Param("memberId") Long memberId);
+
     List<MeetingMember> findByMeetingIdAndState(@Param("meetingId") Long meetingId, @Param("state")StateType state);
+    
     Optional<MeetingMember> findByMeeting_IdAndMember_Id(Long meetingId, Long memberId);
 }
