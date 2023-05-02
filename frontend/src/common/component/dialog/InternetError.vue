@@ -17,7 +17,7 @@
           class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
         >
           <div>인터넷 연결이 되지 않았거나</div>
-          <div>입장 불가능한 링크입니다.</div>
+          <div>접속 불가능한 링크입니다.</div>
         </span>
       </v-card-title>
       <v-card-text>

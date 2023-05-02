@@ -5,9 +5,11 @@
       @openDrawer="openDrawer"
       :name="meetingName"
     ></chatting-header>
+    <!-- 채팅 멤버 목록 -->
     <v-navigation-drawer v-model="drawer" fixed temporary right>
       <v-sheet height="100%" class="d-flex flex-column justify-space-between">
         <div>
+          <!-- 모임 이름 -->
           <div
             class="px-4 py-3 bold-font xxl-font main-col-1"
             style="word-break: break-all"
@@ -15,21 +17,25 @@
             {{ meetingName }}
           </div>
           <v-divider></v-divider>
+          <!-- 채팅 멤버 리스트 -->
           <v-list-item v-for="member in member_list" :key="member.memberId">
+            <!-- 채팅 멤버 프로필 사진 -->
             <v-list-item-avatar rounded="lg" size="40">
               <v-img :src="member.profile"></v-img>
             </v-list-item-avatar>
-
+            <!-- 채팅 멤버 닉네임-->
             <v-list-item-content>
-              <v-list-item-title class="xs-font main-col-1">{{
-                member.nickname
-              }}</v-list-item-title>
+              <v-list-item-title class="xs-font main-col-1">
+                {{ member.nickname }}
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </div>
+        <!-- 미팅 방 페이지로 가는 버튼 -->
         <detail-button></detail-button>
       </v-sheet>
     </v-navigation-drawer>
+    <!-- 채팅 정보를 불러올 수 없는 경우 -->
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
     <v-sheet
@@ -200,6 +206,7 @@ import ScrollBottomButton from "@/common/component/button/ScrollBottomButton.vue
 import InternetError from "@/common/component/dialog/InternetError.vue";
 import ChattingLoading from "./ChattingLoading.vue";
 import DetailButton from "@/common/component/button/DetailButton.vue";
+import { mapActions, mapState } from "vuex";
 
 export default {
   components: {
@@ -221,11 +228,12 @@ export default {
       last: -1, // 무한 스크롤 마지막에 불러온 Index
       page: 1, // 무한 스크롤 페이지
       loading: true, // 페이지 로딩 여부
-      drawer: null,
-      roomCode: null,
+      drawer: null, // 오른쪽 프로필 목록 창
+      roomCode: null, // 모임 코드
     };
   },
   computed: {
+    ...mapState("websocketStore", ["connected", "stompClient"]),
     member_list() {
       return Object.keys(this.members).map((item) => this.members[item]);
     },
@@ -245,8 +253,6 @@ export default {
         // 채팅 기록
         this.chatList =
           await info.chattingListDto.chattingDetailDtoList.reverse();
-        // loading 상태 변경
-        this.loading = await false;
         // 마지막 기록
         this.last = await info.chattingListDto.lastNumber;
         // 스크롤 맨 아래로 이동
@@ -254,12 +260,16 @@ export default {
         await setTimeout(this.goBottom, 100);
         // 요청 값을 받아오면 소켓 연결을 시도합니다.
         await this.connect();
+        // loading 상태 변경
+        this.loading = await false;
       } else {
         this.$refs.error.openDialog();
       }
     });
   },
   methods: {
+    ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
+    // 오른쪽 멤버 프로필 목록 상태 변경
     openDrawer() {
       this.drawer = !this.drawer;
     },
@@ -297,7 +307,7 @@ export default {
     },
     // 메세지 전송
     send() {
-      if (this.stompClient && this.stompClient.connected) {
+      if (this.stompClient && this.connected) {
         this.stompClient.send(
           `/message/receive/${this.roomCode}`,
           this.message,
@@ -305,40 +315,48 @@ export default {
         );
       }
     },
-    // Websocket 연결
-    connect() {
-      const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
-      let socket = new SockJS(serverURL);
-      this.stompClient = Stomp.over(socket);
-      // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
-      this.stompClient.connect(
-        {},
-        () => {
-          // (frame) => {
-          // 소켓 연결 성공
-          this.connected = true;
-          // console.log("소켓 연결 성공", frame);
-          // 서버의 메시지 전송 endpoint를 구독합니다.
-          // 이런형태를 pub sub 구조라고 합니다.
-          this.stompClient.subscribe(`/send/${this.roomCode}`, (res) => {
-            // console.log("구독으로 받은 메시지 입니다.", res.body);
-            const data = JSON.parse(res.body);
-            if (data.statusCode == 200) {
-              // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-              this.chatList.push(data.data);
-              // 스크롤 맨 아래로 이동
-              window.setTimeout(this.goBottom, 50);
-            }
-          });
+    // 메세지 구독
+    subscribe() {
+      this.stompClient.subscribe(
+        `/send/${this.roomCode}`,
+        (res) => {
+          const data = JSON.parse(res.body);
+          if (data.statusCode == 200) {
+            // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+            this.chatList.push(data.data);
+            // 스크롤 맨 아래로 이동
+            window.setTimeout(this.goBottom, 50);
+          }
         },
-        () => {
-          // (error) => {
-          // 소켓 연결 실패
-          // console.log("소켓 연결 실패");
-          this.connected = false;
-        }
+        { id: "chatting-subscribe" }
       );
     },
+    // Websocket 연결
+    connect() {
+      if (!this.connected) {
+        const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
+        let socket = new SockJS(serverURL);
+        this.updateStompClient(Stomp.over(socket));
+        this.stompClient.connect(
+          {},
+          (frame) => {
+            console.log("소켓 연결 성공", frame);
+            this.updateConnected(true);
+            this.subscribe();
+          },
+          (error) => {
+            console.log("소켓 연결 실패", error);
+            this.updateConnected(false);
+          }
+        );
+      } else {
+        this.subscribe();
+      }
+    },
+  },
+  // 메시지 구독 끊기
+  destroyed() {
+    this.stompClient.unsubscribe("chatting-subscribe");
   },
 };
 </script>

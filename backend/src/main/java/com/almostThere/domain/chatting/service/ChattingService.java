@@ -53,7 +53,7 @@ public class ChattingService {
     public void isChattingMember(Long meetingId, Long memberId) {
 
         // 해당 채팅방의 멤버가 맞는지 확인
-        Optional<MeetingMember> optionalMeetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(memberId, meetingId);
+        Optional<MeetingMember> optionalMeetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(meetingId, memberId);
         if (!optionalMeetingMember.isPresent()) throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
     }
 

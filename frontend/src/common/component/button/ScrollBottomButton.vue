@@ -3,7 +3,7 @@
     max-width="500"
     color="transparent"
     width="100%"
-    class="d-flex flex-row justify-end"
+    class="d-flex flex-row justify-end align-center"
     style="
       position: fixed;
       margin: 0 auto;

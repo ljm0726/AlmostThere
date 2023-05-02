@@ -15,7 +15,6 @@
     <back-button color="var(--main-col-1)"></back-button>
     <span class="point-font">{{ name }}</span>
     <div>
-      <!-- <detail-button></detail-button> -->
       <v-btn
         id="square-btn"
         outlined
@@ -23,7 +22,7 @@
         @click.stop="openDrawer()"
         rounded
       >
-        <v-icon color="var(--main-col-1)">$vuetify.icons.detail_outline</v-icon>
+        <v-icon color="var(--main-col-1)">$vuetify.icons.list</v-icon>
       </v-btn>
     </div>
   </v-sheet>
@@ -31,13 +30,11 @@
 
 <script>
 import BackButton from "@/common/component/button/BackButton.vue";
-// import DetailButton from "@/common/component/button/DetailButton.vue";
 
 export default {
   name: "ChattingHeader",
   components: {
     BackButton,
-    // DetailButton,
   },
   props: {
     name: String,

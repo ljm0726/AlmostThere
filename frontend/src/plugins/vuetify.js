@@ -27,6 +27,7 @@ import MapOutlineIcon from '@/common/component/icons/MapOutlineIcon.vue'
 import CameraOutlineIcon from '@/common/component/icons/CameraOutlineIcon.vue'
 import SendOutlineIcon from '@/common/component/icons/SendOutlineIcon.vue'
 import ChattingOutlineIcon from '@/common/component/icons/ChattingOutlineIcon.vue'
+import ListIcon from '@/common/component/icons/ListIcon.vue'
 
 Vue.use(Vuetify);
 
@@ -110,6 +111,9 @@ export default new Vuetify({
       },
       chatting_outline: {
         component: ChattingOutlineIcon
+      },
+      list: {
+        component: ListIcon
       }
     }
   }
