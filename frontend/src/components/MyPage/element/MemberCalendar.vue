@@ -35,17 +35,21 @@ export default {
   mounted() {
     const dates = [];
     this.highlightedDates = this.attendMeetings.map((meeting) => {
-      const date = meeting.meetingDto.meetingTime.substring(8, 10);
+      const date = meeting.meetingDto.meetingTime.substring(0, 10);
 
       // 중복 check
       if (!dates.includes(date)) {
         const year = meeting.meetingDto.meetingTime.substring(0, 4);
         const month = meeting.meetingDto.meetingTime.substring(5, 7) - 1;
-        const day = meeting.meetingDto.meetingTime.substring(8, 10);
-        dates.push(new Date(year, month, day).toISOString().substring(0, 10));
+        const day = Number(meeting.meetingDto.meetingTime.substring(8, 10));
+
+        dates.push(
+          new Date(Date.UTC(year, month, day)).toISOString().substring(0, 10)
+        );
       }
     });
     this.highlightedDates = dates;
+    // console.log("#21# highlightedDates 확인: ", this.highlightedDates);
   },
   methods: {},
 };
