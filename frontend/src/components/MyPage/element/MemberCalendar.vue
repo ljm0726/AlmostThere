@@ -51,10 +51,20 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+/* date-picker calendar 부분 */
 .v-picker {
   flex-direction: row !important;
   width: 100%;
   font-size: large;
+}
+
+/* date-picker highlight 표시 */
+.v-date-picker-table__events > div {
+  border-radius: 25%;
+  display: inline-block;
+  height: 5.5px;
+  margin: 0 1px;
+  width: 15px;
 }
 </style>
