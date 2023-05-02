@@ -25,7 +25,7 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             "  and m.meeting.meetingTime between :oneDayAfterDate and :oneMonthAfterDate")
     List <Meeting> findUpcomingMeetings(@Param("memberId") Long memberId, @Param("oneDayAfterDate") LocalDateTime oneDayAfterDate, @Param("oneMonthAfterDate") LocalDateTime oneMonthAfterDate);
 
-    @Query("select m.meeting "
+    @Query("select count(m.meeting) "
         + " from MeetingMember m "
         + "where m.member.id=:memberId "
         + "and m.meeting.meetingTime "
