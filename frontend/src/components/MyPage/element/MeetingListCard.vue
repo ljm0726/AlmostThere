@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="d-flex align-center mt-3">
+  <v-sheet class="d-flex align-center">
     <v-timeline align-top dense style="margin-left: -20px">
       <v-timeline-item
         v-for="(meeting, index) in meetings"

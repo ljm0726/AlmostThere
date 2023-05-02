@@ -1,6 +1,6 @@
 <template>
   <v-sheet
-    class="pa-13 d-flex flex-column detail-border align-center"
+    class="mt-2 ml-5 mr-5 pa-13 d-flex flex-column detail-border align-center"
     height="140"
     outlined
     rounded="xl"
