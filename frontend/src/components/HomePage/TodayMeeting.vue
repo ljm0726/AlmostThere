@@ -146,7 +146,7 @@ export default {
   background: white;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
-  border-radius: 15px;
+  border-radius: 10px;
   border: var(--main-col-1) solid 1px;
   display: flex;
   justify-content: center;
