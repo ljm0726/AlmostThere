@@ -20,7 +20,7 @@ public class AttendMeetingMemberDto {
     public AttendMeetingMemberDto(MeetingMember meetingMember) {
         this.meetingMemberId = meetingMember.getId();
         this.state = meetingMember.getState();
-        this.spentMoney = meetingMember.getSpentMoney();
+        this.spentMoney = Double.valueOf(meetingMember.getSpentMoney());
         this.meetingDto = new AttendMeetingDto(meetingMember.getMeeting());
     }
 }

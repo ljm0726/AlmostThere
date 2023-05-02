@@ -25,6 +25,6 @@ public class AttendMeetingDto {
         this.meetingTime = meeting.getMeetingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.meetingPlace = meeting.getMeetingPlace();
         this.meetingAddress = meeting.getMeetingAddress();
-        this.roomCode = meeting.getRoomCode();
+        this.roomCode = Integer.parseInt(meeting.getRoomCode());
     }
 }
