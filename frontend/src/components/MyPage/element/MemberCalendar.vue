@@ -1,16 +1,5 @@
 <template>
   <v-sheet class="mt-6 align-center" style="width: 100%">
-    <!-- <v-date-picker
-      class="regular-font v-picker"
-      locale="ko"
-      v-model="date"
-      scrollable
-      no-title
-      color="var(--main-col-1)"
-      :day-format="(date) => new Date(date).getDate()"
-      :highlighted="highlightedDates"
-    >
-    </v-date-picker> -->
     <v-date-picker
       class="regular-font v-picker"
       locale="ko"
@@ -19,10 +8,11 @@
       no-title
       color="var(--main-col-1)"
       :day-format="(date) => new Date(date).getDate()"
+      :events="highlightedDates"
+      event-color="var(--main-col-1)"
     >
     </v-date-picker>
     <meeting-list-on-day :date="date"></meeting-list-on-day>
-    <v-btn @click="check()">확인</v-btn>
   </v-sheet>
 </template>
 
@@ -35,26 +25,29 @@ export default {
   data() {
     return {
       date: new Date().toISOString().substring(0, 10), // calendar로 선택한 date
+      highlightedDates: null, // highlight 처리할 날짜 배열
     };
   },
   components: { MeetingListOnDay },
   computed: {
     ...mapState("memberStore", ["attendMeetings"]),
-    // highlightedDates() {
-    //   return this.attendMeetings.map((attendMeeting) =>
-    //     new Date(attendMeeting.meetingDto.meetingTime).toISOString.substring(
-    //       0,
-    //       10
-    //     )
-    //   );
-    // },
   },
-  created() {
-    console.log("#21# [created] attendMeetings 확인: ", this.attendMeetings);
+  mounted() {
+    const dates = [];
+    this.highlightedDates = this.attendMeetings.map((meeting) => {
+      const date = meeting.meetingDto.meetingTime.substring(8, 10);
+
+      // 중복 check
+      if (!dates.includes(date)) {
+        const year = meeting.meetingDto.meetingTime.substring(0, 4);
+        const month = meeting.meetingDto.meetingTime.substring(5, 7) - 1;
+        const day = meeting.meetingDto.meetingTime.substring(8, 10);
+        dates.push(new Date(year, month, day).toISOString().substring(0, 10));
+      }
+    });
+    this.highlightedDates = dates;
   },
-  methods: {
-    check() {},
-  },
+  methods: {},
 };
 </script>
 
