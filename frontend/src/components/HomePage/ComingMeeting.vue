@@ -271,7 +271,11 @@ export default {
   height: 150px;
   /* width: 353px; */
   /* height: 150px; */
-  background: linear-gradient(180deg, rgba(9, 42, 73, 0.8) 0%, #092a49 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(9, 42, 73, 0.8) 0%,
+    var(--main-col-1) 100%
+  );
   box-shadow: 0px 5px 20px -10px #000000;
   border-radius: 15px;
 }

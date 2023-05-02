@@ -42,7 +42,7 @@ public class MeetingMember {
     private StateType state;
 
     @Column
-    private Double spentMoney;
+    private Integer spentMoney;
 
     public MeetingMember (Member member, Meeting meeting, StateType state){
         this.member = member;
@@ -51,7 +51,7 @@ public class MeetingMember {
     }
     @Builder
     public MeetingMember (Member member, Meeting meeting, String startPlace, String startAddress
-        ,Double startLat, Double startLng, StateType state, Double spentMoney) {
+        ,Double startLat, Double startLng, StateType state, Integer spentMoney) {
         this.member = member;
         this.meeting = meeting;
         this.startPlace = startPlace;
@@ -61,4 +61,9 @@ public class MeetingMember {
         this.state = state;
         this.spentMoney = spentMoney;
     }
+
+    public void updateSpentMoney(Integer spentMoney){
+        this.spentMoney = spentMoney;
+    }
+
 }

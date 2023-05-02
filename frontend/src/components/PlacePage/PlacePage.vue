@@ -41,16 +41,73 @@ export default {
 
   computed: {
     ...mapState("placeStore", ["placeX", "placeY", "placeName", "placeAddr"]),
+    ...mapState("halfwayStore", ["startPlaces", "middlePlace"]),
+  },
+
+  watch: {
+    middlePlace() {
+      if (this.middlePlace != null) {
+        console.log("감지함?");
+        var positions = [];
+        var bounds = new window.kakao.maps.LatLngBounds();
+        for (const startPlace of this.startPlaces) {
+          var sp = new Map();
+          sp.set("title", startPlace.get("name"));
+          sp.set(
+            "latlng",
+            new window.kakao.maps.LatLng(
+              startPlace.get("y"),
+              startPlace.get("x")
+            )
+          );
+          positions.push(sp);
+          bounds.extend(
+            new window.kakao.maps.LatLng(
+              startPlace.get("y"),
+              startPlace.get("x")
+            )
+          );
+        }
+        var mp = new Map();
+        mp.set("title", "중간지점");
+        mp.set(
+          "latlng",
+          new window.kakao.maps.LatLng(
+            this.middlePlace.middleAvergeY,
+            this.middlePlace.middleAvergeX
+          )
+        );
+        positions.push(mp);
+        this.ps = new window.kakao.maps.services.Places();
+        var center = new window.kakao.maps.LatLng(
+          this.middlePlace.middleAvergeY,
+          this.middlePlace.middleAvergeX
+        ); // 현재 지도 중심 좌표를 가져옵니다
+
+        console.log(center);
+        var radius = 5000; // 검색 반경을 10km로 설정합니다
+        this.ps.categorySearch("sw8", this.placesSearchCB, {
+          location: center,
+          radius: radius,
+          useMapBounds: false,
+        });
+
+        if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
+        for (var i = 0; i < positions.length; i++) {
+          // 마커를 생성합니다
+          this.curIntroduceMarker = new window.kakao.maps.Marker({
+            map: this.map, // 마커를 표시할 지도
+            position: positions[i].get("latlng"), // 마커를 표시할 위치
+            title: positions[i].get("title"), // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+          });
+          console.log("marker", this.curIntroduceMarker);
+        }
+        this.map.setBounds(bounds);
+      }
+    },
   },
 
   mounted() {
-    console.log(
-      "제대로 왓나?",
-      this.placeX,
-      this.placeY,
-      this.placeName,
-      this.placeAddr
-    );
     if (window.kakao && window.kakao.maps) {
       // 카카오 객체가 있고, 카카오 맵 그릴 준비가 되어 있다면 맵 실행
       this.loadMap();
@@ -62,6 +119,8 @@ export default {
     if (this.placeX !== null) this.isSelect = true;
     else this.isSelect = false;
     if (this.placeX !== null) {
+      // map의 marker를 다 지운다, 아래 displayMarker에서 뺴옴
+      // if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
       var bounds = new window.kakao.maps.LatLngBounds();
       bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
       this.current.lng = this.placeX;
@@ -75,14 +134,14 @@ export default {
       );
     }
 
-    if (localStorage.getItem("findHalfwayModal") !== null) {
+    if (sessionStorage.getItem("findHalfwayModal") !== null) {
       this.$refs.halfway.openDialog();
     }
   },
 
   methods: {
     findHalfway() {
-      localStorage.setItem("findHalfwayModal", true);
+      sessionStorage.setItem("findHalfwayModal", true);
       this.$refs.halfway.openDialog();
     },
     moveRegisterPage() {
@@ -119,11 +178,45 @@ export default {
       this.geocoder = new window.kakao.maps.services.Geocoder();
     },
     displayMarker(y, x) {
-      // 마커를 생성하고 지도에 표시합니다
       if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
+      // 마커를 생성하고 지도에 표시합니다
       this.curIntroduceMarker = new window.kakao.maps.Marker({
         map: this.map,
         position: new window.kakao.maps.LatLng(y, x),
+      });
+    },
+
+    placesSearchCB(data, status) {
+      if (status === window.kakao.maps.services.Status.OK) {
+        // for (var i = 0; i < data.length; i++) {
+        this.displayMarker2(data[0]);
+        // }
+      }
+    },
+    displayMarker2(place) {
+      var infowindow = new window.kakao.maps.InfoWindow({ zIndex: 3 });
+      var imageSrc =
+        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+      var imageSize = new window.kakao.maps.Size(24, 35);
+
+      // 마커 이미지를 생성합니다
+      var markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
+      // 마커를 생성하고 지도에 표시합니다
+      var marker = new window.kakao.maps.Marker({
+        map: this.map,
+        position: new window.kakao.maps.LatLng(place.y, place.x),
+        image: markerImage,
+      });
+
+      // 마커에 클릭이벤트를 등록합니다
+      window.kakao.maps.event.addListener(marker, "click", function () {
+        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+        infowindow.setContent(
+          '<div style="padding:5px;font-size:12px;">' +
+            place.place_name +
+            "</div>"
+        );
+        infowindow.open(this.map, marker);
       });
     },
   },

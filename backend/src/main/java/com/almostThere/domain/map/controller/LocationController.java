@@ -2,9 +2,6 @@ package com.almostThere.domain.map.controller;
 
 import com.almostThere.domain.map.Service.LocationService;
 import com.almostThere.domain.map.entity.UserLocation;
-import com.almostThere.global.response.BaseResponse;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,14 +9,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.connection.RedisStringCommands.SetOption;
-import org.springframework.data.redis.core.types.Expiration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.data.redis.core.RedisTemplate;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequiredArgsConstructor
@@ -55,11 +53,18 @@ public class LocationController {
 
         UserLocation findUserLocation = (UserLocation) redisTemplateForLocation.opsForValue().get(memberId);
         UserLocation userLocation = new UserLocation(Long.parseLong(memberId), memberNickname, new double[] {lat, lng});
+        System.out.println(locationExpiretime);
         if(findUserLocation != null){
-            locationExpiretime = redisTemplateForLocation.getExpire(memberId);
+            long maintainExpiretime = redisTemplateForLocation.getExpire(memberId);
+            System.out.println("findUserLocation 이 널이 아닐 때 :"+ maintainExpiretime);
+            redisTemplateForLocation.opsForValue()
+                .set(memberId, userLocation, maintainExpiretime, TimeUnit.SECONDS);
+        }else{
+            System.out.println("findUserLocation 이 널일 때 :" + locationExpiretime);
+            redisTemplateForLocation.opsForValue()
+                .set(memberId, userLocation, locationExpiretime, TimeUnit.SECONDS);
         }
-        redisTemplateForLocation.opsForValue()
-            .set(memberId, userLocation, locationExpiretime, TimeUnit.SECONDS);
+
     }
     /*
         유저가 위치값을 보낸 적이 없어서 redis에 위치 정보가 저장되어 있지 않을 수가 있나?

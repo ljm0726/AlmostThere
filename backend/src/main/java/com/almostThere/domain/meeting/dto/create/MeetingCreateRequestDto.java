@@ -17,9 +17,9 @@ public class MeetingCreateRequestDto {
     private String meetingAddress;
     private double meetingLat;
     private double meetingLng;
-    private int roomCode;
+    private String roomCode;
 
-    public Meeting toEntity(MeetingCreateRequestDto meetingCreateRequestDto, Member host, int roomCode) {
+    public Meeting toEntity(MeetingCreateRequestDto meetingCreateRequestDto, Member host, String roomCode) {
         return Meeting
             .builder()
             .host(host)
