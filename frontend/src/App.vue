@@ -16,7 +16,8 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
-import { getcntMeetingsWithin3hours } from "@/api/modules/meeting.js";
+import { getMostRecentMeeting } from "@/api/modules/meeting.js";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "App",
@@ -28,19 +29,38 @@ export default {
   },
 
   beforeCreate() {
-    getcntMeetingsWithin3hours().then((res) => {
-      console.log("getcntMeetingsWithin3hours response", res);
-      if (res == true) {
-        this.hasMeetingsWithin3hours = true;
-        this.connectHandler();
+    getMostRecentMeeting().then((res) => {
+      console.log("getMostRecentMeeting response", res);
+      if (res != null) {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+
+        const formattedTime = new Date(
+          `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+        );
+        const meetingTime = new Date(res.meetingTime);
+        const diffTime = meetingTime.getTime() - formattedTime.getTime();
+
+        setTimeout(this.connectHandler, diffTime);
       }
     });
   },
 
+  computed: {
+    ...mapState("meetingStore", ["recent_meeting"]),
+  },
+
   methods: {
+    ...mapActions("meetingStore", ["SET_RECENT_MEETING"]),
+
     connectHandler() {
       const access_token = localStorage.getItem("Authorization");
-      console.log("hasMeetingsWithin3hours", this.hasMeetingsWithin3hours);
+
       if (access_token && this.hasMeetingsWithin3hours) {
         console.log("connect");
         this.connect();

@@ -10,6 +10,7 @@ const meetingStore = {
     meeting_time: null,
     place_name: null,
     place_addr: null,
+    recent_meeting: null,
   },
   getters: {},
   mutations: {
@@ -31,6 +32,10 @@ const meetingStore = {
       console.log(place_addr);
       state.place_addr = place_addr;
       console.log(state.place_addr);
+    },
+    SET_RECENT_MEETING(state, recent_meeting) {
+      console.log(recent_meeting);
+      state.recent_meeting = recent_meeting;
     },
   },
   actions: {

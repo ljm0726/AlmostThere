@@ -54,10 +54,10 @@ async function getUpcomingMeetings() {
   return await Promise.resolve(result);
 }
 
-function getcntMeetingsWithin3hours() {
+function getMostRecentMeeting() {
   return new Promise((resolve, reject) => {
     api
-      .get("/meeting/3hours", {
+      .get("/meeting/most-recent", {
         headers: {
           Authorization: localStorage.getItem("Authorization"),
         },
@@ -84,6 +84,6 @@ export {
   meetingRegister,
   getTodayMeetings,
   getUpcomingMeetings,
-  getcntMeetingsWithin3hours,
+  getMostRecentMeeting,
   getBestMember,
 };

@@ -1,5 +1,6 @@
 package com.almostThere.domain.meeting.controller;
 
+import com.almostThere.domain.meeting.dto.MeetingTimeDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
@@ -31,13 +32,14 @@ public class MeetingApiController {
 
     private final MeetingService meetingService;
 
-    @GetMapping("/3hours")
-    public BaseResponse getMeetingsWithin3hours(Authentication authentication){
+    @GetMapping("/most-recent")
+    public BaseResponse getMostRecentMeeting(Authentication authentication){
 
 //        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
-        int meetingCnt = meetingService.countMeetingWithin3hours(1L);
+        MeetingTimeDto meetingTimeDto = meetingService.getMostRecentMeeting(1L);
+        
+        return BaseResponse.success(meetingTimeDto);
 
-        return BaseResponse.success(meetingCnt >= 1? true : false);
     }
     /**
      * dyeon7310

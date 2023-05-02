@@ -1,5 +1,6 @@
 package com.almostThere.domain.meeting.service;
 
+import com.almostThere.domain.meeting.dto.MeetingTimeDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
@@ -19,8 +20,12 @@ import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import com.almostThere.global.error.exception.NotFoundException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,15 +42,16 @@ public class MeetingService {
     private final MemberRepository memberRepository;
     private final MeetingMemberRepository meetingMemberRepository;
 
-    /**
-     * 멤버가 참여중인 모임 중 약속시간이 3시간 이내에 있는 모임의 수를 조회한다.
-     * @param memberId
-     * @return 모임의 수
-     */
-    public int countMeetingWithin3hours(Long memberId){
-        LocalDateTime afterDate = LocalDateTime.now().plusHours(3);
-        System.out.println(afterDate);
-        return meetingRepository.countMeetingsWithin3hours(memberId,afterDate);
+    public MeetingTimeDto getMostRecentMeeting(Long memberId){
+
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        List<Meeting> meeting = meetingRepository.getMostRecentMeeting(memberId, pageRequest);
+        if(meeting.size()==1) {
+            MeetingTimeDto meetingTimeDto = new MeetingTimeDto(meeting.get(0));
+            return meetingTimeDto;
+        }
+
+        return null;
     }
 
     /**
