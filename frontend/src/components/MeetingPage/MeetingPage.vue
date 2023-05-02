@@ -23,7 +23,7 @@
     <meeting-member :memberList="memberList"></meeting-member>
     <meeting-game></meeting-game>
     <meeting-late-fee :lateAmount="lateAmount"></meeting-late-fee>
-    <meeting-cost></meeting-cost>
+    <meeting-cost :meetingId="meetingId"></meeting-cost>
   </div>
 </template>
 
@@ -42,6 +42,7 @@ export default {
   data() {
     return {
       loading: true,
+      meetingId: 1,
       meetingName: "파이썬 알고리즘 스터디",
       meetingDate: "2023-04-04",
       meetingTime: "15:30",
