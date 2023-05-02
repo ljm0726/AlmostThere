@@ -222,6 +222,7 @@ export default {
       page: 1, // 무한 스크롤 페이지
       loading: true, // 페이지 로딩 여부
       drawer: null,
+      roomCode: null,
     };
   },
   computed: {
@@ -235,6 +236,8 @@ export default {
     await getChatting(this.$route.params.id).then(async (res) => {
       if (res && res.data.statusCode == 200) {
         const info = await res.data.data;
+        // 룸 코드
+        this.roomCode = await info.roomCode;
         // 방 이름
         this.meetingName = await info.meetingName;
         // 멤버 정보
@@ -296,7 +299,7 @@ export default {
     send() {
       if (this.stompClient && this.stompClient.connected) {
         this.stompClient.send(
-          `/message/receive/${this.$route.params.id}`,
+          `/message/receive/${this.roomCode}`,
           this.message,
           {}
         );
@@ -317,32 +320,16 @@ export default {
           // console.log("소켓 연결 성공", frame);
           // 서버의 메시지 전송 endpoint를 구독합니다.
           // 이런형태를 pub sub 구조라고 합니다.
-          this.stompClient.subscribe(
-            `/send/${this.$route.params.id}`,
-            (res) => {
-              // console.log("구독으로 받은 메시지 입니다.", res.body);
-              const data = JSON.parse(res.body);
-              if (data.statusCode == 200) {
-                // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-                this.chatList.push(data.data);
-                // 스크롤 맨 아래로 이동
-                window.setTimeout(this.goBottom, 50);
-              }
+          this.stompClient.subscribe(`/send/${this.roomCode}`, (res) => {
+            // console.log("구독으로 받은 메시지 입니다.", res.body);
+            const data = JSON.parse(res.body);
+            if (data.statusCode == 200) {
+              // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+              this.chatList.push(data.data);
+              // 스크롤 맨 아래로 이동
+              window.setTimeout(this.goBottom, 50);
             }
-          );
-          this.stompClient.subscribe(
-            `/send/${this.$route.params.id}/mine`,
-            (res) => {
-              console.log("/me 구독으로 받은 메시지 입니다.", res.body);
-              const data = JSON.parse(res.body);
-              if (data.statusCode == 200) {
-                // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-                this.chatList.push(data.data);
-                // 스크롤 맨 아래로 이동
-                window.setTimeout(this.goBottom, 50);
-              }
-            }
-          );
+          });
         },
         () => {
           // (error) => {

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChattingService {
 
-    private final RedisTemplate<Long, ChattingDto> redisTemplateForChatting;
+    private final RedisTemplate<String, ChattingDto> redisTemplateForChatting;
 
     private final ChattingRepository chattingRepository;
 
@@ -59,19 +59,19 @@ public class ChattingService {
 
     /**
      * @param memberId 멤버ID
-     * @param meetingId 미팅ID
+     * @param roomCode 모임 코드
      * @param message 채팅 내용
      * @param now 채팅 전송 시간
      * @return 저장한 채팅 정보를 반환한다.
      * **/
-    public ChattingDto addChattingRedis(Long memberId, Long meetingId, String message, LocalDateTime now) {
+    public ChattingDto addChattingRedis(Long memberId, String roomCode, String message, LocalDateTime now) {
 
         // ChattingDto 생성
         ChattingDto chattingDto = new ChattingDto(memberId, message, now);
 
         // redis에 ChattingDto 저장
-        ListOperations<Long, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
-        listOperations.rightPush(meetingId, chattingDto);
+        ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
+        listOperations.rightPush(roomCode, chattingDto);
 
         return chattingDto;
     }
@@ -89,14 +89,14 @@ public class ChattingService {
         // key 가져오기
         // 성능 향상 위해 keys() 대신 scan() 사용
         ScanOptions scanOptions = ScanOptions.scanOptions().build();
-        Cursor<Long> cursor = redisTemplateForChatting.scan(scanOptions);
-        ListOperations<Long, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
+        Cursor<String> cursor = redisTemplateForChatting.scan(scanOptions);
+        ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
 
         // 가져온 key를 반복하며 각 key에 있는 값 MySQL에 저장하기
         while (cursor.hasNext()) {
 
             // key 값
-            Long key = cursor.next();
+            String key = cursor.next();
 
             // redis에서 key 해당하는 모든 값 가져오기
             Long size = listOperations.size(key);
@@ -104,11 +104,15 @@ public class ChattingService {
             // 값이 1개 이상 있는 경우
             if (size > 0) {
                 List<ChattingDto> chattingDtoList = listOperations.range(key, 0, listOperations.size(key));
+                
+                // roomCode로 meetingId 가져오기
+                Optional<Meeting> meetingOptional = meetingRepository.findByRoomCode(key);
+                if (!meetingOptional.isPresent()) throw new AccessDeniedException(ErrorCode.MEETING_NOT_FOUND);
 
                 // mysql에 저장 - batchInsert 여러 행을 한 번에 넣기
                 // 48초에 10만 건
-                // 성능 관련 참고자료 https://datamoney.tistory.com/319
-                chattingJDBCRepository.batchInsert(chattingDtoList, key);
+                // 성능 관련 참고자료 https://datamoStringney.tistory.com/319
+                chattingJDBCRepository.batchInsert(chattingDtoList, meetingOptional.get().getId());
 
                 // 가져온 값 redis에서 삭제
                 // listOperations.leftPop(key, size); Redis 버전 호환 불가
@@ -122,15 +126,23 @@ public class ChattingService {
      * @return 미팅 정보를 가져온다.
      * **/
     public ChattingResponseDto getChattingInfo(Long meetingId) {
-        
+
+        // 채팅 리스트를 제외한 모든 정보 가져오기
+        Meeting meeting = getMeetingInfo(meetingId);
+        ChattingResponseDto chattingResponseDto = new ChattingResponseDto(meeting);
+        return chattingResponseDto;
+    }
+
+    /**
+     * @param meetingId 미팅ID
+     * @return 미팅 Entity를 가져온다.
+     * **/
+    public Meeting getMeetingInfo(Long meetingId) {
+
         // ID에 해당하는 meeting 정보 가져오기
         Optional<Meeting> optionalMeeting = meetingRepository.findById(meetingId);
         if (!optionalMeeting.isPresent()) throw new AccessDeniedException(ErrorCode.MEETING_NOT_FOUND);
-
-        // 채팅 리스트를 제외한 모든 정보 가져오기
-        Meeting meeting = optionalMeeting.get();
-        ChattingResponseDto chattingResponseDto = new ChattingResponseDto(meeting);
-        return chattingResponseDto;
+        return optionalMeeting.get();
     }
 
     /**
@@ -145,19 +157,18 @@ public class ChattingService {
 
     /**
      * @param meetingId 미팅ID
-     * @param memberId 멤버ID
      * @param lastNumber 최근 조회 최소 인덱스
      * @return 기록 30개를 조회한다.
      * **/
-    public ChattingListDto getChattingLog(Long meetingId, Long memberId, Long lastNumber) {
+    public ChattingListDto getChattingLog(Long meetingId, Long lastNumber, String roomCode) {
 
         // redis에서 meetingId의 채팅 정보를 가져온다.
-        ListOperations<Long, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
+        ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
 
         // 꺼내야 하는 개수
         int default_num = 20;
         // meetingId에 해당하는 채팅의 크기 확인
-        Long redisSize = listOperations.size(meetingId);
+        Long redisSize = listOperations.size(roomCode);
         // MySQL에 저장된 값 가져오기
         Long mysqlSize = chattingRepository.countByMeeting_Id(meetingId);
         // 전체 개수
@@ -175,8 +186,8 @@ public class ChattingService {
 
             // Redis에 저장된 값으로 충분한 경우
             if (redisIdx >= default_num) {
-                chattingDetailDtoList.addAll(listOperations.range(meetingId, redisIdx - default_num + 1, redisIdx).stream()
-                        .map(m -> new ChattingDetailDto(m, memberId, meetingId))
+                chattingDetailDtoList.addAll(listOperations.range(roomCode, redisIdx - default_num + 1, redisIdx).stream()
+                        .map(m -> new ChattingDetailDto(m, roomCode))
                         .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
                         .reversed()).collect(Collectors.toList()));
                 return new ChattingListDto(chattingDetailDtoList, redisIdx - default_num);
@@ -184,8 +195,8 @@ public class ChattingService {
             
             // Redis에 저장된 값으로 충분하지 않나, Redis에 저장된 값도 가져와야 하는 경우
             else {
-                chattingDetailDtoList.addAll(listOperations.range(meetingId, 0, redisIdx).stream()
-                        .map(m -> new ChattingDetailDto(m, memberId, meetingId))
+                chattingDetailDtoList.addAll(listOperations.range(roomCode, 0, redisIdx).stream()
+                        .map(m -> new ChattingDetailDto(m, roomCode))
                         .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
                         .reversed()).collect(Collectors.toList()));
                 lastNumber -= redisIdx;
@@ -201,9 +212,9 @@ public class ChattingService {
             // MySQL에서 Pagination으로 page번째 값 가져오기
             PageRequest pageRequest = PageRequest.of(page, default_num);
             Page<Chatting> chattingPage = chattingRepository.findAllByMeeting_IdOrderByChattingTimeDesc(meetingId, pageRequest);
-            
+
             // MySQL에서 가져온 리스트
-            List<ChattingDetailDto> chattingDetailDtos = chattingPage.getContent().stream().map(m -> new ChattingDetailDto(m, memberId)).collect(Collectors.toList());
+            List<ChattingDetailDto> chattingDetailDtos = chattingPage.getContent().stream().map(m -> new ChattingDetailDto(m)).collect(Collectors.toList());
 
             // 나눠 떨어지면 전체 반환, 그 외에는 이미 보여진 부분은 제외하고 잘라서 보여주기
             int rest = (int) ((mysqlSize - lastNumber) % default_num);

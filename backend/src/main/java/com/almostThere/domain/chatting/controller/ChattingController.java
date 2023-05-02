@@ -25,13 +25,13 @@ public class ChattingController {
 
     /**
      * jeey0124
-     * @param meetingId 미팅ID
+     * @param roomCode 모임 코드
      * @param message 채팅 내용
      * @return 보낸 메시지 정보를 반환한다.
      * **/
-    @MessageMapping("/receive/{meetingId}") // 메시지를 받을 endpoint 설정
-    @SendTo("/send/{meetingId}") // 메시지를 보낼 곳 설정
-    public BaseResponse sendChatting(@DestinationVariable Long meetingId, String message) {
+    @MessageMapping("/receive/{roomCode}") // 메시지를 받을 endpoint 설정
+    @SendTo("/send/{roomCode}") // 메시지를 보낼 곳 설정
+    public BaseResponse sendChatting(@DestinationVariable String roomCode, String message) {
 
         // 메세지 내용은 최대 255자 이하
         if (message.length() <= 255) {
@@ -43,10 +43,10 @@ public class ChattingController {
             LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
             // redis에 저장
-            ChattingDto chattingDto = chattingService.addChattingRedis(memberId, meetingId, message, now);
+            ChattingDto chattingDto = chattingService.addChattingRedis(memberId, roomCode, message, now);
 
             // 반환
-            return BaseResponse.success(new ChattingDetailDto(chattingDto, memberId, meetingId));
+            return BaseResponse.success(new ChattingDetailDto(chattingDto, roomCode));
         }
         return BaseResponse.fail();
     }
@@ -85,7 +85,7 @@ public class ChattingController {
         ChattingResponseDto chattingResponseDto = chattingService.getChattingInfo(meetingId);
 
         // 채팅 메시지 전부 가져오기
-        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, memberId, -1L);
+        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, -1L, chattingResponseDto.getRoomCode());
         chattingResponseDto.setChattingListDto(chattingListDto);
 
         return BaseResponse.success(chattingResponseDto);
@@ -107,7 +107,7 @@ public class ChattingController {
         chattingService.isChattingMember(meetingId, memberId);
 
         // 채팅 기록 전부 가져오기
-        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, memberId, lastNumber);
+        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, lastNumber, chattingService.getMeetingInfo(meetingId).getRoomCode());
 
         return BaseResponse.success(chattingListDto);
     }
