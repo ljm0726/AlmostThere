@@ -158,7 +158,7 @@ public class ChattingService {
     /**
      * @param meetingId 미팅ID
      * @param lastNumber 최근 조회 최소 인덱스
-     * @return 기록 30개를 조회한다.
+     * @return 기록 20개를 조회한다.
      * **/
     public ChattingListDto getChattingLog(Long meetingId, Long lastNumber, String roomCode) {
 

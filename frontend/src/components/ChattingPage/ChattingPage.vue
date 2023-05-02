@@ -209,6 +209,7 @@ import DetailButton from "@/common/component/button/DetailButton.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
+  name: "ChattingPage",
   components: {
     ChattingHeader,
     InfiniteLoading,
@@ -217,10 +218,9 @@ export default {
     ChattingLoading,
     DetailButton,
   },
-  name: "ChattingPage",
   data() {
     return {
-      memberId: 2, // 현재 로그인 돼 있는 사용자 아이디
+      memberId: 1, // 현재 로그인 돼 있는 사용자 아이디
       message: "", // 작성한 메세지 내용
       chatList: [], // 채팅 리스트
       meetingName: null, // 미팅 제목
@@ -243,6 +243,7 @@ export default {
     // 저장된 채팅 정보를 가져옵니다.
     await getChatting(this.$route.params.id).then(async (res) => {
       if (res && res.data.statusCode == 200) {
+        console.log(">> 결과 ", res);
         const info = await res.data.data;
         // 룸 코드
         this.roomCode = await info.roomCode;
@@ -281,6 +282,7 @@ export default {
       else {
         // ChattingLog를 가져오는 API 요청
         getChattingLog(this.$route.params.id, this.last).then(async (res) => {
+          console.log(">> 22.222", res);
           // chat 정보 저장
           const chat = await res.data.data;
           // 무한 스크롤 페이지
@@ -328,7 +330,20 @@ export default {
             window.setTimeout(this.goBottom, 50);
           }
         },
-        { id: "chatting-subscribe" }
+        { id: `chatting-subscribe-${this.$route.params.id}` }
+      );
+    },
+    // 멤버 정보 가져오기 구독
+    getMember() {
+      this.stompClient.subscribe(
+        `/enter/${this.$route.params.id}`,
+        (res) => {
+          const data = JSON.parse(res.body);
+          if (data.statusCode == 200) {
+            this.members[data.data.memberId] = data.data;
+          }
+        },
+        { id: `member-subscribe-${this.$route.params.id}` }
       );
     },
     // Websocket 연결
@@ -343,6 +358,7 @@ export default {
             console.log("소켓 연결 성공", frame);
             this.updateConnected(true);
             this.subscribe();
+            this.getMember();
           },
           (error) => {
             console.log("소켓 연결 실패", error);
@@ -351,12 +367,14 @@ export default {
         );
       } else {
         this.subscribe();
+        this.getMember();
       }
     },
   },
   // 메시지 구독 끊기
   destroyed() {
-    this.stompClient.unsubscribe("chatting-subscribe");
+    this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
+    this.stompClient.unsubscribe(`member-subscribe-${this.$route.params.id}`);
   },
 };
 </script>

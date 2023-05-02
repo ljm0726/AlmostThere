@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashMap;
 
 @RestController
 @CrossOrigin
@@ -64,7 +63,7 @@ public class ChattingController {
 
         // 사용자 프로필, 닉네임 가져오기
         ChattingMemberDto chattingMemberDto = chattingService.getChattingMember(memberId);
-        return BaseResponse.success(new HashMap<>(){{put(memberId, chattingMemberDto);}});
+        return BaseResponse.success(chattingMemberDto);
     }
 
     /**

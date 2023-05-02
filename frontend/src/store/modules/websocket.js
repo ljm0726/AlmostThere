@@ -2,7 +2,7 @@ const websocketStore = {
   namespaced: true,
   state: {
     connected: false,
-    stompClient: null
+    stompClient: null,
   },
   getters: {},
   mutations: {
@@ -11,7 +11,7 @@ const websocketStore = {
     },
     UPDATE_CONNECTED(state, payload) {
       state.connected = payload;
-    }
+    },
   },
   actions: {
     updateStompClient({ commit }, stomp) {
@@ -19,7 +19,7 @@ const websocketStore = {
     },
     updateConnected({ commit }, isConnect) {
       commit("UPDATE_CONNECTED", isConnect);
-    }
+    },
   }
 }
 
