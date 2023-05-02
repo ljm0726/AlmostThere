@@ -1,11 +1,15 @@
 package com.almostThere.domain.meeting.entity;
 
+import com.almostThere.domain.meeting.dto.create.CalculateDetailRequestDto;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CalculateDetail {
 
     @Id
@@ -31,4 +35,13 @@ public class CalculateDetail {
 
     @Column(nullable = false)
     private int price;
+
+    public CalculateDetail(CalculateDetailRequestDto dto, Meeting meeting) {
+        this.meeting = meeting;
+        this.type = CalculateType.RECEIPT;
+        this.filePath = dto.getFilePath();
+        this.fileName = dto.getFileName();
+        this.storeName = dto.getStoreName();
+        this.price = dto.getPrice();
+    }
 }
