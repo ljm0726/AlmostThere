@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="mt-6 d-flex flex-row align-center" style="width: 100%">
+  <v-sheet class="mt-6 align-center" style="width: 100%">
     <v-date-picker
       class="regular-font v-picker"
       locale="ko"
@@ -10,11 +10,12 @@
       :day-format="(date) => new Date(date).getDate()"
     >
     </v-date-picker>
+    <meeting-list-on-day :date="date"></meeting-list-on-day>
   </v-sheet>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import MeetingListOnDay from "./MeetingListOnDay.vue";
 
 export default {
   name: "MemberCalendar",
@@ -23,9 +24,7 @@ export default {
       date: new Date().toISOString().substring(0, 10),
     };
   },
-  computed: {
-    ...mapState("memberStore", ["attendMeetings"]),
-  },
+  components: { MeetingListOnDay },
   methods: {},
 };
 </script>
