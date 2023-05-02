@@ -1,14 +1,14 @@
 <template>
-  <v-sheet
-    >모임 리스트 {{ date }}
+  <v-sheet>
     <div v-if="meetings.length == 0"><no-meeting /></div>
-    <div v-else>모임있음 {{ this.meetings }}</div>
+    <div v-else><meeting-list-card :meetings="meetings" /></div>
   </v-sheet>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import NoMeeting from "./NoMeeting.vue";
+import MeetingListCard from "./MeetingListCard.vue";
 
 export default {
   name: "MeetingListDay",
@@ -23,7 +23,7 @@ export default {
       meetings: [],
     };
   },
-  components: { NoMeeting },
+  components: { NoMeeting, MeetingListCard },
   computed: {
     ...mapState("memberStore", ["attendMeetings"]),
   },
@@ -35,8 +35,6 @@ export default {
   created() {},
   methods: {
     getOnDayMeetings() {
-      console.log("#21# 해당 날짜 모임조회 동작");
-
       const onDayMeeting = [];
       this.meetings = this.attendMeetings.map((meeting) => {
         const meetingDate = meeting.meetingDto.meetingTime.substring(0, 10);

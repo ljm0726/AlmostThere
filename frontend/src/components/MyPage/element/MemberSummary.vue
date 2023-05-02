@@ -1,5 +1,5 @@
 <template>
-  <div class="summary-container">
+  <div>
     <div class="image-container">
       <!-- image -->
       <img height="180" width="180" src="@/assets/images/dialog/my-page.png" />
