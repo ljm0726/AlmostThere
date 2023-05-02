@@ -36,11 +36,11 @@ public class CalculateDetail {
     @Column(nullable = false)
     private int price;
 
-    public CalculateDetail(CalculateDetailRequestDto dto, Meeting meeting) {
+    public CalculateDetail(CalculateDetailRequestDto dto, String filePath, String fileName, Meeting meeting) {
         this.meeting = meeting;
         this.type = CalculateType.RECEIPT;
-        this.filePath = dto.getFilePath();
-        this.fileName = dto.getFileName();
+        this.filePath = filePath;
+        this.fileName = fileName;
         this.storeName = dto.getStoreName();
         this.price = dto.getPrice();
     }

@@ -156,8 +156,7 @@ export default {
     addCalculateDetail() {
       saveCalculateDetail(
         this.meetingId,
-        "filepath",
-        "filename",
+        this.receipt,
         this.storeName,
         this.totalPrice
       );

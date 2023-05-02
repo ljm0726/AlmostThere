@@ -9,12 +9,16 @@ import com.almostThere.domain.meeting.entity.StateType;
 import com.almostThere.domain.meeting.repository.CalculateDetailRepository;
 import com.almostThere.domain.meeting.repository.MeetingMemberRepository;
 import com.almostThere.domain.meeting.repository.MeetingRepository;
+import com.almostThere.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -40,11 +44,15 @@ public class CalculateDetailService {
     }
 
     @Transactional
-    public void saveCalculateDetail(CalculateDetailRequestDto dto){
+    public void saveCalculateDetail(CalculateDetailRequestDto dto) throws IOException {
 
         Meeting meeting = meetingRepository.findById(dto.getMeetingId()).orElseThrow();
+        //영수증 파일 저장
+        String hostname = InetAddress.getLocalHost().getHostName();
+        FileUtil fileUtil = new FileUtil();
+        HashMap<String, String> file = fileUtil.fileCreate(hostname,dto.getReceipt());
         //CalculateDetail 저장
-        CalculateDetail calculateDetail = new CalculateDetail(dto, meeting);
+        CalculateDetail calculateDetail = new CalculateDetail(dto, file.get("filePath"), file.get("fileName"), meeting);
         calculateDetailRepository.save(calculateDetail);
 
         List<MeetingMember> members = meeting.getMeetingMembers();  //모임의 총 인원
