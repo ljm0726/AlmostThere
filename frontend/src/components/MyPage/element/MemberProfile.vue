@@ -11,10 +11,12 @@
       >
       </v-img>
     </v-card>
-    <div class="ml-5 xxxxl-font thin-font main-col-1">
+    <div class="ml-5 xxxxl-font thin-font">
       안녕하세요!
       <div>
-        <span class="bold-font">{{ this.member.memberNickname }}</span
+        <span class="bold-font main-col-1">{{
+          this.member.memberNickname
+        }}</span
         >님
       </div>
       <!-- 로그아웃 -->
