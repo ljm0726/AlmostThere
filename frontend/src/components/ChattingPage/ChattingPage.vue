@@ -248,7 +248,7 @@ export default {
     // 저장된 채팅 정보를 가져옵니다.
     await getChatting(this.$route.params.id).then(async (res) => {
       if (res && res.data.statusCode == 200) {
-        console.log(">> 결과 ", res);
+        // console.log(">> 결과 ", res);
         const info = await res.data.data;
         // 룸 코드
         this.roomCode = await info.roomCode;
