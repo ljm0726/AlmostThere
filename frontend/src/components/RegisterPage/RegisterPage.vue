@@ -41,7 +41,6 @@
           :return-value.sync="date"
           transition="scale-transition"
           offset-y
-          max-width="280px"
           min-width="280px"
           :nudge-right="40"
         >
@@ -53,13 +52,30 @@
               readonly
               v-bind="attrs"
               v-on="on"
-              hide-details
             ></v-text-field>
           </template>
-          <v-date-picker v-model="date" no-title scrollable>
+          <v-date-picker
+            class="regular-font"
+            locale="ko"
+            v-model="date"
+            no-title
+            scrollable
+            color="var(--main-col-1)"
+            :day-format="(date) => new Date(date).getDate()"
+          >
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
-            <v-btn text color="primary" @click="$refs.menu.save(date)">
+            <v-btn
+              text
+              class="bold-font xl-font main-col-1"
+              @click="menu = false"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              text
+              class="bold-font xl-font main-col-1"
+              @click="$refs.menu.save(date)"
+            >
               OK
             </v-btn>
           </v-date-picker>
@@ -90,6 +106,7 @@
             v-if="menu2"
             v-model="time"
             full-width
+            color="var(--main-col-1)"
             @click:minute="$refs.menu2.save(time)"
             format="24hr"
           ></v-time-picker>
@@ -130,7 +147,7 @@ export default {
   data() {
     return {
       meetingname: null,
-      date: null,
+      date: new Date().toISOString().substring(0, 10),
       menu: null,
       time: null,
       menu2: null,
