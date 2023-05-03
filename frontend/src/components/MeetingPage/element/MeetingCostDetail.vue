@@ -31,8 +31,22 @@
                 calculate.fileName
                 width="100%"
               />
-            </div></div
-        ></v-sheet>
+            </div>
+          </div>
+        </v-sheet>
+        <div class="mt-3 d-flex justify-center align-center">
+          <v-btn color="var(--main-col-1)" rounded dark @click="closeDialog()"
+            >닫기</v-btn
+          >
+          <v-btn
+            class="ml-2"
+            id="square-big-btn"
+            color="var(--main-col-1)"
+            rounded
+          >
+            <v-icon color="white">$vuetify.icons.delete_outline</v-icon>
+          </v-btn>
+        </div>
       </v-card-title>
     </v-card>
   </v-dialog>
