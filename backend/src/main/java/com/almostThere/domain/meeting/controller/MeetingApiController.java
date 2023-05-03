@@ -37,7 +37,7 @@ public class MeetingApiController {
 
 //        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
         MeetingTimeDto meetingTimeDto = meetingService.getMostRecentMeeting(1L);
-        
+
         return BaseResponse.success(meetingTimeDto);
 
     }

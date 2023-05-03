@@ -23,9 +23,7 @@ export default {
   name: "App",
 
   data() {
-    return {
-      hasMeetingsWithin3hours: false,
-    };
+    return {};
   },
 
   beforeCreate() {
@@ -33,20 +31,25 @@ export default {
       console.log("getMostRecentMeeting response", res);
       if (res != null) {
         const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const day = String(now.getDate()).padStart(2, "0");
-        const hours = String(now.getHours()).padStart(2, "0");
-        const minutes = String(now.getMinutes()).padStart(2, "0");
-        const seconds = String(now.getSeconds()).padStart(2, "0");
-
-        const formattedTime = new Date(
-          `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-        );
         const meetingTime = new Date(res.meetingTime);
-        const diffTime = meetingTime.getTime() - formattedTime.getTime();
 
-        setTimeout(this.connectHandler, diffTime);
+        console.log("now: ", now);
+        console.log("meetingTime :", meetingTime);
+        console.log("now < meetingTime: ", now < meetingTime);
+        if (now < meetingTime) {
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, "0");
+          const day = String(now.getDate()).padStart(2, "0");
+          const hours = String(now.getHours()).padStart(2, "0");
+          const minutes = String(now.getMinutes()).padStart(2, "0");
+          const seconds = String(now.getSeconds()).padStart(2, "0");
+
+          const formattedTime = new Date(
+            `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+          );
+          const diffTime = meetingTime.getTime() - formattedTime.getTime();
+          setTimeout(this.connectHandler, diffTime);
+        }
       }
     });
   },
@@ -61,7 +64,7 @@ export default {
     connectHandler() {
       const access_token = localStorage.getItem("Authorization");
 
-      if (access_token && this.hasMeetingsWithin3hours) {
+      if (access_token) {
         console.log("connect");
         this.connect();
       }
