@@ -152,7 +152,7 @@ export default {
       // console.dir(member);
       this.startPlace = member.startPlace;
       this.startAddress = member.startAddress;
-      this.spentMoney = member.spentMoney;
+      this.spentMoney = member.spentMoney === null ? 0 : member.spentMoney;
       this.lateTotal =
         member.state == "LATE"
           ? this.meeting.lateAmount === null
