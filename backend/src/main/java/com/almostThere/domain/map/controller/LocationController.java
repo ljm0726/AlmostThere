@@ -66,6 +66,12 @@ public class LocationController {
         }
 
     }
+
+    /**
+     * 모임방의 참가자들의 위치를 조회한다. (redis에서 조회함)
+     * @param meetingId, memberId
+     * @return
+     */
     /*
         유저가 위치값을 보낸 적이 없어서 redis에 위치 정보가 저장되어 있지 않을 수가 있나?
         위치 정보를 언제부터 전송하지.? 자신이 속한 모임 중 약속시간이 3시간 이내로 남은 모임이 있으면 전송
