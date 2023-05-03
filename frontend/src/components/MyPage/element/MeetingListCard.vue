@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="d-flex align-center">
+  <v-sheet class="d-flex align-center mr-4">
     <v-timeline align-top dense style="margin-left: -20px">
       <v-timeline-item
         v-for="(meeting, index) in meetings"
@@ -7,7 +7,7 @@
         :color="colorSet[index % colorSet.length].color"
         small
       >
-        <div>
+        <div style="margin-left: -8%">
           <v-card>
             <div :class="`${colorSet[index % colorSet.length].bgColor}`">
               <v-app-bar flat color="rgba(0, 0, 0, 0)">
@@ -49,17 +49,15 @@
           </v-card>
         </div>
       </v-timeline-item>
+      <!-- 무한스크롤 감지 -->
+      <infinite-loading @infinite="infiniteHandler"></infinite-loading>
     </v-timeline>
-    <!-- 무한스크롤 감지 -->
-    <!-- <div
-      v-infinite-scroll="loadMore"
-      infinite-scroll-disabled="loading"
-      infinite-scroll-distance="10"
-    ></div> -->
   </v-sheet>
 </template>
 
 <script>
+import InfiniteLoading from "vue-infinite-loading";
+
 export default {
   name: "MeetingListCard",
   props: {
@@ -67,6 +65,9 @@ export default {
       type: Array,
       required: true,
     },
+  },
+  components: {
+    InfiniteLoading,
   },
   data() {
     return {
@@ -90,6 +91,11 @@ export default {
       const meridiem = date.getHours() >= 12 ? "오후" : "오전";
 
       return `${year}년 ${month}월 ${day}일 ${meridiem} ${hour}시 ${minute}분`;
+    },
+    // [@Method] 무한스크롤
+    infiniteHandler() {
+      console.log("# 무한스크롤 감지");
+      // meetings 배열에 추가
     },
   },
 };
