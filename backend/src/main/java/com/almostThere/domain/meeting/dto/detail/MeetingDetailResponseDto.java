@@ -1,10 +1,11 @@
 package com.almostThere.domain.meeting.dto.detail;
 
 import com.almostThere.domain.meeting.entity.Meeting;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,11 +22,14 @@ public class MeetingDetailResponseDto {
     private Integer lateAmount;
     private LocalDateTime regDate;
     private String roomCode;
+    private String startPlace;
+    private String startAddress;
+    private Integer spentMoney;
     private List<MeetingMemberResponseDto> meetingMembers;
-    private List<MeetingCalculateDetailDto> meetingCalculateDetails;
+    private List<MeetingCalculateDetailDto> calculateDetails;
 
-    public MeetingDetailResponseDto(Meeting meeting
-        , List<MeetingMemberResponseDto> meetingMembers, List<MeetingCalculateDetailDto> meetingCalculateDetails) {
+    public MeetingDetailResponseDto(Meeting meeting, String startPlace, String startAddress, Integer spentMoney
+        , List<MeetingMemberResponseDto> meetingMembers, List<MeetingCalculateDetailDto> calculateDetails) {
         this.hostId = meeting.getHost().getId();
         this.meetingId = meeting.getId();
         this.meetingName = meeting.getMeetingName();
@@ -37,7 +41,10 @@ public class MeetingDetailResponseDto {
         this.lateAmount = meeting.getLateAmount();
         this.regDate = meeting.getRegdate();
         this.roomCode = meeting.getRoomCode();
+        this.startPlace = startPlace;
+        this.startAddress = startAddress;
+        this.spentMoney = spentMoney;
         this.meetingMembers = meetingMembers;
-        this.meetingCalculateDetails = meetingCalculateDetails;
+        this.calculateDetails = calculateDetails;
     }
 }
