@@ -124,7 +124,7 @@ export default {
             placeMap.set("addr", this.address);
             console.log(placeMap);
             this.updateHalfway(placeMap);
-            // this.$router.push("/place");
+            this.$router.push("/place");
           });
         });
       } else {

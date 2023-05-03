@@ -16,18 +16,36 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
+import { getcntMeetingsWithin3hours } from "@/api/modules/meeting.js";
 
 export default {
   name: "App",
 
-  mounted() {
-    const access_token = localStorage.getItem("Authorization");
-    if (access_token) {
-      this.connect();
-    }
+  data() {
+    return {
+      hasMeetingsWithin3hours: false,
+    };
+  },
+
+  beforeCreate() {
+    getcntMeetingsWithin3hours().then((res) => {
+      console.log("getcntMeetingsWithin3hours response", res);
+      if (res == true) {
+        this.hasMeetingsWithin3hours = true;
+        this.connectHandler();
+      }
+    });
   },
 
   methods: {
+    connectHandler() {
+      const access_token = localStorage.getItem("Authorization");
+      console.log("hasMeetingsWithin3hours", this.hasMeetingsWithin3hours);
+      if (access_token && this.hasMeetingsWithin3hours) {
+        console.log("connect");
+        this.connect();
+      }
+    },
     connect() {
       const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
       let socket = new SockJS(serverURL);
@@ -103,7 +121,9 @@ export default {
 @import "@/assets/styles/override/button.css";
 @import "@/assets/styles/override/icon.css";
 @import "@/assets/styles/override/dialog.css";
+@import "@/assets/styles/override/infinite_scroll.css";
 @import "@/assets/styles/override/badge.css";
+@import "@/assets/styles/override/swiper.css";
 @import "@/assets/styles/box/box_shadow.css";
 @import "@/assets/styles/box/box_border.css";
 

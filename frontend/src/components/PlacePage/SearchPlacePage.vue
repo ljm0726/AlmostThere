@@ -117,8 +117,9 @@ export default {
             placeMap.set("y", y);
             placeMap.set("name", this.place);
             placeMap.set("addr", this.address);
-            this.openDialog(); // SearchPlacePage2를 닫음
-            this.$emit("place-selected", this.placeMap); // 이벤트를 발생시켜 부모 컴포넌트로 선택한 장소 정보 전달
+            this.updatePlace(placeMap);
+            this.$router.push("/place");
+
             // console.log(
             //   "x,y좌표는 ",
             //   child.attributes["data-x"].value,

@@ -21,45 +21,49 @@
         <span class="regular-font md-font">중간 위치를 추천 받아보세요!</span>
       </v-card-title>
 
-      <div
-        v-for="(start, index) in starts"
-        :key="index"
-        class="input-container"
-      >
-        <input
-          class="search-box2"
-          :value="
-            start
-              ? `${index + 1}. ` + start.get('name')
-              : `${index + 1}. 출발지를 입력하세요!`
-          "
-          @click="goToSearchPage(`${index + 1}`)"
-          readonly
-        />
-        <div class="img-container">
-          <img
-            v-if="index > 1"
-            src="@/assets/images/dialog/close_btn_small.png"
-            class="close-btn-small"
-            alt=""
-            @click="cancelStart(index)"
+      <div class="input-container" ref="inputContainer">
+        <div v-for="(start, index) in starts" :key="index" class="input-list">
+          <input
+            class="search-box2"
+            :value="
+              start
+                ? `${index + 1}. ` + start.get('name')
+                : `${index + 1}. 출발지를 입력하세요!`
+            "
+            @click="goToSearchPage(`${index + 1}`)"
+            readonly
           />
+          <div class="img-container">
+            <img
+              v-if="index > 1"
+              src="@/assets/images/dialog/close_btn_small.png"
+              class="close-btn-small"
+              alt=""
+              @click="cancelStart(index)"
+            />
+          </div>
         </div>
       </div>
 
-      <div style="align-self: center; margin: 2% 0" @click="plusStart">
+      <div style="align-self: center; margin: 4% 0" @click="plusStart">
         <img
           src="@/assets/images/dialog/Plus.png"
-          style="margin-bottom: 10%; float: left"
+          style="margin-bottom: 8%; float: left"
           alt=""
         />
         출발지 추가하기
       </div>
 
-      <v-card-text>
+      <v-card-text style="overflow: visible">
         <v-row>
           <v-col class="search_halfway">
-            <v-btn elevation="0" color="var(--main-col-1)" dark rounded block
+            <v-btn
+              elevation="0"
+              color="var(--main-col-1)"
+              dark
+              rounded
+              block
+              @click="findHalfway"
               >중간 위치 찾기</v-btn
             >
           </v-col>
@@ -83,6 +87,7 @@ export default {
       starts: [null, null],
       isSearchPage: false,
       selectedPlace: {},
+      size: 0,
     };
   },
   computed: {
@@ -95,7 +100,7 @@ export default {
   watch: {
     dialog() {
       if (!this.dialog) {
-        localStorage.removeItem("findHalfwayModal");
+        sessionStorage.removeItem("findHalfwayModal");
       }
     },
   },
@@ -105,12 +110,12 @@ export default {
       "addPlaceList",
       "removePlaceList",
     ]),
-    ...mapActions("halfwayStore", ["removePlaceList"]),
+    ...mapActions("halfwayStore", ["removePlaceList", "addMiddlePlace"]),
     openDialog() {
       this.dialog = true;
     },
     closeDialog() {
-      localStorage.removeItem("findHalfwayModal");
+      sessionStorage.removeItem("findHalfwayModal");
       this.dialog = false;
     },
 
@@ -128,13 +133,93 @@ export default {
     },
 
     plusStart() {
-      console.log("@@@");
-      this.starts.push(null);
+      console.log("@@@", this.starts.length);
+      if (this.starts.length > 9) {
+        alert("최대 10명 까지 가능 합니다! ");
+      } else {
+        this.starts.push(null);
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 100);
+      }
     },
 
     cancelStart(index) {
       this.removePlaceList(index);
       // this.starts.splice(index, 1);
+    },
+
+    scrollToBottom() {
+      const inputContainer = this.$refs.inputContainer;
+      inputContainer.scrollTo({
+        top: inputContainer.scrollHeight - inputContainer.clientHeight,
+        behavior: "smooth", // 부드러운 애니메이션 적용
+      });
+    },
+
+    combine(arr, k) {
+      const result = [];
+
+      function dfs(start, comb) {
+        if (comb.length === k) {
+          result.push(comb.slice());
+          return;
+        }
+
+        for (let i = start; i < arr.length; i++) {
+          comb.push(arr[i]);
+          dfs(i + 1, comb);
+          comb.pop();
+        }
+      }
+
+      dfs(0, []);
+      return result;
+    },
+
+    findHalfway() {
+      for (let i = 0; i < this.starts.length; i++) {
+        if (this.starts[i] == null) {
+          alert("출발지를 입력하세요!");
+          return;
+        }
+      }
+      this.size = this.startPlaces.length;
+
+      const combinations = [];
+      for (let i = 1; i <= this.size; i++) {
+        const result = this.combine(this.startPlaces, i);
+        combinations.push(...result);
+      }
+
+      // console.log("combi: ", combinations);
+
+      const middlePlace = [];
+      combinations.forEach((combination) => {
+        let xSum = 0;
+        let ySum = 0;
+        combination.forEach((place) => {
+          xSum += parseFloat(place.get("x"));
+          ySum += parseFloat(place.get("y"));
+        });
+        const middleX = xSum / (combination.length * 1.0);
+        const middleY = ySum / (combination.length * 1.0);
+        console.log("Sum: ", xSum, ySum);
+        middlePlace.push({ middleX, middleY });
+      });
+      console.log("middle: ", middlePlace);
+      let middleAvergeX = 0;
+      let middleAvergeY = 0;
+      middlePlace.forEach((place) => {
+        middleAvergeX += place.middleX;
+        middleAvergeY += place.middleY;
+      });
+      middleAvergeX /= middlePlace.length;
+      middleAvergeY /= middlePlace.length;
+
+      console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
+      this.addMiddlePlace({ middleAvergeX, middleAvergeY });
+      this.dialog = false;
     },
   },
 };
@@ -143,7 +228,7 @@ export default {
 <style scoped>
 .search-box2 {
   box-sizing: border-box;
-  /* width: 85%; */
+  width: 85%;
   height: 33px;
   background: #ffffff;
   border: 1px solid #092a49;
@@ -157,9 +242,6 @@ export default {
   /* align-self: center; */
   margin: 2% 0;
 }
-.search_halfway {
-  margin-bottom: 5px;
-}
 
 /* input::placeholder {
   font-style: var(--regular-font);
@@ -168,14 +250,14 @@ export default {
 span {
   line-height: 18px;
 }
-input {
-}
-.input-container {
+.input-list {
+  position: relative;
   text-align: center;
   width: 100%;
 }
 .input-container {
-  position: relative;
+  overflow-y: auto;
+  max-height: 200px;
 }
 
 .img-container {

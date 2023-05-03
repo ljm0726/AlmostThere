@@ -1,19 +1,15 @@
 package com.almostThere.domain.meeting.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import com.almostThere.domain.meeting.dto.create.CalculateDetailRequestDto;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CalculateDetail {
 
     @Id
@@ -39,4 +35,13 @@ public class CalculateDetail {
 
     @Column(nullable = false)
     private int price;
+
+    public CalculateDetail(CalculateDetailRequestDto dto, String filePath, String fileName, Meeting meeting) {
+        this.meeting = meeting;
+        this.type = CalculateType.RECEIPT;
+        this.filePath = filePath;
+        this.fileName = fileName;
+        this.storeName = dto.getStoreName();
+        this.price = dto.getPrice();
+    }
 }

@@ -2,17 +2,16 @@ package com.almostThere.domain.meeting.entity;
 
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.user.entity.Member;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.*;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -53,8 +52,8 @@ public class Meeting {
     @Column(nullable = false)
     private LocalDateTime regdate;
 
-    @Column(nullable = false)
-    private int roomCode;
+    @Column(nullable = false, length = 10)
+    private String roomCode;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "meeting")
     private List<MeetingMember> meetingMembers = new ArrayList<>();
@@ -64,7 +63,7 @@ public class Meeting {
 
     @Builder
     public Meeting(Member host, String meetingName,String meetingPlace,String meetingAddress
-        , double meetingLat,double meetingLng, LocalDateTime meetingTime, int roomCode, Integer lateAmount, LocalDateTime regdate) {
+        , double meetingLat,double meetingLng, LocalDateTime meetingTime, String roomCode, Integer lateAmount, LocalDateTime regdate) {
         this.meetingName = meetingName;
         this.meetingTime = meetingTime;
         this.meetingPlace = meetingPlace;
