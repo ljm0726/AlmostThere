@@ -13,27 +13,18 @@ async function meetingRegister(
   success,
   fail
 ) {
-  const Authorization = "Bearer " + localStorage.getItem("Authorization");
   console.log(" at ", id, name, date_time, place, address, lat, lng);
   await api
-    .post(
-      `/meeting`,
-      {
-        hostId: id,
-        meetingName: name,
-        meetingTime: date_time,
-        meetingPlace: place,
-        meetingAddress: address,
-        meetingLat: lat,
-        meetingLng: lng,
-        roomCode: "",
-      },
-      {
-        headers: {
-          Authorization: Authorization,
-        },
-      }
-    )
+    .post(`/meeting`, {
+      hostId: id,
+      meetingName: name,
+      meetingTime: date_time,
+      meetingPlace: place,
+      meetingAddress: address,
+      meetingLat: lat,
+      meetingLng: lng,
+      roomCode: "",
+    })
     .then(success)
     .catch(fail);
 }

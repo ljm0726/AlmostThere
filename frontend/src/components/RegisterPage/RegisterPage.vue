@@ -140,6 +140,8 @@
 <script>
 // 추가해야할 부분 -> 현재 시간 이전을 설정하면 불가능하게
 import { mapActions, mapState } from "vuex";
+import { getMostRecentMeeting } from "@/api/modules/meeting.js";
+
 // const meetingStore = "meetingStore";
 
 export default {
@@ -164,6 +166,7 @@ export default {
       "meeting_time",
       "place_name",
       "place_addr",
+      "recent_meeting",
     ]),
   },
   watch: {
@@ -181,7 +184,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("meetingStore", ["register"]),
+    ...mapActions("meetingStore", ["register", "setMeeting"]),
     ...mapActions("meetingStore", [
       "SET_MEETING_NAME",
       "SET_MEETING_DATE",
@@ -189,7 +192,6 @@ export default {
     ]),
 
     setMeetingName() {
-      console.log(this.meetingname);
       this.SET_MEETING_NAME(this.meetingname);
     },
     setMeetingDate() {
@@ -220,7 +222,28 @@ export default {
 
         console.log(meeting_name, " ", date_time);
 
-        this.register({ meeting_name, date_time, place_name, place_addr });
+        this.register({ meeting_name, date_time, place_name, place_addr }).then(
+          () => {
+            getMostRecentMeeting().then((res) => {
+              const newRecentMeeting = res;
+              const savedRecentMeeting = this.recent_meeting;
+
+              console.log("newRecentMeeting ", newRecentMeeting);
+              // console.log(
+              //   "saveRecentMeeting.meetingTime ",
+              //   savedRecentMeeting.meetingTime
+              // );
+
+              if (
+                savedRecentMeeting == null ||
+                savedRecentMeeting.meetingTime > newRecentMeeting.meetingTime
+              ) {
+                console.log("새로 등록한 미팅이 더 빠름");
+                this.setMeeting(newRecentMeeting);
+              }
+            });
+          }
+        );
       }
     },
 

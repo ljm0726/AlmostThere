@@ -40,6 +40,7 @@ const meetingStore = {
     SET_RECENT_MEETING(state, recent_meeting) {
       console.log(recent_meeting);
       state.recent_meeting = recent_meeting;
+      console.log("# meeting set 확인: ", recent_meeting);
     },
   },
   actions: {
@@ -80,6 +81,10 @@ const meetingStore = {
     },
     SET_MEETING_TIME({ commit }, meeting_time) {
       commit("SET_MEETING_TIME", meeting_time);
+    },
+    //
+    setMeeting({ commit }, meeting) {
+      commit("SET_RECENT_MEETING", meeting);
     },
   },
 };
