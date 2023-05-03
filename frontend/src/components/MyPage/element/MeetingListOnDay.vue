@@ -32,7 +32,9 @@ export default {
       this.getOnDayMeetings();
     },
   },
-  created() {},
+  created() {
+    this.getOnDayMeetings();
+  },
   methods: {
     getOnDayMeetings() {
       const onDayMeeting = [];
