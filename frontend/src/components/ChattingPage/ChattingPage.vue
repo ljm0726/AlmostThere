@@ -225,7 +225,7 @@ export default {
   },
   data() {
     return {
-      memberId: 1, // 현재 로그인 돼 있는 사용자 아이디
+      memberId: null, // 현재 로그인 돼 있는 사용자 아이디
       message: "", // 작성한 메세지 내용
       chatList: [], // 채팅 리스트
       meetingName: null, // 미팅 제목
@@ -256,6 +256,8 @@ export default {
         this.meetingName = await info.meetingName;
         // 멤버 정보
         this.members = await info.chattingMemberMap;
+        // 로그인한 멤버 정보
+        this.memberId = await info.memberId;
         // 채팅 기록
         this.chatList =
           await info.chattingListDto.chattingDetailDtoList.reverse();
@@ -315,7 +317,7 @@ export default {
       if (this.stompClient && this.connected) {
         this.stompClient.send(
           `/message/receive/${this.roomCode}`,
-          this.message,
+          JSON.stringify({ message: this.message, memberId: this.memberId }),
           {}
         );
       }

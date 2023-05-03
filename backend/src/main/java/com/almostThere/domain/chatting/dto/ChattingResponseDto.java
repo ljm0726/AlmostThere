@@ -17,6 +17,9 @@ public class ChattingResponseDto {
     // 모임 코드
     private String roomCode;
 
+    // 멤버 ID
+    private Long memberId;
+
     // 모임 이름
     private String meetingName;
     
