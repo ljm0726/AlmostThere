@@ -1,13 +1,13 @@
 <template>
   <v-sheet class="d-flex align-center mr-4">
-    <v-timeline align-top dense style="margin-left: -20px">
+    <v-timeline align-top dense style="margin-left: -25px">
       <v-timeline-item
         v-for="(meeting, index) in onDayMeetings"
         :key="meeting.id"
         :color="colorSet[index % colorSet.length].color"
         small
       >
-        <div style="margin-left: -8%">
+        <div style="margin-left: -12%; width: 115%">
           <v-card>
             <div :class="`${colorSet[index % colorSet.length].bgColor}`">
               <v-app-bar flat color="rgba(0, 0, 0, 0)">
