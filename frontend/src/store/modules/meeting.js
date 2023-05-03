@@ -12,7 +12,11 @@ const meetingStore = {
     place_addr: null,
     recent_meeting: null,
   },
-  getters: {},
+  getters: {
+    GET_RECENT_MEETING: function (state) {
+      return state.recent_meeting;
+    },
+  },
   mutations: {
     SET_MEETING_NAME(state, meeting_name) {
       state.meeting_name = meeting_name;

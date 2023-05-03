@@ -80,7 +80,7 @@ public class LocationController {
             .get(memberId);
         UserLocation userLocation = new UserLocation(Long.parseLong(memberId), memberNickname,
             new double[]{lat, lng});
-
+    
         long expiretime = 0;
         if (findUserLocation != null) {
             expiretime = redisTemplateForLocation.getExpire(memberId);
