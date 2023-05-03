@@ -38,6 +38,15 @@ async function meetingRegister(
     .catch(fail);
 }
 
+async function getMeeting(meetingId) {
+  var result = null;
+  await api.post("/meeting/detail", { memberId: 1, meetingId: meetingId }).then((res) => {
+    result = res.data.data;
+  });
+  return await Promise.resolve(result);
+}
+
+
 async function getTodayMeetings() {
   var result = null;
   await api.get("/meeting/today").then((res) => {
@@ -109,13 +118,14 @@ async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
     .post(`/meeting-calculate/detail`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
-    .then((res) => {
+    .then(async (res) => {
       console.log(res);
     });
 }
 
 export {
   meetingRegister,
+  getMeeting,
   getTodayMeetings,
   getUpcomingMeetings,
   getcntMeetingsWithin3hours,
