@@ -3,6 +3,8 @@ package com.almostThere.domain.user.service;
 import com.almostThere.domain.meeting.dto.MeetingCntDto;
 import com.almostThere.domain.meeting.entity.MeetingCnt;
 import com.almostThere.domain.meeting.repository.MeetingCntRepository;
+import com.almostThere.domain.user.dto.MemberDto;
+import com.almostThere.domain.user.dto.MemberInfoDto;
 import com.almostThere.domain.user.entity.Member;
 import com.almostThere.domain.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,5 +29,14 @@ public class MemberService {
         Page<MeetingCnt> bestMember = meetingCntRepository.findBymyMemberOrderByCntDesc(member, PageRequest.of(0, 9));
         List<MeetingCntDto> result = bestMember.stream().map(m -> new MeetingCntDto(m)).collect(Collectors.toList());
         return result;
+    }
+
+    /**
+     * 회원 ID로 Member 객체 가져오기
+     * @param memberId
+     * @return Member 회원 Entity
+     */
+    public MemberDto getMemberByMemberId(Long memberId) {
+        return new MemberDto(memberRepository.findByid(memberId));
     }
 }

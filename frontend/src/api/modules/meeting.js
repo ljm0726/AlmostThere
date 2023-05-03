@@ -38,6 +38,15 @@ async function meetingRegister(
     .catch(fail);
 }
 
+async function getMeeting(meetingId) {
+  var result = null;
+  await api.post("/meeting/detail", { memberId: 1, meetingId: meetingId }).then((res) => {
+    result = res.data.data;
+  });
+  return await Promise.resolve(result);
+}
+
+
 async function getTodayMeetings() {
   var result = null;
   await api.get("/meeting/today").then((res) => {
@@ -80,10 +89,47 @@ async function getBestMember() {
   return await Promise.resolve(result);
 }
 
+async function postReceiptInfo(receipt) {
+  var result = null;
+
+  var formData = new FormData();
+  formData.append("receipt", receipt);
+
+  await api
+    .post(`/meeting-calculate/receipt`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then(async (res) => {
+      if (res.data.statusCode == 200) {
+        result = res.data.data;
+      }
+    })
+    .catch();
+  return await Promise.resolve(result);
+}
+
+async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
+  var formData = new FormData();
+  formData.append("meetingId", meetingId);
+  formData.append("receipt", receipt);
+  formData.append("storeName", storeName);
+  formData.append("price", totalPrice);
+  await api
+    .post(`/meeting-calculate/detail`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then(async (res) => {
+      console.log(res);
+    });
+}
+
 export {
   meetingRegister,
+  getMeeting,
   getTodayMeetings,
   getUpcomingMeetings,
   getcntMeetingsWithin3hours,
   getBestMember,
+  postReceiptInfo,
+  saveCalculateDetail,
 };

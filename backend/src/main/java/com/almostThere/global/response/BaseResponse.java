@@ -16,6 +16,7 @@ public class BaseResponse<T> {
     private final static String INVALID_ACCESS_TOKEN = "유효하지 않은 access token.";
     private final static String INVALID_REFRESH_TOKEN = "유효하지 않은 refresh token.";
     private final static String NOT_EXPIRED_TOKEN_YET = "만료되지 않은 토큰 입니다";
+    private final static String INVALID_FILE = "유효하지 않은 파일 형식입니다.";
     private final int statusCode;
     private final String message;
     private final T data;
@@ -41,4 +42,9 @@ public class BaseResponse<T> {
     public static <T> BaseResponse<T> notExpiredTokenYet() {
         return new BaseResponse(FAILED, NOT_EXPIRED_TOKEN_YET, null);
     }
+
+    public static <T> BaseResponse<T> invalidFile() {
+        return new BaseResponse(FAILED, INVALID_FILE, null);
+    }
+
 }

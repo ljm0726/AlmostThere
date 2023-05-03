@@ -10,13 +10,16 @@ import lombok.NoArgsConstructor;
 public class MeetingCalculateDetailDto {
 
     private Long calculateDetailId;
+    private String fileName;
     private Long meetingId;
     private CalculateType type;
     private String storeName;
     private int price;
 
+
     public MeetingCalculateDetailDto(CalculateDetail calculateDetail) {
         this.calculateDetailId = calculateDetail.getId();
+        this.fileName = calculateDetail.getFileName();
         this.meetingId = calculateDetail.getMeeting().getId();
         this.type = calculateDetail.getType();
         this.storeName = calculateDetail.getStoreName();

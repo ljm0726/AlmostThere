@@ -1,24 +1,16 @@
 package com.almostThere.domain.meeting.controller;
 
-import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
+import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
+import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
-import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.service.MeetingService;
-import com.almostThere.domain.user.dto.MemberAccessDto;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -77,8 +69,9 @@ public class MeetingApiController {
      * @param meetingDetailRequestDto
      * @return 모임 상세정보를 조회한다.
      */
-    @GetMapping
+    @PostMapping("/detail")
     public BaseResponse getMeetingDetail(@RequestBody MeetingDetailRequestDto meetingDetailRequestDto){
+        System.out.println("모임 상세 조회: "+meetingDetailRequestDto.getMeetingId()+" "+meetingDetailRequestDto.getMemberId());
         MeetingDetailResponseDto meetingDetailResponseDto = meetingService.getMeetingDetail(meetingDetailRequestDto);
         return BaseResponse.success(meetingDetailResponseDto);
     }
