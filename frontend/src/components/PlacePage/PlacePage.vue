@@ -8,7 +8,7 @@
       placeholder=" 모임장소를 검색하세요"
       v-on:click="goToPage('/search')"
     />
-    <ul id="category">
+    <ul v-show="isRecommend" id="category">
       <li id="SW8" @click="onClickCategory">
         <v-icon class="category_icon" id="SW8" @click="onClickCategory"
           >mdi mdi-subway-variant</v-icon
