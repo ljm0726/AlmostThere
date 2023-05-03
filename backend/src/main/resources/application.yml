@@ -93,8 +93,6 @@ spring:
               - profile_nickname
               - account_email
               - profile_image
-              - gender
-              - age_range
             client_name: kakao
         provider:
           kakao:

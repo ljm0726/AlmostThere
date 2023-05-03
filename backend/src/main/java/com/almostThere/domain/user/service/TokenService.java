@@ -144,7 +144,6 @@ public class TokenService {
 
             throw new AccessDeniedException(ErrorCode.EXPIRED_ACCESSTOKEN.getMessage());
         } catch (SignatureException | MalformedJwtException e) {
-            ((HttpServletResponse) response).sendError(401, "SignatureException error");
             throw new AccessDeniedException(ErrorCode.NOT_AUTHENTICATION.getMessage());
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
