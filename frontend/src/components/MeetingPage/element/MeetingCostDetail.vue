@@ -27,8 +27,7 @@
             </v-row>
             <div class="mt-3 d-flex justify-center align-center">
               <img
-                src="https://k8a401.p.ssafy.io/almostthere/"
-                calculate.fileName
+                :src="`https://k8a401.p.ssafy.io/almostthere/${calculate.fileName}`"
                 width="100%"
               />
             </div>
