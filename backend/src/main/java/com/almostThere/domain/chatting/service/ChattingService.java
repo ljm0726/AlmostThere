@@ -163,7 +163,7 @@ public class ChattingService {
         // 꺼내야 하는 개수
         int default_num = 20;
         // meetingId에 해당하는 채팅의 크기 확인
-        Long redisSize = listOperations.size(roomCode);
+        Long redisSize = listOperations.size("chat:"+roomCode);
         // MySQL에 저장된 값 가져오기
         Long mysqlSize = chattingRepository.countByMeeting_Id(meetingId);
         // 전체 개수
@@ -181,7 +181,7 @@ public class ChattingService {
 
             // Redis에 저장된 값으로 충분한 경우
             if (redisIdx >= default_num) {
-                chattingDetailDtoList.addAll(listOperations.range(roomCode, redisIdx - default_num + 1, redisIdx).stream()
+                chattingDetailDtoList.addAll(listOperations.range("chat:"+roomCode, redisIdx - default_num + 1, redisIdx).stream()
                         .map(m -> new ChattingDetailDto(m, roomCode))
                         .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
                         .reversed()).collect(Collectors.toList()));
@@ -190,7 +190,7 @@ public class ChattingService {
             
             // Redis에 저장된 값으로 충분하지 않나, Redis에 저장된 값도 가져와야 하는 경우
             else {
-                chattingDetailDtoList.addAll(listOperations.range(roomCode, 0, redisIdx).stream()
+                chattingDetailDtoList.addAll(listOperations.range("chat:"+roomCode, 0, redisIdx).stream()
                         .map(m -> new ChattingDetailDto(m, roomCode))
                         .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
                         .reversed()).collect(Collectors.toList()));
