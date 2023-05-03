@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 public class ChattingDto implements Serializable {
 
+    private static final long serialVersionUID = 2L;
+
     // 채팅 입력한 멤버 ID
     private Long memberId;
     
@@ -17,5 +19,7 @@ public class ChattingDto implements Serializable {
     private String message;
     
     // 채팅 입력 일시
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime chattingTime;
 }

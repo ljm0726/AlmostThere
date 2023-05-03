@@ -81,22 +81,19 @@ public class ChattingService {
      * **/
 //    @Scheduled(cron = "0 0 0/1 * * *") // 1시간 주기
 //    @Scheduled(cron = "0 0/10 * * * *") // 10분 주기
-//    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
+    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
     @Transactional
     public void addChattingMysql() {
-        System.out.println("# Scheduled 실행 #");
+        System.out.println("# 채팅 MySQL 저장 Scheduled 실행 #");
 
         // key 가져오기
         // 성능 향상 위해 keys() 대신 scan() 사용
         ScanOptions scanOptions = ScanOptions.scanOptions().build();
         Cursor<String> cursor = redisTemplateForChatting.scan(scanOptions);
         ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
+        List<String> keys = cursor.stream().collect(Collectors.toList());
 
-        // 가져온 key를 반복하며 각 key에 있는 값 MySQL에 저장하기
-        while (cursor.hasNext()) {
-
-            // key 값 여기 오류 남
-            String key = cursor.next();
+        for (String key : keys) {
 
             // redis에서 key 해당하는 모든 값 가져오기
             Long size = listOperations.size(key);
@@ -104,7 +101,7 @@ public class ChattingService {
             // 값이 1개 이상 있는 경우
             if (size > 0) {
                 List<ChattingDto> chattingDtoList = listOperations.range(key, 0, listOperations.size(key));
-                
+
                 // roomCode로 meetingId 가져오기
                 Optional<Meeting> meetingOptional = meetingRepository.findByRoomCode(key);
                 if (!meetingOptional.isPresent()) throw new AccessDeniedException(ErrorCode.MEETING_NOT_FOUND);
@@ -119,6 +116,36 @@ public class ChattingService {
 //                for (int i=0; i<size; i++) listOperations.leftPop(key);
             }
         }
+
+        // 가져온 key를 반복하며 각 key에 있는 값 MySQL에 저장하기
+//        while (cursor.hasNext()) {
+//            System.out.println(">>> "+ cursor.next());
+////            System.out.println(">>> " + cursor.next().toString().getClass());
+//
+//            // key 값 여기 오류 남
+//            String key = new String();
+//
+//            // redis에서 key 해당하는 모든 값 가져오기
+//            Long size = listOperations.size(key);
+//
+//            // 값이 1개 이상 있는 경우
+//            if (size > 0) {
+//                List<ChattingDto> chattingDtoList = listOperations.range(key, 0, listOperations.size(key));
+//
+//                // roomCode로 meetingId 가져오기
+//                Optional<Meeting> meetingOptional = meetingRepository.findByRoomCode(key);
+//                if (!meetingOptional.isPresent()) throw new AccessDeniedException(ErrorCode.MEETING_NOT_FOUND);
+//
+//                // mysql에 저장 - batchInsert 여러 행을 한 번에 넣기
+//                // 48초에 10만 건
+//                // 성능 관련 참고자료 https://datamoStringney.tistory.com/319
+//                chattingJDBCRepository.batchInsert(chattingDtoList, meetingOptional.get().getId());
+//
+//                // 가져온 값 redis에서 삭제
+//                 listOperations.leftPop(key, size); //Redis 버전 호환 불가
+////                for (int i=0; i<size; i++) listOperations.leftPop(key);
+//            }
+//        }
     }
 
     /**
