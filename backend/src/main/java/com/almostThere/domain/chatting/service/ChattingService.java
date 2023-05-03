@@ -206,7 +206,7 @@ public class ChattingService {
 
             // MySQL에서 Pagination으로 page번째 값 가져오기
             PageRequest pageRequest = PageRequest.of(page, default_num);
-            Page<Chatting> chattingPage = chattingRepository.findAllByMeeting_IdOrderByChattingTimeDesc(meetingId, pageRequest);
+            Page<Chatting> chattingPage = chattingRepository.findAllByMeeting_IdOrderByChattingTimeDescIdDesc(meetingId, pageRequest);
 
             // MySQL에서 가져온 리스트
             List<ChattingDetailDto> chattingDetailDtos = chattingPage.getContent().stream().map(m -> new ChattingDetailDto(m)).collect(Collectors.toList());
