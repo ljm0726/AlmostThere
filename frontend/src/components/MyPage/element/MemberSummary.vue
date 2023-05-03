@@ -79,10 +79,7 @@ export default {
 <style scoped>
 .image-container {
   position: absolute;
-  margin-left: 50%;
-  margin-top: -31%;
-  /* top: 100;
-  right: 0;
-  margin-right: 2rem; */
+  margin-left: 45%;
+  margin-top: -33%;
 }
 </style>
