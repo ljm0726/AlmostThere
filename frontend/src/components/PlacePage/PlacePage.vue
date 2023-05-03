@@ -8,26 +8,24 @@
       placeholder=" 모임장소를 검색하세요"
       v-on:click="goToPage('/search')"
     />
-    <div v-if="this.middlePlace.middleAvergeX != null && !this.isSelect">
-      <ul id="category">
-        <li id="SW8" @click="onClickCategory">
-          <span class="category_bg subway"></span>
-          지하철역
-        </li>
-        <li id="FD6" @click="onClickCategory">
-          <span class="category_bg food"></span>
-          음식점
-        </li>
-        <li id="CE7" @click="onClickCategory">
-          <span class="category_bg cafe"></span>
-          카페
-        </li>
-        <li id="CT1" @click="onClickCategory">
-          <span class="category_bg culture"></span>
-          문화시설
-        </li>
-      </ul>
-    </div>
+    <ul v-show="isRecommend" id="category">
+      <li id="SW8" @click="onClickCategory">
+        <span class="category_bg subway"></span>
+        지하철역
+      </li>
+      <li id="FD6" @click="onClickCategory">
+        <span class="category_bg food"></span>
+        음식점
+      </li>
+      <li id="CE7" @click="onClickCategory">
+        <span class="category_bg cafe"></span>
+        카페
+      </li>
+      <li id="CT1" @click="onClickCategory">
+        <span class="category_bg culture"></span>
+        문화시설
+      </li>
+    </ul>
     <v-btn class="find-place-btn" @click="findHalfway()"
       ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
     >
@@ -62,6 +60,7 @@ export default {
       markers: [],
       placeOverlay: null,
       contentNode: null,
+      isRecommend: false,
     };
   },
 
@@ -77,7 +76,7 @@ export default {
       if (this.middlePlace != null) {
         // 1. 검색한게 있으면 false 처리
         this.isSelect = false;
-
+        this.isRecommend = true;
         // 2. 출발지 좌표 찍기
         var positions = [];
         var bounds = new window.kakao.maps.LatLngBounds();
@@ -100,61 +99,11 @@ export default {
           );
         }
 
-        // 3. 중간좌표
-        // var mp = new Map();
-        // mp.set("title", "중간지점");
-        // mp.set(
-        //   "latlng",
-        //   new window.kakao.maps.LatLng(
-        //     this.middlePlace.middleAvergeY,
-        //     this.middlePlace.middleAvergeX
-        //   )
-        // );
-        // positions.push(mp);
-
-        // 4. 중간 좌표 검색해서 찍기
-        this.placeOverlay = new window.kakao.maps.CustomOverlay({ zIndex: 1 });
-        this.contentNode = document.createElement("div"); // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
-
-        this.ps = new window.kakao.maps.services.Places(this.map);
-
-        window.kakao.maps.event.addListener(
-          this.map,
-          "idle",
-          this.searchPlaces
-        );
-        this.contentNode.className = "placeinfo_wrap";
-        this.addEventHandle(
-          this.contentNode,
-          "mousedown",
-          window.kakao.maps.event.preventMap
-        );
-        this.addEventHandle(
-          this.contentNode,
-          "touchstart",
-          window.kakao.maps.event.preventMap
-        );
-
-        this.placeOverlay.setContent(this.contentNode);
-
-        // this.addCategoryClickEvent();
-
-        // var center = new window.kakao.maps.LatLng(
-        //   this.middlePlace.middleAvergeY,
-        //   this.middlePlace.middleAvergeX
-        // ); // 현재 지도 중심 좌표를 가져옵니다
-
-        // var radius = 5000; // 검색 반경을 5km로 설정합니다
-        // this.ps.categorySearch("sw8", this.placesSearchCB, {
-        //   location: center,
-        //   radius: radius,
-        //   useMapBounds: false,
-        // });
-
         if (this.startMarker) this.startMarker.setMap(null);
         if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
         for (var i = 0; i < positions.length; i++) {
           // 마커를 생성합니다
+          console.log("생성?");
           this.startMarker = new window.kakao.maps.Marker({
             map: this.map, // 마커를 표시할 지도
             position: positions[i].get("latlng"), // 마커를 표시할 위치
@@ -162,6 +111,15 @@ export default {
           });
         }
         this.map.setBounds(bounds);
+
+        this.placeOverlay = new window.kakao.maps.CustomOverlay({ zIndex: 1 });
+        this.contentNode = document.createElement("div"); // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
+        this.contentNode.className = "placeinfo_wrap";
+        this.placeOverlay.setContent(this.contentNode);
+
+        this.ps = new window.kakao.maps.services.Places();
+
+        this.searchPlaces();
       }
     },
   },
@@ -175,11 +133,15 @@ export default {
       this.loadScript();
     }
 
-    if (this.placeX !== null) this.isSelect = true;
-    else this.isSelect = false;
+    if (this.placeX !== null) {
+      this.isSelect = true;
+      this.isRecommend = false;
+    } else this.isSelect = false;
     if (this.placeX !== null) {
       // map의 marker를 다 지운다, 아래 displayMarker에서 뺴옴
-      // if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
+      if (this.startMarker) this.startMarker.setMap(null);
+      if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
+
       var bounds = new window.kakao.maps.LatLngBounds();
       bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
       this.current.lng = this.placeX;
@@ -352,21 +314,7 @@ export default {
         useMapBounds: false,
       });
     },
-    addCategoryClickEvent() {
-      var category = document.getElementById("category"),
-        children = category.children;
 
-      for (var i = 0; i < children.length; i++) {
-        children[i].onclick = this.onClickCategory;
-      }
-    },
-    addEventHandle(target, type, callback) {
-      if (target.addEventListener) {
-        target.addEventListener(type, callback);
-      } else {
-        target.attachEvent("on" + type, callback);
-      }
-    },
     //----------------------------------------------------------------------
 
     findHalfway() {
@@ -407,6 +355,7 @@ export default {
       this.geocoder = new window.kakao.maps.services.Geocoder();
     },
     displayMarker(y, x) {
+      console.log("마커찌그러오나?");
       if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
       // 마커를 생성하고 지도에 표시합니다
       this.curIntroduceMarker = new window.kakao.maps.Marker({
@@ -447,8 +396,8 @@ export default {
   margin-left: -1px;
 }
 #category li:last-child {
-  margin-right: 1;
-  border-right: 1;
+  margin-right: 0;
+  border-right: 0;
 }
 #category li span {
   margin: 0 auto 3px;
