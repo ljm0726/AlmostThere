@@ -5,10 +5,10 @@
       <template v-slot:default>
         <tbody>
           <tr
-            v-for="(calculate, index) in calculates"
+            v-for="(calculate, index) in calculateDetails"
             :key="index"
             class="d-flex flex-row justify-space-between align-center"
-            @click="showDetailModel(index)"
+            @click="showDetailModel(calculate)"
             style="cursor: pointer"
           >
             <td
@@ -31,26 +31,25 @@
         </tbody>
       </template>
     </v-simple-table>
+    <meeting-cost-detail ref="detail"></meeting-cost-detail>
     <v-divider class="mb-1"></v-divider>
     <div class="d-flex flex-row justify-space-between">
       <span class="px-1 pb-1 medium-font sm-font">합계</span>
       <span class="px-1 pb-1 medium-font sm-font"
-        >{{ total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}원</span
+        >{{ String(total).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}원</span
       >
     </div>
     <div class="d-flex flex-row justify-space-between">
       <span class="px-1 light-font sm-font">지각비</span>
       <span class="px-1 light-font sm-font"
-        >{{
-          lateTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-        }}원</span
+        >{{ String(lateTotal).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}원</span
       >
     </div>
     <v-divider class="my-1"></v-divider>
     <div class="d-flex flex-row justify-space-between">
       <span class="px-1 bold-font sm-font">내가 내야 하는 금액</span>
       <span class="px-1 bold-font sm-font"
-        >{{ myTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}원</span
+        >{{ String(spentMoney).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}원</span
       >
     </div>
     <v-btn class="my-3" color="var(--main-col-1)" dark rounded @click="open()">
@@ -133,7 +132,6 @@
         >
       </v-sheet>
     </vue-bottom-sheet>
-    <meeting-cost-detail></meeting-cost-detail>
   </v-sheet>
 </template>
 
@@ -144,14 +142,17 @@ import { postReceiptInfo, saveCalculateDetail } from "@/api/modules/meeting.js";
 export default {
   name: "MeetingCost",
   props: {
-    meetingId: Object,
+    calculateDetails: Array,
+    lateTotal: Number,
+    spentMoney: Number,
   },
   methods: {
     open() {
       this.$refs.costSheet.open();
     },
-    showDetailModel(index) {
-      index;
+    showDetailModel(calculate) {
+      this.$refs.detail.changeCalculate(calculate);
+      this.$refs.detail.openDialog();
     },
     addCalculateDetail() {
       saveCalculateDetail(
@@ -160,6 +161,8 @@ export default {
         this.storeName,
         this.totalPrice
       );
+      this.$router.go(this.$router.currentRoute);
+      console.log("새로고침");
     },
   },
   components: {
@@ -191,27 +194,20 @@ export default {
   data() {
     return {
       imageLoading: false,
-      calculates: [
-        {
-          storeName: "스타벅스",
-          price: 1590000,
-        },
-        {
-          storeName: "빽다방",
-          price: 237000,
-        },
-        {
-          storeName: "투썸플레이스",
-          price: 26200,
-        },
-      ],
-      total: 10000,
-      lateTotal: 100000,
+      total: null,
       myTotal: 10000,
       receipt: null,
       storeName: null,
       totalPrice: 0,
     };
+  },
+  created() {
+    console.log(this.calculateDetails);
+    this.total = this.calculateDetails.reduce(
+      (accumulator, current) => accumulator + current.price,
+      0
+    );
+    console.log(this.total);
   },
 };
 </script>

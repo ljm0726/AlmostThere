@@ -7,14 +7,14 @@
         class="my-2 py-2 d-flex justify-center detail-border main-col-1 sm-font"
         rounded="lg"
       >
-        2023년 04월 04일
+        {{ meetingTime | formatDate }}
       </v-sheet>
       <v-sheet
         width="49%"
         class="my-2 py-2 d-flex justify-center detail-border main-col-1 sm-font"
         rounded="lg"
       >
-        오후 15시 30분
+        {{ meetingTime | formatTime }}
       </v-sheet>
     </v-sheet>
   </v-sheet>
@@ -26,6 +26,31 @@ export default {
   props: {
     meetingTime: String,
     meetingDate: String,
+  },
+  filters: {
+    formatDate(value) {
+      const date = new Date(value);
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const day = date.getDate();
+
+      const result = `${year}년 ${
+        month + 1 < 10 ? `0${month + 1}` : month + 1
+      }월 ${day < 10 ? `0${day}` : day}일`;
+      return result;
+    },
+    formatTime(value) {
+      const date = new Date(value);
+      const hour = date.getHours();
+      const min = date.getMinutes();
+      const result = `
+      ${
+        hour < 13
+          ? ` 오전 ${hour - 12 < 10 ? `0${hour - 12}` : hour - 12}`
+          : ` 오후 ${hour - 12 < 10 ? `0${hour - 12}` : hour - 12}`
+      }시 ${min < 10 ? `0${min}` : min}분`;
+      return result;
+    },
   },
 };
 </script>

@@ -17,8 +17,8 @@
       class="my-1 py-3 px-4 d-flex flex-column justify-center detail-border main-col-1"
       rounded="lg"
     >
-      <span class="sm-font">{{ startPlace }}</span>
-      <span class="thin-font xxs-font">({{ startAddress }})</span>
+      <span class="sm-font">{{ startPlace | formatPlace }}</span>
+      <span class="thin-font xxs-font">{{ startAddress | formatAddress }}</span>
     </v-sheet>
   </v-sheet>
 </template>
@@ -29,6 +29,16 @@ export default {
   props: {
     startPlace: String,
     startAddress: String,
+  },
+  filters: {
+    formatPlace(value) {
+      console.log("장소: " + value);
+      if (value === null) return "출발지를 설정하지 않았습니다.";
+    },
+    formatAddress(value) {
+      console.log("주소: " + value);
+      if (value === null) return "";
+    },
   },
 };
 </script>
