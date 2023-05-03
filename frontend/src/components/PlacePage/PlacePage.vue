@@ -8,22 +8,26 @@
       placeholder=" 모임장소를 검색하세요"
       v-on:click="goToPage('/search')"
     />
-    <ul v-show="isRecommend" id="category">
+    <ul id="category">
       <li id="SW8" @click="onClickCategory">
-        <span class="category_bg subway"></span>
-        지하철역
+        <v-icon class="category_icon" id="SW8" @click="onClickCategory"
+          >mdi mdi-subway-variant</v-icon
+        >
       </li>
       <li id="FD6" @click="onClickCategory">
-        <span class="category_bg food"></span>
-        음식점
+        <v-icon class="category_icon" id="FD6" @click="onClickCategory"
+          >mdi mdi-silverware-fork-knife</v-icon
+        >
       </li>
       <li id="CE7" @click="onClickCategory">
-        <span class="category_bg cafe"></span>
-        카페
+        <v-icon class="category_icon" id="CE7" @click="onClickCategory"
+          >mdi mdi-coffee</v-icon
+        >
       </li>
       <li id="CT1" @click="onClickCategory">
-        <span class="category_bg culture"></span>
-        문화시설
+        <v-icon class="category_icon" id="CT1" @click="onClickCategory"
+          >mdi mdi-movie-play</v-icon
+        >
       </li>
     </ul>
     <v-btn class="find-place-btn" @click="findHalfway()"
@@ -61,6 +65,7 @@ export default {
       placeOverlay: null,
       contentNode: null,
       isRecommend: false,
+      currentMarker: null,
     };
   },
 
@@ -174,20 +179,13 @@ export default {
       }
     },
     onClickCategory(e) {
-      var id = e.target.id,
-        className = this.className;
+      var id = e.target.id;
 
       this.placeOverlay.setMap(null);
 
-      if (className === "on") {
-        this.currCategory = "";
-        this.changeCategoryClass();
-        this.removeMarker();
-      } else {
-        this.currCategory = id;
-        this.changeCategoryClass(e);
-        this.searchPlaces();
-      }
+      this.currCategory = id;
+      // this.changeCategoryClass(e);
+      this.searchPlaces();
     },
     displayPlaceInfo(place) {
       var content =
@@ -277,7 +275,13 @@ export default {
         // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
         (function (marker, p) {
           window.kakao.maps.event.addListener(marker, "click", function () {
-            self.displayPlaceInfo(p);
+            if (marker == self.currentMarker) {
+              self.currentMarker = null;
+              self.placeOverlay.setMap(null);
+            } else {
+              self.currentMarker = marker;
+              self.displayPlaceInfo(p);
+            }
           });
         })(marker, place[i]);
       }
@@ -370,10 +374,13 @@ export default {
 <style>
 #category {
   position: absolute;
-  top: 7.5%;
+  top: 7.3%;
   left: 2%;
+  border-radius: 20px;
+  border: 1px solid #909090;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
   background: #fff;
+  overflow: hidden;
   z-index: 2;
   list-style: none;
   padding: 0;
@@ -382,44 +389,19 @@ export default {
 #category li {
   float: left;
   list-style: none;
+  width: 40px;
   border-right: 1px solid #acacac;
-  padding: 6px 0;
+  padding: 2.9%;
   text-align: center;
   cursor: pointer;
 }
-#category li.on {
-  background: #eee;
-}
+
 #category li:hover {
   background: #ffe6e6;
   border-left: 1px solid #acacac;
   margin-left: -1px;
 }
-#category li:last-child {
-  margin-right: 0;
-  border-right: 0;
-}
-#category li span {
-  margin: 0 auto 3px;
-  width: 27px;
-  height: 28px;
-}
 
-#category li .subway {
-  background-position: -10px 0;
-}
-#category li .food {
-  background-position: -10px -36px;
-}
-#category li .cafe {
-  background-position: -10px -144px;
-}
-#category li .culture {
-  background-position: -10px -180px;
-}
-#category li.on .category_bg {
-  background-position-x: -46px;
-}
 .placeinfo_wrap {
   position: absolute;
   bottom: 28px;
@@ -473,8 +455,8 @@ export default {
   margin: -1px -1px 0 -1px;
   padding: 10px;
   color: #fff;
-  background: #d95050;
-  background: #d95050
+  background: #092a49;
+  background: #092a49
     url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png)
     no-repeat right 14px center;
 }
@@ -488,6 +470,9 @@ export default {
 }
 </style>
 <style scoped>
+.category_icon {
+  z-index: 100;
+}
 .place-info {
   z-index: 2;
   position: absolute;
