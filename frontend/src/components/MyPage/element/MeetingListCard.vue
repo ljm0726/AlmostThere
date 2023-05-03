@@ -7,11 +7,11 @@
         :color="colorSet[index % colorSet.length].color"
         small
       >
-        <div style="margin-left: -12%; width: 115%; max-width:  width: 115%;">
+        <div style="margin-left: -12%; width: 115%">
           <v-card>
             <div :class="`${colorSet[index % colorSet.length].bgColor}`">
               <v-app-bar flat color="rgba(0, 0, 0, 0)">
-                <v-toolbar-title class="light-font white--text ml-3">{{
+                <v-toolbar-title class="light-font white--text ml-1">{{
                   meeting.meetingName
                 }}</v-toolbar-title>
                 <v-spacer></v-spacer>
