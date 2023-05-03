@@ -48,7 +48,7 @@ public class MemberController {
      * @return
      */
     @GetMapping("/info")
-    public BaseResponse getMemberPageInfo() {
+    public BaseResponse getMemberPageInfo(HttpServletRequest request) {
         logger.info("#[MemberController]# getMemberPageInfo - 마이페이지 회원정보 조회 동작");
 
         // ! 추후 token을 활용해 memeberId 추출
