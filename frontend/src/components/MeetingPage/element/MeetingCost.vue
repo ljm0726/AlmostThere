@@ -63,53 +63,74 @@
         </span>
         <v-file-input
           v-model="receipt"
-          class="py-5"
-          accept="image/png, image/jpeg, image/bmp"
+          class="pt-5 mb-2"
+          accept="image/png, image/jpeg, image/jpg"
           placeholder="영수증 사진을 첨부해 주세요."
           prepend-icon="mdi-camera"
-          dense
         ></v-file-input>
-        {{ imageUrl }}
-        {{ receipt }}
-        <img :src="imageUrl" />
-        <v-row class="d-flex align-center">
-          <v-col
-            cols="2"
-            class="d-flex flex-row justify-space-between medium-font main-col-1"
-          >
-            <span>상</span>
-            <span>호</span>
-            <span>명</span>
-          </v-col>
-          <v-col>
-            <v-text-field
-              type="number"
-              placeholder="상호명"
-              outlined
-              hide-details
-              dense
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row class="mb-5 d-flex align-center">
-          <v-col
-            cols="2"
-            class="d-flex flex-row justify-space-between medium-font main-col-1"
-          >
-            <span>총</span>
-            <span>액</span>
-          </v-col>
-          <v-col>
-            <v-text-field
-              type="number"
-              placeholder="총액"
-              outlined
-              hide-details
-              dense
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-btn color="var(--main-col-1)" rounded dark>등록</v-btn>
+        <v-sheet
+          v-if="imageLoading"
+          class="mt-5 mb-5 d-flex flex-column justify-center align-center"
+        >
+          <v-progress-circular
+            :size="40"
+            color="var(--main-col-1)"
+            indeterminate
+            class="mb-4"
+          ></v-progress-circular>
+          <span class="point-font main-col-1 lg-font">영수증 정보 읽는 중</span>
+        </v-sheet>
+        <div v-else>
+          <div class="d-flex justify-center align-center">
+            <img :src="imageUrl" width="90%" />
+          </div>
+          <v-row class="mt-5 d-flex align-center">
+            <v-col
+              cols="2"
+              class="d-flex flex-row justify-space-between medium-font main-col-1"
+            >
+              <span>상</span>
+              <span>호</span>
+              <span>명</span>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="storeName"
+                type="text"
+                placeholder="상호명"
+                outlined
+                hide-details
+                dense
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row class="mb-5 d-flex align-center">
+            <v-col
+              cols="2"
+              class="d-flex flex-row justify-space-between medium-font main-col-1"
+            >
+              <span>총</span>
+              <span>액</span>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="totalPrice"
+                type="number"
+                placeholder="총액"
+                outlined
+                hide-details
+                dense
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </div>
+        <v-btn
+          color="var(--main-col-1)"
+          rounded
+          dark
+          @click="addCalculateDetail()"
+          >등록</v-btn
+        >
       </v-sheet>
     </vue-bottom-sheet>
     <meeting-cost-detail></meeting-cost-detail>
@@ -118,15 +139,27 @@
 
 <script>
 import MeetingCostDetail from "./MeetingCostDetail.vue";
+import { postReceiptInfo, saveCalculateDetail } from "@/api/modules/meeting.js";
 
 export default {
   name: "MeetingCost",
+  props: {
+    meetingId: Object,
+  },
   methods: {
     open() {
       this.$refs.costSheet.open();
     },
     showDetailModel(index) {
       index;
+    },
+    addCalculateDetail() {
+      saveCalculateDetail(
+        this.meetingId,
+        this.receipt,
+        this.storeName,
+        this.totalPrice
+      );
     },
   },
   components: {
@@ -135,14 +168,29 @@ export default {
   computed: {
     imageUrl() {
       if (this.receipt != null) {
-        return URL.createObjectURL(this.receipt[0]);
+        return URL.createObjectURL(this.receipt);
       } else {
         return null;
       }
     },
   },
+  watch: {
+    async receipt() {
+      this.imageLoading = true;
+      if (this.receipt != null) {
+        postReceiptInfo(this.receipt).then(async (res) => {
+          if (res != null) {
+            this.storeName = await res.storeName;
+            this.totalPrice = await res.totalPrice;
+            this.imageLoading = await false;
+          }
+        });
+      }
+    },
+  },
   data() {
     return {
+      imageLoading: false,
       calculates: [
         {
           storeName: "스타벅스",
@@ -161,6 +209,8 @@ export default {
       lateTotal: 100000,
       myTotal: 10000,
       receipt: null,
+      storeName: null,
+      totalPrice: 0,
     };
   },
 };
