@@ -44,10 +44,19 @@ public class RedisConfig {
     }
 
     @Bean(name = "redisTemplateForChatting")
-    public RedisTemplate<String, ?> redisTemplateForChatting() {
-        RedisTemplate<String, byte[]> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
+    public RedisTemplate<?, ?> redisTemplateForChatting() {
+        RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
+//        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
+
+//    @Bean(name = "redisTemplateForChatting")
+//    public RedisTemplate<String, ChattingDto> redisTemplateForChatting() {
+//        RedisTemplate<String, ChattingDto> redisTemplate = new RedisTemplate<>();
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(ChattingDto.class));
+//        redisTemplate.setConnectionFactory(redisConnectionFactory());
+//        return redisTemplate;
+//    }
 }
