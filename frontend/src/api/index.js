@@ -5,6 +5,7 @@ function apiInstance() {
     baseURL: `${process.env.VUE_APP_API_BASE_URL}`,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
+      Authorization: localStorage.getItem("Authorization"),
     },
   });
 
