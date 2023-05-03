@@ -47,3 +47,10 @@
   height: 13px !important;
   width: 13px !important;
 }
+#round-small-btn.v-btn.v-btn--outlined.theme--light {
+  border-width: 2px;
+}
+#round-small-btn .v-icon__component.theme--light {
+  height: 10px !important;
+  width: 10px !important;
+}

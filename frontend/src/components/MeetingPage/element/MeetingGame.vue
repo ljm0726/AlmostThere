@@ -11,9 +11,27 @@
       <span class="medium-font">돌려돌려 돌림판</span>
     </v-btn>
     <vue-bottom-sheet ref="gameSheet" max-width="500px">
-      <h1>Lorem Ipsum</h1>
-      <h2>What is Lorem Ipsum?</h2>
-      <p><strong>Lorem Ipsum</strong> is simply dummy text</p>
+      <!-- 룰렛 -->
+      <div class="d-flex justify-center align-center">
+        <div class="d-flex flex-row">
+          <div class="d-flex align-center point-font main-col-1 xxxxxl-font">
+            돌려돌려 돌림판
+          </div>
+          <!-- <div class="d-flex align-center justify-center"> -->
+          <div class="d-flex align-center justify-end">
+            <v-btn
+              id="round-small-btn"
+              outlined
+              color="var(--main-col-1)"
+              @click="addOption()"
+              icon
+              x-small
+            >
+              <v-icon color="var(--main-col-1)">$vuetify.icons.plus</v-icon>
+            </v-btn>
+          </div>
+        </div>
+      </div>
     </vue-bottom-sheet>
   </v-sheet>
 </template>
@@ -25,6 +43,8 @@ export default {
     open() {
       this.$refs.gameSheet.open();
     },
+    // [@Method] 룰렛 옵션 추가
+    addOption() {},
   },
 };
 </script>
