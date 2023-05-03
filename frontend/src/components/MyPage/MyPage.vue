@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="loading">로딩 중</div>
-    <div v-else class="ml-6 mr-6">
+    <div v-else class="align-center ml-6 mr-6">
       <member-profile />
       <member-summary />
       <member-calendar />
