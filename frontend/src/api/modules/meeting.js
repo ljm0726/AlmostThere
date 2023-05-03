@@ -80,10 +80,46 @@ async function getBestMember() {
   return await Promise.resolve(result);
 }
 
+async function postReceiptInfo(receipt) {
+  var result = null;
+
+  var formData = new FormData();
+  formData.append("receipt", receipt);
+
+  await api
+    .post(`/meeting-calculate/receipt`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then(async (res) => {
+      if (res.data.statusCode == 200) {
+        result = res.data.data;
+      }
+    })
+    .catch();
+  return await Promise.resolve(result);
+}
+
+async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
+  var formData = new FormData();
+  formData.append("meetingId", meetingId);
+  formData.append("receipt", receipt);
+  formData.append("storeName", storeName);
+  formData.append("price", totalPrice);
+  await api
+    .post(`/meeting-calculate/detail`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then((res) => {
+      console.log(res);
+    });
+}
+
 export {
   meetingRegister,
   getTodayMeetings,
   getUpcomingMeetings,
   getMostRecentMeeting,
   getBestMember,
+  postReceiptInfo,
+  saveCalculateDetail,
 };

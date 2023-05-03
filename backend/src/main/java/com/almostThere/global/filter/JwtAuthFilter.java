@@ -3,8 +3,11 @@ package com.almostThere.global.filter;
 import com.almostThere.domain.user.dto.MemberAccessDto;
 import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.domain.user.service.TokenService;
+import com.almostThere.global.error.ErrorCode;
+import com.almostThere.global.error.exception.AccessDeniedException;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Enumeration;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,10 +39,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String accessTokenHeader = request.getHeader("Authorization");
         log.info("accessToken {} ", accessTokenHeader);
 
+        if(request.getRequestURI().equals("/api/token/tokenReissue")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (accessTokenHeader == null || !accessTokenHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             log.warn("JWT token does not begin with Bearer String");
-            return;
+            throw new AccessDeniedException(ErrorCode.NOT_AUTHENTICATION);
         }
 
         final String accessToken = accessTokenHeader.split(" ")[1].trim();

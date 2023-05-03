@@ -16,7 +16,7 @@ public class MeetingMemberDto {
     private Double startLat;
     private Double startLng;
     private StateType state;
-    private double spentMoney;
+    private Integer spentMoney;
 
     public MeetingMemberDto(MeetingMember m) {
         this.id = m.getId();

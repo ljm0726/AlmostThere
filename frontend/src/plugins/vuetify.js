@@ -25,7 +25,9 @@ import CheckRoundIcon from '@/common/component/icons/CheckRoundIcon.vue'
 import InfoOutlineIcon from '@/common/component/icons/InfoOutlineIcon.vue'
 import MapOutlineIcon from '@/common/component/icons/MapOutlineIcon.vue'
 import CameraOutlineIcon from '@/common/component/icons/CameraOutlineIcon.vue'
+import SendOutlineIcon from '@/common/component/icons/SendOutlineIcon.vue'
 import ChattingOutlineIcon from '@/common/component/icons/ChattingOutlineIcon.vue'
+import ListIcon from '@/common/component/icons/ListIcon.vue'
 
 Vue.use(Vuetify);
 
@@ -104,8 +106,14 @@ export default new Vuetify({
       camera_outline: {
         component: CameraOutlineIcon
       },
+      send_outline: {
+        component: SendOutlineIcon
+      },
       chatting_outline: {
         component: ChattingOutlineIcon
+      },
+      list: {
+        component: ListIcon
       }
     }
   }

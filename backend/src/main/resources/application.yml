@@ -9,6 +9,10 @@ server:
       force: true
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,6 +20,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          batch_size: 10000
+          order_inserts: true
       dialect: org.hibernate.dialect.MySQL8InnoDBDialect
 
   profiles:
@@ -93,8 +100,6 @@ spring:
               - profile_nickname
               - account_email
               - profile_image
-              - gender
-              - age_range
             client_name: kakao
         provider:
           kakao:
