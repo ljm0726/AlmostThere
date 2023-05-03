@@ -152,8 +152,13 @@
                     {{ new Date(item.chattingTime).getMinutes() }}분
                   </span>
                   <span
-                    v-else-if="new Date(item.chattingTime).getHours() >= 12"
+                    v-else-if="new Date(item.chattingTime).getHours() == 12"
                   >
+                    오후
+                    {{ new Date(item.chattingTime).getHours() }}시
+                    {{ new Date(item.chattingTime).getMinutes() }}분
+                  </span>
+                  <span v-else-if="new Date(item.chattingTime).getHours() > 12">
                     오후
                     {{ new Date(item.chattingTime).getHours() - 12 }}시
                     {{ new Date(item.chattingTime).getMinutes() }}분
@@ -362,6 +367,7 @@ export default {
           },
           (error) => {
             console.log("소켓 연결 실패", error);
+            this.$refs.error.openDialog();
             this.updateConnected(false);
           }
         );

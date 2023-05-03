@@ -5,13 +5,6 @@ import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.domain.user.service.TokenService;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +12,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -38,6 +38,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String accessTokenHeader = request.getHeader("Authorization");
         log.info("accessToken {} ", accessTokenHeader);
+
+        if (request.getRequestURI().startsWith("/api/websocket")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if(request.getRequestURI().equals("/api/token/tokenReissue")) {
             filterChain.doFilter(request, response);
