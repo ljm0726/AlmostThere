@@ -13,7 +13,6 @@ import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.Cursor;
@@ -35,7 +34,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChattingService {
 
-    @Autowired
     private final RedisTemplate<String, ChattingDto> redisTemplateForChatting;
 
     private final ChattingRepository chattingRepository;
@@ -73,7 +71,7 @@ public class ChattingService {
 
         // redis에 ChattingDto 저장
         ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
-        listOperations.rightPush(roomCode, chattingDto);
+        listOperations.rightPush("chat:"+roomCode, chattingDto);
 
         return chattingDto;
     }
@@ -86,19 +84,15 @@ public class ChattingService {
     @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
     @Transactional
     public void addChattingMysql() {
-        System.out.println("# Scheduled 실행 #");
 
         // key 가져오기
         // 성능 향상 위해 keys() 대신 scan() 사용
-        ScanOptions scanOptions = ScanOptions.scanOptions().build();
+        ScanOptions scanOptions = ScanOptions.scanOptions().match("chat:*").build();
         Cursor<String> cursor = redisTemplateForChatting.scan(scanOptions);
         ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
+        List<String> keys = cursor.stream().collect(Collectors.toList());
 
-        // 가져온 key를 반복하며 각 key에 있는 값 MySQL에 저장하기
-        while (cursor.hasNext()) {
-
-            // key 값 여기 오류 남
-            String key = cursor.next();
+        for (String key : keys) {
 
             // redis에서 key 해당하는 모든 값 가져오기
             Long size = listOperations.size(key);
@@ -106,9 +100,9 @@ public class ChattingService {
             // 값이 1개 이상 있는 경우
             if (size > 0) {
                 List<ChattingDto> chattingDtoList = listOperations.range(key, 0, listOperations.size(key));
-                
+
                 // roomCode로 meetingId 가져오기
-                Optional<Meeting> meetingOptional = meetingRepository.findByRoomCode(key);
+                Optional<Meeting> meetingOptional = meetingRepository.findByRoomCode(key.substring(5));
                 if (!meetingOptional.isPresent()) throw new AccessDeniedException(ErrorCode.MEETING_NOT_FOUND);
 
                 // mysql에 저장 - batchInsert 여러 행을 한 번에 넣기
@@ -117,8 +111,7 @@ public class ChattingService {
                 chattingJDBCRepository.batchInsert(chattingDtoList, meetingOptional.get().getId());
 
                 // 가져온 값 redis에서 삭제
-                // listOperations.leftPop(key, size); Redis 버전 호환 불가
-                for (int i=0; i<size; i++) listOperations.leftPop(key);
+                 listOperations.leftPop(key, size);
             }
         }
     }
@@ -170,7 +163,7 @@ public class ChattingService {
         // 꺼내야 하는 개수
         int default_num = 20;
         // meetingId에 해당하는 채팅의 크기 확인
-        Long redisSize = listOperations.size(roomCode);
+        Long redisSize = listOperations.size("chat:"+roomCode);
         // MySQL에 저장된 값 가져오기
         Long mysqlSize = chattingRepository.countByMeeting_Id(meetingId);
         // 전체 개수
@@ -188,7 +181,7 @@ public class ChattingService {
 
             // Redis에 저장된 값으로 충분한 경우
             if (redisIdx >= default_num) {
-                chattingDetailDtoList.addAll(listOperations.range(roomCode, redisIdx - default_num + 1, redisIdx).stream()
+                chattingDetailDtoList.addAll(listOperations.range("chat:"+roomCode, redisIdx - default_num + 1, redisIdx).stream()
                         .map(m -> new ChattingDetailDto(m, roomCode))
                         .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
                         .reversed()).collect(Collectors.toList()));
@@ -197,7 +190,7 @@ public class ChattingService {
             
             // Redis에 저장된 값으로 충분하지 않나, Redis에 저장된 값도 가져와야 하는 경우
             else {
-                chattingDetailDtoList.addAll(listOperations.range(roomCode, 0, redisIdx).stream()
+                chattingDetailDtoList.addAll(listOperations.range("chat:"+roomCode, 0, redisIdx).stream()
                         .map(m -> new ChattingDetailDto(m, roomCode))
                         .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
                         .reversed()).collect(Collectors.toList()));
