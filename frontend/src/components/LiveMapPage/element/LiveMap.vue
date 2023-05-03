@@ -337,10 +337,12 @@ export default {
       for (const member of membersLocation) {
         // memberId를 통해 해당 member 찾기
         let memberIndex = -1;
-        for (let i = 0; i < this.memberLocation.length; i++) {
-          if (this.memberLocation[i].memberId == member.memberId) {
-            memberIndex = i;
-            break;
+        if (this.memberLocation != 0) {
+          for (let i = 0; i < this.memberLocation.length; i++) {
+            if (this.memberLocation[i].memberId == member.memberId) {
+              memberIndex = i;
+              break;
+            }
           }
         }
 
