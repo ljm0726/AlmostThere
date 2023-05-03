@@ -55,7 +55,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 /* date-picker calendar 부분 */
 .v-picker {
   flex-direction: row !important;
