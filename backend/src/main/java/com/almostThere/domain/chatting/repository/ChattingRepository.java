@@ -11,5 +11,5 @@ public interface ChattingRepository extends JpaRepository<Chatting, Long> {
 
     Long countByMeeting_Id(Long Id);
 
-    Page<Chatting> findAllByMeeting_IdOrderByChattingTimeDesc(Long id, Pageable pageable);
+    Page<Chatting> findAllByMeeting_IdOrderByChattingTimeDescIdDesc(Long id, Pageable pageable);
 }

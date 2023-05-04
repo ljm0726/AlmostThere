@@ -43,7 +43,7 @@ export default {
       const scrollY = window.scrollY;
       const visible = document.documentElement.clientHeight;
       const pageHeight = document.documentElement.scrollHeight;
-      const bottomOfPage = visible + scrollY + 20 >= pageHeight;
+      const bottomOfPage = visible + scrollY + 40 >= pageHeight;
       this.fab = !(bottomOfPage || pageHeight < visible);
     },
     // [@Method] 맨 위로 가기

@@ -22,10 +22,7 @@ public class ChattingResponseDto {
 
     // 모임 이름
     private String meetingName;
-    
-    // 모임에 해당하는 채팅 리스트
-    private ChattingListDto chattingListDto;
-    
+
     // 모임에 해당하는 멤버 리스트
     private Map<Long, ChattingMemberDto> chattingMemberMap;
 
