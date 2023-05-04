@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import placeInfo from "./placeInfo.vue";
 import HalfwayModal from "./placeModal/HalfwayModal.vue";
 
@@ -166,6 +166,7 @@ export default {
   },
 
   methods: {
+    ...mapActions("placeStore", ["updatePlace"]),
     // 카테고리별 함수
     changeCategoryClass(el) {
       var category = document.getElementById("category"),
@@ -226,11 +227,30 @@ export default {
         "</div>" +
         '<div class="after"></div>';
 
+      var self = this;
       this.contentNode.innerHTML = content;
+      this.contentNode
+        .querySelector("span")
+        .addEventListener("click", function () {
+          self.recommendData(place);
+        });
+      this.placeOverlay.setContent(this.contentNode);
+
       this.placeOverlay.setPosition(
         new window.kakao.maps.LatLng(place.y, place.x)
       );
       this.placeOverlay.setMap(this.map);
+    },
+
+    recommendData(place) {
+      console.log("뭐가찍힘?", place);
+      const placeMap = new Map();
+      placeMap.set("x", place.x);
+      placeMap.set("y", place.y);
+      placeMap.set("name", place.place_name);
+      placeMap.set("addr", place.address_name);
+      this.updatePlace(placeMap);
+      this.$router.push("/register");
     },
 
     removeMarker() {
