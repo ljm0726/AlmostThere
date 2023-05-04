@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.UUID;
 
 @RestController
@@ -98,8 +99,14 @@ public class MeetingCalculateApiController {
 
     @PostMapping("/detail")
     public BaseResponse addCalculateDetail(CalculateDetailRequestDto detailDto) throws IOException {
-        System.out.println(detailDto.getReceipt().getName());
+        System.out.println("정산 내역 추가");
         calculateDetailService.saveCalculateDetail(detailDto);  //정산 내역 저장
+        return BaseResponse.success(null);
+    }
+
+    @DeleteMapping("/{calculateDetailId}")
+    public BaseResponse deleteCalculateDetail(@PathVariable Long calculateDetailId) throws UnknownHostException {
+        calculateDetailService.deleteCalculateDetail(calculateDetailId);
         return BaseResponse.success(null);
     }
 }
