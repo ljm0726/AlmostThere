@@ -347,7 +347,7 @@ export default {
           if (data.statusCode == 200) {
             // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
             await this.chatList.push(data.data);
-            console.log(">> 여기", data.data);
+            // console.log(">> 여기", data.data);
             // 스크롤 맨 아래로 이동
             // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우
             if (

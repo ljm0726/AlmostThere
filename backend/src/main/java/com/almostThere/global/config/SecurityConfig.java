@@ -9,10 +9,8 @@ import com.almostThere.global.filter.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -60,6 +58,8 @@ public class SecurityConfig {
 //
         http.addFilterAfter(new JwtAuthFilter(tokenService, memberRepository),
             OAuth2LoginAuthenticationFilter.class);
+
+        http.headers().frameOptions().sameOrigin();
 
         return http.build();
     }
