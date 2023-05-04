@@ -35,6 +35,29 @@
         <detail-button></detail-button>
       </v-sheet>
     </v-navigation-drawer>
+    <!-- 새로 들어온 채팅 -->
+    <v-snackbar
+      id="chatting-snackbar"
+      v-model="snackbar"
+      color="var(--main-col-1)"
+      style="margin: 0px 0px 65px 5px"
+      min-width="250"
+      width="70%"
+      max-width="400"
+      min-height="0"
+      timeout="5000"
+      outlined
+      elevation="5"
+    >
+      <div class="d-flex flex-column">
+        <span class="light-font" v-if="newMessageMemberId">
+          {{ members[newMessageMemberId].nickname }}
+        </span>
+        <span class="medium-font">
+          {{ newMessage }}
+        </span>
+      </div>
+    </v-snackbar>
     <!-- 채팅 정보를 불러올 수 없는 경우 -->
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
@@ -235,6 +258,9 @@ export default {
       loading: true, // 페이지 로딩 여부
       drawer: null, // 오른쪽 프로필 목록 창
       roomCode: null, // 모임 코드
+      snackbar: false,
+      newMessage: "",
+      newMessageMemberId: null,
     };
   },
   computed: {
@@ -321,6 +347,7 @@ export default {
           if (data.statusCode == 200) {
             // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
             await this.chatList.push(data.data);
+            console.log(">> 여기", data.data);
             // 스크롤 맨 아래로 이동
             // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우
             if (
@@ -329,6 +356,10 @@ export default {
                 document.querySelector("body").scrollHeight
             ) {
               await this.goBottom();
+            } else {
+              this.newMessage = await data.data.message;
+              this.newMessageMemberId = await data.data.memberId;
+              this.snackbar = await true;
             }
           }
         },
