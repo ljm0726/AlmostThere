@@ -71,7 +71,6 @@ public class MeetingApiController {
      */
     @PostMapping("/detail")
     public BaseResponse getMeetingDetail(@RequestBody MeetingDetailRequestDto meetingDetailRequestDto){
-        System.out.println("모임 상세 조회: "+meetingDetailRequestDto.getMeetingId()+" "+meetingDetailRequestDto.getMemberId());
         MeetingDetailResponseDto meetingDetailResponseDto = meetingService.getMeetingDetail(meetingDetailRequestDto);
         return BaseResponse.success(meetingDetailResponseDto);
     }

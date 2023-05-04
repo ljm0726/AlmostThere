@@ -99,7 +99,6 @@ public class MeetingCalculateApiController {
 
     @PostMapping("/detail")
     public BaseResponse addCalculateDetail(CalculateDetailRequestDto detailDto) throws IOException {
-        System.out.println("정산 내역 추가");
         calculateDetailService.saveCalculateDetail(detailDto);  //정산 내역 저장
         return BaseResponse.success(null);
     }
