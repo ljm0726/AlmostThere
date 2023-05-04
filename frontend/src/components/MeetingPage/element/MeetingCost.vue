@@ -156,13 +156,6 @@ export default {
       totalPrice: 0,
     };
   },
-  mounted() {
-    // console.dir(this.calculateDetails);
-    // this.total = this.calculateDetails.reduce(
-    //   (accumulator, current) => accumulator + current.price,
-    //   0
-    // );
-  },
   methods: {
     open() {
       this.$refs.costSheet.open();
@@ -178,8 +171,7 @@ export default {
         this.storeName,
         this.totalPrice
       );
-      // this.$router.go(this.$router.currentRoute);
-      console.log("새로고침");
+      this.$router.go(this.$router.currentRoute);
     },
   },
   components: {
