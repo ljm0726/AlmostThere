@@ -36,7 +36,7 @@
     <halfway-modal ref="halfway"></halfway-modal>
 
     <div id="map" class="maps"></div>
-    <div v-if="isSelect" @click="moveRegisterPage">
+    <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
   </div>
