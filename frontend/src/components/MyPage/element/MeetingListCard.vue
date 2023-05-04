@@ -52,10 +52,7 @@
         </div>
       </v-timeline-item>
       <!-- 무한스크롤 감지 -->
-      <infinite-loading
-        ref="infiniteLoading"
-        @infinite="infiniteHandler"
-      ></infinite-loading>
+      <infinite-loading @infinite="infiniteHandler"></infinite-loading>
     </v-timeline>
   </v-sheet>
 </template>
@@ -66,6 +63,11 @@ import InfiniteLoading from "vue-infinite-loading";
 export default {
   name: "MeetingListCard",
   props: {
+    // 선택한 날짜
+    date: {
+      type: String,
+      required: true,
+    },
     // 선택한 날짜의 all 모임 list
     meetings: {
       type: Array,
@@ -88,12 +90,15 @@ export default {
     };
   },
   watch: {
+    date() {
+      this.resetOnDayMeetings();
+    },
     meetings() {
-      this.initOnDayMeetings();
+      this.resetOnDayMeetings();
     },
   },
   created() {
-    this.initOnDayMeetings();
+    this.resetOnDayMeetings();
   },
   methods: {
     // [@Method] DateTime을 원하는 format으로 변경
@@ -108,14 +113,19 @@ export default {
 
       return `${year}년 ${month}월 ${day}일 ${meridiem} ${hour}시 ${minute}분`;
     },
-    // [@Method] 모임 List 초기 2개 넣기
-    initOnDayMeetings() {
+    // [@Method] 무한 스크롤 초기화 & 모임 List에 2개 push
+    resetOnDayMeetings() {
+      this.infiniteIndex = 0;
+
       const onDayMeeting = [];
+      // 2개 넣기
       if (this.meetings.length > 1) {
         onDayMeeting.push(this.meetings[0]);
         onDayMeeting.push(this.meetings[1]);
         this.infiniteIndex = 1;
-      } else if (this.meetings.length == 1) {
+      }
+      // 2개가 없는 경우 1개 넣기
+      else if (this.meetings.length == 1) {
         onDayMeeting.push(this.meetings[0]);
         this.infiniteIndex = 0;
       }
