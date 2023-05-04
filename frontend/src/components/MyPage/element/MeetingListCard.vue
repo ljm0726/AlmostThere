@@ -23,7 +23,7 @@
               <v-icon>mdi-dots-vertical</v-icon>
             </v-btn>
           </v-card-title>
-          <v-card-text class="pa-3 light-font white xxs-font">
+          <v-card-text class="pa-3 light-font white xxs-font black-col-font">
             <!-- 모임 장소-->
             <div class="mb-1 d-flex align-center">
               <img height="20" src="@/assets/images/page/pointer.png" />
