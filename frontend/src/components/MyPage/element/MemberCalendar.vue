@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="mt-6 align-center" style="width: 100%">
+  <v-sheet class="mt-6 mb-3 align-center" style="width: 100%">
     <v-date-picker
       class="regular-font v-picker"
       locale="ko"
@@ -55,7 +55,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* date-picker calendar 부분 */
 .v-picker {
   flex-direction: row !important;
@@ -64,7 +64,7 @@ export default {
 }
 
 /* date-picker highlight 표시 */
-.v-date-picker-table__events > div {
+::v-deep .v-date-picker-table__events > div {
   border-radius: 25%;
   display: inline-block;
   height: 5.5px;
