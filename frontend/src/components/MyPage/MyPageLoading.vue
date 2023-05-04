@@ -1,5 +1,5 @@
 <template>
-  <v-sheet id="mypage-loading" min-height="100%" class="d-flex flex-column mx-5">
+  <v-sheet id="mypage-loading" class="d-flex flex-column mx-5">
     <div class="d-flex flex-row">
       <v-skeleton-loader
         type="image"
