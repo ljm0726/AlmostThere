@@ -112,7 +112,10 @@
                     chatList[idx - 1].chattingTime.split('T')[1].substr(0, 5)
                 "
               >
-                <img :src="members[item.memberId].profile" alt="John" />
+                <v-img
+                  :src="members[item.memberId].profile"
+                  :alt="members[item.memberId].nickname"
+                ></v-img>
               </v-avatar>
               <!-- 사진 없이 사진 크기와 동일한빈 공간 -->
               <v-sheet v-else class="mr-2" style="padding-left: 34px">
