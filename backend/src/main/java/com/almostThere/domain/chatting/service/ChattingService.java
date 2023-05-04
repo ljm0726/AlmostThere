@@ -161,7 +161,7 @@ public class ChattingService {
         ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
 
         // 꺼내야 하는 개수
-        int default_num = 20;
+        int default_num = 30;
         // meetingId에 해당하는 채팅의 크기 확인
         Long redisSize = listOperations.size("chat:"+roomCode);
         // MySQL에 저장된 값 가져오기
@@ -206,7 +206,7 @@ public class ChattingService {
 
             // MySQL에서 Pagination으로 page번째 값 가져오기
             PageRequest pageRequest = PageRequest.of(page, default_num);
-            Page<Chatting> chattingPage = chattingRepository.findAllByMeeting_IdOrderByChattingTimeDesc(meetingId, pageRequest);
+            Page<Chatting> chattingPage = chattingRepository.findAllByMeeting_IdOrderByChattingTimeDescIdDesc(meetingId, pageRequest);
 
             // MySQL에서 가져온 리스트
             List<ChattingDetailDto> chattingDetailDtos = chattingPage.getContent().stream().map(m -> new ChattingDetailDto(m)).collect(Collectors.toList());
