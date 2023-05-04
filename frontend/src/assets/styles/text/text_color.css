@@ -3,5 +3,5 @@
   color: var(--main-col-1) !important;
 }
 .white-font {
-  color: white;
+  color: white !important;
 }

@@ -1,10 +1,9 @@
 <template>
   <v-sheet
-    class="ml-5 mr-5 pa-13 d-flex flex-column detail-border align-center"
+    class="mb-7 mx-5 d-flex flex-column justify-center detail-border align-center"
     height="140"
-    outlined
     rounded="xl"
   >
-    <div class="point-font main-col-1 xxxxl-font">모임이 없는 날입니다.</div>
+    <div class="point-font main-col-1 xxxl-font">모임이 없는 날입니다.</div>
   </v-sheet>
 </template>

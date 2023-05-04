@@ -6,28 +6,28 @@
   font-size: 11px;
 }
 .xxxs-font {
-  font-size: 12px;
+  font-size: 12px !important;
 }
 .xxs-font {
-  font-size: 13px;
+  font-size: 13px !important;
 }
 .xs-font {
   font-size: 14px !important;
 }
 .sm-font {
-  font-size: 15px;
+  font-size: 15px !important;
 }
 .md-font {
-  font-size: 16px;
+  font-size: 16px !important;
 }
 .lg-font {
-  font-size: 17px;
+  font-size: 17px !important;
 }
 .xl-font {
-  font-size: 18px;
+  font-size: 18px !important;
 }
 .xxl-font {
-  font-size: 19px;
+  font-size: 19px !important;
 }
 .xxxl-font {
   font-size: 20px;
