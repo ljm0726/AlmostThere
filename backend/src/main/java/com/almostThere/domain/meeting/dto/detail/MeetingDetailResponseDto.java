@@ -22,13 +22,11 @@ public class MeetingDetailResponseDto {
     private Integer lateAmount;
     private LocalDateTime regDate;
     private String roomCode;
-    private String startPlace;
-    private String startAddress;
-    private Integer spentMoney;
+    private int remain;
     private List<MeetingMemberResponseDto> meetingMembers;
     private List<MeetingCalculateDetailDto> calculateDetails;
 
-    public MeetingDetailResponseDto(Meeting meeting, String startPlace, String startAddress, Integer spentMoney
+    public MeetingDetailResponseDto(Meeting meeting, int remain
         , List<MeetingMemberResponseDto> meetingMembers, List<MeetingCalculateDetailDto> calculateDetails) {
         this.hostId = meeting.getHost().getId();
         this.meetingId = meeting.getId();
@@ -41,9 +39,7 @@ public class MeetingDetailResponseDto {
         this.lateAmount = meeting.getLateAmount();
         this.regDate = meeting.getRegdate();
         this.roomCode = meeting.getRoomCode();
-        this.startPlace = startPlace;
-        this.startAddress = startAddress;
-        this.spentMoney = spentMoney;
+        this.remain = remain;
         this.meetingMembers = meetingMembers;
         this.calculateDetails = calculateDetails;
     }

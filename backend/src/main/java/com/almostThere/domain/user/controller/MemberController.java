@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.Inet4Address;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -69,7 +68,7 @@ public class MemberController {
         //      - 누적 x번 약속 중 y번 지각
         Integer totalLateCnt = 0;
         //      - 지난달 모임에서 150,000원 소비
-        Double lastMonthTotalSpentMoney = 0.0;
+        int lastMonthTotalSpentMoney = 0;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (AttendMeetingMemberDto meeting: meetings) {
             LocalDateTime meetingTime = LocalDateTime.parse(meeting.getMeetingDto().getMeetingTime(), formatter);

@@ -114,7 +114,7 @@ export default new Vuetify({
       },
       list: {
         component: ListIcon
-      }
+      },
     }
   }
 });

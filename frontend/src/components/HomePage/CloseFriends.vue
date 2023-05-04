@@ -58,8 +58,6 @@ export default {
   created() {
     getBestMember().then((res) => {
       this.members = res;
-      console.log("자주 만나는 친구");
-      console.dir(this.members);
     });
   },
 };

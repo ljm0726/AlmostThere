@@ -1,38 +1,35 @@
 <template>
-  <v-sheet class="my-2 d-flex flex-row align-center">
+  <v-sheet class="mx-5 d-flex flex-row align-center">
     <!-- 회원 프로필 -->
-    <v-card style="border-radius: 18px" elevation="0">
+    <v-card rounded="xl" elevation="0">
       <v-img
         class="align-end"
-        height="90"
-        width="90"
-        gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+        height="80"
+        width="80"
         :src="this.member.memberProfileImg"
       >
       </v-img>
     </v-card>
-    <div class="ml-5 xxxxl-font thin-font">
-      안녕하세요!
+    <div class="ml-4 xl-font thin-font semi2narrow-font">
+      <span>안녕하세요!</span>
       <div>
-        <span class="bold-font main-col-1">{{
-          this.member.memberNickname
-        }}</span
-        >님
+        <span class="bold-font main-col-1">
+          {{ this.member.memberNickname }}
+        </span>
+        <span>님</span>
       </div>
       <!-- 로그아웃 -->
-      <div>
-        <v-btn
-          style="font-size: 12px"
-          color="var(--main-col-1)"
-          dark
-          rounded
-          small
-          @click="logout()"
-        >
-          로그아웃
-        </v-btn>
-        <logout-dialog ref="logout"></logout-dialog>
-      </div>
+      <v-btn
+        class="px-4 mt-1"
+        color="var(--main-col-1)"
+        dark
+        rounded
+        x-small
+        @click="logout()"
+      >
+        로그아웃
+      </v-btn>
+      <logout-dialog ref="logout"></logout-dialog>
     </div>
   </v-sheet>
 </template>

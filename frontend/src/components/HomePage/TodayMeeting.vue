@@ -87,8 +87,6 @@ export default {
   },
   created() {
     getTodayMeetings().then((res) => {
-      console.log("오늘의 모임");
-      console.log(res);
       this.meetings = res;
     });
   },

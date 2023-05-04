@@ -15,7 +15,7 @@ public class MeetingMemberResponseDto {
     private String memberProfileImg;
     private String startPlace;
     private String startAddress;
-    private Integer spentMoney;
+    private int spentMoney;
     private StateType state;
 
     public MeetingMemberResponseDto(MeetingMember meetingMember) {
