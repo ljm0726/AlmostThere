@@ -88,12 +88,12 @@ export default {
     open() {
       this.$refs.gameSheet.open();
     },
-    // [@Method] 룰렛 옵션 추가
+    // [@Method] 룰렛 option 추가
     addOption() {
       // 옵션 최대 개수 10개로 제한
       if (this.options.length < 10) this.options.push("");
     },
-    // [@Method] options 삭제
+    // [@Method] 룰렛 option 삭제
     removeOption(index) {
       this.options.splice(index, 1);
     },
