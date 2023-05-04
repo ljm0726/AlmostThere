@@ -14,10 +14,6 @@
       <button id="submit_btn" @click.prevent="getSearchResult"></button>
     </form>
     <div id="list" class="lists" v-show="isListOpen"></div>
-
-    <v-btn class="find-place-btn"
-      ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
-    >
   </div>
 </template>
 
@@ -174,7 +170,7 @@ export default {
 <style lang="scss">
 .lists {
   overflow: scroll;
-  margin-top: 25%;
+  margin-top: 13%;
 }
 .resident_items {
   position: relative;
