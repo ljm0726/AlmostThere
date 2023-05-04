@@ -188,13 +188,15 @@ export default {
       }
     },
     onClickCategory(e) {
-      var id = e.target.id;
+      if (e.target.id != this.currCategory) {
+        var id = e.target.id;
 
-      this.placeOverlay.setMap(null);
-
-      this.currCategory = id;
-      // this.changeCategoryClass(e);
-      this.searchPlaces();
+        this.placeOverlay.setMap(null);
+        this.resetPolylines();
+        this.currCategory = id;
+        // this.changeCategoryClass(e);
+        this.searchPlaces();
+      }
     },
     displayPlaceInfo(place) {
       var content =
