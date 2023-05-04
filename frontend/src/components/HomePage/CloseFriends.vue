@@ -9,7 +9,10 @@
       <swiper-slide v-for="(member, idx) in members" :key="idx">
         <v-sheet class="d-flex flex-row">
           <v-avatar rounded="lg" size="77">
-            <img :src="member.friend.memberProfileImg" alt="John" />
+            <v-img
+              :src="member.friend.memberProfileImg"
+              :alt="member.friend.memberNickname"
+            ></v-img>
           </v-avatar>
           <div class="d-flex flex-row justify-center align-center">
             <span class="mb-1 mx-5 point-font xxxl-font">{{ idx + 1 }}</span>
