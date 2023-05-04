@@ -69,6 +69,7 @@ export default {
       contentNode: null,
       isRecommend: false,
       currentMarker: null,
+      polylines: [],
     };
   },
 
@@ -82,6 +83,8 @@ export default {
     // 나중에 장소 추천지 있으면 여기에 추천장소 마커 추가해야함.
     middlePlace() {
       if (this.middlePlace != null) {
+        this.resetPolylines();
+
         // 1. 검색한게 있으면 false 처리
         this.isSelect = false;
         this.isRecommend = true;
@@ -133,6 +136,8 @@ export default {
   },
 
   mounted() {
+    this.resetPolylines();
+
     if (window.kakao && window.kakao.maps) {
       // 카카오 객체가 있고, 카카오 맵 그릴 준비가 되어 있다면 맵 실행
       this.loadMap();
@@ -260,94 +265,7 @@ export default {
       );
       this.placeOverlay.setMap(this.map);
     },
-    findCarWay(place) {
-      console.log("뭐가찍힘?", place.place_name, place.x, place.y);
-      const REST_API_KEY = `${process.env.VUE_APP_KAKAO_CAR_WAY_KEY}`;
-      console.log(REST_API_KEY);
-      const destination = `${place.x},${place.y}`; // 목적지
 
-      console.log(destination);
-      this.startPlaces[0].get("x");
-      this.startPlaces[0].get("x");
-
-      const waypoints = "";
-      const priority = "RECOMMEND";
-      const car_fuel = "GASOLINE";
-      const car_hipass = false;
-      const alternatives = false;
-      const road_details = false;
-
-      const placeCnt = this.startPlaces.length;
-
-      console.log(placeCnt);
-
-      // const car_routes = [];
-
-      Promise.all(
-        this.startPlaces.map((element) => {
-          const origin = element.get("x") + "," + element.get("y");
-          return axios
-            .get(`https://apis-navi.kakaomobility.com/v1/directions`, {
-              params: {
-                origin,
-                destination,
-                waypoints,
-                priority,
-                car_fuel,
-                car_hipass,
-                alternatives,
-                road_details,
-              },
-              headers: {
-                Authorization: `KakaoAK ${REST_API_KEY}`,
-              },
-            })
-            .then((response) => {
-              const guides = response.data.routes[0].sections[0].guides;
-              const car_route = guides.map((element) => {
-                return new window.kakao.maps.LatLng(
-                  Number(element.y),
-                  Number(element.x)
-                );
-              });
-              car_route.color = element.get("color"); // 색상 저장
-              return car_route;
-            })
-            .catch((error) => {
-              console.log(error);
-              return []; // 에러 발생시 빈 배열 반환
-            });
-        })
-      ).then((car_routes) => {
-        const path_color = [
-          "#0000FF",
-          "#8A2BE2",
-          "#A52A2A",
-          "#DEB887",
-          "#5F9EA0",
-          "#7FFF00",
-          "#D2691E",
-          "#008B8B",
-          "#9400D3",
-          "#FF69B4",
-        ];
-        for (var i = 0; i < car_routes.length; i++) {
-          //
-          //
-          var item = car_routes[i];
-          var polyline = new window.kakao.maps.Polyline({
-            path: item,
-            strokeWeight: 5,
-            strokeColor: path_color[i],
-            strokeOpacity: 1,
-            strokeStyle: "solid",
-          });
-          polyline.setMap(this.map);
-        }
-      });
-
-      this.closeOveray();
-    },
     recommendData(place) {
       console.log("뭐가찍힘?", place);
       const placeMap = new Map();
@@ -449,9 +367,96 @@ export default {
       });
     },
 
+    findCarWay(place) {
+      this.resetPolylines();
+
+      const REST_API_KEY = `${process.env.VUE_APP_KAKAO_CAR_WAY_KEY}`;
+      const destination = `${place.x},${place.y}`; // 목적지
+
+      this.startPlaces[0].get("x");
+      this.startPlaces[0].get("x");
+
+      const waypoints = "";
+      const priority = "RECOMMEND";
+      const car_fuel = "GASOLINE";
+      const car_hipass = false;
+      const alternatives = false;
+      const road_details = false;
+
+      const placeCnt = this.startPlaces.length;
+
+      // const car_routes = [];
+
+      Promise.all(
+        this.startPlaces.map((element) => {
+          const origin = element.get("x") + "," + element.get("y");
+          return axios
+            .get(`https://apis-navi.kakaomobility.com/v1/directions`, {
+              params: {
+                origin,
+                destination,
+                waypoints,
+                priority,
+                car_fuel,
+                car_hipass,
+                alternatives,
+                road_details,
+              },
+              headers: {
+                Authorization: `KakaoAK ${REST_API_KEY}`,
+              },
+            })
+            .then((response) => {
+              const guides = response.data.routes[0].sections[0].guides;
+              const car_route = guides.map((element) => {
+                return new window.kakao.maps.LatLng(
+                  Number(element.y),
+                  Number(element.x)
+                );
+              });
+              car_route.color = element.get("color"); // 색상 저장
+              return car_route;
+            })
+            .catch((error) => {
+              console.log(error);
+              return []; // 에러 발생시 빈 배열 반환
+            });
+        })
+      ).then((car_routes) => {
+        const path_color = [
+          "#0000FF",
+          "#8A2BE2",
+          "#A52A2A",
+          "#DEB887",
+          "#5F9EA0",
+          "#7FFF00",
+          "#D2691E",
+          "#008B8B",
+          "#9400D3",
+          "#FF69B4",
+        ];
+        for (var i = 0; i < car_routes.length; i++) {
+          //
+          //
+          var item = car_routes[i];
+          var polyline = new window.kakao.maps.Polyline({
+            path: item,
+            strokeWeight: 5,
+            strokeColor: path_color[i],
+            strokeOpacity: 1,
+            strokeStyle: "solid",
+          });
+          this.polylines.push(polyline);
+          polyline.setMap(this.map);
+        }
+      });
+
+      this.closeOveray();
+    },
+
     findBusWay(place) {
-      console.log("findBus: ", place);
-      console.log("startPlaces: ", this.startPlaces[0].get("x"));
+      this.resetPolylines();
+
       //출발지를 for문 돌면서 odsay API 호출
       for (var i = 0; i < this.startPlaces.length; i++) {
         const x = this.startPlaces[i].get("x");
@@ -460,11 +465,6 @@ export default {
         axios
           .get(url)
           .then((response) => {
-            console.log(response.data);
-            console.log(
-              "이상한데이터: ",
-              response.data["result"]["path"][0].info.mapObj
-            );
             this.callMapObjApiAJAX(
               response.data["result"]["path"][0].info.mapObj
             );
@@ -483,7 +483,6 @@ export default {
             `&apiKey=${process.env.VUE_APP_ODSAY_KEY}`
         )
         .then((response) => {
-          console.log("이상한 데이터로 그리기 전 데이터", response.data);
           this.drawPolyLine(response.data);
         })
         .catch((error) => {
@@ -510,10 +509,10 @@ export default {
               )
             );
           }
-
+          let polyline;
           //지하철결과의 경우 노선에 따른 라인색상 지정하는 부분 (1,2호선의 경우만 예로 들음)
           if (data.result.lane[i].type == 1) {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -522,7 +521,7 @@ export default {
               strokeColor: "#0052A4",
             });
           } else if (data.result.lane[i].type == 2) {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -531,7 +530,7 @@ export default {
               strokeColor: "#00A84D",
             });
           } else if (data.result.lane[i].type == 3) {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -540,7 +539,7 @@ export default {
               strokeColor: "#EF7C1C",
             });
           } else if (data.result.lane[i].type == 4) {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -549,7 +548,7 @@ export default {
               strokeColor: "#00A5DE",
             });
           } else if (data.result.lane[i].type == 5) {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -558,7 +557,7 @@ export default {
               strokeColor: "#996CAC",
             });
           } else if (data.result.lane[i].type == 6) {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -567,7 +566,7 @@ export default {
               strokeColor: "#CD7C2F",
             });
           } else if (data.result.lane[i].type == 7) {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -576,7 +575,7 @@ export default {
               strokeColor: "#747F00",
             });
           } else if (data.result.lane[i].type == 8) {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -585,7 +584,7 @@ export default {
               strokeColor: "#E6186C",
             });
           } else if (data.result.lane[i].type == 9) {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -594,7 +593,7 @@ export default {
               strokeColor: "#BDB092",
             });
           } else {
-            new window.kakao.maps.Polyline({
+            polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
               strokeWeight: 5,
@@ -602,8 +601,16 @@ export default {
               strokeStyle: "solid",
             });
           }
+          this.polylines.push(polyline);
         }
       }
+    },
+
+    resetPolylines() {
+      for (let i = 0; i < this.polylines.length; i++) {
+        this.polylines[i].setMap(null);
+      }
+      this.polylines = [];
     },
     //----------------------------------------------------------------------
 
