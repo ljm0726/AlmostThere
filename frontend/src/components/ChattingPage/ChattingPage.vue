@@ -383,7 +383,9 @@ export default {
     connect() {
       if (!this.connected) {
         const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
-        let socket = new SockJS(serverURL);
+        let socket = new SockJS(serverURL, null, {
+          transports: ["websocket", "xhr-streaming", "xhr-polling"],
+        });
         this.updateStompClient(Stomp.over(socket));
         this.stompClient.connect(
           {},
