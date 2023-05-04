@@ -142,9 +142,26 @@ import { postReceiptInfo, saveCalculateDetail } from "@/api/modules/meeting.js";
 export default {
   name: "MeetingCost",
   props: {
+    meetingId: Number,
     calculateDetails: Array,
     lateTotal: Number,
     spentMoney: Number,
+    total: Number,
+  },
+  data() {
+    return {
+      imageLoading: false,
+      receipt: null,
+      storeName: null,
+      totalPrice: 0,
+    };
+  },
+  mounted() {
+    // console.dir(this.calculateDetails);
+    // this.total = this.calculateDetails.reduce(
+    //   (accumulator, current) => accumulator + current.price,
+    //   0
+    // );
   },
   methods: {
     open() {
@@ -161,7 +178,7 @@ export default {
         this.storeName,
         this.totalPrice
       );
-      this.$router.go(this.$router.currentRoute);
+      // this.$router.go(this.$router.currentRoute);
       console.log("새로고침");
     },
   },
@@ -190,24 +207,6 @@ export default {
         });
       }
     },
-  },
-  data() {
-    return {
-      imageLoading: false,
-      total: null,
-      myTotal: 10000,
-      receipt: null,
-      storeName: null,
-      totalPrice: 0,
-    };
-  },
-  created() {
-    console.log(this.calculateDetails);
-    this.total = this.calculateDetails.reduce(
-      (accumulator, current) => accumulator + current.price,
-      0
-    );
-    console.log(this.total);
   },
 };
 </script>
