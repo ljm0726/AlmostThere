@@ -40,6 +40,12 @@
       >
     </div>
     <div class="d-flex flex-row justify-space-between">
+      <span class="px-1 pb-1 medium-font sm-font">잔액</span>
+      <span class="px-1 pb-1 medium-font sm-font"
+        >{{ String(remain).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}원</span
+      >
+    </div>
+    <div class="d-flex flex-row justify-space-between">
       <span class="px-1 light-font sm-font">지각비</span>
       <span class="px-1 light-font sm-font"
         >{{ String(lateTotal).replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}원</span
@@ -53,12 +59,12 @@
       >
     </div>
     <v-btn class="my-3" color="var(--main-col-1)" dark rounded @click="open()">
-      영수증 및 카드내역 추가
+      영수증 추가
     </v-btn>
     <vue-bottom-sheet ref="costSheet" max-width="500px">
       <v-sheet class="px-5 d-flex flex-column pb-10">
         <span class="point-font xxxxl-font main-col-1 align-self-center">
-          영수증 및 카드 내역 등록
+          영수증 등록
         </span>
         <v-file-input
           v-model="receipt"
@@ -147,6 +153,7 @@ export default {
     lateTotal: Number,
     spentMoney: Number,
     total: Number,
+    remain: Number,
   },
   data() {
     return {

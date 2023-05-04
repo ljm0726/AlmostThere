@@ -20,14 +20,14 @@ public class MemberInfoDto {
     private Integer totalLateCnt;
 
     // 지난달 모임 총 소비가격
-    private Double lastMonthTotalSpentMoney;
+    private int lastMonthTotalSpentMoney;
 
     public MemberInfoDto(
             MemberDto member,
             List<AttendMeetingMemberDto> attendMeetings,
             Integer thisMonthAttendMeetingCnt,
             Integer totalLateCnt,
-            Double lastMonthTotalSpentMoney) {
+            int lastMonthTotalSpentMoney) {
         this.member = member;
         this.attendMeetings = attendMeetings;
         this.thisMonthAttendMeetingCnt = thisMonthAttendMeetingCnt;
