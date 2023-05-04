@@ -1,22 +1,33 @@
 <template>
-  <div id="roulette">
-    <canvas
-      ref="canvas"
-      :width="size"
-      :height="size"
-      style="transition: 2s"
-    ></canvas>
-    <button @click="rotate" :disabled="isRotating">돌리기</button>
+  <div>
+    <canvas ref="canvas"></canvas>
+    <button @click="rotate">룰렛 돌리기</button>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      size: 300,
-      colors: [
+  mounted() {
+    this.newMake();
+  },
+  methods: {
+    newMake() {
+      const $c = this.$refs.canvas;
+      const ctx = $c.getContext(`2d`);
+
+      const product = [
+        "떡볶이",
+        "돈가스",
+        "초밥",
+        "피자",
+        "냉면",
+        "치킨",
+        "족발",
+        "피자",
+        "삼겹살",
+      ];
+
+      const colors = [
         "#dc0936",
         "#e6471d",
         "#f7a416",
@@ -28,174 +39,92 @@ export default {
         "#87207b",
         "#be107f",
         "#e7167b",
-      ],
-      angle: 0,
-      rotation: 0,
-      target: null,
-      isRotating: false,
-      radius: 0,
-    };
-  },
-  mounted() {
-    this.radius = this.$refs.canvas.width / 2;
-    this.drawRoulette();
-  },
-  methods: {
-    drawArrow() {
-      const canvas = this.$refs.canvas;
-      const ctx = canvas.getContext("2d");
-      const radius = this.radius;
-      const arrowHeight = 30;
-      const arrowWidth = 20;
+      ];
 
-      ctx.save();
-      ctx.translate(radius, radius);
-      ctx.rotate(Math.PI / 2); // 시계 방향으로 90도 회전
+      const [cw, ch] = [$c.width / 2, $c.height / 2];
+      const arc = Math.PI / (product.length / 2);
 
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(-arrowWidth / 2, -arrowHeight);
-      ctx.lineTo(arrowWidth / 2, -arrowHeight);
-      ctx.closePath();
-      ctx.fillStyle = "black";
-      ctx.fill();
-
-      ctx.restore();
-    },
-    drawRoulette() {
-      const canvas = this.$refs.canvas;
-      const ctx = canvas.getContext("2d");
-      const radius = this.radius;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 삼각형 모양의 화살표 그리기
-      this.drawArrow();
-
-      this.options.forEach((option, index) => {
-        // const angle = (index * Math.PI * 2) / this.options.length + this.angle;
-        const angle =
-          (((index + this.options.length / 4) % this.options.length) *
-            Math.PI *
-            2) /
-            this.options.length +
-          this.angle;
-        const color = this.colors[index % this.colors.length];
-
+      for (let i = 0; i < product.length; i++) {
         ctx.beginPath();
-        ctx.fillStyle = color;
-        ctx.arc(
-          radius,
-          radius,
-          radius * 0.8,
-          angle,
-          angle + (Math.PI * 2) / this.options.length
-        );
-        ctx.lineTo(radius, radius);
+        ctx.fillStyle = colors[i % (colors.length - 1)];
+        ctx.moveTo(cw, ch);
+        ctx.arc(cw, ch, cw, arc * (i - 1), arc * i);
         ctx.fill();
+        ctx.closePath();
+      }
+
+      ctx.fillStyle = "#fff";
+      ctx.font = "18px Pretendard";
+      ctx.textAlign = "center";
+
+      for (let i = 0; i < product.length; i++) {
+        const angle = arc * i + arc / 2;
 
         ctx.save();
-        ctx.translate(radius, radius);
-        ctx.rotate(angle + Math.PI / this.options.length);
-        ctx.fillStyle = "#ffffff";
-        ctx.font = `${radius / 10}px Arial`;
-        ctx.fillText(option, radius * 0.6, 0);
+
+        ctx.translate(
+          cw + Math.cos(angle) * (cw - 50),
+          ch + Math.sin(angle) * (ch - 50)
+        );
+
+        ctx.rotate(angle + Math.PI / 2);
+
+        product[i].split(" ").forEach((text, j) => {
+          ctx.fillText(text, 0, 30 * j);
+        });
+
         ctx.restore();
-      });
+      }
     },
     rotate() {
-      if (this.isRotating) {
-        return;
-      }
-      this.isRotating = true;
+      const $c = this.$refs.canvas;
 
-      const targetIndex = Math.floor((this.options.length * 3) / 4); // 12시 방향에 있는 항목의 인덱스
-      const targetAngle = (targetIndex * Math.PI * 2) / this.options.length; // 12시 방향에 있는 항목의 각도
+      $c.style.transform = `initial`;
+      $c.style.transition = `initial`;
 
-      const rotateInterval = setInterval(() => {
-        this.rotation += (Math.PI / 180) * 5;
-        this.angle += (Math.PI / 180) * 5;
+      setTimeout(() => {
+        const product = [
+          "떡볶이",
+          "돈가스",
+          "초밥",
+          "피자",
+          "냉면",
+          "치킨",
+          "족발",
+          "피자",
+          "삼겹살",
+        ];
+        const ran = Math.floor(Math.random() * product.length);
 
-        this.drawRoulette();
+        const arc = 360 / product.length;
+        const rotate = ran * arc + 3600 + arc * 3 - arc / 4;
 
-        if (this.rotation >= Math.PI * 2 + targetAngle) {
-          clearInterval(rotateInterval);
+        $c.style.transform = `rotate(-${rotate}deg)`;
+        $c.style.transition = `2s`;
 
-          // 12시 방향에 있는 항목의 각도를 계산하여 angle 변수에 저장
-          this.angle =
-            targetAngle +
-            ((Math.PI * 2) / this.options.length -
-              (this.rotation % ((Math.PI * 2) / this.options.length)));
-          this.rotation = 0;
-          this.isRotating = false;
-
-          // 12시 방향에 있는 룰렛 항목을 target 변수에 저장
-          this.target =
-            this.options[
-              (this.options.length - targetIndex) % this.options.length
-            ];
-          alert(`선택된 항목: ${this.target}`);
-        }
-      }, 10);
+        setTimeout(
+          () => alert(`오늘의 야식은?! ${product[ran]} 어떠신가요?`),
+          2000
+        );
+      }, 1);
     },
-    // rotate() {
-    //   if (this.isRotating) {
-    //     return;
-    //   }
-    //   this.isRotating = true;
-
-    //   // 12시 방향에 위치한 룰렛 항목 계산
-    //   // const targetIndex = (this.options.length * 3) / 4;
-    //   const targetIndex = Math.floor((this.options.length * 3) / 4);
-    //   const targetAngle = (targetIndex * Math.PI * 2) / this.options.length;
-
-    //   const rotateInterval = setInterval(() => {
-    //     this.rotation += (Math.PI / 180) * 5;
-    //     this.angle += (Math.PI / 180) * 5;
-
-    //     this.drawRoulette();
-
-    //     if (this.rotation >= Math.PI * 2 + targetAngle) {
-    //       clearInterval(rotateInterval);
-
-    //       this.angle =
-    //         targetAngle -
-    //         (this.rotation % ((Math.PI * 2) / this.options.length));
-    //       this.rotation = 0;
-    //       this.isRotating = false;
-
-    //       // 12시 방향에 위치한 룰렛 항목을 target 변수에 저장
-    //       console.log("#21# targetIndex 확인: ", targetIndex);
-    //       this.target = this.options[targetIndex];
-    //       alert(`선택된 항목: ${this.target}`);
-    //     }
-    //   }, 10);
-    // },
   },
 };
 </script>
 
 <style scoped>
-#roulette {
-  width: 380px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  position: relative;
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+* {
+  font-family: Pretendard;
 }
 
-#roulette::before {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 50px;
-  border-radius: 5px;
-  background: #000;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 22;
+body {
+  background: #f7f8fc;
+}
+
+canvas {
+  transition: 2s;
 }
 
 button {
@@ -213,5 +142,27 @@ button {
 button:active {
   background: #444;
   color: #f9f9f9;
+}
+
+div {
+  width: 380px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+
+div::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 50px;
+  border-radius: 5px;
+  background: #000;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 22;
 }
 </style>
