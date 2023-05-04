@@ -61,12 +61,13 @@
     <!-- 채팅 정보를 불러올 수 없는 경우 -->
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
-    <v-sheet
+    <v-sheet v-else class="d-flex flex-column justify-end" min-height="100%">
+      <!-- <v-sheet
       v-else
       class="d-flex flex-column justify-end"
       style="padding: 55px 0px 72px 0px"
       min-height="100%"
-    >
+    > -->
       <!-- scroll 맨 아래로 내리는 버튼 -->
       <scroll-bottom-button></scroll-bottom-button>
       <!-- 채팅창 -->
@@ -197,7 +198,7 @@
           </div>
         </div>
       </v-sheet>
-
+      <v-sheet max-width="500" height="72"></v-sheet>
       <!-- 메세지 입력창 -->
       <v-sheet
         class="px-3 pb-4"
