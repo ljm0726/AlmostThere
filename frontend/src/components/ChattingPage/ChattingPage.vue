@@ -61,12 +61,13 @@
     <!-- 채팅 정보를 불러올 수 없는 경우 -->
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
-    <v-sheet
+    <v-sheet v-else class="d-flex flex-column justify-end" min-height="100%">
+      <!-- <v-sheet
       v-else
       class="d-flex flex-column justify-end"
       style="padding: 55px 0px 72px 0px"
       min-height="100%"
-    >
+    > -->
       <!-- scroll 맨 아래로 내리는 버튼 -->
       <scroll-bottom-button></scroll-bottom-button>
       <!-- 채팅창 -->
@@ -111,7 +112,10 @@
                     chatList[idx - 1].chattingTime.split('T')[1].substr(0, 5)
                 "
               >
-                <img :src="members[item.memberId].profile" alt="John" />
+                <v-img
+                  :src="members[item.memberId].profile"
+                  :alt="members[item.memberId].nickname"
+                ></v-img>
               </v-avatar>
               <!-- 사진 없이 사진 크기와 동일한빈 공간 -->
               <v-sheet v-else class="mr-2" style="padding-left: 34px">
@@ -197,7 +201,7 @@
           </div>
         </div>
       </v-sheet>
-
+      <v-sheet max-width="500" height="72"></v-sheet>
       <!-- 메세지 입력창 -->
       <v-sheet
         class="px-3 pb-4"
@@ -347,7 +351,7 @@ export default {
           if (data.statusCode == 200) {
             // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
             await this.chatList.push(data.data);
-            console.log(">> 여기", data.data);
+            // console.log(">> 여기", data.data);
             // 스크롤 맨 아래로 이동
             // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우
             if (

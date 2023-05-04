@@ -31,12 +31,14 @@
       </li>
     </ul>
     <v-btn class="find-place-btn" @click="findHalfway()"
-      ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
+      ><i class="fa-light fa-location-dot"></i>
+      <v-icon class="marker-icon">mdi mdi-map-marker-outline</v-icon>중간 위치
+      찾기</v-btn
     >
     <halfway-modal ref="halfway"></halfway-modal>
 
     <div id="map" class="maps"></div>
-    <div v-if="isSelect" @click="moveRegisterPage">
+    <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
   </div>
@@ -190,6 +192,10 @@ export default {
     },
     displayPlaceInfo(place) {
       var content =
+        `<div class="howto">
+          <img id="bus-icon" src="${require("@/assets/images/icons/bus-icon.png")}"/>
+          <img id="car-icon" src="${require("@/assets/images/icons/car-icon.png")}"/>
+        </div> ` +
         '<div class="placeinfo">' +
         '   <a class="title" href="' +
         place.place_url +
@@ -197,7 +203,8 @@ export default {
         place.place_name +
         '">' +
         place.place_name +
-        "</a>";
+        "</a>" +
+        `<div class="click">`;
 
       if (place.road_address_name) {
         content +=
@@ -225,12 +232,13 @@ export default {
         place.phone +
         "</span>" +
         "</div>" +
+        "</div>" +
         '<div class="after"></div>';
 
       var self = this;
       this.contentNode.innerHTML = content;
       this.contentNode
-        .querySelector("span")
+        .querySelector(".click")
         .addEventListener("click", function () {
           self.recommendData(place);
         });
@@ -488,8 +496,30 @@ export default {
   font-size: 11px;
   margin-top: 0;
 }
+.howto {
+  position: relative;
+  left: 70%;
+}
+.howto #car-icon {
+  width: 35px;
+  margin-inline: 3%;
+  /* border: 4px solid var(--main-col-1); */
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px 0px var(--main-col-1);
+}
+.howto #bus-icon {
+  width: 35px;
+  /* border: 2px solid var(--main-col-1); */
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px 0px var(--main-col-1);
+}
 </style>
 <style scoped>
+.marker-icon {
+  font-size: 25px;
+  margin-right: 4%;
+  margin-left: -8%;
+}
 .category_icon {
   z-index: 100;
 }
