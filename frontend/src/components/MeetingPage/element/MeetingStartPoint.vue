@@ -32,11 +32,11 @@ export default {
   },
   filters: {
     formatPlace(value) {
-      console.log("장소: " + value);
+      // console.log("장소: " + value);
       if (value === null) return "출발지를 설정하지 않았습니다.";
     },
     formatAddress(value) {
-      console.log("주소: " + value);
+      // console.log("주소: " + value);
       if (value === null) return "";
     },
   },
