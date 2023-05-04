@@ -6,32 +6,31 @@
           <close-button @closeDialog="closeDialog"></close-button>
         </div>
         <span class="point-font xxxxxxl-font main-col-1">정산 상세내역</span>
-        <v-sheet
-          class="pr-1 px-4 d-flex flex-row justify-space-between align-center"
-          width="100%"
-        >
+        <v-sheet class="px-4 flex-row align-center" width="100%">
           <div>
-            <v-row class="mt-5 d-flex align-center">
+            <v-row class="mt-5">
               <span class="md-font medium-font main-col-1">상호명</span>
               <span class="md-font ml-2 light-font main-col-1">{{
                 calculate.storeName
               }}</span>
             </v-row>
-            <v-row class="mt-5 d-flex align-center">
+            <v-row class="mt-5">
               <span class="md-font medium-font main-col-1"
                 >총&nbsp;&nbsp;액</span
               >
-              <span class="md-font ml-4 light-font main-col-1">{{
-                calculate.price
-              }}</span>
+              <span class="md-font ml-4 light-font main-col-1">
+                {{
+                  String(calculate.price).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }}원
+              </span>
             </v-row>
-            <div class="mt-3 d-flex justify-center align-center">
-              <img
-                src="https://k8a401.p.ssafy.io/almostthere/"
-                calculate.fileName
-                width="100%"
-              />
-            </div>
+          </div>
+          <div>
+            <img
+              class="my-5"
+              :src="`https://k8a401.p.ssafy.io/almostthere/${calculate.fileName}`"
+              width="100%"
+            />
           </div>
         </v-sheet>
         <div class="mt-3 d-flex justify-center align-center">
@@ -43,6 +42,7 @@
             id="square-big-btn"
             color="var(--main-col-1)"
             rounded
+            @click="deleteItem()"
           >
             <v-icon color="white">$vuetify.icons.delete_outline</v-icon>
           </v-btn>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import { deleteCalculateDetail } from "@/api/modules/meeting";
 import CloseButton from "@/common/component/button/CloseButton.vue";
 
 export default {
@@ -84,6 +85,10 @@ export default {
     },
     changeCalculate(calculate) {
       this.calculate = calculate;
+    },
+    deleteItem() {
+      deleteCalculateDetail(this.calculate.calculateDetailId);
+      this.$router.go(this.$router.currentRoute);
     },
   },
 };

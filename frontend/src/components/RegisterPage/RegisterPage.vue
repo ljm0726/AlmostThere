@@ -187,6 +187,8 @@ export default {
       "SET_MEETING_DATE",
       "SET_MEETING_TIME",
     ]),
+    ...mapActions("placeStore", ["resetPlace"]),
+    ...mapActions("halfwayStore", ["resetStartPlace"]),
 
     setMeetingName() {
       console.log(this.meetingname);
@@ -221,6 +223,8 @@ export default {
         console.log(meeting_name, " ", date_time);
 
         this.register({ meeting_name, date_time, place_name, place_addr });
+        this.resetPlace();
+        this.resetStartPlace();
       }
     },
 

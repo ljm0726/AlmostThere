@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -96,4 +97,14 @@ public class CalculateDetailService {
         }
     }
 
+    @Transactional
+    public void deleteCalculateDetail(Long calculateDetailId) throws UnknownHostException {
+        String fileName = calculateDetailRepository.findById(calculateDetailId).get().getFileName();
+        FileUtil fileUtil = new FileUtil();
+        String hostname = InetAddress.getLocalHost().getHostName();
+        fileUtil.fileDelete(hostname, fileName);
+        calculateDetailRepository.deleteById(calculateDetailId);
+        //정산 항목에 관한 서버 파일 삭제
+
+    }
 }

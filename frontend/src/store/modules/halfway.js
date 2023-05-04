@@ -21,9 +21,15 @@ const halfwayStore = {
     REMOVE_START_PLACE(state, index) {
       state.startPlaces.splice(index, 1);
     },
+    RESET_START_PLACE(state) {
+      state.startPlaces = [null, null];
+    },
   },
 
   actions: {
+    resetStartPlace({ commit }) {
+      commit("RESET_START_PLACE");
+    },
     addMiddlePlace({ commit }, middlePlace) {
       commit("ADD_MIDDLE_PLACE", middlePlace);
     },
