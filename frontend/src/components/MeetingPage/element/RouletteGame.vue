@@ -1,7 +1,120 @@
 <template>
-  <div>돌려돌려돌려</div>
+  <v-shee>
+    <div class="box-roulette">
+      <div class="markers"></div>
+      <v-btn id="btn-start">START</v-btn>
+      <div class="roulette" id="roulette"></div>
+    </div>
+  </v-shee>
 </template>
 
-<script></script>
+<script>
+export default {
+  name: "MeetingListCard",
+  props: {
+    // 룰렛 options
+    options: {
+      type: Array,
+      required: true,
+    },
+  },
+  data() {
+    return {};
+  },
+  watch: {
+    // date() {
+    //   this.resetOnDayMeetings();
+    // },
+  },
+  methods: {},
+};
+</script>
 
-<style></style>
+<style scoped>
+html,
+body,
+button {
+  font-family: Arial, "돋움", Dotum, "굴림", Gulim, "Apple SD Gothic Neo",
+    AppleGothic, sans-serif;
+}
+
+button {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.box-roulette {
+  position: relative;
+  /* margin: 50px auto; */
+  margin-top: 10%;
+  width: 300px;
+  height: 300px;
+  border: 10px solid #ccc;
+  border-radius: 50%;
+  background: #ccc;
+  overflow: hidden;
+}
+.box-roulette .markers {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  margin-left: -25px;
+  width: 0;
+  height: 0;
+  border: 25px solid #fff;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  z-index: 9999;
+}
+.box-roulette .roulette {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.box-roulette .item {
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+  border: 0 solid transparent;
+  transform-origin: 0 100%;
+}
+.box-roulette .label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #fff;
+  white-space: nowrap;
+  transform-origin: 0 0;
+}
+.box-roulette .label .text {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+#btn-start {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -50px 0 0 -50px;
+  width: 100px;
+  height: 100px;
+  font-weight: bold;
+  background: #fff;
+  border-radius: 50px;
+  z-index: 9999;
+  cursor: pointer;
+}
+</style>

@@ -36,8 +36,33 @@
             </v-btn>
           </div>
         </div>
-        <!-- 룰렛 -->
-        <div class="d-flex align-center justify-center"><roulette-game /></div>
+        <!-- 룰렛 options -->
+        <div class="d-flex align-center justify-center flex-wrap mt-3">
+          <div
+            class="d-flex align-center justify-center"
+            v-for="(option, index) in options"
+            :key="index"
+            style="margin: 5px"
+          >
+            <v-text-field
+              v-model="options[index]"
+              outlined
+              dense
+              hide-details
+              style="max-width: 150px"
+              ><template v-slot:append>
+                <v-icon small @click="removeOption(index)">mdi-close</v-icon>
+              </template>
+            </v-text-field>
+          </div>
+          <!-- 룰렛 options -->
+          <!-- <div
+          class="d-flex align-center justify-center"
+          v-if="this.options.length > 1>" -->
+          <div class="d-flex align-center justify-center">
+            <roulette-game :options="options" />
+          </div>
+        </div>
       </div>
     </vue-bottom-sheet>
   </v-sheet>
@@ -49,12 +74,29 @@ import RouletteGame from "./RouletteGame.vue";
 export default {
   components: { RouletteGame },
   name: "MeetingGame",
+  data() {
+    return {
+      options: [],
+    };
+  },
+  watch: {
+    options() {
+      console.log("#21# options 확인: ", this.options);
+    },
+  },
   methods: {
     open() {
       this.$refs.gameSheet.open();
     },
     // [@Method] 룰렛 옵션 추가
-    addOption() {},
+    addOption() {
+      // 옵션 최대 개수 10개로 제한
+      if (this.options.length < 10) this.options.push("");
+    },
+    // [@Method] options 삭제
+    removeOption(index) {
+      this.options.splice(index, 1);
+    },
   },
 };
 </script>
