@@ -48,7 +48,6 @@
 <script>
 export default {
   name: "user_login",
-  data() {},
   methods: {
     kakaoLogin() {
       // console.log(`${process.env.VUE_APP_KAKAO_LOGIN_URL}`);
