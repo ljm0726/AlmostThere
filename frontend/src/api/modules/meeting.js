@@ -40,12 +40,13 @@ async function meetingRegister(
 
 async function getMeeting(meetingId) {
   var result = null;
-  await api.post("/meeting/detail", { memberId: 1, meetingId: meetingId }).then((res) => {
-    result = res.data.data;
-  });
+  await api
+    .post("/meeting/detail", { memberId: 1, meetingId: meetingId })
+    .then((res) => {
+      result = res.data.data;
+    });
   return await Promise.resolve(result);
 }
-
 
 async function getTodayMeetings() {
   var result = null;
@@ -84,7 +85,6 @@ async function getBestMember() {
   var result = null;
   await api.get("/member/best-member").then((res) => {
     result = res.data.data;
-    console.log(result);
   });
   return await Promise.resolve(result);
 }
@@ -110,6 +110,7 @@ async function postReceiptInfo(receipt) {
 
 async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
   var formData = new FormData();
+  console.log("미팅ID: " + meetingId);
   formData.append("meetingId", meetingId);
   formData.append("receipt", receipt);
   formData.append("storeName", storeName);
@@ -123,6 +124,13 @@ async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
     });
 }
 
+async function deleteCalculateDetail(calculateDetailId) {
+  await api
+    .delete(`/meeting-calculate/${calculateDetailId}`, {})
+    .then(async (res) => {
+      console.log(res);
+    });
+}
 export {
   meetingRegister,
   getMeeting,
@@ -132,4 +140,5 @@ export {
   getBestMember,
   postReceiptInfo,
   saveCalculateDetail,
+  deleteCalculateDetail,
 };
