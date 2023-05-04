@@ -161,7 +161,7 @@ public class ChattingService {
         ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
 
         // 꺼내야 하는 개수
-        int default_num = 20;
+        int default_num = 30;
         // meetingId에 해당하는 채팅의 크기 확인
         Long redisSize = listOperations.size("chat:"+roomCode);
         // MySQL에 저장된 값 가져오기
