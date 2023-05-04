@@ -103,50 +103,22 @@ export default {
         ctx.restore();
       });
     },
-    rotate() {
-      if (this.isRotating) {
-        return;
-      }
-      this.isRotating = true;
-
-      const targetIndex = Math.floor((this.options.length * 3) / 4); // 12시 방향에 있는 항목의 인덱스
-      const targetAngle = (targetIndex * Math.PI * 2) / this.options.length; // 12시 방향에 있는 항목의 각도
-
-      const rotateInterval = setInterval(() => {
-        this.rotation += (Math.PI / 180) * 5;
-        this.angle += (Math.PI / 180) * 5;
-
-        this.drawRoulette();
-
-        if (this.rotation >= Math.PI * 2 + targetAngle) {
-          clearInterval(rotateInterval);
-
-          // 12시 방향에 있는 항목의 각도를 계산하여 angle 변수에 저장
-          this.angle =
-            targetAngle +
-            ((Math.PI * 2) / this.options.length -
-              (this.rotation % ((Math.PI * 2) / this.options.length)));
-          this.rotation = 0;
-          this.isRotating = false;
-
-          // 12시 방향에 있는 룰렛 항목을 target 변수에 저장
-          this.target =
-            this.options[
-              (this.options.length - targetIndex) % this.options.length
-            ];
-          alert(`선택된 항목: ${this.target}`);
-        }
-      }, 10);
-    },
     // rotate() {
     //   if (this.isRotating) {
     //     return;
     //   }
+
     //   this.isRotating = true;
 
-    //   // 12시 방향에 위치한 룰렛 항목 계산
-    //   // const targetIndex = (this.options.length * 3) / 4;
-    //   const targetIndex = Math.floor((this.options.length * 3) / 4);
+    //   const canvas = this.$refs.canvas;
+    //   const radius = this.radius;
+    //   canvas;
+    //   radius;
+
+    //   // const targetIndex = Math.floor(Math.random() * this.options.length);
+    //   // const targetAngle = (targetIndex * Math.PI * 2) / this.options.length;
+    //   // 12시 방향의 항목을 계산
+    //   const targetIndex = (this.options.length * 3) / 4;
     //   const targetAngle = (targetIndex * Math.PI * 2) / this.options.length;
 
     //   const rotateInterval = setInterval(() => {
@@ -164,13 +136,49 @@ export default {
     //       this.rotation = 0;
     //       this.isRotating = false;
 
-    //       // 12시 방향에 위치한 룰렛 항목을 target 변수에 저장
-    //       console.log("#21# targetIndex 확인: ", targetIndex);
     //       this.target = this.options[targetIndex];
     //       alert(`선택된 항목: ${this.target}`);
     //     }
     //   }, 10);
     // },
+    rotate() {
+      if (this.isRotating) {
+        return;
+      }
+
+      this.isRotating = true;
+
+      // const canvas = this.$refs.canvas;
+      // const radius = this.radius;
+      // canvas;
+      // radius;
+
+      // 12시 방향에 위치한 룰렛 항목 계산
+      const targetIndex = (this.options.length * 3) / 4;
+      const targetAngle = (targetIndex * Math.PI * 2) / this.options.length;
+
+      const rotateInterval = setInterval(() => {
+        this.rotation += (Math.PI / 180) * 5;
+        this.angle += (Math.PI / 180) * 5;
+
+        this.drawRoulette();
+
+        if (this.rotation >= Math.PI * 2 + targetAngle) {
+          clearInterval(rotateInterval);
+
+          this.angle =
+            targetAngle -
+            (this.rotation % ((Math.PI * 2) / this.options.length));
+          this.rotation = 0;
+          this.isRotating = false;
+
+          // 12시 방향에 위치한 룰렛 항목을 target 변수에 저장
+          console.log("#21# targetIndex 확인: ", targetIndex);
+          this.target = this.options[targetIndex];
+          alert(`선택된 항목: ${this.target}`);
+        }
+      }, 10);
+    },
   },
 };
 </script>
