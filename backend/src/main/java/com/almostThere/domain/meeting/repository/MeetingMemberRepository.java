@@ -27,6 +27,6 @@ public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Lo
 
     Optional<MeetingMember> findByMeeting_IdAndMember_Id(Long meetingId, Long memberId);
 
-    @Query("select sum(m.spentMoney) from MeetingMember m where m.meeting.id = :meetingId")
+    @Query("select COALESCE(sum(m.spentMoney),0) from MeetingMember m where m.meeting.id = :meetingId")
     int sumMemberPrice(@Param("meetingId") Long meetingId);
 }

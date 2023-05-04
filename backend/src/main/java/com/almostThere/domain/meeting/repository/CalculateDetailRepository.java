@@ -7,6 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface CalculateDetailRepository extends JpaRepository<CalculateDetail, Long> {
 
-    @Query("select sum(c.price) from CalculateDetail c where c.meeting.id = :meetingId")
+    @Query("select COALESCE(sum(c.price),0) from CalculateDetail c where c.meeting.id = :meetingId")
     int sumMeetingPrice(@Param("meetingId") Long meetingId);
 }
