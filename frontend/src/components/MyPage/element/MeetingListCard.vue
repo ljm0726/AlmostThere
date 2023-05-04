@@ -188,7 +188,7 @@ export default {
   min-width: 30px !important;
   display: flex;
   align-items: center;
-  justify-content: start !important;
+  justify-content: flex-start !important;
 }
 #my-page-timeline.v-timeline:before {
   left: calc(43px - 1px) !important;
