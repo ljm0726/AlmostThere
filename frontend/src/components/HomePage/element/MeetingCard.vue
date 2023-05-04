@@ -11,7 +11,6 @@
       box-shadow: 0px 5px 20px -10px var(--main-col-1) !important;
     "
   >
-    <!-- <div class="d-flex flex-column justify-end align-end"> -->
     <v-sheet
       width="150"
       class="align-self-end"
@@ -24,9 +23,7 @@
         약 {{ meeting.meetingTime | remainTime }} 후 예정
       </span>
     </v-sheet>
-    <!-- </div> -->
     <v-sheet class="px-6 pt-1" color="transparent">
-      <!-- <div> -->
       <span class="lg-font bold-font main-col-1">
         {{ meeting.meetingName }}
       </span>
@@ -35,8 +32,6 @@
         width="30"
         style="border-color: var(--main-col-1)"
       ></v-divider>
-      <!-- </div> -->
-      <!-- <div class="mt-2"> -->
       <div class="xxxs-font main-col-1">
         <span class="medium-font">장소</span>
         <span class="ml-1 light-font">
@@ -49,7 +44,6 @@
           {{ meeting.meetingTime | formatDate }}
         </span>
       </div>
-      <!-- </div> -->
       <div class="d-flex flex-row justify-space-between">
         <section class="avatars-group stacked">
           <div
@@ -83,7 +77,6 @@
             </div>
           </div>
         </section>
-        <!-- <div class="d-flex flex-column justify-flex-end align-flex-end"> -->
         <v-btn
           class="ml-1 mt-4"
           id="square-btn"
@@ -95,7 +88,6 @@
         >
           <v-icon>$vuetify.icons.map_outline</v-icon>
         </v-btn>
-        <!-- </div> -->
       </div>
     </v-sheet>
   </v-card>

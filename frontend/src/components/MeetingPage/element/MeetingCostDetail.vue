@@ -88,6 +88,7 @@ export default {
     },
     deleteItem() {
       deleteCalculateDetail(this.calculate.calculateDetailId);
+      this.$router.go(this.$router.currentRoute);
     },
   },
 };
