@@ -12,6 +12,7 @@ import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
+import com.almostThere.domain.meeting.repository.CalculateDetailRepository;
 import com.almostThere.domain.meeting.repository.MeetingMemberRepository;
 import com.almostThere.domain.meeting.repository.MeetingRepository;
 import com.almostThere.domain.user.entity.Member;
@@ -39,6 +40,7 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
     private final MemberRepository memberRepository;
     private final MeetingMemberRepository meetingMemberRepository;
+    private final CalculateDetailRepository calculateDetailRepository;
 
     /**
      * 멤버가 참여중인 모임 중 약속시간이 3시간 이내에 있는 모임의 수를 조회한다.
@@ -109,6 +111,7 @@ public class MeetingService {
         final Meeting meeting = meetingRepository.findById(meetingDetailRequestDto.getMeetingId())
                 .orElseThrow(()->new NotFoundException(
                         ErrorCode.MEETING_NOT_FOUND));
+
         List<MeetingMemberResponseDto> meetingMembers = meeting.getMeetingMembers()
                 .stream().map(m->new MeetingMemberResponseDto(m)).collect(Collectors.toList());
         MeetingMember member = meeting.getMeetingMembers().stream().filter(m->m.getMember().getId()==memberId).findAny().get();
@@ -118,9 +121,10 @@ public class MeetingService {
             calculateDetails = meeting.getCalculateDetails()
                     .stream().map(c->new MeetingCalculateDetailDto(c)).collect(Collectors.toList());
         }
-
-        return new MeetingDetailResponseDto(meeting, member.getStartPlace(), member.getStartAddress(),
-                member.getSpentMoney(), meetingMembers, calculateDetails);
+        int totalPrice = calculateDetailRepository.sumMeetingPrice(meeting.getId());
+        int memberPrice = meetingMemberRepository.sumMemberPrice(meeting.getId());
+        int remain = totalPrice-memberPrice;
+        return new MeetingDetailResponseDto(meeting, remain, meetingMembers, calculateDetails);
     }
 
     /**
