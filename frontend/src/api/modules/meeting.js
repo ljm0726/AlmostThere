@@ -109,6 +109,7 @@ async function postReceiptInfo(receipt) {
 }
 
 async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
+  var result = false;
   var formData = new FormData();
   console.log("미팅ID: " + meetingId);
   formData.append("meetingId", meetingId);
@@ -119,17 +120,20 @@ async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
     .post(`/meeting-calculate/detail`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
-    .then(async (res) => {
-      console.log(res);
+    .then(async () => {
+      result = true;
     });
+  return await Promise.resolve(result);
 }
 
 async function deleteCalculateDetail(calculateDetailId) {
+  var result = false;
   await api
     .delete(`/meeting-calculate/${calculateDetailId}`, {})
-    .then(async (res) => {
-      console.log(res);
+    .then(async () => {
+      result = true;
     });
+  return await Promise.resolve(result);
 }
 export {
   meetingRegister,

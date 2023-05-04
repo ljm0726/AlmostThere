@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -41,8 +42,9 @@ public class MeetingMember {
     @Enumerated(EnumType.STRING)
     private StateType state;
 
-    @Column
-    private Integer spentMoney;
+    @ColumnDefault("0")
+    @Column(nullable = false)
+    private int spentMoney;
 
     public MeetingMember (Member member, Meeting meeting, StateType state){
         this.member = member;
@@ -51,7 +53,7 @@ public class MeetingMember {
     }
     @Builder
     public MeetingMember (Member member, Meeting meeting, String startPlace, String startAddress
-        ,Double startLat, Double startLng, StateType state, Integer spentMoney) {
+        ,Double startLat, Double startLng, StateType state, int spentMoney) {
         this.member = member;
         this.meeting = meeting;
         this.startPlace = startPlace;
@@ -62,7 +64,7 @@ public class MeetingMember {
         this.spentMoney = spentMoney;
     }
 
-    public void updateSpentMoney(Integer spentMoney){
+    public void updateSpentMoney(int spentMoney){
         this.spentMoney = spentMoney;
     }
 

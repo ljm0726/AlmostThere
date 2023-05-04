@@ -47,29 +47,50 @@ public class CalculateDetailService {
     @Transactional
     public void saveCalculateDetail(CalculateDetailRequestDto dto) throws IOException {
 
-        Meeting meeting = meetingRepository.findById(dto.getMeetingId()).orElseThrow();
         //영수증 파일 저장
         String hostname = InetAddress.getLocalHost().getHostName();
         FileUtil fileUtil = new FileUtil();
         HashMap<String, String> file = fileUtil.fileCreate(hostname,dto.getReceipt());
+
         //CalculateDetail 저장
+        Meeting meeting = meetingRepository.findById(dto.getMeetingId()).orElseThrow();
         CalculateDetail calculateDetail = new CalculateDetail(dto, file.get("filePath"), file.get("fileName"), meeting);
         calculateDetailRepository.save(calculateDetail);
 
-        List<MeetingMember> members = meeting.getMeetingMembers();  //모임의 총 인원
-        List<MeetingMember> lates = meetingMemberRepository.findByMeetingIdAndState(dto.getMeetingId(), StateType.LATE); //지각한 인원
-        Integer lateAmount = meeting.getLateAmount();   //지각비
-        int totalPrice = calculateDetailRepository.sumMeetingPrice(dto.getMeetingId());
-        int memberCnt = members.size();
+        //모임 멤버별 정산 금액 업데이트
+        updateSpentMoney(meeting);
+    }
 
+    @Transactional
+    public void deleteCalculateDetail(Long id) throws UnknownHostException {
+        //정산 항목에 관한 서버 파일 삭제
+        CalculateDetail calculateDetail = calculateDetailRepository.findById(id).get();
+        String fileName = calculateDetail.getFileName();
+        FileUtil fileUtil = new FileUtil();
+        String hostname = InetAddress.getLocalHost().getHostName();
+        fileUtil.fileDelete(hostname, fileName);
+
+        //정산 항목 삭제
+        calculateDetailRepository.deleteById(id);
+
+        //모임 멤버 정산 금액 업데이트
+        Meeting meeting = meetingRepository.findById(calculateDetail.getMeeting().getId()).orElseThrow();
+        updateSpentMoney(meeting);
+    }
+
+    @Transactional
+    public void updateSpentMoney (Meeting meeting){
+        List<MeetingMember> members = meeting.getMeetingMembers();  //모임의 총 인원
+        List<MeetingMember> lates = meetingMemberRepository.findByMeetingIdAndState(meeting.getId(), StateType.LATE); //지각한 인원
+        Integer lateAmount = meeting.getLateAmount();   //지각비
+        int totalPrice = calculateDetailRepository.sumMeetingPrice(meeting.getId());
+        int memberCnt = members.size();
+        System.out.println("총 금액: "+totalPrice);
         if(lateAmount!=null)
             totalPrice -= lateAmount*lates.size();
-
+        System.out.println("지각비를 제외한 금액: "+totalPrice);
         int per = 0;
         int remain = 0;
-//        System.out.println("총금액: "+totalPrice+" 모임인원수: "+memberCnt);
-//        System.out.println("나머지: "+(totalPrice*1.0)%memberCnt);
-//        System.out.println("인당금액: "+(int)(Math.floor((totalPrice/memberCnt)/10) * 10));
 
         //총금액을 모임인원으로 나눴을 때 나눠떨어지는 경우
         if((totalPrice*1.0)%memberCnt==0){
@@ -87,24 +108,13 @@ public class CalculateDetailService {
             //모임지각비 X, 지각 O 사람인 경우 -> 단순히 1/N
             if(lateAmount==null&&m.getState()==StateType.LATE)
                 m.updateSpentMoney(per);
-            //모임지각비 O, 지각 O 사람인 경우 -> 지각비 + 1/N
+                //모임지각비 O, 지각 O 사람인 경우 -> 지각비 + 1/N
             else if(lateAmount!=null&&m.getState()==StateType.LATE)
                 m.updateSpentMoney(lateAmount+per);
-            else if(m.getState()==StateType.ARRIVE)
+            else if(m.getState()==StateType.ARRIVE||m.getState()==StateType.GOING)
                 m.updateSpentMoney(per);
 
             meetingMemberRepository.save(m);
         }
-    }
-
-    @Transactional
-    public void deleteCalculateDetail(Long calculateDetailId) throws UnknownHostException {
-        String fileName = calculateDetailRepository.findById(calculateDetailId).get().getFileName();
-        FileUtil fileUtil = new FileUtil();
-        String hostname = InetAddress.getLocalHost().getHostName();
-        fileUtil.fileDelete(hostname, fileName);
-        calculateDetailRepository.deleteById(calculateDetailId);
-        //정산 항목에 관한 서버 파일 삭제
-
     }
 }

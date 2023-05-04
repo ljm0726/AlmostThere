@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,6 +24,9 @@ public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Lo
     List<MeetingMember> findByMemberId(@Param("memberId") Long memberId);
 
     List<MeetingMember> findByMeetingIdAndState(@Param("meetingId") Long meetingId, @Param("state")StateType state);
-    
+
     Optional<MeetingMember> findByMeeting_IdAndMember_Id(Long meetingId, Long memberId);
+
+    @Query("select sum(m.spentMoney) from MeetingMember m where m.meeting.id = :meetingId")
+    int sumMemberPrice(@Param("meetingId") Long meetingId);
 }

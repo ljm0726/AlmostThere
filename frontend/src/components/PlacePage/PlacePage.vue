@@ -192,6 +192,10 @@ export default {
     },
     displayPlaceInfo(place) {
       var content =
+        `<div class="howto">
+          <img id="bus-icon" src="${require("@/assets/images/icons/bus-icon.png")}"/>
+          <img id="car-icon" src="${require("@/assets/images/icons/car-icon.png")}"/>
+        </div> ` +
         '<div class="placeinfo">' +
         '   <a class="title" href="' +
         place.place_url +
@@ -491,6 +495,23 @@ export default {
   color: #999;
   font-size: 11px;
   margin-top: 0;
+}
+.howto {
+  position: relative;
+  left: 70%;
+}
+.howto #car-icon {
+  width: 35px;
+  margin-inline: 3%;
+  /* border: 4px solid var(--main-col-1); */
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px 0px var(--main-col-1);
+}
+.howto #bus-icon {
+  width: 35px;
+  /* border: 2px solid var(--main-col-1); */
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px 0px var(--main-col-1);
 }
 </style>
 <style scoped>

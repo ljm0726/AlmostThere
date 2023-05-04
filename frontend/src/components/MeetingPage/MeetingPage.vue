@@ -29,6 +29,7 @@
       :spentMoney="spentMoney"
       :lateTotal="lateTotal"
       :total="total"
+      :remain="meeting.remain"
     ></meeting-cost>
   </div>
 </template>
@@ -59,9 +60,7 @@ export default {
         meetingLng: null,
         lateAmount: null,
         roomCode: null,
-        startPlace: null,
-        startAddress: null,
-        spentMoney: null,
+        remain: null,
         meetingMembers: [],
         calculateDetails: [],
       },
@@ -93,7 +92,6 @@ export default {
       const member = meetingMembers.filter(
         (member) => member.memberId == "1"
       )[0];
-      // console.dir(member);
       this.startPlace = member.startPlace;
       this.startAddress = member.startAddress;
       this.spentMoney = member.spentMoney === null ? 0 : member.spentMoney;
