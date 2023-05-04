@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="mt-6 align-center" style="width: 100%">
+  <v-sheet class="mt-6 mb-3 align-center" style="width: 100%">
     <v-date-picker
       class="regular-font v-picker"
       locale="ko"
