@@ -87,8 +87,9 @@ export default {
       this.calculate = calculate;
     },
     deleteItem() {
-      deleteCalculateDetail(this.calculate.calculateDetailId);
-      this.$router.go(this.$router.currentRoute);
+      deleteCalculateDetail(this.calculate.calculateDetailId).then((res) => {
+        if (res) this.$router.go(this.$router.currentRoute);
+      });
     },
   },
 };

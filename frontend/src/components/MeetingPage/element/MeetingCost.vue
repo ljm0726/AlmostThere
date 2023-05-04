@@ -170,8 +170,9 @@ export default {
         this.receipt,
         this.storeName,
         this.totalPrice
-      );
-      this.$router.go(this.$router.currentRoute);
+      ).then((res) => {
+        if (res) this.$router.go(this.$router.currentRoute);
+      });
     },
   },
   components: {

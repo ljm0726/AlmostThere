@@ -133,8 +133,6 @@ export default {
   },
   created() {
     getUpcomingMeetings().then((res) => {
-      console.log("다가오는 모임");
-      console.log(res);
       this.meetings = res;
     });
   },
