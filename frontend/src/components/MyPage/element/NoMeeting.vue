@@ -5,6 +5,6 @@
     outlined
     rounded="xl"
   >
-    <div class="point-font main-col-1 xxxxxl-font">모임이 없는 날입니다.</div>
+    <div class="point-font main-col-1 xxxxl-font">모임이 없는 날입니다.</div>
   </v-sheet>
 </template>
