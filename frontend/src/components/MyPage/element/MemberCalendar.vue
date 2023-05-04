@@ -64,7 +64,7 @@ export default {
 }
 
 /* date-picker highlight 표시 */
-.v-date-picker-table__events > div {
+::v-deep .v-date-picker-table__events > div {
   border-radius: 25%;
   display: inline-block;
   height: 5.5px;
