@@ -31,7 +31,9 @@
       </li>
     </ul>
     <v-btn class="find-place-btn" @click="findHalfway()"
-      ><i class="fa-light fa-location-dot"></i>중간 위치 찾기</v-btn
+      ><i class="fa-light fa-location-dot"></i>
+      <v-icon class="marker-icon">mdi mdi-map-marker-outline</v-icon>중간 위치
+      찾기</v-btn
     >
     <halfway-modal ref="halfway"></halfway-modal>
 
@@ -492,6 +494,11 @@ export default {
 }
 </style>
 <style scoped>
+.marker-icon {
+  font-size: 25px;
+  margin-right: 4%;
+  margin-left: -8%;
+}
 .category_icon {
   z-index: 100;
 }
