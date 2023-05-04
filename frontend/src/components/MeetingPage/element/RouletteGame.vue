@@ -1,6 +1,11 @@
 <template>
   <div id="roulette">
-    <canvas ref="canvas" :width="size" :height="size"></canvas>
+    <canvas
+      ref="canvas"
+      :width="size"
+      :height="size"
+      style="transition: 2s"
+    ></canvas>
     <button @click="rotate" :disabled="isRotating">돌리기</button>
   </div>
 </template>
@@ -132,31 +137,41 @@ export default {
 
 <style scoped>
 #roulette {
+  width: 380px;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  position: relative;
 }
 
-canvas {
-  border: 2px solid #000;
-  border-radius: 50%;
-  margin-bottom: 10px;
+#roulette::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 50px;
+  border-radius: 5px;
+  background: #000;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 22;
 }
 
 button {
-  padding: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  background-color: #209b6c;
-  color: #fff;
+  background: #febf00;
+  margin-top: 1rem;
+  padding: 0.8rem 1.8rem;
   border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
   border-radius: 5px;
+  transition: 0.2s;
   cursor: pointer;
 }
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+button:active {
+  background: #444;
+  color: #f9f9f9;
 }
 </style>
