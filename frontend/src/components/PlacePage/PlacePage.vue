@@ -197,7 +197,8 @@ export default {
         place.place_name +
         '">' +
         place.place_name +
-        "</a>";
+        "</a>" +
+        `<div class="click">`;
 
       if (place.road_address_name) {
         content +=
@@ -225,12 +226,13 @@ export default {
         place.phone +
         "</span>" +
         "</div>" +
+        "</div>" +
         '<div class="after"></div>';
 
       var self = this;
       this.contentNode.innerHTML = content;
       this.contentNode
-        .querySelector("span")
+        .querySelector(".click")
         .addEventListener("click", function () {
           self.recommendData(place);
         });
