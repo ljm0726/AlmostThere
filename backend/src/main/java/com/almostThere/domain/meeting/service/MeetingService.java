@@ -58,7 +58,6 @@ public class MeetingService {
      */
     public List<MeetingDto> findTodayMeeting(Long memberId){
         LocalDateTime afterDate = LocalDateTime.now().plusDays(1);
-        System.out.println(afterDate);
         List<Meeting> meetings = meetingRepository.findTodayMeetings(memberId,afterDate);
         List<MeetingDto> result = meetings.stream().map(m->new MeetingDto(m)).collect(Collectors.toList());
         return result;

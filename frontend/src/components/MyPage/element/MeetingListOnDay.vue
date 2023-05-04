@@ -1,7 +1,9 @@
 <template>
   <v-sheet>
     <div v-if="meetings.length == 0"><no-meeting /></div>
-    <div v-else><meeting-list-card :meetings="meetings" /></div>
+    <div v-else>
+      <meeting-list-card :key="date" :date="date" :meetings="meetings" />
+    </div>
   </v-sheet>
 </template>
 

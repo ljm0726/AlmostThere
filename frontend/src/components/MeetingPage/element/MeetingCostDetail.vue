@@ -42,6 +42,7 @@
             id="square-big-btn"
             color="var(--main-col-1)"
             rounded
+            @click="deleteItem()"
           >
             <v-icon color="white">$vuetify.icons.delete_outline</v-icon>
           </v-btn>
@@ -52,6 +53,7 @@
 </template>
 
 <script>
+import { deleteCalculateDetail } from "@/api/modules/meeting";
 import CloseButton from "@/common/component/button/CloseButton.vue";
 
 export default {
@@ -83,6 +85,10 @@ export default {
     },
     changeCalculate(calculate) {
       this.calculate = calculate;
+    },
+    deleteItem() {
+      deleteCalculateDetail(this.calculate.calculateDetailId);
+      this.$router.go(this.$router.currentRoute);
     },
   },
 };
