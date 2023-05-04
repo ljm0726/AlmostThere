@@ -15,8 +15,13 @@
           }"
           class="white-font timeline-shadow"
         >
-          <v-card-title class="py-1 md-font">
-            {{ meeting.meetingName }}
+          <v-card-title
+            class="py-1 md-font d-flex flex-row justify-space-between"
+          >
+            <span>{{ meeting.meetingName }}</span>
+            <v-btn color="white" icon @click="goDetail(meeting.id)">
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
           </v-card-title>
           <v-card-text class="pa-3 light-font white xxs-font">
             <!-- 모임 장소-->
@@ -104,6 +109,9 @@ export default {
     this.resetOnDayMeetings();
   },
   methods: {
+    goDetail(id) {
+      this.$router.push(`/meeting/${id}`);
+    },
     // [@Method] DateTime을 원하는 format으로 변경
     formattedTime(dateTime) {
       const date = new Date(dateTime);
