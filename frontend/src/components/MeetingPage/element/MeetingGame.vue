@@ -10,15 +10,20 @@
       <img class="mr-1" height="25" src="@/assets/images/icons/roulette.png" />
       <span class="medium-font">돌려돌려 돌림판</span>
     </v-btn>
-    <vue-bottom-sheet ref="gameSheet" max-width="500px">
-      <!-- 룰렛 -->
-      <div class="d-flex justify-center align-center">
-        <div class="d-flex flex-row">
-          <div class="d-flex align-center point-font main-col-1 xxxxxl-font">
+    <vue-bottom-sheet ref="gameSheet" max-width="500px" style="width: 100%">
+      <!-- 룰렛 이름 & 버튼 -->
+      <div>
+        <div class="d-flex justify-content-center">
+          <div
+            class="d-flex align-items-center point-font main-col-1 xxxxxxl-font"
+            style="margin-left: 30%"
+          >
             돌려돌려 돌림판
           </div>
-          <!-- <div class="d-flex align-center justify-center"> -->
-          <div class="d-flex align-center justify-end">
+          <div
+            class="d-flex align-center justify-end mr-8"
+            style="flex-grow: 1"
+          >
             <v-btn
               id="round-small-btn"
               outlined
@@ -31,13 +36,18 @@
             </v-btn>
           </div>
         </div>
+        <!-- 룰렛 -->
+        <div class="d-flex align-center justify-center"><roulette-game /></div>
       </div>
     </vue-bottom-sheet>
   </v-sheet>
 </template>
 
 <script>
+import RouletteGame from "./RouletteGame.vue";
+
 export default {
+  components: { RouletteGame },
   name: "MeetingGame",
   methods: {
     open() {
