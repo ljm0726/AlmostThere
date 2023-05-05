@@ -1,5 +1,6 @@
-import { meetingRegister } from "@/api/modules/meeting";
+import { meetingRegister, modifyMeeting } from "@/api/modules/meeting";
 import placeStore from "./place";
+import memberStore from "./member";
 import router from "@/router"; // 라우터 import
 
 const meetingStore = {
@@ -10,6 +11,9 @@ const meetingStore = {
     meeting_time: null,
     place_name: null,
     place_addr: null,
+    meeting_lat: null,
+    meeting_lng: null,
+    late_amount: 0, //지각비
   },
   getters: {},
   mutations: {
@@ -32,6 +36,11 @@ const meetingStore = {
       state.place_addr = place_addr;
       console.log(state.place_addr);
     },
+    SET_MEETING_INFO(state, meeting) {
+      console.log(meeting);
+      state;
+      // state.meeting_name = meeting.
+    },
   },
   actions: {
     async register(
@@ -41,7 +50,39 @@ const meetingStore = {
       console.log(meeting_name, date_time);
       await meetingRegister(
         // this.,
-        1,
+        memberStore.memberId,
+        meeting_name,
+        date_time,
+        place_name,
+        place_addr,
+        placeStore.state.placeX,
+        placeStore.state.placeY,
+        ({ data }) => {
+          console.log(data);
+          commit("SET_MEETING_NAME", null);
+          commit("SET_MEETING_DATE", null);
+          commit("SET_MEETING_TIME", null);
+          commit("SET_PLACE_NAME", null);
+          commit("SET_PLACE_ADDR", null);
+          router.push({ name: "home" });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
+
+    async modify(
+      { commit },
+      { meeting_name, date_time, place_name, place_addr }
+    ) {
+      //meeting x,y 좌표를 받음.
+      console.log(memberStore.memberId, date_time);
+      await modifyMeeting(
+        // this.,
+        // 장소 버튼을 누를 때 place store에있는 update actions 실행 해주기
+        // 처음 가져올 때는 meeting에만 data 저장.
+        memberStore.memberId,
         meeting_name,
         date_time,
         place_name,
@@ -71,6 +112,11 @@ const meetingStore = {
     },
     SET_MEETING_TIME({ commit }, meeting_time) {
       commit("SET_MEETING_TIME", meeting_time);
+    },
+
+    SET_MEETING_INFO({ commit }, meeting) {
+      console.log(meeting);
+      commit("SET_MEETING_INFO", meeting);
     },
   },
 };

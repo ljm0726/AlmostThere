@@ -143,6 +143,7 @@
           color="var(--main-col-1)"
           dark
           rounded
+          @click="modifyMetting()"
           >수정 완료</v-btn
         >
       </v-sheet>
@@ -151,9 +152,12 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "MeetingModifyBtn",
   methods: {
+    ...mapActions("meetingStore", ["modify"]),
     open() {
       this.$refs.modifySheet.open();
     },
@@ -162,6 +166,10 @@ export default {
     },
     closeDialog() {
       this.dialog = false;
+    },
+    modifyMetting() {
+      const date_time = new Date(this.date + " " + this.time);
+      console.log(this.date, " ", this.time, " ", date_time);
     },
   },
   props: {
@@ -184,13 +192,17 @@ export default {
       timeDialog: false,
     };
   },
+
   created() {
+    console.log(this.meetingName, this.meetingTime);
+    const [date, time2] = this.meetingTime.split("T");
+    const time = time2.slice(0, -3);
     this.name = this.meetingName;
-    this.date = this.meetingDate;
-    this.time = this.meetingTime;
+    this.date = date;
+    this.time = time;
     this.place = this.meetingPlace;
     this.address = this.meetingAddress;
-    this.amount = this.lateAmount;
+    this.amount = this.lateAmount == null ? 0 : this.lateAmount;
   },
 };
 </script>
