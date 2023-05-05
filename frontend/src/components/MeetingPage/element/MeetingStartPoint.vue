@@ -9,6 +9,7 @@
         color="var(--main-col-1)"
         rounded
         small
+        @click="moveStartPlace()"
       >
         <v-icon>$vuetify.icons.edit_outline</v-icon>
       </v-btn>
@@ -38,6 +39,12 @@ export default {
     formatAddress(value) {
       // console.log("주소: " + value);
       if (value === null) return "";
+    },
+  },
+  methods: {
+    // [@Method] 출발지 선택 페이지로 이동
+    moveStartPlace() {
+      this.$router.push(`/start-place/${this.$route.params.id}`);
     },
   },
 };

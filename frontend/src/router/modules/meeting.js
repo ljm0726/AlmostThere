@@ -1,9 +1,10 @@
-import MeetingPage from "@/components/MeetingPage/MeetingPage.vue"
-import MeetingHeader from "@/views/Header/MeetingHeader.vue"
-import LiveMapPage from "@/components/LiveMapPage/LiveMapPage.vue"
-import LiveMapHeader from "@/views/Header/LiveMapHeader.vue"
-import ChattingPage from "@/components/ChattingPage/ChattingPage.vue"
+import MeetingPage from "@/components/MeetingPage/MeetingPage.vue";
+import MeetingHeader from "@/views/Header/MeetingHeader.vue";
+import LiveMapPage from "@/components/LiveMapPage/LiveMapPage.vue";
+import LiveMapHeader from "@/views/Header/LiveMapHeader.vue";
+import ChattingPage from "@/components/ChattingPage/ChattingPage.vue";
 import LiveMap from "@/components/LiveMapPage/element/LiveMap.vue";
+import StartPlace from "@/components/MeetingPage/element/StartPlace.vue";
 
 const meeting = [
   {
@@ -35,6 +36,13 @@ const meeting = [
     components: {
       header: LiveMapHeader,
       default: LiveMap,
+    },
+  },
+  {
+    path: "/start-place/:id",
+    name: "start-place",
+    components: {
+      default: StartPlace,
     },
   },
 ];
