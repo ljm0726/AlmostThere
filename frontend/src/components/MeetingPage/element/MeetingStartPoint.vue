@@ -44,7 +44,10 @@ export default {
   methods: {
     // [@Method] 출발지 선택 페이지로 이동
     moveStartPlace() {
-      this.$router.push(`/start-place/${this.$route.params.id}`);
+      this.$router.push({
+        path: `/start-place/${this.$route.params.id}`,
+        query: { startPlace: this.startPlace, startAddress: this.startAddress },
+      });
     },
   },
 };

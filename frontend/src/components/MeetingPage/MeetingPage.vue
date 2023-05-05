@@ -86,6 +86,10 @@ export default {
       this.meeting = res;
       this.setting(this.meeting.meetingMembers);
     });
+
+    // test용
+    this.startPlace = "뚝섬한강공원";
+    this.startAddress = "서울특별시 광진구 자양동";
   },
   methods: {
     setting(meetingMembers) {
