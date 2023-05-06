@@ -23,6 +23,7 @@ export default {
   name: "StartPlace",
   data() {
     return {
+      meetingRoomId: null,
       startPlace: null,
       startAddress: null,
       startLatLng: [],
@@ -31,7 +32,14 @@ export default {
   mounted() {
     // Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
+      // i) kakao-map 생성
       this.initMap();
+
+      // ii) 기존 출발지 marker 표시
+      if (this.startLatLng.length != 0) {
+        this.createMarker();
+        this.resizeMapBound();
+      }
     } else {
       const script = document.createElement("script");
       //   /* global kakao */
@@ -42,12 +50,19 @@ export default {
     }
   },
   created() {
-    // 출발지 장소, 주소 저장
+    // 출발지 장소, 주소, 좌표, 모임ID 저장
     this.startPlace = this.$route.query.startPlace;
     this.startAddress = this.$route.query.startAddress;
-    // 출발지 주소를 토대로 lan, lng 저장
     this.startLatLng.push(this.$route.query.startLat);
     this.startLatLng.push(this.$route.query.startLng);
+    this.meetingRoomId = this.$route.params.id;
+    // console.log(
+    //   "#21# 출발지 확인: ",
+    //   this.startPlace,
+    //   this.startAddress,
+    //   this.startLatLng,
+    //   this.meetingRoomId
+    // );
   },
   methods: {
     // [@Method] Kakao Map 생성
@@ -59,11 +74,6 @@ export default {
       };
       // 지도 객체 등록
       this.map = new window.kakao.maps.Map(container, options);
-
-      // 기존 출발지 marker 표시
-      if (this.startLatLng.length != 0) {
-        this.createMarker();
-      }
     },
     // [@Method] 출발지 marker 생성
     createMarker() {
@@ -80,8 +90,19 @@ export default {
     goSearchPage(url) {
       this.$router.push({
         path: url,
-        query: { type: "start-place" },
+        query: { type: "start-place", id: this.meetingRoomId },
       });
+    },
+    // [@Method] marker에 따른 지도 범위 조정
+    resizeMapBound() {
+      // LatLngBounds 객체에 marker 좌표 추가
+      const bounds = new window.kakao.maps.LatLngBounds();
+      bounds.extend(
+        new window.kakao.maps.LatLng(this.startLatLng[0], this.startLatLng[1])
+      );
+
+      // 지도 범위 재설정
+      this.map.setBounds(bounds);
     },
   },
 };
