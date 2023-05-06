@@ -135,6 +135,16 @@ async function deleteCalculateDetail(calculateDetailId) {
     });
   return await Promise.resolve(result);
 }
+
+// [POST] room-id, member에 따른 출발장소 저장
+async function saveMemberStartPlace(meetingId, success, fail) {
+  console.log("#21# meetingId 확인: ", meetingId);
+  await api
+    .post(`/member/save/start-place`, { meetingId: meetingId })
+    .then(success)
+    .catch(fail);
+}
+
 export {
   meetingRegister,
   getMeeting,
@@ -145,4 +155,5 @@ export {
   postReceiptInfo,
   saveCalculateDetail,
   deleteCalculateDetail,
+  saveMemberStartPlace,
 };

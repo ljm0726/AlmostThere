@@ -1,4 +1,4 @@
-import { getMemberInfo, saveMemberStartPlace } from "@/api/modules/member";
+import { getMemberInfo } from "@/api/modules/member";
 
 const memberStore = {
   namespaced: true,
@@ -48,24 +48,6 @@ const memberStore = {
               "SET_LAST_MONTH_TOTAL_SPENT_MONEY",
               data.data.lastMonthTotalSpentMoney
             );
-            result = true;
-          }
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-      return await Promise.resolve(result);
-    },
-    // [@Method] 출발지 저장
-    async excuteSaveStartPlace(meetingRoomId) {
-      console.log("#21# roomId, member에 따른 출발지 저장: ", meetingRoomId);
-      var result = false;
-
-      await saveMemberStartPlace(
-        meetingRoomId,
-        async ({ data }) => {
-          if (data.statusCode == 200) {
             result = true;
           }
         },

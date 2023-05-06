@@ -66,7 +66,7 @@ export default {
     this.meetingRoomId = this.$route.params.id;
   },
   methods: {
-    ...mapActions("memberStore", ["excuteSaveStartPlace"]),
+    ...mapActions("meetingStore", ["excuteSaveStartPlace"]),
     // [@Method] Kakao Map 생성
     initMap() {
       const container = document.getElementById("map");

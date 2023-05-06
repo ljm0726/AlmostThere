@@ -1,4 +1,4 @@
-import { meetingRegister } from "@/api/modules/meeting";
+import { meetingRegister, saveMemberStartPlace } from "@/api/modules/meeting";
 import placeStore from "./place";
 import router from "@/router"; // 라우터 import
 
@@ -71,6 +71,24 @@ const meetingStore = {
     },
     SET_MEETING_TIME({ commit }, meeting_time) {
       commit("SET_MEETING_TIME", meeting_time);
+    },
+    // [@Method] 출발지 저장
+    async excuteSaveStartPlace(meetingRoomId) {
+      console.log("#21# roomId, member에 따른 출발지 저장: ", meetingRoomId);
+      var result = false;
+
+      await saveMemberStartPlace(
+        meetingRoomId,
+        async ({ data }) => {
+          if (data.statusCode == 200) {
+            result = true;
+          }
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+      return await Promise.resolve(result);
     },
   },
 };
