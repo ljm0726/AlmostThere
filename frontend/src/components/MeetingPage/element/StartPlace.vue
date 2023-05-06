@@ -1,5 +1,19 @@
 <template>
   <div style="width: 100%; height: 100%">
+    <v-btn
+      id="square-btn"
+      class="back-btn"
+      outlined
+      @click="$router.go(-1)"
+      rounded
+    >
+      <v-icon>$vuetify.icons.arrow_left</v-icon>
+    </v-btn>
+    <input
+      class="search-box"
+      placeholder=" 모임장소를 검색하세요"
+      v-on:click="goSearchPage('/search')"
+    />
     <div id="map"></div>
   </div>
 </template>
@@ -61,6 +75,13 @@ export default {
       });
       // marker 표시
       marker.setMap(this.map);
+    },
+    // [@Method] 검색 페이지로 이동
+    goSearchPage(url) {
+      this.$router.push({
+        path: url,
+        query: { type: "start-place" },
+      });
     },
   },
 };
