@@ -19,6 +19,8 @@
     <meeting-start-point
       :startPlace="startPlace"
       :startAddress="startAddress"
+      :startLat="startLat"
+      :startLng="startLng"
     ></meeting-start-point>
     <meeting-member :memberList="meeting.meetingMembers"></meeting-member>
     <meeting-game></meeting-game>
@@ -66,6 +68,8 @@ export default {
       },
       startPlace: null,
       startAddress: null,
+      startLat: null,
+      startLng: null,
       spentMoney: null,
       lateTotal: null,
       total: null,
@@ -90,6 +94,8 @@ export default {
     // test용
     this.startPlace = "뚝섬한강공원";
     this.startAddress = "서울특별시 광진구 자양동";
+    this.startLat = 37.5296;
+    this.startLng = 127.0698;
   },
   methods: {
     setting(meetingMembers) {

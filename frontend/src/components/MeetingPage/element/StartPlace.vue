@@ -11,6 +11,7 @@ export default {
     return {
       startPlace: null,
       startAddress: null,
+      startLatLng: [],
     };
   },
   mounted() {
@@ -30,6 +31,9 @@ export default {
     // 출발지 장소, 주소 저장
     this.startPlace = this.$route.query.startPlace;
     this.startAddress = this.$route.query.startAddress;
+    // 출발지 주소를 토대로 lan, lng 저장
+    this.startLatLng.push(this.$route.query.startLat);
+    this.startLatLng.push(this.$route.query.startLng);
   },
   methods: {
     // [@Method] Kakao Map 생성
@@ -41,6 +45,22 @@ export default {
       };
       // 지도 객체 등록
       this.map = new window.kakao.maps.Map(container, options);
+
+      // 기존 출발지 marker 표시
+      if (this.startLatLng.length != 0) {
+        this.createMarker();
+      }
+    },
+    // [@Method] 출발지 marker 생성
+    createMarker() {
+      const marker = new window.kakao.maps.Marker({
+        position: new window.kakao.maps.LatLng(
+          this.startLatLng[0],
+          this.startLatLng[1]
+        ),
+      });
+      // marker 표시
+      marker.setMap(this.map);
     },
   },
 };

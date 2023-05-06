@@ -30,6 +30,8 @@ export default {
   props: {
     startPlace: String,
     startAddress: String,
+    startLat: Number,
+    startLng: Number,
   },
   filters: {
     formatPlace(value) {
@@ -46,7 +48,12 @@ export default {
     moveStartPlace() {
       this.$router.push({
         path: `/start-place/${this.$route.params.id}`,
-        query: { startPlace: this.startPlace, startAddress: this.startAddress },
+        query: {
+          startPlace: this.startPlace,
+          startAddress: this.startAddress,
+          startLat: this.startLat,
+          startLng: this.startLng,
+        },
       });
     },
   },
