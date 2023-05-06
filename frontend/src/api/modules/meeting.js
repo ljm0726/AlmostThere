@@ -137,10 +137,9 @@ async function deleteCalculateDetail(calculateDetailId) {
 }
 
 // [POST] room-id, member에 따른 출발장소 저장
-async function saveMemberStartPlace(meetingId, success, fail) {
-  console.log("#21# meetingId 확인: ", meetingId);
+async function saveMemberStartPlace(startPlaceInfo, success, fail) {
   await api
-    .post(`/member/save/start-place`, { meetingId: meetingId })
+    .post(`/meeting/start-place`, JSON.stringify(startPlaceInfo))
     .then(success)
     .catch(fail);
 }

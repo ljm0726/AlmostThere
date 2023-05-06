@@ -18,7 +18,7 @@
     <!-- kakao-map -->
     <div id="map"></div>
     <!-- 장소 info -->
-    <div @click="saveStartPlace()">
+    <div @click="saveStartPlace">
       <place-info
         class="place-info"
         v-show="this.startPlace != null"
@@ -31,7 +31,7 @@
 
 <script>
 import placeInfo from "@/components/PlacePage/placeInfo.vue";
-import { mapActions } from "vuex";
+import { saveMemberStartPlace } from "@/api/modules/meeting";
 
 export default {
   name: "StartPlace",
@@ -66,7 +66,7 @@ export default {
     this.meetingRoomId = this.$route.params.id;
   },
   methods: {
-    ...mapActions("meetingStore", ["excuteSaveStartPlace"]),
+    // ...mapActions("placeStore", ["excuteSaveStartPlace"]),
     // [@Method] Kakao Map 생성
     initMap() {
       const container = document.getElementById("map");
@@ -114,16 +114,19 @@ export default {
     },
     // [@Method] 출발장소 저장
     saveStartPlace() {
-      this.excuteSaveStartPlace(this.meetingRoomId)
-        .then((res) => {
-          console.log("#21# 출발장소 저장 성공: ", res);
-          if (res) {
-            //   window.location.href = `http://localhost:3000/meeting/${meetingId}`;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      const startPlaceInfo = {
+        meetingId: this.meetingRoomId,
+        startPlace: this.startPlace,
+        startAddress: this.startAddress,
+        startLat: this.startLatLng[0],
+        startLng: this.startLatLng[1],
+      };
+
+      saveMemberStartPlace(startPlaceInfo).then(async (res) => {
+        if (res && res.data.statusCode == 200) {
+          console.log("#21# 출발지 저장 성공 data: ", res.data);
+        }
+      });
     },
   },
 };
