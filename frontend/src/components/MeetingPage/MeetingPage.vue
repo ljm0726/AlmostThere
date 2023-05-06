@@ -91,7 +91,7 @@ export default {
       this.setting(this.meeting.meetingMembers);
     });
 
-    // test용
+    // #21# test용
     this.startPlace = "뚝섬한강공원";
     this.startAddress = "서울특별시 광진구 자양동";
     this.startLat = 37.5296;

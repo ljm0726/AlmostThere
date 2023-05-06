@@ -18,13 +18,12 @@
     <!-- kakao-map -->
     <div id="map"></div>
     <!-- 장소 info -->
-    <div>
+    <div @click="saveStartPlace()">
       <place-info
         class="place-info"
         v-show="this.startPlace != null"
         :startPlace="this.startPlace"
         :startAddress="startAddress"
-        @click="saveStartPlace()"
       ></place-info>
     </div>
   </div>
@@ -32,6 +31,7 @@
 
 <script>
 import placeInfo from "@/components/PlacePage/placeInfo.vue";
+import { mapActions } from "vuex";
 
 export default {
   name: "StartPlace",
@@ -66,6 +66,7 @@ export default {
     this.meetingRoomId = this.$route.params.id;
   },
   methods: {
+    ...mapActions("memberStore", ["excuteSaveStartPlace"]),
     // [@Method] Kakao Map 생성
     initMap() {
       const container = document.getElementById("map");
@@ -110,6 +111,19 @@ export default {
 
       // 지도 범위 재설정
       this.map.setBounds(bounds);
+    },
+    // [@Method] 출발장소 저장
+    saveStartPlace() {
+      this.excuteSaveStartPlace(this.meetingRoomId)
+        .then((res) => {
+          console.log("#21# 출발장소 저장 성공: ", res);
+          if (res) {
+            //   window.location.href = `http://localhost:3000/meeting/${meetingId}`;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
