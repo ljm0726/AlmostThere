@@ -5,6 +5,7 @@ import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
+import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.service.MeetingService;
 import com.almostThere.global.response.BaseResponse;
@@ -106,5 +107,23 @@ public class MeetingApiController {
     public BaseResponse updateMeeting(@RequestBody MeetingUpdateRequestDto meetingUpdateRequestDto){
         meetingService.updateMeeting(meetingUpdateRequestDto);
         return new BaseResponse(200, "SUCCESS",null);
+    }
+
+    /**
+     * halo
+     * 모임ID + 멤버ID에 따른 출발장소를 수정한다.
+     * @param meetingStartPlaceRequestDto
+     * @return
+     */
+    @PostMapping("/start-place")
+    public BaseResponse setStartPlace(@RequestBody MeetingStartPlaceRequestDto meetingStartPlaceRequestDto){
+        System.out.println("#[MemberController]# setStartPlace 출발장소 수정 - request: " + meetingStartPlaceRequestDto);
+        meetingStartPlaceRequestDto.setMeetingId(14L);
+        meetingStartPlaceRequestDto.setMemberId(1L);
+
+        // 변경된 출발장소 update
+        meetingService.updateMemberStartPlace(meetingStartPlaceRequestDto);
+
+        return BaseResponse.success(null);
     }
 }

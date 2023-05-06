@@ -8,6 +8,7 @@ import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingMemberResponseDto;
+import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
@@ -176,5 +177,23 @@ public class MeetingService {
     public List<AttendMeetingMemberDto> findAttendAllMeetingById(Long memberId) {
         // member가 참여한 모임멤버(+ 모임) List 조회
         return meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new AttendMeetingMemberDto(m)).collect(Collectors.toList());
+    }
+
+    /**
+     * 모임ID + 멤버ID에 따른 출발장소를 수정한다.
+     * @param
+     */
+    @Transactional
+    public void updateMemberStartPlace(MeetingStartPlaceRequestDto meetingStartPlaceRequestDto){
+        // i) 로그인 한 사용자의 meeting-member 조회
+        MeetingMember meetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(
+                meetingStartPlaceRequestDto.getMeetingId(),
+                meetingStartPlaceRequestDto.getMemberId()
+        ).orElseThrow(() -> new NotFoundException(ErrorCode.MEETING_MEMBER_NOT_FOUND));
+
+        // ii) 변경된 출발장소 set
+        meetingMember.updateStartPlace(meetingStartPlaceRequestDto);
+        // iii) meeting-member 저장
+        meetingMemberRepository.save(meetingMember);
     }
 }
