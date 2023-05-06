@@ -15,12 +15,26 @@
       v-on:click="goSearchPage('/search')"
     />
     <div id="map"></div>
+    <!-- 장소 info -->
+    <!-- <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
+      <place-info class="place-info"></place-info>
+    </div> -->
+    <div>
+      <place-info
+        class="place-info"
+        :startPlace="this.startPlace"
+        :startAddress="startAddress"
+      ></place-info>
+    </div>
   </div>
 </template>
 
 <script>
+import placeInfo from "@/components/PlacePage/placeInfo.vue";
+
 export default {
   name: "StartPlace",
+  components: { placeInfo },
   data() {
     return {
       meetingRoomId: null,
@@ -32,14 +46,7 @@ export default {
   mounted() {
     // Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
-      // i) kakao-map 생성
       this.initMap();
-
-      // ii) 기존 출발지 marker 표시
-      if (this.startLatLng.length != 0) {
-        this.createMarker();
-        this.resizeMapBound();
-      }
     } else {
       const script = document.createElement("script");
       //   /* global kakao */
@@ -56,13 +63,6 @@ export default {
     this.startLatLng.push(this.$route.query.startLat);
     this.startLatLng.push(this.$route.query.startLng);
     this.meetingRoomId = this.$route.params.id;
-    // console.log(
-    //   "#21# 출발지 확인: ",
-    //   this.startPlace,
-    //   this.startAddress,
-    //   this.startLatLng,
-    //   this.meetingRoomId
-    // );
   },
   methods: {
     // [@Method] Kakao Map 생성
@@ -74,6 +74,12 @@ export default {
       };
       // 지도 객체 등록
       this.map = new window.kakao.maps.Map(container, options);
+
+      // i) 기존 출발지 marker 표시
+      if (this.startPlace != null) {
+        this.createMarker();
+        this.resizeMapBound();
+      }
     },
     // [@Method] 출발지 marker 생성
     createMarker() {
@@ -112,5 +118,12 @@ export default {
 #map {
   width: 100%;
   height: 100%;
+}
+
+.place-info {
+  z-index: 2;
+  position: absolute;
+  bottom: 5%;
+  left: 8.5%;
 }
 </style>
