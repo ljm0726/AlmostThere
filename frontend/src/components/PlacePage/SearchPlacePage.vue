@@ -6,7 +6,7 @@
     <form action="">
       <input
         class="search-box"
-        placeholder=" 모임장소를 검색하세요"
+        placeholder=" 장소를 검색하세요"
         v-model="searchValue"
         ref="myInput"
         autocomplete="off"

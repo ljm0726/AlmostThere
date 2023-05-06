@@ -1,5 +1,6 @@
 <template>
   <div style="width: 100%; height: 100%">
+    <!-- 뒤로가기 & 검색 -->
     <v-btn
       id="square-btn"
       class="back-btn"
@@ -11,19 +12,19 @@
     </v-btn>
     <input
       class="search-box"
-      placeholder=" 모임장소를 검색하세요"
+      placeholder=" 출발장소를 검색하세요"
       v-on:click="goSearchPage('/search')"
     />
+    <!-- kakao-map -->
     <div id="map"></div>
     <!-- 장소 info -->
-    <!-- <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
-      <place-info class="place-info"></place-info>
-    </div> -->
     <div>
       <place-info
         class="place-info"
+        v-show="this.startPlace != null"
         :startPlace="this.startPlace"
         :startAddress="startAddress"
+        @click="saveStartPlace()"
       ></place-info>
     </div>
   </div>
