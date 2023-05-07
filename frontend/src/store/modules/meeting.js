@@ -6,6 +6,7 @@ import router from "@/router"; // 라우터 import
 const meetingStore = {
   namespaced: true,
   state: {
+    meeting_host_id: null,
     meeting_name: null,
     meeting_date: null,
     meeting_time: null,
@@ -37,7 +38,7 @@ const meetingStore = {
       console.log(state.place_addr);
     },
     SET_MEETING_INFO(state, meeting) {
-      state.meeting_name = meeting.meetingName;
+      state.state.meeting_name = meeting.meetingName;
       state.place_name = meeting.meetingPlace;
       state.place_addr = meeting.meetingAddress;
       state.meeting_lat = meeting.meetingLat;
@@ -50,10 +51,10 @@ const meetingStore = {
       { commit },
       { meeting_name, date_time, place_name, place_addr }
     ) {
-      console.log(meeting_name, date_time);
+      console.log(meeting_name, memberStore.state.member.id);
       await meetingRegister(
         // this.,
-        memberStore.memberId,
+        memberStore.state.member.id,
         meeting_name,
         date_time,
         place_name,
@@ -80,12 +81,12 @@ const meetingStore = {
       { meeting_name, date_time, place_name, place_addr }
     ) {
       //meeting x,y 좌표를 받음.
-      console.log(memberStore.memberId, date_time);
+      console.log(this.meeting_host_id, date_time);
       await modifyMeeting(
         // this.,
         // 장소 버튼을 누를 때 place store에있는 update actions 실행 해주기
         // 처음 가져올 때는 meeting에만 data 저장.
-        memberStore.memberId,
+        this.meeting_host_id,
         meeting_name,
         date_time,
         place_name,

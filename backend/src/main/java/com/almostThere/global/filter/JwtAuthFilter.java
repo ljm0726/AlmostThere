@@ -5,6 +5,7 @@ import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.domain.user.service.TokenService;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
+import javax.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,6 +36,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         log.info("Filter 진입");
         log.info("요청 타입 {}", request.getMethod());
         log.info("요청 타입 uri {}", request.getRequestURI());
+        log.info("cookies {}", request.getCookies());
+
+        for(Cookie c: request.getCookies()) {
+            log.info("C {}, ", c.getName());
+        }
 
         String accessTokenHeader = request.getHeader("Authorization");
         log.info("accessToken {} ", accessTokenHeader);

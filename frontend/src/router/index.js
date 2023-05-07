@@ -5,6 +5,8 @@ import main from "@/router/modules/main";
 import meeting from "@/router/modules/meeting";
 import error from "@/router/modules/error";
 
+import store from "@/store";
+
 Vue.use(VueRouter);
 
 const routes = [...main, ...meeting, ...error];
@@ -14,13 +16,15 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
   scrollBehavior() {
-    return { x: 0, y: 0 }
+    return { x: 0, y: 0 };
   },
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   const access_token = localStorage.getItem("Authorization");
   // console.log("Before", access_token, from, to);
+  store.dispatch("memberStore/isLogin");
+
   if (access_token) {
     next();
   } else if (to.name === "landing" || to.name === "login") {
