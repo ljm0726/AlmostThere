@@ -620,8 +620,16 @@ export default {
       sessionStorage.setItem("findHalfwayModal", true);
       this.$refs.halfway.openDialog();
     },
+
     moveRegisterPage() {
-      this.$router.push("/register");
+      const from = sessionStorage.getItem("from");
+      console.log(from);
+      if (from !== null) {
+        this.$router.push("/Place");
+        this.$router.push(`/meeting/${from}`);
+      } else {
+        this.$router.push("/register"); // register페이지
+      }
     },
 
     goToPage(url) {

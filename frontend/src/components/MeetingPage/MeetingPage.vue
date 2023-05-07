@@ -42,7 +42,7 @@ import MeetingTitle from "./element/MeetingTitle.vue";
 import MeetingCost from "./element/MeetingCost.vue";
 import MeetingGame from "./element/MeetingGame.vue";
 import { getMeeting } from "@/api/modules/meeting.js";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "MeetingPage",
@@ -70,6 +70,23 @@ export default {
       lateTotal: null,
       total: null,
     };
+  },
+  computed: {
+    ...mapState("meetingStore", [
+      "place_name",
+      "place_addr",
+      "meeting_lat",
+      "meeting_lng",
+    ]),
+    ...mapState("placeStoremet", ["placeName", "placeAddr"]),
+  },
+  watch: {
+    place_name() {
+      this.meeting.meetingPlace = this.place_name;
+    },
+    place_addr() {
+      this.meeting.meetingAddress = this.place_addr;
+    },
   },
   components: {
     MeetingTitle,

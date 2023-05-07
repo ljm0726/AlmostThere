@@ -10,7 +10,12 @@
     >
       <v-icon>$vuetify.icons.edit_outline</v-icon>
     </v-btn>
-    <vue-bottom-sheet ref="modifySheet" max-width="500px">
+    <vue-bottom-sheet
+      ref="modifySheet"
+      max-width="500px"
+      @opened="isOpened"
+      @closed="isClosed"
+    >
       <v-sheet class="d-flex flex-column pb-10">
         <span class="point-font xxxxl-font main-col-1 align-self-center"
           >모임 내용 수정하기</span
@@ -52,6 +57,7 @@
                 scrollable
                 color="var(--main-col-1)"
                 :day-format="(date) => new Date(date).getDate()"
+                :allowed-dates="disablePastDates"
               >
                 <v-spacer></v-spacer>
                 <v-btn
@@ -115,9 +121,14 @@
         </v-sheet>
         <v-sheet class="mx-5 my-2 d-flex flex-column">
           <span class="point-font xxxl-font main-col-1">장소</span>
-          <v-btn outlined block color="var(--main-col-1)">
-            <span>{{ meetingPlace }}</span>
-            <span>({{ meetingAddress }})</span>
+          <v-btn
+            outlined
+            block
+            color="var(--main-col-1)"
+            @click="movePlacePage"
+          >
+            <span>{{ this.place }}</span>
+            <span>({{ this.address }})</span>
           </v-btn>
         </v-sheet>
         <v-sheet class="mx-5 my-2">
@@ -152,24 +163,129 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-
+import { mapMutations, mapState, mapActions } from "vuex";
 export default {
   name: "MeetingModifyBtn",
+  computed: {
+    ...mapState("meetingStore", [
+      "place_name",
+      "place_addr",
+      "meeting_lat",
+      "meeting_lng",
+    ]),
+    ...mapState("placeStore", ["placeName", "placeAddr"]),
+  },
+  watch: {
+    place_name: function (newValue, oldValue) {
+      console.log("WW", newValue, oldValue);
+      this.place = newValue;
+    },
+  },
   methods: {
+    ...mapMutations("placeStore", ["UPDATE_PLACE"]),
     ...mapActions("meetingStore", ["modify"]),
+    ...mapActions("placeStore", ["resetPlace"]),
+    ...mapActions("halfwayStore", ["resetStartPlace"]),
+
     open() {
-      this.$refs.modifySheet.open();
+      if (this.$refs.modifySheet) {
+        this.$refs.modifySheet.open();
+      }
     },
-    openDialog() {
-      this.dialog = true;
+    isOpened() {
+      console.log("Sheet is open.");
     },
-    closeDialog() {
-      this.dialog = false;
+    isClosed() {
+      sessionStorage.removeItem("from");
+      console.log("Sheet is closed.");
     },
+    // openDialog() {
+    //   this.dialog = true;
+    // },
+    // closeDialog() {
+    //   this.dialog = false;
+    //   console.log(this.dialog);
+    // },
+
+    movePlacePage() {
+      console.log(this.meeting_lat, this.meeting_lng);
+      const placeMap = new Map();
+      placeMap.set("x", this.meeting_lat);
+      placeMap.set("y", this.meeting_lng);
+      placeMap.set("name", this.place);
+      placeMap.set("addr", this.address);
+      this.UPDATE_PLACE(placeMap);
+
+      sessionStorage.setItem("from", this.$route.params.id);
+
+      this.$router.push("/place");
+    },
+
+    handlePlaceDataSubmitted(placeData) {
+      // Place.vue에서 보내온 데이터를 받아서 처리함
+      console.log("pD ", this.placeData);
+      this.place = placeData.name;
+      this.address = placeData.address;
+      this.showPlaceForm = false; // 다이얼로그를 닫음
+      // ...
+    },
+
     modifyMetting() {
-      const date_time = new Date(this.date + " " + this.time);
-      console.log(this.date, " ", this.time, " ", date_time);
+      this.getCurTime();
+
+      if (this.curDate >= this.date && this.curTime >= this.time) {
+        alert("시간을 다시 설정해주세요!");
+      } else if (
+        this.name == null ||
+        this.place == null ||
+        this.address == null
+      ) {
+        alert("모든 정보를 입력해주세요!");
+      } else if (
+        isNaN(parseInt(this.amount)) ||
+        this.amount < 0 ||
+        this.amount > 10000
+      ) {
+        alert("지각비를 다시 설정해주세요! (0~10000)원");
+      } else {
+        const date_time = new Date(this.date + " " + this.time); //LocalDate 타입에 맞게 변환
+        const name = this.name;
+        const place = this.place;
+        const address = this.address;
+
+        this.modify({ name, date_time, place, address });
+        this.resetPlace();
+        this.resetStartPlace();
+      }
+    },
+
+    getCurTime() {
+      const currentDate = new Date();
+      const options = {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      };
+      const dateArray = currentDate
+        .toLocaleDateString("en-GB", options)
+        .split("/");
+      this.curDate = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
+      this.curTime = currentDate.toLocaleTimeString("en-GB", {
+        timeZone: "Asia/Seoul",
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    },
+
+    disablePastDates(val) {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
+      return val >= formattedDate;
     },
   },
   props: {
@@ -190,19 +306,35 @@ export default {
       amount: 0,
       dateDialog: false,
       timeDialog: false,
+      showPlaceForm: false,
     };
   },
 
   created() {
-    console.log(this.meetingName, this.meetingTime);
+    console.log("C", this.place_name, this.placeName, this.meetingPlace);
     const [date, time2] = this.meetingTime.split("T");
     const time = time2.slice(0, -3);
     this.name = this.meetingName;
     this.date = date;
     this.time = time;
-    this.place = this.meetingPlace;
-    this.address = this.meetingAddress;
-    this.amount = this.lateAmount == null ? 0 : this.lateAmount;
+    // this.place = this.meetingPlace;
+    // this.address = this.meetingAddress;
+    this.amount = this.lateAmount == null ? 0 : parseInt(this.lateAmount);
+  },
+
+  mounted() {
+    const from = sessionStorage.getItem("from");
+    console.log("M", this.place_name, this.placeName);
+    if (from !== null) {
+      this.open();
+    }
+    if (this.placeName == null || this.placeAddr == null) {
+      this.place = this.place_name;
+      this.address = this.place_addr;
+    } else {
+      this.place = this.placeName;
+      this.address = this.placeAddr;
+    }
   },
 };
 </script>
