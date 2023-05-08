@@ -1,5 +1,6 @@
 <template>
-  <v-sheet height="100%">
+  <!-- <v-sheet height="100%"> -->
+  <v-sheet :style="{ height: '100vh', height: 'calc(var(--vh, 1vh) * 100)' }">
     <!-- header -->
     <chatting-header
       @openDrawer="openDrawer"
@@ -302,6 +303,18 @@ export default {
       const pageHeight = document.documentElement.scrollHeight - 127;
       return pageHeight;
     },
+    chattingPageHeight() {
+      return window.innerHeight * 0.01;
+    },
+  },
+  beforeCreate() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    window.addEventListener("resize", () => {
+      console.log("resize");
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
   },
   async created() {
     this.loading = true;
@@ -516,3 +529,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+#chatting-page {
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+}
+</style>
