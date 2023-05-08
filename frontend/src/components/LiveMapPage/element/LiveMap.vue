@@ -32,8 +32,8 @@ export default {
       distanceOverlay: [-0.4, -0.1], // distance over-lay 좌표
       chatOverlay: [0.5, 4], // chat over-lay 좌표
       warningOverlay: [6.0, 3.5], // GPS 수신불가 over-lay 좌표
-      /* # 현재 좌표 */
-      placeLatLng: [37.5049, 127.0371], // 모임장소 좌표
+      /* # 좌표 */
+      placeLatLng: [], // 모임장소 좌표
       memberLocation: [], // 사용자들의 좌표 (memberId, memberNickname, LatLng)
       /* # member 채팅 */
       testChatContent: "", // test용 (!추후 삭제)
@@ -54,6 +54,7 @@ export default {
   },
   computed: {
     ...mapState("memberStore", ["member"]),
+    ...mapState("meetingStore", ["meeting_lat", "meeting_lng"]),
   },
   watch: {
     chatting() {
@@ -63,7 +64,10 @@ export default {
   mounted() {
     // i) memberId 저장
     this.memberId = this.member.id;
-    // ii) Kakao Map Script import
+    // ii) 모임장소 좌표 저장
+    this.placeLatLng.push(this.meeting_lat);
+    this.placeLatLng.push(this.meeting_lng);
+    // iii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
       this.initMap();
     } else {
