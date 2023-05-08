@@ -45,6 +45,8 @@ public class MeetingCalculateApiController {
         try {
             URL url = new URL(apiURL);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            String type = contentType.substring(6);
+
             con.setUseCaches(false);
             con.setDoInput(true);
             con.setDoOutput(true);
@@ -52,13 +54,13 @@ public class MeetingCalculateApiController {
             con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             con.setRequestProperty("X-OCR-SECRET", secretKey);
 
-            System.out.println("파일 형식: "+contentType.substring(6));
+            System.out.println("파일 형식: "+type);
             JSONObject json = new JSONObject();
             json.put("version", "V2");
             json.put("requestId", UUID.randomUUID().toString());
             json.put("timestamp", System.currentTimeMillis());
             JSONObject image = new JSONObject();
-            image.put("format", "jpg");
+            image.put("format", type);
             //image should be public, otherwise, should use data
             FileInputStream inputStream = (FileInputStream) receipt.getInputStream();
             byte[] buffer = new byte[inputStream.available()];
@@ -92,7 +94,6 @@ public class MeetingCalculateApiController {
 
             ReceiptResponseDto result = calculateDetailService.parseData(response);
             return BaseResponse.success(result);
-
         } catch (Exception e) {
             return BaseResponse.fail();
         }

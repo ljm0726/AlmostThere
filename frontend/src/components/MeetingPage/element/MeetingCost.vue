@@ -89,45 +89,58 @@
           <div class="d-flex justify-center align-center">
             <img :src="imageUrl" width="90%" />
           </div>
-          <v-row class="mt-5 d-flex align-center">
-            <v-col
-              cols="2"
-              class="d-flex flex-row justify-space-between medium-font main-col-1"
+          <div v-if="ocrSuccess">
+            <v-row class="mt-5 d-flex align-center">
+              <v-col
+                cols="2"
+                class="d-flex flex-row justify-space-between medium-font main-col-1"
+              >
+                <span>상</span>
+                <span>호</span>
+                <span>명</span>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="storeName"
+                  type="text"
+                  placeholder="상호명"
+                  outlined
+                  hide-details
+                  dense
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row class="mb-5 d-flex align-center">
+              <v-col
+                cols="2"
+                class="d-flex flex-row justify-space-between medium-font main-col-1"
+              >
+                <span>총</span>
+                <span>액</span>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="totalPrice"
+                  type="number"
+                  placeholder="총액"
+                  outlined
+                  hide-details
+                  dense
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </div>
+          <div
+            v-else
+            class="mt-5 mb-5 d-flex flex-column justify-center align-center"
+          >
+            <span class="point-font main-col-1 lg-font"
+              >사진 정보 읽기에 실패하였습니다.</span
             >
-              <span>상</span>
-              <span>호</span>
-              <span>명</span>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="storeName"
-                type="text"
-                placeholder="상호명"
-                outlined
-                hide-details
-                dense
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row class="mb-5 d-flex align-center">
-            <v-col
-              cols="2"
-              class="d-flex flex-row justify-space-between medium-font main-col-1"
+            <span class="point-font main-col-1 lg-font"
+              >다시 시도해주세요!</span
             >
-              <span>총</span>
-              <span>액</span>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="totalPrice"
-                type="number"
-                placeholder="총액"
-                outlined
-                hide-details
-                dense
-              ></v-text-field>
-            </v-col>
-          </v-row>
+          </div>
         </div>
         <v-btn
           color="var(--main-col-1)"
@@ -158,6 +171,7 @@ export default {
   data() {
     return {
       imageLoading: false,
+      ocrSuccess: true,
       receipt: null,
       storeName: null,
       totalPrice: 0,
@@ -197,12 +211,17 @@ export default {
   watch: {
     async receipt() {
       this.imageLoading = true;
+      this.ocrSuccess = await true;
       if (this.receipt != null) {
         postReceiptInfo(this.receipt).then(async (res) => {
           if (res != null) {
             this.storeName = await res.storeName;
             this.totalPrice = await res.totalPrice;
             this.imageLoading = await false;
+            this.ocrSuccess = await true;
+          } else {
+            this.imageLoading = await false;
+            this.ocrSuccess = await false;
           }
         });
       }
