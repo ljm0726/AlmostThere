@@ -66,12 +66,12 @@ const meetingStore = {
   actions: {
     async register(
       { commit },
-      { meeting_name, date_time, place_name, place_addr }
+      { member_id, meeting_name, date_time, place_name, place_addr }
     ) {
-      console.log(meeting_name, memberStore.state.member.id);
+      // console.log(meeting_name, memberStore.state.member.id);
       await meetingRegister(
         // this.,
-        memberStore.state.member.id,
+        member_id,
         meeting_name,
         date_time,
         place_name,
