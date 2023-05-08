@@ -1,10 +1,22 @@
 <template>
   <div class="p">
-    <div class="name">
-      {{ this.placeName }}
+    <!-- 중간 장소 info -->
+    <div v-if="this.placeName != null">
+      <div class="name">
+        {{ this.placeName }}
+      </div>
+      <div class="addr">
+        {{ this.placeAddr }}
+      </div>
     </div>
-    <div class="addr">
-      {{ this.placeAddr }}
+    <!-- 출발 장소 info -->
+    <div v-else>
+      <div class="name">
+        {{ this.startPlace }}
+      </div>
+      <div class="addr">
+        {{ this.startAddress }}
+      </div>
     </div>
   </div>
 </template>
@@ -14,6 +26,17 @@ import { mapState } from "vuex";
 export default {
   computed: {
     ...mapState("placeStore", ["placeX", "placeY", "placeName", "placeAddr"]),
+  },
+  // 출발지 선정으로 component로 접근 시 props로 데이터 전달
+  props: {
+    startPlace: {
+      type: String,
+      required: true,
+    },
+    startAddress: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>

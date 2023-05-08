@@ -1,4 +1,4 @@
-import { getMemberInfo, getLoginMember } from "@/api/modules/mypage";
+import { getMemberInfo, getLoginMember } from "@/api/modules/member";
 // import router from "@/router";
 
 const memberStore = {
