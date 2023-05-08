@@ -1,6 +1,12 @@
 <template>
-  <!-- <v-sheet height="100%"> -->
-  <v-sheet :style="{ height: '100vh', height: 'calc(var(--vh, 1vh) * 100)' }">
+  <v-sheet height="100%">
+    <!-- <v-sheet
+    :style="{
+      height: '100vh',
+      height: 'calc(var(--vh, 1vh) * 100)',
+      height: '-webkit-fill-available',
+    }"
+  > -->
     <!-- header -->
     <chatting-header
       @openDrawer="openDrawer"
@@ -83,7 +89,7 @@
       <v-sheet id="chattingMessages">
         <!-- 무한스크롤 -->
         <infinite-loading
-          spinner="circles"
+          spinner="spiral"
           direction="top"
           @infinite="infiniteHandler"
         >
@@ -307,16 +313,14 @@ export default {
       return window.innerHeight * 0.01;
     },
   },
-  beforeCreate() {
+  async created() {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
     window.addEventListener("resize", () => {
-      console.log("resize");
+      // console.log("resize");
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     });
-  },
-  async created() {
     this.loading = true;
     // 저장된 채팅 정보를 가져옵니다.
     await getChatting(this.$route.params.id).then(async (res) => {
@@ -526,12 +530,18 @@ export default {
       //   .removeEventListener("scroll", this.onTheBottom);
       window.removeEventListener("scroll", this.onTheBottom);
     }
+    window.removeEventListener("resize", () => {
+      // console.log("resize");
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
   },
 };
 </script>
 <style scoped>
-#chatting-page {
+/* #chatting-page {
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
-}
+  height: -webkit-fill-available;
+} */
 </style>
