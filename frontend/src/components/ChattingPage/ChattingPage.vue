@@ -64,21 +64,22 @@
     <!-- 채팅 정보를 불러올 수 없는 경우 -->
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
-    <v-sheet v-else class="d-flex flex-column justify-end" min-height="100%">
-      <!-- <v-sheet
+    <!-- <v-sheet v-else class="d-flex flex-column justify-end" min-height="100%"> -->
+    <v-sheet
       v-else
       class="d-flex flex-column justify-end"
       style="padding: 55px 0px 72px 0px"
       min-height="100%"
-    > -->
+    >
       <!-- scroll 맨 아래로 내리는 버튼 -->
       <scroll-bottom-button ref="scrollDownBtn"></scroll-bottom-button>
       <!-- 채팅창 -->
-      <v-sheet
+      <!-- <v-sheet
         id="chattingMessages"
         style="margin: 55px 0px 72px 0px; overflow-y: auto"
         :height="chattingHeight"
-      >
+      > -->
+      <v-sheet id="chattingMessages">
         <!-- 무한스크롤 -->
         <infinite-loading
           spinner="circles"
@@ -326,13 +327,13 @@ export default {
   methods: {
     ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
     bottomVisible() {
-      // const scrollY = window.scrollY;
-      // const visible = document.documentElement.clientHeight;
-      // const pageHeight = document.documentElement.scrollHeight;
-      const scrollY = document.getElementById("chattingMessages").scrollTop;
-      const visible = document.getElementById("chattingMessages").clientHeight;
-      const pageHeight =
-        document.getElementById("chattingMessages").scrollHeight;
+      const scrollY = window.scrollY;
+      const visible = document.documentElement.clientHeight;
+      const pageHeight = document.documentElement.scrollHeight;
+      // const scrollY = document.getElementById("chattingMessages").scrollTop;
+      // const visible = document.getElementById("chattingMessages").clientHeight;
+      // const pageHeight =
+      //   document.getElementById("chattingMessages").scrollHeight;
       // console.log(document.getElementById("chattingMessages").scrollTop);
       // console.log(document.getElementById("chattingMessages").scrollHeight);
       // console.log(document.getElementById("chattingMessages").clientHeight);
@@ -375,10 +376,11 @@ export default {
     },
     // 맨 아래로 스크롤 이동
     goBottom() {
-      // window.scrollTo(0, document.querySelector("body").scrollHeight);
-      document
-        .getElementById("chattingMessages")
-        .scrollTo(0, document.getElementById("chattingMessages").scrollHeight);
+      // console.log("goBottom");
+      window.scrollTo(0, document.querySelector("body").scrollHeight);
+      // document
+      //   .getElementById("chattingMessages")
+      //   .scrollTo(0, document.getElementById("chattingMessages").scrollHeight);
     },
     // 메세지 보내고, 입력 내용 초기화
     sendMessage() {
@@ -408,12 +410,12 @@ export default {
             await this.chatList.push(data.data);
             // console.log(">> 여기", data.data);
             // 스크롤 맨 아래로 이동
-            // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우 this.memberId == data.data.memberId ||
+            // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우
             // if (
             //   document.documentElement.scrollTop + window.innerHeight + 100 >=
             //   document.querySelector("body").scrollHeight
             // )
-            if (this.bottom) {
+            if (this.memberId == data.data.memberId || this.bottom) {
               await this.goBottom();
             } else {
               this.newMessage = await data.data.message;
@@ -454,15 +456,21 @@ export default {
             // loading 상태 변경
             this.loading = await false;
             // await this.goBottom();
-            setTimeout(() => {
-              document
-                .querySelector(".v-snack__wrapper")
-                .addEventListener("click", this.watchNewMessage);
-              // console.log("여기");
-              document
-                .getElementById("chattingMessages")
-                .addEventListener("scroll", this.onTheBottom);
-            }, 300);
+            document
+              .querySelector(".v-snack__wrapper")
+              .addEventListener("click", this.watchNewMessage);
+            window.addEventListener("scroll", this.onTheBottom);
+            await this.goBottom();
+            // setTimeout(() => {
+            //   document
+            //     .querySelector(".v-snack__wrapper")
+            //     .addEventListener("click", this.watchNewMessage);
+            //   // console.log("여기");
+            //   document
+            //     .getElementById("chattingMessages")
+            //     .addEventListener("scroll", this.onTheBottom);
+            //   this.goBottom();
+            // }, 100);
           },
           (error) => {
             console.log("소켓 연결 실패", error);
@@ -474,19 +482,21 @@ export default {
         this.subscribe();
         this.getMember();
         this.loading = false;
-        // document
-        //   .querySelector(".v-snack__wrapper")
-        //   .addEventListener("click", this.watchNewMessage);
-        // window.addEventListener("scroll", this.onTheBottom);
-        setTimeout(() => {
-          document
-            .querySelector(".v-snack__wrapper")
-            .addEventListener("click", this.watchNewMessage);
-          // console.log("여기");
-          document
-            .getElementById("chattingMessages")
-            .addEventListener("scroll", this.onTheBottom);
-        }, 300);
+        document
+          .querySelector(".v-snack__wrapper")
+          .addEventListener("click", this.watchNewMessage);
+        window.addEventListener("scroll", this.onTheBottom);
+        this.goBottom();
+        // setTimeout(() => {
+        //   document
+        //     .querySelector(".v-snack__wrapper")
+        //     .addEventListener("click", this.watchNewMessage);
+        //   // console.log("여기");
+        //   document
+        //     .getElementById("chattingMessages")
+        //     .addEventListener("scroll", this.onTheBottom);
+        //   this.goBottom();
+        // }, 100);
       }
     },
   },
@@ -498,10 +508,10 @@ export default {
       document
         .querySelector(".v-snack__wrapper")
         .removeEventListener("click", this.watchNewMessage);
-      document
-        .getElementById("chattingMessages")
-        .removeEventListener("scroll", this.onTheBottom);
-      // window.removeEventListener("scroll", this.onTheBottom);
+      // document
+      //   .getElementById("chattingMessages")
+      //   .removeEventListener("scroll", this.onTheBottom);
+      window.removeEventListener("scroll", this.onTheBottom);
     }
   },
 };
