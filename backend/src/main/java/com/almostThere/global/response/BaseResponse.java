@@ -1,6 +1,7 @@
 package com.almostThere.global.response;
 
 
+import com.almostThere.global.error.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +31,9 @@ public class BaseResponse<T> {
     public static <T> BaseResponse<T> fail() {
         return new BaseResponse(FAILED, FAILED_MESSAGE, null);
     }
-
+    public static <T> BaseResponse<T> customFail(ErrorCode error) {
+        return new BaseResponse(error.getCode(), error.getMessage(), null);
+    }
     public static <T> BaseResponse<T> invalidAccessToken() {
         return new BaseResponse(FAILED, INVALID_ACCESS_TOKEN, null);
     }

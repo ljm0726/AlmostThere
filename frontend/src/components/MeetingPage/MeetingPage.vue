@@ -1,36 +1,40 @@
 <template>
   <div>
-    <meeting-title
-      v-if="meeting.meetingName !== null"
-      :meetingName="meeting.meetingName"
-      :meetingDate="meeting.meetingDate"
-      :meetingTime="meeting.meetingTime"
-      :meetingPlace="meeting.meetingPlace"
-      :meetingAddress="meeting.meetingAddress"
-      :lateAmount="meeting.lateAmount"
-    ></meeting-title>
-    <meeting-datetime :meetingTime="meeting.meetingTime"></meeting-datetime>
-    <meeting-place
-      :meetingPlace="meeting.meetingPlace"
-      :meetingAddress="meeting.meetingAddress"
-    ></meeting-place>
-    <meeting-start-point
-      :startPlace="startPlace"
-      :startAddress="startAddress"
-      :startLat="startLat"
-      :startLng="startLng"
-    ></meeting-start-point>
-    <meeting-member :memberList="meeting.meetingMembers"></meeting-member>
-    <meeting-game></meeting-game>
-    <meeting-late-fee :lateAmount="meeting.lateAmount"></meeting-late-fee>
-    <meeting-cost
-      :meetingId="meeting.meetingId"
-      :calculateDetails="meeting.calculateDetails"
-      :spentMoney="spentMoney"
-      :lateTotal="lateTotal"
-      :total="total"
-      :remain="meeting.remain"
-    ></meeting-cost>
+    <internet-error ref="error"></internet-error>
+    <meeting-loading v-if="loading"></meeting-loading>
+    <div v-else>
+      <meeting-title
+        v-if="meeting.meetingName !== null"
+        :meetingName="meeting.meetingName"
+        :meetingDate="meeting.meetingDate"
+        :meetingTime="meeting.meetingTime"
+        :meetingPlace="meeting.meetingPlace"
+        :meetingAddress="meeting.meetingAddress"
+        :lateAmount="meeting.lateAmount"
+      ></meeting-title>
+      <meeting-datetime :meetingTime="meeting.meetingTime"></meeting-datetime>
+      <meeting-place
+        :meetingPlace="meeting.meetingPlace"
+        :meetingAddress="meeting.meetingAddress"
+      ></meeting-place>
+      <meeting-start-point
+        :startPlace="startPlace"
+        :startAddress="startAddress"
+        :startLat="startLat"
+        :startLng="startLng"
+      ></meeting-start-point>
+      <meeting-member :memberList="meeting.meetingMembers"></meeting-member>
+      <meeting-game></meeting-game>
+      <meeting-late-fee :lateAmount="meeting.lateAmount"></meeting-late-fee>
+      <meeting-cost
+        :meetingId="meeting.meetingId"
+        :calculateDetails="meeting.calculateDetails"
+        :spentMoney="spentMoney"
+        :lateTotal="lateTotal"
+        :total="total"
+        :remain="meeting.remain"
+      ></meeting-cost>
+    </div>
   </div>
 </template>
 
@@ -43,11 +47,25 @@ import MeetingStartPoint from "./element/MeetingStartPoint.vue";
 import MeetingTitle from "./element/MeetingTitle.vue";
 import MeetingCost from "./element/MeetingCost.vue";
 import MeetingGame from "./element/MeetingGame.vue";
+import InternetError from "@/common/component/dialog/InternetError.vue";
+import MeetingLoading from "./MeetingLoading.vue";
 import { getMeeting } from "@/api/modules/meeting.js";
 import { mapActions, mapState } from "vuex";
 
 export default {
   name: "MeetingPage",
+  components: {
+    MeetingTitle,
+    MeetingDatetime,
+    MeetingPlace,
+    MeetingStartPoint,
+    MeetingMember,
+    MeetingLateFee,
+    MeetingCost,
+    MeetingGame,
+    InternetError,
+    MeetingLoading,
+  },
   data() {
     return {
       loading: true,
@@ -83,6 +101,7 @@ export default {
       "meeting_lng",
     ]),
     ...mapState("placeStoremet", ["placeName", "placeAddr"]),
+    ...mapState("memberStore", ["member"]),
   },
   watch: {
     place_name() {
@@ -92,22 +111,18 @@ export default {
       this.meeting.meetingAddress = this.place_addr;
     },
   },
-  components: {
-    MeetingTitle,
-    MeetingDatetime,
-    MeetingPlace,
-    MeetingStartPoint,
-    MeetingMember,
-    MeetingLateFee,
-    MeetingCost,
-    MeetingGame,
-  },
-  created() {
-    getMeeting(this.$route.params.id).then((res) => {
-      this.meeting = res;
-      this.setting(this.meeting.meetingMembers);
-
-      this.SET_MEETING_INFO(res);
+  async created() {
+    this.loading = true;
+    await getMeeting(this.$route.params.id).then(async (res) => {
+      if (res === null) {
+        this.loading = await true;
+        this.$refs.error.openDialog();
+      } else {
+        this.loading = await false;
+        this.meeting = await res;
+        this.setting(this.meeting.meetingMembers);
+        this.SET_MEETING_INFO(res);
+      }
     });
   },
   methods: {
@@ -115,8 +130,9 @@ export default {
 
     setting(meetingMembers) {
       const member = meetingMembers.filter(
-        (member) => member.memberId == "1"
+        (member) => member.memberId == this.member.id
       )[0];
+
       this.startPlace = member.startPlace;
       this.startAddress = member.startAddress;
       this.startLat = member.startLat;

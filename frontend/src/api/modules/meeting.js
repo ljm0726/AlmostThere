@@ -54,8 +54,10 @@ async function modifyMeeting(
 async function getMeeting(meetingId) {
   var result = null;
   await api.get(`/meeting/detail/${meetingId}`).then((res) => {
+    if (res.data.statusCode == "404") {
+      result = null;
+    }
     result = res.data.data;
-    console.log("result ", result);
   });
   return await Promise.resolve(result);
 }
@@ -110,6 +112,8 @@ async function postReceiptInfo(receipt) {
     .then(async (res) => {
       if (res.data.statusCode == 200) {
         result = res.data.data;
+      } else {
+        result = null;
       }
     })
     .catch();
