@@ -95,6 +95,15 @@ const meetingStore = {
     ) {
       //meeting x,y 좌표를 받음.
       const date_time = new Date(date + " " + time);
+      const X =
+        placeStore.state.placeX == 0
+          ? state.meeting_lat
+          : placeStore.state.placeX;
+      const Y =
+        placeStore.state.placeY == 0
+          ? state.meeting_lng
+          : placeStore.state.placeY;
+      console.log("XY", X, Y);
       // console.log(date_time, place_name, place_addr, amount);
       await modifyMeeting(
         // this.,
@@ -106,8 +115,8 @@ const meetingStore = {
         date_time,
         place_name,
         place_addr,
-        placeStore.state.placeX,
-        placeStore.state.placeY,
+        X,
+        Y,
         amount,
         ({ data }) => {
           console.log(data);

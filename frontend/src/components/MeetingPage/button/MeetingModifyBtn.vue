@@ -218,7 +218,7 @@ export default {
 
       sessionStorage.setItem("from", this.$route.params.id);
 
-      this.$router.replace("/place");
+      this.$router.push("/place");
     },
 
     handlePlaceDataSubmitted(placeData) {
@@ -261,9 +261,10 @@ export default {
             this.$nextTick(() => {
               this.resetPlace();
               this.resetStartPlace();
-              this.$refs.modifySheet.close();
+              // this.$refs.modifySheet.close();
+              sessionStorage.removeItem("from");
 
-              // window.location.reload(true);
+              window.location.reload(true); //reload를 해야 하나??
             });
           })
           .catch((error) => {
