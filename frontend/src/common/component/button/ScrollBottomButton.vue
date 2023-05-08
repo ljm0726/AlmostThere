@@ -60,7 +60,10 @@ export default {
     },
     // [@Method] 맨 아래로 가기
     goBottom() {
-      window.scrollTo(0, document.querySelector("body").scrollHeight);
+      // window.scrollTo(0, document.querySelector("body").scrollHeight);
+      document
+        .getElementById("chattingMessages")
+        .scrollTo(0, document.getElementById("chattingMessages").scrollHeight);
     },
     // bottomVisible() {
     //   const scrollY = window.scrollY;
