@@ -5,6 +5,7 @@ import com.almostThere.domain.meeting.dto.MeetingCntDto;
 import com.almostThere.domain.meeting.entity.StateType;
 import com.almostThere.domain.meeting.service.MeetingService;
 import com.almostThere.domain.user.dto.MemberAccessDto;
+import com.almostThere.domain.user.dto.MemberDto;
 import com.almostThere.domain.user.dto.MemberInfoDto;
 import com.almostThere.domain.user.service.MemberService;
 import com.almostThere.global.response.BaseResponse;
@@ -31,6 +32,24 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MeetingService meetingService;
+
+
+    /**
+     * 회원 정보 불러오기
+     * @param authentication
+     * @return
+     */
+    @GetMapping
+    public BaseResponse getMemberInfo(Authentication authentication) {
+        //401 error : 는 인증이 안된유저임 즉 토큰이 없거나 만료된 유저, ExceptionHandlerFilter에서 처리해야함.
+        Long memberId = ((MemberAccessDto)authentication.getPrincipal()).getId();
+//        log.info("request 내 정보 조회 ID {}", 1L);
+
+        MemberDto member = memberService.getMemberByMemberId(memberId);
+
+        return BaseResponse.success(member);
+    }
+
 
     /**
      * 자주 만나는 상위 9명의 멤버들을 조회한다.

@@ -12,6 +12,7 @@
       <div class="d-flex flex-row align-self-end">
         <!-- 수정 버튼 -->
         <meeting-modify-btn
+          v-if="meetingName"
           :meetingName="meetingName"
           :meetingDate="meetingDate"
           :meetingTime="meetingTime"
