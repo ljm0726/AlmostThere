@@ -28,8 +28,8 @@ public class MeetingApiController {
     @GetMapping("/most-recent")
     public BaseResponse getMostRecentMeeting(Authentication authentication){
 
-//        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
-        MeetingTimeDto meetingTimeDto = meetingService.getMostRecentMeeting(1L);
+        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
+        MeetingTimeDto meetingTimeDto = meetingService.getMostRecentMeeting(memberId);
 
         return BaseResponse.success(meetingTimeDto);
 

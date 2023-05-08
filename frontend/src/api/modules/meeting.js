@@ -81,11 +81,7 @@ async function getUpcomingMeetings() {
 function getMostRecentMeeting() {
   return new Promise((resolve, reject) => {
     api
-      .get("/meeting/most-recent", {
-        headers: {
-          Authorization: localStorage.getItem("Authorization"),
-        },
-      })
+      .get("/meeting/most-recent")
       .then((response) => {
         resolve(response.data.data);
       })
