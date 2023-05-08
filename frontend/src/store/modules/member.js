@@ -1,4 +1,4 @@
-import { getMemberInfo } from "@/api/modules/mypage";
+import { getMemberInfo } from "@/api/modules/member";
 
 const memberStore = {
   namespaced: true,

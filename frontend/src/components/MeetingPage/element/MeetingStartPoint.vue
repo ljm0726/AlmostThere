@@ -9,6 +9,7 @@
         color="var(--main-col-1)"
         rounded
         small
+        @click="moveStartPlace()"
       >
         <v-icon>$vuetify.icons.edit_outline</v-icon>
       </v-btn>
@@ -29,15 +30,33 @@ export default {
   props: {
     startPlace: String,
     startAddress: String,
+    startLat: Number,
+    startLng: Number,
   },
   filters: {
     formatPlace(value) {
       // console.log("장소: " + value);
       if (value === null) return "출발지를 설정하지 않았습니다.";
+      else return value;
     },
     formatAddress(value) {
       // console.log("주소: " + value);
       if (value === null) return "";
+      else return value;
+    },
+  },
+  methods: {
+    // [@Method] 출발지 선택 페이지로 이동
+    moveStartPlace() {
+      this.$router.push({
+        path: `/start-place/${this.$route.params.id}`,
+        query: {
+          startPlace: this.startPlace,
+          startAddress: this.startAddress,
+          startLat: this.startLat,
+          startLng: this.startLng,
+        },
+      });
     },
   },
 };

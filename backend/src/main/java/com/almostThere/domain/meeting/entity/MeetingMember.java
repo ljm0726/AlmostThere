@@ -1,10 +1,8 @@
 package com.almostThere.domain.meeting.entity;
 
+import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
 import com.almostThere.domain.user.entity.Member;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -68,4 +66,11 @@ public class MeetingMember {
         this.spentMoney = spentMoney;
     }
 
+    /* 출발장소 update */
+    public void updateStartPlace(MeetingStartPlaceRequestDto meetingStartPlaceRequestDto) {
+        this.startPlace = meetingStartPlaceRequestDto.getStartPlace();
+        this.startAddress = meetingStartPlaceRequestDto.getStartAddress();
+        this.startLat = meetingStartPlaceRequestDto.getStartLat();
+        this.startLng = meetingStartPlaceRequestDto.getStartLng();
+    }
 }

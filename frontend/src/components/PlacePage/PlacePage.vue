@@ -385,7 +385,7 @@ export default {
       const alternatives = false;
       const road_details = false;
 
-      const placeCnt = this.startPlaces.length;
+      // const placeCnt = this.startPlaces.length;
 
       // const car_routes = [];
 
