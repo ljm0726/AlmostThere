@@ -10,18 +10,23 @@ async function getChatting(meetingId) {
     .then((res) => {
       result = res;
     })
-    .catch((e) => { e })
-  return await Promise.resolve(result)
+    .catch((e) => {
+      e;
+    });
+  return await Promise.resolve(result);
 }
 
 async function getChattingLog(meetingId, lastNumber) {
   var result = null;
-  await api.get(`/chat/${meetingId}/${lastNumber}`)
+  await api
+    .get(`/chat/${meetingId}/${lastNumber}`)
     .then((res) => {
       result = res;
     })
-    .catch((e) => { e })
+    .catch((e) => {
+      e;
+    });
   return await Promise.resolve(result);
 }
 
-export { getChatting, getChattingLog }
+export { getChatting, getChattingLog };

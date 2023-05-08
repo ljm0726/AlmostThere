@@ -6,7 +6,7 @@
     <form action="">
       <input
         class="search-box"
-        placeholder=" 모임장소를 검색하세요"
+        placeholder=" 장소를 검색하세요"
         v-model="searchValue"
         ref="myInput"
         autocomplete="off"
@@ -102,6 +102,7 @@ export default {
         list.innerHTML = listDiv;
         console.log(list.childNodes);
         this.isListOpen = true;
+        // #21#
         list.childNodes.forEach((child) => {
           child.addEventListener("click", () => {
             const x = child.attributes["data-x"].value;
@@ -113,8 +114,25 @@ export default {
             placeMap.set("y", y);
             placeMap.set("name", this.place);
             placeMap.set("addr", this.address);
-            this.updatePlace(placeMap);
-            this.$router.push("/place");
+
+            // 중간장소 선정 or 출발지 선정에 따라 다른 페이지로 이동
+            // i) 중간장소
+            if (this.$route.query.type == null) {
+              this.updatePlace(placeMap);
+              this.$router.push("/place");
+            }
+            // ii) 출발지
+            else {
+              this.$router.push({
+                path: `/start-place/${this.$route.query.id}`,
+                query: {
+                  startPlace: placeMap.get("name"),
+                  startAddress: placeMap.get("addr"),
+                  startLat: placeMap.get("y"),
+                  startLng: placeMap.get("x"),
+                },
+              });
+            }
 
             // console.log(
             //   "x,y좌표는 ",

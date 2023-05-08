@@ -1,5 +1,6 @@
 package com.almostThere.domain.meeting.service;
 
+import com.almostThere.domain.meeting.dto.MeetingTimeDto;
 import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
@@ -8,6 +9,7 @@ import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingMemberResponseDto;
+import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
@@ -20,16 +22,16 @@ import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import com.almostThere.global.error.exception.NotFoundException;
+import java.util.ArrayList;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,15 +44,17 @@ public class MeetingService {
     private final MeetingMemberRepository meetingMemberRepository;
     private final CalculateDetailRepository calculateDetailRepository;
 
-    /**
-     * 멤버가 참여중인 모임 중 약속시간이 3시간 이내에 있는 모임의 수를 조회한다.
-     * @param memberId
-     * @return 모임의 수
-     */
-    public int countMeetingWithin3hours(Long memberId){
-        LocalDateTime afterDate = LocalDateTime.now().plusHours(3);
-        System.out.println(afterDate);
-        return meetingRepository.countMeetingsWithin3hours(memberId,afterDate);
+    public MeetingTimeDto getMostRecentMeeting(Long memberId){
+
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        List<Meeting> meeting = meetingRepository.getMostRecentMeeting(memberId, pageRequest);
+        if(meeting.size()==1) {
+            MeetingTimeDto meetingTimeDto = new MeetingTimeDto(meeting.get(0));
+            System.out.println("가장 최근 모임의 시간 :"+meetingTimeDto.getMeetingTime());
+            return meetingTimeDto;
+        }
+
+        return null;
     }
 
     /**
@@ -95,6 +99,7 @@ public class MeetingService {
         int roomCode = (int)(rand.nextLong()%100000000L);
         roomCode = Math.abs(roomCode);
         String rc = Integer.toString(roomCode);
+        meetingCreateRequestDto.setMeetingTime(meetingCreateRequestDto.getMeetingTime().plusHours(9));
         Meeting meeting = meetingCreateRequestDto.toEntity(meetingCreateRequestDto, meetingHost,rc);
         meeting = meetingRepository.save(meeting);
         MeetingMember meetingMember = new MeetingMember(meetingHost, meeting, StateType.GOING);
@@ -176,5 +181,23 @@ public class MeetingService {
     public List<AttendMeetingMemberDto> findAttendAllMeetingById(Long memberId) {
         // member가 참여한 모임멤버(+ 모임) List 조회
         return meetingMemberRepository.findByMemberId(memberId).stream().map(m -> new AttendMeetingMemberDto(m)).collect(Collectors.toList());
+    }
+
+    /**
+     * 모임ID + 멤버ID에 따른 출발장소를 수정한다.
+     * @param
+     */
+    @Transactional
+    public void updateMemberStartPlace(MeetingStartPlaceRequestDto meetingStartPlaceRequestDto){
+        // i) 로그인 한 사용자의 meeting-member 조회
+        MeetingMember meetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(
+                meetingStartPlaceRequestDto.getMeetingId(),
+                meetingStartPlaceRequestDto.getMemberId()
+        ).orElseThrow(() -> new NotFoundException(ErrorCode.MEETING_MEMBER_NOT_FOUND));
+
+        // ii) 변경된 출발장소 set
+        meetingMember.updateStartPlace(meetingStartPlaceRequestDto);
+        // iii) meeting-member 저장
+        meetingMemberRepository.save(meetingMember);
     }
 }
