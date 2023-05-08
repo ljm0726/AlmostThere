@@ -55,7 +55,7 @@
 
 <script>
 import CloseButton from "@/common/component/button/CloseButton.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "MeetingOutBtn",
@@ -65,11 +65,14 @@ export default {
       dialog: false,
     };
   },
+  computed: {
+    ...mapState("memberStore", ["member"]),
+  },
   methods: {
     ...mapActions("meetingStore", ["outMeeting"]),
     clickOutMeeting() {
       console.log("모임 탈출 ~");
-      this.outMeeting()
+      this.outMeeting(this.member.id)
         .then(() => {
           console.log("정상실행");
           this.$nextTick(() => {
