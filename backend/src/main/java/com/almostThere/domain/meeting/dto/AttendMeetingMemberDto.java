@@ -13,18 +13,14 @@ public class AttendMeetingMemberDto {
 
     private StateType state;
 
-    private Double spentMoney;
+    private int spentMoney;
 
     private AttendMeetingDto meetingDto;
 
     public AttendMeetingMemberDto(MeetingMember meetingMember) {
         this.meetingMemberId = meetingMember.getId();
         this.state = meetingMember.getState();
-        if (meetingMember.getSpentMoney() == null) {
-            this.spentMoney = 0.0;
-        } else {
-            this.spentMoney = Double.valueOf(meetingMember.getSpentMoney());
-        }
+        this.spentMoney = meetingMember.getSpentMoney();
         this.meetingDto = new AttendMeetingDto(meetingMember.getMeeting());
     }
 }

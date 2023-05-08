@@ -88,10 +88,6 @@ public class ChattingController {
         // 채팅 관련 정보 가져오기
         ChattingResponseDto chattingResponseDto = chattingService.getChattingInfo(meetingId);
 
-        // 채팅 메시지 전부 가져오기
-        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, -1L, chattingResponseDto.getRoomCode());
-        chattingResponseDto.setChattingListDto(chattingListDto);
-
         // 응답값에 멤버 ID 넣기
         chattingResponseDto.setMemberId(memberId);
 

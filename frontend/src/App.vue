@@ -170,6 +170,7 @@ export default {
 @import "@/assets/styles/override/dialog.css";
 @import "@/assets/styles/override/badge.css";
 @import "@/assets/styles/override/swiper.css";
+@import "@/assets/styles/override/snackbar.css";
 @import "@/assets/styles/box/box_shadow.css";
 @import "@/assets/styles/box/box_border.css";
 

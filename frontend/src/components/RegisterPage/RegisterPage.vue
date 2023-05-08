@@ -190,6 +190,8 @@ export default {
       "SET_MEETING_DATE",
       "SET_MEETING_TIME",
     ]),
+    ...mapActions("placeStore", ["resetPlace"]),
+    ...mapActions("halfwayStore", ["resetStartPlace"]),
 
     setMeetingName() {
       this.SET_MEETING_NAME(this.meetingname);
@@ -237,6 +239,8 @@ export default {
             });
           }
         );
+        this.resetPlace();
+        this.resetStartPlace();
       }
     },
 

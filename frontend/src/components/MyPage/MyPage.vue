@@ -1,7 +1,14 @@
 <template>
   <div>
-    <div v-if="loading">로딩 중</div>
-    <div v-else class="ml-6 mr-6">
+    <div v-if="loading">
+      <my-page-loading></my-page-loading>
+    </div>
+    <div v-else>
+      <img
+        class="my-page-image"
+        src="@/assets/images/page/mypage.png"
+        width="30%"
+      />
       <member-profile />
       <member-summary />
       <member-calendar />
@@ -16,10 +23,11 @@ import { mapActions } from "vuex";
 import MemberProfile from "./element/MemberProfile.vue";
 import MemberSummary from "./element/MemberSummary.vue";
 import MemberCalendar from "./element/MemberCalendar.vue";
+import MyPageLoading from "./MyPageLoading.vue";
 
 export default {
   name: "MyPage",
-  components: { MemberProfile, MemberSummary, MemberCalendar },
+  components: { MemberProfile, MemberSummary, MemberCalendar, MyPageLoading },
   data() {
     return {
       loading: true,
@@ -40,4 +48,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.my-page-image {
+  position: absolute;
+  z-index: 2;
+  right: 5%;
+}
+</style>

@@ -29,6 +29,16 @@ async function meetingRegister(
     .catch(fail);
 }
 
+async function getMeeting(meetingId) {
+  var result = null;
+  await api
+    .post("/meeting/detail", { memberId: 1, meetingId: meetingId })
+    .then((res) => {
+      result = res.data.data;
+    });
+  return await Promise.resolve(result);
+}
+
 async function getTodayMeetings() {
   var result = null;
   await api.get("/meeting/today").then((res) => {
@@ -66,7 +76,6 @@ async function getBestMember() {
   var result = null;
   await api.get("/member/best-member").then((res) => {
     result = res.data.data;
-    console.log(result);
   });
   return await Promise.resolve(result);
 }
@@ -91,7 +100,9 @@ async function postReceiptInfo(receipt) {
 }
 
 async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
+  var result = false;
   var formData = new FormData();
+  console.log("미팅ID: " + meetingId);
   formData.append("meetingId", meetingId);
   formData.append("receipt", receipt);
   formData.append("storeName", storeName);
@@ -100,17 +111,29 @@ async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
     .post(`/meeting-calculate/detail`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
-    .then((res) => {
-      console.log(res);
+    .then(async () => {
+      result = true;
     });
+  return await Promise.resolve(result);
 }
 
+async function deleteCalculateDetail(calculateDetailId) {
+  var result = false;
+  await api
+    .delete(`/meeting-calculate/${calculateDetailId}`, {})
+    .then(async () => {
+      result = true;
+    });
+  return await Promise.resolve(result);
+}
 export {
   meetingRegister,
+  getMeeting,
   getTodayMeetings,
   getUpcomingMeetings,
   getMostRecentMeeting,
   getBestMember,
   postReceiptInfo,
   saveCalculateDetail,
+  deleteCalculateDetail,
 };

@@ -35,15 +35,39 @@
         <detail-button></detail-button>
       </v-sheet>
     </v-navigation-drawer>
+    <!-- 새로 들어온 채팅 -->
+    <v-snackbar
+      id="chatting-snackbar"
+      v-model="snackbar"
+      color="var(--main-col-1)"
+      style="margin: 0px 0px 65px 5px"
+      min-width="250"
+      width="70%"
+      max-width="400"
+      min-height="0"
+      timeout="5000"
+      outlined
+      elevation="5"
+    >
+      <div class="d-flex flex-column">
+        <span class="light-font" v-if="newMessageMemberId">
+          {{ members[newMessageMemberId].nickname }}
+        </span>
+        <span class="medium-font">
+          {{ newMessage }}
+        </span>
+      </div>
+    </v-snackbar>
     <!-- 채팅 정보를 불러올 수 없는 경우 -->
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
-    <v-sheet
+    <v-sheet v-else class="d-flex flex-column justify-end" min-height="100%">
+      <!-- <v-sheet
       v-else
       class="d-flex flex-column justify-end"
       style="padding: 55px 0px 72px 0px"
       min-height="100%"
-    >
+    > -->
       <!-- scroll 맨 아래로 내리는 버튼 -->
       <scroll-bottom-button></scroll-bottom-button>
       <!-- 채팅창 -->
@@ -88,7 +112,10 @@
                     chatList[idx - 1].chattingTime.split('T')[1].substr(0, 5)
                 "
               >
-                <img :src="members[item.memberId].profile" alt="John" />
+                <v-img
+                  :src="members[item.memberId].profile"
+                  :alt="members[item.memberId].nickname"
+                ></v-img>
               </v-avatar>
               <!-- 사진 없이 사진 크기와 동일한빈 공간 -->
               <v-sheet v-else class="mr-2" style="padding-left: 34px">
@@ -174,7 +201,7 @@
           </div>
         </div>
       </v-sheet>
-
+      <v-sheet max-width="500" height="72"></v-sheet>
       <!-- 메세지 입력창 -->
       <v-sheet
         class="px-3 pb-4"
@@ -235,6 +262,9 @@ export default {
       loading: true, // 페이지 로딩 여부
       drawer: null, // 오른쪽 프로필 목록 창
       roomCode: null, // 모임 코드
+      snackbar: false,
+      newMessage: "",
+      newMessageMemberId: null,
     };
   },
   computed: {
@@ -248,7 +278,6 @@ export default {
     // 저장된 채팅 정보를 가져옵니다.
     await getChatting(this.$route.params.id).then(async (res) => {
       if (res && res.data.statusCode == 200) {
-        // console.log(">> 결과 ", res);
         const info = await res.data.data;
         // 룸 코드
         this.roomCode = await info.roomCode;
@@ -258,14 +287,6 @@ export default {
         this.members = await info.chattingMemberMap;
         // 로그인한 멤버 정보
         this.memberId = await info.memberId;
-        // 채팅 기록
-        this.chatList =
-          await info.chattingListDto.chattingDetailDtoList.reverse();
-        // 마지막 기록
-        this.last = await info.chattingListDto.lastNumber;
-        // 스크롤 맨 아래로 이동
-        // this.goBottom();
-        await setTimeout(this.goBottom, 100);
         // 요청 값을 받아오면 소켓 연결을 시도합니다.
         this.connect();
       } else {
@@ -282,12 +303,11 @@ export default {
     // 무한 스크롤 함수
     infiniteHandler($state) {
       // 마지막 Index가 0이나 음수면 값을 다 가져왔다고 판단
-      if (this.last <= 0) $state.complete();
+      if (this.last <= 0 && this.last != -1) $state.complete();
       // 그 외에 가져와야 할 값이 더 있는 경우
       else {
         // ChattingLog를 가져오는 API 요청
         getChattingLog(this.$route.params.id, this.last).then(async (res) => {
-          // console.log(">> 22.222", res);
           // chat 정보 저장
           const chat = await res.data.data;
           // 무한 스크롤 페이지
@@ -326,13 +346,25 @@ export default {
     subscribe() {
       this.stompClient.subscribe(
         `/send/${this.roomCode}`,
-        (res) => {
-          const data = JSON.parse(res.body);
+        async (res) => {
+          const data = await JSON.parse(res.body);
           if (data.statusCode == 200) {
             // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-            this.chatList.push(data.data);
+            await this.chatList.push(data.data);
+            // console.log(">> 여기", data.data);
             // 스크롤 맨 아래로 이동
-            window.setTimeout(this.goBottom, 50);
+            // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우
+            if (
+              this.memberId == data.data.memberId ||
+              document.documentElement.scrollTop + window.innerHeight + 100 >=
+                document.querySelector("body").scrollHeight
+            ) {
+              await this.goBottom();
+            } else {
+              this.newMessage = await data.data.message;
+              this.newMessageMemberId = await data.data.memberId;
+              this.snackbar = await true;
+            }
           }
         },
         { id: `chatting-subscribe-${this.$route.params.id}` }
@@ -359,13 +391,14 @@ export default {
         this.updateStompClient(Stomp.over(socket));
         this.stompClient.connect(
           {},
-          (frame) => {
+          async (frame) => {
             console.log("소켓 연결 성공", frame);
-            this.updateConnected(true);
-            this.subscribe();
-            this.getMember();
+            await this.updateConnected(true);
+            await this.subscribe();
+            await this.getMember();
             // loading 상태 변경
-            this.loading = false;
+            this.loading = await false;
+            // await this.goBottom();
           },
           (error) => {
             console.log("소켓 연결 실패", error);

@@ -1,7 +1,11 @@
 <template>
-  <v-sheet>
-    <div v-if="meetings.length == 0"><no-meeting /></div>
-    <div v-else><meeting-list-card :meetings="meetings" /></div>
+  <v-sheet class="mt-4">
+    <div v-if="meetings.length == 0">
+      <no-meeting />
+    </div>
+    <div v-else>
+      <meeting-list-card :key="date" :date="date" :meetings="meetings" />
+    </div>
   </v-sheet>
 </template>
 
@@ -32,7 +36,9 @@ export default {
       this.getOnDayMeetings();
     },
   },
-  created() {},
+  created() {
+    this.getOnDayMeetings();
+  },
   methods: {
     getOnDayMeetings() {
       const onDayMeeting = [];

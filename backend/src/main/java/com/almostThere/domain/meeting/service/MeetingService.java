@@ -2,17 +2,18 @@ package com.almostThere.domain.meeting.service;
 
 import com.almostThere.domain.meeting.dto.MeetingTimeDto;
 import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
+import com.almostThere.domain.meeting.dto.MeetingDto;
+import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
-import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
-import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingMemberResponseDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
+import com.almostThere.domain.meeting.repository.CalculateDetailRepository;
 import com.almostThere.domain.meeting.repository.MeetingMemberRepository;
 import com.almostThere.domain.meeting.repository.MeetingRepository;
 import com.almostThere.domain.user.entity.Member;
@@ -21,43 +22,38 @@ import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import com.almostThere.global.error.exception.NotFoundException;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MeetingService {
-
     private static final Logger logger = LoggerFactory.getLogger(MeetingService.class);
-
     private final MeetingRepository meetingRepository;
     private final MemberRepository memberRepository;
     private final MeetingMemberRepository meetingMemberRepository;
+    private final CalculateDetailRepository calculateDetailRepository;
 
-    public MeetingTimeDto getMostRecentMeeting(Long memberId){
 
-        PageRequest pageRequest = PageRequest.of(0, 1);
-        List<Meeting> meeting = meetingRepository.getMostRecentMeeting(memberId, pageRequest);
-        if(meeting.size()==1) {
-            MeetingTimeDto meetingTimeDto = new MeetingTimeDto(meeting.get(0));
-            System.out.println("가장 최근 모임의 시간 :"+meetingTimeDto.getMeetingTime());
-            return meetingTimeDto;
-        }
-
-        return null;
+    /**
+     * 멤버가 참여중인 모임 중 약속시간이 3시간 이내에 있는 모임의 수를 조회한다.
+     * @param memberId
+     * @return 모임의 수
+     */
+    public int countMeetingWithin3hours(Long memberId){
+        LocalDateTime afterDate = LocalDateTime.now().plusHours(3);
+        System.out.println(afterDate);
+        return meetingRepository.countMeetingsWithin3hours(memberId,afterDate);
     }
 
     /**
@@ -67,7 +63,6 @@ public class MeetingService {
      */
     public List<MeetingDto> findTodayMeeting(Long memberId){
         LocalDateTime afterDate = LocalDateTime.now().plusDays(1);
-        System.out.println(afterDate);
         List<Meeting> meetings = meetingRepository.findTodayMeetings(memberId,afterDate);
         List<MeetingDto> result = meetings.stream().map(m->new MeetingDto(m)).collect(Collectors.toList());
         return result;
@@ -96,8 +91,8 @@ public class MeetingService {
     @Transactional
     public void createMeeting(MeetingCreateRequestDto meetingCreateRequestDto){
         final Member meetingHost = memberRepository.findById(meetingCreateRequestDto.getHostId())
-            .orElseThrow(() -> new NotFoundException(
-                ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorCode.MEMBER_NOT_FOUND));
 
         Random rand = new Random();
         int roomCode = (int)(rand.nextLong()%100000000L);
@@ -116,18 +111,24 @@ public class MeetingService {
      * @return 모임 상세정보
      */
     public MeetingDetailResponseDto getMeetingDetail(MeetingDetailRequestDto meetingDetailRequestDto){
+        Long memberId = meetingDetailRequestDto.getMemberId();
         final Meeting meeting = meetingRepository.findById(meetingDetailRequestDto.getMeetingId())
-            .orElseThrow(()->new NotFoundException(
-                ErrorCode.MEETING_NOT_FOUND));
+                .orElseThrow(()->new NotFoundException(
+                        ErrorCode.MEETING_NOT_FOUND));
+
         List<MeetingMemberResponseDto> meetingMembers = meeting.getMeetingMembers()
-            .stream().map(m->new MeetingMemberResponseDto(m)).collect(Collectors.toList());
+                .stream().map(m->new MeetingMemberResponseDto(m)).collect(Collectors.toList());
+        MeetingMember member = meeting.getMeetingMembers().stream().filter(m->m.getMember().getId()==memberId).findAny().get();
+
         List<MeetingCalculateDetailDto> calculateDetails = new ArrayList<>();
         if(meeting.getCalculateDetails() != null) {
             calculateDetails = meeting.getCalculateDetails()
-                .stream().map(c->new MeetingCalculateDetailDto(c)).collect(Collectors.toList());
+                    .stream().map(c->new MeetingCalculateDetailDto(c)).collect(Collectors.toList());
         }
-
-        return new MeetingDetailResponseDto(meeting,meetingMembers,calculateDetails);
+        int totalPrice = calculateDetailRepository.sumMeetingPrice(meeting.getId());
+        int memberPrice = meetingMemberRepository.sumMemberPrice(meeting.getId());
+        int remain = totalPrice-memberPrice;
+        return new MeetingDetailResponseDto(meeting, remain, meetingMembers, calculateDetails);
     }
 
     /**
@@ -137,8 +138,8 @@ public class MeetingService {
     @Transactional
     public void deleteMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto) {
         final Meeting meeting = meetingRepository.findById(meetingDeleteRequestDto.getMeetingid())
-            .orElseThrow(() -> new NotFoundException(
-                ErrorCode.MEETING_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorCode.MEETING_NOT_FOUND));
 
         if (meeting.getHost().getId() == meetingDeleteRequestDto.getMemberid())
             meetingRepository.deleteById(meetingDeleteRequestDto.getMeetingid());
@@ -152,7 +153,7 @@ public class MeetingService {
     @Transactional
     public void exitMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto){
         meetingMemberRepository.deleteMeetingMemberByMeetingIdAndMemberID(
-            meetingDeleteRequestDto.getMemberid(),meetingDeleteRequestDto.getMeetingid());
+                meetingDeleteRequestDto.getMemberid(),meetingDeleteRequestDto.getMeetingid());
     }
 
     /**
@@ -162,8 +163,8 @@ public class MeetingService {
     @Transactional
     public void updateMeeting(MeetingUpdateRequestDto meetingUpdateRequestDto){
         final Meeting meeting = meetingRepository.findById(meetingUpdateRequestDto.getMeetingId())
-            .orElseThrow(() -> new NotFoundException(
-            ErrorCode.MEETING_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorCode.MEETING_NOT_FOUND));
 
         if (meeting.getHost().getId() == meetingUpdateRequestDto.getHostId()) {
             meeting.updateMeeting(meetingUpdateRequestDto);
