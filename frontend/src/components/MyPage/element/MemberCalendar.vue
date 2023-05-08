@@ -34,7 +34,7 @@ export default {
   },
   components: { MeetingListOnDay },
   computed: {
-    ...mapState("memberStore", ["attendMeetings"]),
+    ...mapState("mypageStore", ["attendMeetings"]),
   },
   mounted() {
     const dates = [];
