@@ -4,7 +4,6 @@ import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.dto.MeetingTimeDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
-import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
 import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
@@ -71,12 +70,13 @@ public class MeetingApiController {
 
     /**
      * asng
-     * @param meetingDetailRequestDto
+     * @param
      * @return 모임 상세정보를 조회한다.
      */
-    @PostMapping("/detail")
-    public BaseResponse getMeetingDetail(Authentication authentication, @RequestBody MeetingDetailRequestDto meetingDetailRequestDto){
-        MeetingDetailResponseDto meetingDetailResponseDto = meetingService.getMeetingDetail(meetingDetailRequestDto);
+    @GetMapping("/detail/{meetingId}")
+    public BaseResponse getMeetingDetail(Authentication authentication, @PathVariable Long meetingId){
+        Long memberId = ((MemberAccessDto)authentication.getPrincipal()).getId();
+        MeetingDetailResponseDto meetingDetailResponseDto = meetingService.getMeetingDetail(memberId, meetingId);
         return BaseResponse.success(meetingDetailResponseDto);
     }
 
