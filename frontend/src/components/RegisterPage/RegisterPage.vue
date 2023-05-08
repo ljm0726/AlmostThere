@@ -206,7 +206,7 @@ export default {
     },
 
     movePlacePage() {
-      this.$router.push("/place");
+      this.$router.replace("/place");
     },
 
     regist_meeting() {

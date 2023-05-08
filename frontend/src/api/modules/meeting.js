@@ -28,25 +28,41 @@ async function meetingRegister(
     .catch(fail);
 }
 async function modifyMeeting(
-  id,
+  meeitng_id,
+  host_id,
   name,
   date_time,
   place,
   address,
   lat,
   lng,
+  amount,
   success,
   fail
 ) {
+  console.log(
+    "modi ",
+    meeitng_id,
+    host_id,
+    name,
+    date_time,
+    place,
+    address,
+    lat,
+    lng,
+    amount
+  );
   await api
-    .post(`/meeting`, {
-      hostId: id,
+    .put(`/meeting`, {
+      meetingId: meeitng_id,
+      hostId: host_id,
       meetingName: name,
       meetingTime: date_time,
       meetingPlace: place,
       meetingAddress: address,
       meetingLat: lat,
       meetingLng: lng,
+      lateAmount: amount,
     })
     .then(success)
     .catch(fail);

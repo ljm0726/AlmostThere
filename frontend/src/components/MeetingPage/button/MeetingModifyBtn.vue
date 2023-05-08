@@ -218,7 +218,7 @@ export default {
 
       sessionStorage.setItem("from", this.$route.params.id);
 
-      this.$router.push("/place");
+      this.$router.replace("/place");
     },
 
     handlePlaceDataSubmitted(placeData) {
@@ -248,14 +248,28 @@ export default {
       ) {
         alert("지각비를 다시 설정해주세요! (0~10000)원");
       } else {
-        const date_time = new Date(this.date + " " + this.time); //LocalDate 타입에 맞게 변환
-        const name = this.name;
-        const place = this.place;
-        const address = this.address;
+        this.modify({
+          meeting_name: this.name,
+          date: this.date,
+          time: this.time,
+          place_name: this.place,
+          place_addr: this.address,
+          amount: this.amount,
+        })
+          .then(() => {
+            console.log("정상실행");
+            this.$nextTick(() => {
+              this.resetPlace();
+              this.resetStartPlace();
+              this.$refs.modifySheet.close();
 
-        this.modify({ name, date_time, place, address });
-        this.resetPlace();
-        this.resetStartPlace();
+              // window.location.reload(true);
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+            alert("수정 중 에러 발생");
+          });
       }
     },
 

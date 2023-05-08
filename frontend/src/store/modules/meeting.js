@@ -6,6 +6,7 @@ import router from "@/router"; // 라우터 import
 const meetingStore = {
   namespaced: true,
   state: {
+    meeitng_id: null,
     meeting_host_id: null,
     meeting_name: null,
     meeting_date: null,
@@ -43,7 +44,9 @@ const meetingStore = {
       console.log(state.place_addr);
     },
     SET_MEETING_INFO(state, meeting) {
-      state.state.meeting_name = meeting.meetingName;
+      state.meeitng_id = meeting.meetingId;
+      state.meeting_host_id = meeting.hostId;
+      state.meeting_name = meeting.meetingName;
       state.place_name = meeting.meetingPlace;
       state.place_addr = meeting.meetingAddress;
       state.meeting_lat = meeting.meetingLat;
@@ -87,33 +90,37 @@ const meetingStore = {
     },
 
     async modify(
-      { commit },
-      { meeting_name, date_time, place_name, place_addr }
+      { commit, state },
+      { meeting_name, date, time, place_name, place_addr, amount }
     ) {
       //meeting x,y 좌표를 받음.
-      console.log(this.meeting_host_id, date_time);
+      const date_time = new Date(date + " " + time);
+      // console.log(date_time, place_name, place_addr, amount);
       await modifyMeeting(
         // this.,
         // 장소 버튼을 누를 때 place store에있는 update actions 실행 해주기
         // 처음 가져올 때는 meeting에만 data 저장.
-        this.meeting_host_id,
+        state.meeitng_id,
+        state.meeting_host_id,
         meeting_name,
         date_time,
         place_name,
         place_addr,
         placeStore.state.placeX,
         placeStore.state.placeY,
+        amount,
         ({ data }) => {
           console.log(data);
-          commit("SET_MEETING_NAME", null);
-          commit("SET_MEETING_DATE", null);
-          commit("SET_MEETING_TIME", null);
-          commit("SET_PLACE_NAME", null);
-          commit("SET_PLACE_ADDR", null);
-          router.push({ name: "home" });
+          commit("SET_MEETING_NAME", meeting_name);
+          commit("SET_MEETING_DATE", date);
+          commit("SET_MEETING_TIME", time);
+          commit("SET_PLACE_NAME", place_name);
+          commit("SET_PLACE_ADDR", place_addr);
+          // router.push({ name: "home" });
         },
         (error) => {
           console.log(error);
+          throw error;
         }
       );
     },
