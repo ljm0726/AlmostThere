@@ -77,7 +77,10 @@ export default {
       const formattedTime = new Date(
         `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
       );
-      const diffTime = meetingTime.getTime() - formattedTime.getTime();
+
+      const diffTime =
+        new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
+        formattedTime.getTime();
 
       console.log("diffTime :", diffTime);
 
