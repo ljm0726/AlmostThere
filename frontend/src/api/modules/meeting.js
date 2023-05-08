@@ -28,28 +28,55 @@ async function meetingRegister(
     .catch(fail);
 }
 async function modifyMeeting(
-  id,
+  meeitng_id,
+  host_id,
   name,
   date_time,
   place,
   address,
   lat,
   lng,
+  amount,
   success,
   fail
 ) {
+  console.log(
+    "modi ",
+    meeitng_id,
+    host_id,
+    name,
+    date_time,
+    place,
+    address,
+    lat,
+    lng,
+    amount
+  );
   await api
-    .post(`/meeting`, {
-      hostId: id,
+    .put(`/meeting`, {
+      meetingId: meeitng_id,
+      hostId: host_id,
       meetingName: name,
       meetingTime: date_time,
       meetingPlace: place,
       meetingAddress: address,
       meetingLat: lat,
       meetingLng: lng,
+      lateAmount: amount,
     })
     .then(success)
     .catch(fail);
+}
+
+async function outMeeting(member_id, meeting_id, success, fail) {
+  console.log(member_id, meeting_id);
+  await api
+    .put("/meeting/exit", {
+      memberId: member_id,
+      meetingId: meeting_id,
+    })
+    .then(success, console.log(success))
+    .catch(fail, console.log(fail));
 }
 async function getMeeting(meetingId) {
   var result = null;
@@ -177,4 +204,5 @@ export {
   deleteCalculateDetail,
   modifyMeeting,
   saveMemberStartPlace,
+  outMeeting,
 };

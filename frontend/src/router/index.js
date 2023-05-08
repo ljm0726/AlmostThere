@@ -23,12 +23,11 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const access_token = localStorage.getItem("Authorization");
   // console.log("Before", access_token, from, to);
-  store.dispatch("memberStore/isLogin");
-
-  if (access_token) {
-    next();
-  } else if (to.name === "landing" || to.name === "login") {
+  if (to.name === "landing" || to.name === "login") {
     //login page를 가거나 login이 성공 됐을 때는 다음으로 넘어감
+    next();
+  } else if (access_token) {
+    store.dispatch("memberStore/isLogin"); //router 이동할 때 로그인된 member 정보 가져오기
     next();
   } else {
     //그 외에 모든 경로는 login으로
