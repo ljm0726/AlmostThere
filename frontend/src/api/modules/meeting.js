@@ -80,12 +80,10 @@ async function outMeeting(member_id, meeting_id, success, fail) {
 }
 async function getMeeting(meetingId) {
   var result = null;
-  await api
-    .post("/meeting/detail", { memberId: 1, meetingId: meetingId })
-    .then((res) => {
-      result = res.data.data;
-      console.log("result ", result);
-    });
+  await api.get(`/meeting/detail/${meetingId}`).then((res) => {
+    result = res.data.data;
+    console.log("result ", result);
+  });
   return await Promise.resolve(result);
 }
 
@@ -108,11 +106,7 @@ async function getUpcomingMeetings() {
 function getMostRecentMeeting() {
   return new Promise((resolve, reject) => {
     api
-      .get("/meeting/most-recent", {
-        headers: {
-          Authorization: localStorage.getItem("Authorization"),
-        },
-      })
+      .get("/meeting/most-recent")
       .then((response) => {
         resolve(response.data.data);
       })
