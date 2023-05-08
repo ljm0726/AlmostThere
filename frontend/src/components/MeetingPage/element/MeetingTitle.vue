@@ -36,7 +36,7 @@
         </div>
         <div class="d-flex flex-row">
           <move-chatting-btn></move-chatting-btn>
-          <move-live-map-btn></move-live-map-btn>
+          <move-live-map-btn :meetingTime="meetingTime"></move-live-map-btn>
         </div>
       </div>
     </v-sheet>

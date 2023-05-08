@@ -115,6 +115,10 @@ public class MeetingService {
         final Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(()->new NotFoundException(
                         ErrorCode.MEETING_NOT_FOUND));
+        MeetingMember meetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(
+                meetingId,
+                memberId
+        ).orElseThrow(() -> new NotFoundException(ErrorCode.MEETING_MEMBER_NOT_FOUND));
 
         List<MeetingMemberResponseDto> meetingMembers = meeting.getMeetingMembers()
                 .stream().map(m->new MeetingMemberResponseDto(m)).collect(Collectors.toList());

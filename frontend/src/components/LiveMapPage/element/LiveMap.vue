@@ -56,9 +56,16 @@ export default {
     ...mapState("memberStore", ["member"]),
   },
   watch: {
-    chatting() {
-      this.updateChatOverlay(this.chatting);
+    chatting: {
+      handler(val, oldVal) {
+        alert("여기닷", val, oldVal);
+        this.updateChatOverlay(this.chatting);
+      },
+      deep: true,
     },
+    // chatting() {
+    //   alert("여기닷");
+    // },
   },
   mounted() {
     // i) memberId 저장
@@ -214,7 +221,7 @@ export default {
       let socket = new SockJS(serverURL);
       this.stompClient = Stomp.over(socket);
 
-      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+      // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
       this.stompClient.connect(
         {},
         (frame) => {
@@ -233,7 +240,7 @@ export default {
           });
 
           // GeoLocation - 1초마다 현 위치 얻기
-          this.startIntervalMemberLocation();
+          // this.startIntervalMemberLocation();
           this.subscribeChatting();
         },
         (error) => {
@@ -251,9 +258,8 @@ export default {
           //   "chaa>>>> " + data.data.memberId + " " + data.data.message
           // );
           if (data.statusCode == 200) {
-            // console.log("dddddddddd");
-            this.chatting[data.data.memberId] = data.data.message;
-            // alert(this.chatting);
+            // console.log("dddddddddd", String(data.data.memberId));
+            this.chatting[String(data.data.memberId)] = data.data.message;
           }
         },
         { id: `chatting-subscribe-${this.$route.params.id}` }

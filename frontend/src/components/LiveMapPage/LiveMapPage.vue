@@ -1,9 +1,6 @@
 <template>
   <div class="live-map">
     <arrive-and-chat-btn @resizeMapLevel="resizeMapLevel"></arrive-and-chat-btn>
-    <!-- <v-btn @click="ssafyLogin()">싸피 로그인</v-btn>
-    <v-btn @click="heeLogin()">희정 로그인</v-btn>
-    <v-btn @click="seoLogin()">서찰스 로그인</v-btn> -->
     <live-map ref="livemap"></live-map>
   </div>
 </template>
