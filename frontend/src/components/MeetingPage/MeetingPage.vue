@@ -1,6 +1,7 @@
 <template>
   <div>
     <meeting-title
+      v-if="meeting.meetingName !== null"
       :meetingName="meeting.meetingName"
       :meetingDate="meeting.meetingDate"
       :meetingTime="meeting.meetingTime"
@@ -8,10 +9,7 @@
       :meetingAddress="meeting.meetingAddress"
       :lateAmount="meeting.lateAmount"
     ></meeting-title>
-    <meeting-datetime
-      :meetingDate="meeting.meetingDate"
-      :meetingTime="meeting.meetingTime"
-    ></meeting-datetime>
+    <meeting-datetime :meetingTime="meeting.meetingTime"></meeting-datetime>
     <meeting-place
       :meetingPlace="meeting.meetingPlace"
       :meetingAddress="meeting.meetingAddress"
@@ -46,6 +44,8 @@ import MeetingTitle from "./element/MeetingTitle.vue";
 import MeetingCost from "./element/MeetingCost.vue";
 import MeetingGame from "./element/MeetingGame.vue";
 import { getMeeting } from "@/api/modules/meeting.js";
+import { mapActions, mapState } from "vuex";
+
 export default {
   name: "MeetingPage",
   data() {
@@ -75,6 +75,23 @@ export default {
       total: null,
     };
   },
+  computed: {
+    ...mapState("meetingStore", [
+      "place_name",
+      "place_addr",
+      "meeting_lat",
+      "meeting_lng",
+    ]),
+    ...mapState("placeStoremet", ["placeName", "placeAddr"]),
+  },
+  watch: {
+    place_name() {
+      this.meeting.meetingPlace = this.place_name;
+    },
+    place_addr() {
+      this.meeting.meetingAddress = this.place_addr;
+    },
+  },
   components: {
     MeetingTitle,
     MeetingDatetime,
@@ -89,9 +106,13 @@ export default {
     getMeeting(this.$route.params.id).then((res) => {
       this.meeting = res;
       this.setting(this.meeting.meetingMembers);
+
+      this.SET_MEETING_INFO(res);
     });
   },
   methods: {
+    ...mapActions("meetingStore", ["SET_MEETING_INFO"]),
+
     setting(meetingMembers) {
       const member = meetingMembers.filter(
         (member) => member.memberId == "1"

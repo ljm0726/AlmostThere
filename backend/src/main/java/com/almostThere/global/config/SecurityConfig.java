@@ -6,6 +6,7 @@ import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.domain.user.service.CustomOAuth2UserService;
 import com.almostThere.domain.user.service.TokenService;
 import com.almostThere.global.filter.JwtAuthFilter;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 @Configuration
@@ -60,7 +64,7 @@ public class SecurityConfig {
             OAuth2LoginAuthenticationFilter.class);
 
         http.headers().frameOptions().sameOrigin();
-
+        http.cors();
         return http.build();
     }
 
@@ -73,4 +77,16 @@ public class SecurityConfig {
 //    public WebSecurityCustomizer webSecurityCustomizer() {
 //        return (web) -> web.ignoring().antMatchers("/**");
 //    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }

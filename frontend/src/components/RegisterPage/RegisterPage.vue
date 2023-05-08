@@ -62,6 +62,7 @@
             scrollable
             color="var(--main-col-1)"
             :day-format="(date) => new Date(date).getDate()"
+            :allowed-dates="disablePastDates"
           >
             <v-spacer></v-spacer>
             <v-btn
@@ -263,12 +264,20 @@ export default {
         minute: "2-digit",
       });
     },
+    disablePastDates(val) {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
+      return val >= formattedDate;
+    },
   },
 
   mounted() {
     // this.date = new Date().toLocaleDateString();
     if (this.place_name !== null && this.place_addr !== null) {
-      this.meeting_place = this.place_name + ", " + this.place_addr;
+      this.meeting_place = this.place_name + "(" + this.place_addr + ")";
     }
 
     console.log(
