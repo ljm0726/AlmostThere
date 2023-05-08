@@ -83,7 +83,7 @@ export default {
       isRecommend: false,
       currentMarker: null,
       polylines: [],
-      mintimes: [],
+      minTimes: [],
       currentRecommendPlaceName: null,
       currentRecommendPlaceAddress: null,
       curRecommendX: null,
@@ -529,6 +529,7 @@ export default {
       this.curRecommendY = place.y;
       this.curRecommendPlaceUrl = place.place_url;
 
+      this.minTimes = [];
       //출발지를 for문 돌면서 odsay API 호출
       for (var i = 0; i < this.startPlaces.length; i++) {
         const x = this.startPlaces[i].get("x");
@@ -608,8 +609,9 @@ export default {
                   }
                 }
               }
-              this.mintimes.push(maxTime);
             }
+            this.minTimes.push(maxTime);
+
             this.callMapObjApiAJAX(
               response.data["result"]["path"][idx].info.mapObj
             );
@@ -618,6 +620,7 @@ export default {
             console.error(error);
           });
       }
+      console.log("maxTime!!!!!", this.minTimes);
 
       this.mapReload();
       this.placeSelect = true;

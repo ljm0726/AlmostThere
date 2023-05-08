@@ -8,7 +8,7 @@
       {{ this.placeUrl }}
       {{ this.placeX }}
       {{ this.placeY }}
-      {{ this.minTimes }}
+      {{ minTimes }}
     </div>
   </div>
 </template>
@@ -16,12 +16,15 @@
 <script>
 export default {
   props: {
+    minTimes: Array,
     placeName: String,
     addressName: String,
     placeUrl: String,
     placeX: String,
     placeY: String,
-    minTimes: Array,
+  },
+  mounted() {
+    console.log("def2e2", this.minTimes);
   },
 };
 </script>
