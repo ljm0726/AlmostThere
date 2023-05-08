@@ -7,6 +7,7 @@ import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +33,7 @@ public class MeetingCalculateApiController {
      * 허용 파일 형식: JPG, JPEG, PNG
      */
     @PostMapping("/receipt")
-    public BaseResponse getReceiptInfo(@RequestParam MultipartFile receipt) {
+    public BaseResponse getReceiptInfo(Authentication authentication, @RequestParam MultipartFile receipt) {
         String apiURL = "https://v2crp4slfh.apigw.ntruss.com/custom/v1/22190/b0d9c109697c19ef5d90ba10100ec6bccc7087843fee903fd0b37c5a76729753/document/receipt";
         String secretKey = "VlN2d2VQQktFRWdsdnRrVFh3dk1xdGtGekdNem9PYnI=";
         String contentType = receipt.getContentType();
@@ -98,13 +99,13 @@ public class MeetingCalculateApiController {
     }
 
     @PostMapping("/detail")
-    public BaseResponse addCalculateDetail(CalculateDetailRequestDto detailDto) throws IOException {
+    public BaseResponse addCalculateDetail(Authentication authentication, CalculateDetailRequestDto detailDto) throws IOException {
         calculateDetailService.saveCalculateDetail(detailDto);  //정산 내역 저장
         return BaseResponse.success(null);
     }
 
     @DeleteMapping("/{calculateDetailId}")
-    public BaseResponse deleteCalculateDetail(@PathVariable Long calculateDetailId) throws UnknownHostException {
+    public BaseResponse deleteCalculateDetail(Authentication authentication, @PathVariable Long calculateDetailId) throws UnknownHostException {
         calculateDetailService.deleteCalculateDetail(calculateDetailId);
         return BaseResponse.success(null);
     }
