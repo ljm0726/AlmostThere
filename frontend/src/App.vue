@@ -40,6 +40,7 @@ export default {
 
   computed: {
     ...mapState("meetingStore", ["recent_meeting"]),
+    ...mapState("memberStore", ["member"]),
   },
 
   watch: {
@@ -132,8 +133,8 @@ export default {
         navigator.geolocation.getCurrentPosition((position) => {
           // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
           const member = {
-            memberId: 1,
-            memberNickname: "이싸피",
+            memberId: this.member.id,
+            memberNickname: this.member.memberNickname,
             memberLatLng: [position.coords.latitude, position.coords.longitude],
           };
 
