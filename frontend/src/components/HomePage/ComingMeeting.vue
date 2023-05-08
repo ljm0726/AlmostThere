@@ -1,31 +1,21 @@
 <template>
   <v-sheet color="transparent">
-    <!-- <div> -->
     <span class="pl-4 point-font xxxxl-font main-col-1">다가올 모임</span>
     <v-btn class="ml-1" icon x-small @click="show = !show">
       <v-icon>$vuetify.icons.info_outline</v-icon>
     </v-btn>
-    <!-- <button>
-      <img
-        height="15"
-        class="ml-2 justify-center align-center"
-        :src="require('@/assets/images/icons/info.png')"
-        @click="show = !show"
-      />
-    </button> -->
     <v-tooltip location="right" v-model="show">
-      <span class="main-col-1 xxxs-font"
-        >지금으로부터 한 달 내의<br />
-        나의 모임을 보여줍니다.</span
-      >
+      <span class="main-col-1 xxxs-font">
+        지금으로부터 한 달 내의<br />
+        나의 모임을 보여줍니다.
+      </span>
     </v-tooltip>
     <swiper
-      v-if="meetings.length > 0"
+      v-if="meetings && meetings.length > 0"
       class="swiper mt-2 px-3"
       :options="swiperOption"
     >
       <swiper-slide class="px-1" v-for="(meeting, idx) in meetings" :key="idx">
-        <!-- <div> -->
         <v-card
           @click="goDetail(meeting.id)"
           elevation="0"
@@ -70,7 +60,6 @@
               </v-sheet>
             </v-sheet>
             <v-sheet color="transparent">
-              <!-- <div></div> -->
               <div class="py-3 bold-font md-font white-font">
                 {{ meeting.meetingName }}
               </div>
@@ -85,12 +74,9 @@
                   {{ meeting.meetingTime | formatTime }}
                 </span>
               </v-sheet>
-              <!-- <div class="d-flex flex-row justify-end"></div>
-            <div class="d-flex flex-row justify-end"></div> -->
             </v-sheet>
           </v-sheet>
         </v-card>
-        <!-- </div> -->
       </swiper-slide>
     </swiper>
     <div
@@ -104,37 +90,20 @@
         color="transparent"
         max-width="330"
       >
-        <!-- <div> -->
         <v-sheet
           class="d-flex flex-row justify-end align-center"
           color="transparent"
           height="100%"
         >
-          <!-- <div class="d-flex justify-center align-center"> -->
-          <!-- <img
-                :src="require('@/assets/images/component/cards.png')"
-                class="mt-1 extralight-font md-font white-font"
-                height="88"
-              /> -->
-          <!-- </div> -->
           <div class="d-flex flex-column align-start">
-            <!-- <div class="ml-2 mt-3"> -->
             <span class="semibold-font xl-font white-font">
               다가올 모임이 없습니다.
             </span>
-            <!-- </div> -->
             <div class="d-flex flex-column regular-font xxs-font white-font">
-              <!-- <pre class="ml-2 mt-2 regular-font xxs-font white-font">
-              스터디, 식사 약속 등
-              다양한 모임을 잡아보세요!</pre
-              > -->
               <span>지금 바로 스터디, 식사 약속 등</span>
 
               <span>다양한 모임을 잡아보세요!</span>
             </div>
-            <!-- <v-chip class="ma-2" small color="white" text-color="main-col-1">
-              <span class="ma-3 regular-font xxxs-font"> 모임 방 만들기 </span>
-            </v-chip> -->
             <v-btn class="mt-1" small rounded @click="goRegister()">
               <span class="px-5 regular-font xxxs-font main-col-1">
                 모임 방 만들기
@@ -142,10 +111,8 @@
             </v-btn>
           </div>
         </v-sheet>
-        <!-- </div> -->
       </v-sheet>
     </div>
-    <!-- </div> -->
   </v-sheet>
 </template>
 
@@ -271,7 +238,11 @@ export default {
   height: 150px;
   /* width: 353px; */
   /* height: 150px; */
-  background: linear-gradient(180deg, rgba(9, 42, 73, 0.8) 0%, #092a49 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(9, 42, 73, 0.8) 0%,
+    var(--main-col-1) 100%
+  );
   box-shadow: 0px 5px 20px -10px #000000;
   border-radius: 15px;
 }
@@ -375,11 +346,11 @@ export default {
   left: 86px !important;
   top: 590px !important;
   padding: 12px;
-  background: #ffffff;
+  background: white;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
-  border: #092a49 solid 1px;
+  border: var(--main-col-1) solid 1px;
   display: flex;
   justify-content: center;
   align-content: center;
@@ -390,7 +361,7 @@ export default {
   position: absolute;
   border-style: solid;
   border-width: 0 8px 9px;
-  border-color: #ffffff transparent;
+  border-color: white transparent;
   display: block;
   width: 0;
   z-index: 1;
@@ -403,7 +374,7 @@ export default {
   position: absolute;
   border-style: solid;
   border-width: 0 8px 9px;
-  border-color: #092a49 transparent;
+  border-color: var(--main-col-1) transparent;
   display: block;
   width: 0;
   z-index: 0;

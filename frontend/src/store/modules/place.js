@@ -16,6 +16,12 @@ const placeStore = {
       state.placeName = placeMap.get("name");
       state.placeAddr = placeMap.get("addr");
     },
+    RESET_PLACE(state) {
+      state.placeX = null;
+      state.placeY = null;
+      state.placeName = null;
+      state.placeAddr = null;
+    },
   },
   actions: {
     updatePlace({ commit }, placeMap) {
@@ -29,6 +35,9 @@ const placeStore = {
       commit("meetingStore/SET_PLACE_ADDR", placeMap.get("addr"), {
         root: true,
       });
+    },
+    resetPlace({ commit }) {
+      commit("RESET_PLACE");
     },
   },
 };

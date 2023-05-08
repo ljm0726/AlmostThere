@@ -16,41 +16,106 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
+import { getMostRecentMeeting } from "@/api/modules/meeting.js";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "App",
 
-  mounted() {
-    const access_token = localStorage.getItem("Authorization");
-    if (access_token) {
-      this.connect();
-    }
+  data() {
+    return {
+      timeOut: null,
+      isSocketConnected: false,
+    };
+  },
+
+  beforeCreate() {
+    getMostRecentMeeting().then((res) => {
+      console.log("getMostRecentMeeting response", res);
+      if (res != null) {
+        this.setMeeting(res);
+      }
+    });
+  },
+
+  computed: {
+    ...mapState("meetingStore", ["recent_meeting"]),
+  },
+
+  watch: {
+    recent_meeting(newVal) {
+      if (newVal != null) {
+        clearTimeout(this.timeOut);
+        const now = new Date();
+        const meetingTime = new Date(newVal.meetingTime);
+
+        if (now < meetingTime) {
+          this.timeOut = setTimeout(
+            this.connectHandler,
+            this.calculateRemainTimeForTimeOut(newVal.meetingTime)
+          );
+        }
+      }
+    },
   },
 
   methods: {
-    connect() {
-      const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
-      let socket = new SockJS(serverURL);
-      this.stompClient = Stomp.over(socket);
+    ...mapActions("meetingStore", ["setMeeting"]),
 
-      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
-      this.stompClient.connect(
-        {},
-        (frame) => {
-          // 소켓 연결 성공
-          this.connected = true;
-          this.isConnect = true;
-          console.log("소켓 연결 성공", frame);
+    calculateRemainTimeForTimeOut(newDate) {
+      const now = new Date();
+      const meetingTime = new Date(newDate);
 
-          // GeoLocation - 1초마다 현 위치 얻기
-          // this.getGeoLocation();
-          this.startIntervalMemberLocation();
-        },
-        (error) => {
-          // 소켓 연결 실패
-          console.log("소켓 연결 실패", error);
-        }
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      const seconds = String(now.getSeconds()).padStart(2, "0");
+
+      const formattedTime = new Date(
+        `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
       );
+      const diffTime = meetingTime.getTime() - formattedTime.getTime();
+
+      console.log("diffTime :", diffTime);
+
+      return diffTime;
+    },
+
+    connectHandler() {
+      const access_token = localStorage.getItem("Authorization");
+
+      if (access_token) {
+        console.log("connect");
+        this.connect();
+      }
+    },
+    connect() {
+      if (!this.isSocketConnected) {
+        const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
+        let socket = new SockJS(serverURL);
+        this.stompClient = Stomp.over(socket);
+
+        console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+        this.stompClient.connect(
+          {},
+          (frame) => {
+            // 소켓 연결 성공
+            this.isSocketConnected = true;
+            this.isConnect = true;
+            console.log("소켓 연결 성공", frame);
+
+            // GeoLocation - 1초마다 현 위치 얻기
+            // this.getGeoLocation();
+            this.startIntervalMemberLocation();
+          },
+          (error) => {
+            // 소켓 연결 실패
+            console.log("소켓 연결 실패", error);
+          }
+        );
+      }
     },
 
     startIntervalMemberLocation() {
@@ -105,6 +170,7 @@ export default {
 @import "@/assets/styles/override/dialog.css";
 @import "@/assets/styles/override/badge.css";
 @import "@/assets/styles/override/swiper.css";
+@import "@/assets/styles/override/snackbar.css";
 @import "@/assets/styles/box/box_shadow.css";
 @import "@/assets/styles/box/box_border.css";
 

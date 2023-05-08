@@ -1,24 +1,19 @@
 package com.almostThere.domain.meeting.controller;
 
-import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
-import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
-import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
-import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
+import com.almostThere.domain.meeting.dto.MeetingTimeDto;
+import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
+import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
+import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
+import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.service.MeetingService;
+import com.almostThere.domain.user.dto.MemberAccessDto;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -28,25 +23,37 @@ import java.util.List;
 public class MeetingApiController {
 
     private final MeetingService meetingService;
+
+    @GetMapping("/most-recent")
+    public BaseResponse getMostRecentMeeting(Authentication authentication){
+
+        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
+        MeetingTimeDto meetingTimeDto = meetingService.getMostRecentMeeting(memberId);
+
+        return BaseResponse.success(meetingTimeDto);
+
+    }
     /**
      * dyeon7310
-     * @param request
+     * @param
      * @return 오늘의 모임(24시간 이내)을 조회한다.
      */
     @GetMapping("/today")
-    public BaseResponse getTodayMeetings(HttpServletRequest request){
-        List<MeetingDto> todayMeeting = meetingService.findTodayMeeting(1L);
+    public BaseResponse getTodayMeetings(Authentication authentication){
+        Long memberId = ((MemberAccessDto)authentication.getPrincipal()).getId();
+        List<MeetingDto> todayMeeting = meetingService.findTodayMeeting(memberId);
         return BaseResponse.success(todayMeeting);
     }
 
     /**
      * dyeon7310
-     * @param request
+     * @param
      * @return 앞으로 한 달 이내의 모임을 조회한다.
      */
     @GetMapping("/upcoming")
-    public BaseResponse getUpcomingMeetings(HttpServletRequest request){
-        List<MeetingDto> upcomingMeeting = meetingService.findUpcomingMeeting(1L);
+    public BaseResponse getUpcomingMeetings(Authentication authentication){
+        Long memberId = ((MemberAccessDto)authentication.getPrincipal()).getId();
+        List<MeetingDto> upcomingMeeting = meetingService.findUpcomingMeeting(memberId);
         return BaseResponse.success(upcomingMeeting);
     }
 
@@ -63,12 +70,13 @@ public class MeetingApiController {
 
     /**
      * asng
-     * @param meetingDetailRequestDto
+     * @param
      * @return 모임 상세정보를 조회한다.
      */
-    @GetMapping
-    public BaseResponse getMeetingDetail(@RequestBody MeetingDetailRequestDto meetingDetailRequestDto){
-        MeetingDetailResponseDto meetingDetailResponseDto = meetingService.getMeetingDetail(meetingDetailRequestDto);
+    @GetMapping("/detail/{meetingId}")
+    public BaseResponse getMeetingDetail(Authentication authentication, @PathVariable Long meetingId){
+        Long memberId = ((MemberAccessDto)authentication.getPrincipal()).getId();
+        MeetingDetailResponseDto meetingDetailResponseDto = meetingService.getMeetingDetail(memberId, meetingId);
         return BaseResponse.success(meetingDetailResponseDto);
     }
 
@@ -103,5 +111,24 @@ public class MeetingApiController {
     public BaseResponse updateMeeting(@RequestBody MeetingUpdateRequestDto meetingUpdateRequestDto){
         meetingService.updateMeeting(meetingUpdateRequestDto);
         return new BaseResponse(200, "SUCCESS",null);
+    }
+
+    /**
+     * halo
+     * 모임ID + 멤버ID에 따른 출발장소를 수정한다.
+     * @param meetingStartPlaceRequestDto
+     * @return
+     */
+    @PostMapping("/start-place")
+    public BaseResponse setStartPlace(@RequestBody MeetingStartPlaceRequestDto meetingStartPlaceRequestDto, Authentication authentication) {
+        System.out.println("#[MemberController]# setStartPlace 출발장소 수정 - request: " + meetingStartPlaceRequestDto);
+
+        // * token을 활용하여 현 로그인 member의 id 추출
+        meetingStartPlaceRequestDto.setMemberId(((MemberAccessDto)authentication.getPrincipal()).getId());
+
+        // 변경된 출발장소 update
+        meetingService.updateMemberStartPlace(meetingStartPlaceRequestDto);
+
+        return BaseResponse.success(null);
     }
 }

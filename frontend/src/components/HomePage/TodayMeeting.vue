@@ -1,21 +1,14 @@
 <template>
   <v-sheet class="py-1" color="transparent">
-    <!-- <div> -->
     <span class="ml-4 point-font xxxxl-font main-col-1">오늘의 모임</span>
     <v-btn class="ml-1" icon x-small @click="show = !show">
       <v-icon>$vuetify.icons.info_outline</v-icon>
     </v-btn>
-    <!-- <button>
-        <img
-          height="15"
-          class="ml-2 justify-center align-center"
-          :src="require('@/assets/images/icons/info.png')"
-          @click="show = !show"
-        />
-      </button> -->
     <v-tooltip location="right" v-model="show">
-      <span class="main-col-1 xxxs-font"> 지금으로부터 24시간 내의 </span>
-      <span class="main-col-1 xxxs-font"> 나의 모임을 보여줍니다. </span>
+      <span class="main-col-1 xxxs-font">
+        지금으로부터 24시간 내의<br />
+        나의 모임을 보여줍니다.
+      </span>
     </v-tooltip>
     <swiper
       v-if="meetings.length > 0"
@@ -23,9 +16,7 @@
       :options="swiperOption"
     >
       <swiper-slide class="px-2" v-for="(meeting, idx) in meetings" :key="idx">
-        <!-- <div> -->
         <meeting-card :meeting="meeting"></meeting-card>
-        <!-- </div> -->
       </swiper-slide>
     </swiper>
     <v-card
@@ -45,29 +36,19 @@
         height="100%"
         max-width="330"
       >
-        <!-- <v-sheet class="empty"></v-sheet> -->
-        <!-- <div class="d-flex flex-row justify-space-between"> -->
         <v-sheet
           color="transparent"
           style="
             text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
           "
         >
-          <!-- <div class="ml-2 mt-3"> -->
           <span class="my-2 semibold-font main-col-1 xl-font">
             오늘 모임이 없습니다.
           </span>
-          <!-- </div> -->
           <div class="d-flex flex-column my-1 regular-font xxs-font main-col-1">
             <span>남는 시간이 있다면</span>
             <span>친구들과 번개 약속을</span>
             <span>잡아보는 건 어떠신가요?</span>
-            <!-- <pre class="ml-2 mt-2 regular-font xxs-font main-col-1">
-              남는 시간이 있다면
-              친구들과 번개 약속을
-              잡아보는 건 어떠신가요?
-              </pre
-            > -->
           </div>
           <v-btn
             class="mt-1"
@@ -80,16 +61,8 @@
             <span class="px-5 regular-font xxxs-font"> 모임 방 만들기 </span>
           </v-btn>
         </v-sheet>
-        <!-- <div> -->
-        <!-- <img
-            :src="require('@/assets/images/component/calendar.png')"
-            height="90%"
-          /> -->
-        <!-- </div> -->
-        <!-- </div> -->
       </v-sheet>
     </v-card>
-    <!-- </div> -->
   </v-sheet>
 </template>
 
@@ -144,7 +117,7 @@ export default {
   background: white;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
-  border-radius: 15px;
+  border-radius: 10px;
   border: var(--main-col-1) solid 1px;
   display: flex;
   justify-content: center;

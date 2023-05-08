@@ -1,10 +1,9 @@
 package com.almostThere.domain.meeting.entity;
 
+import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
 import com.almostThere.domain.user.entity.Member;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -41,8 +40,9 @@ public class MeetingMember {
     @Enumerated(EnumType.STRING)
     private StateType state;
 
-    @Column
-    private Double spentMoney;
+    @ColumnDefault("0")
+    @Column(nullable = false)
+    private int spentMoney;
 
     public MeetingMember (Member member, Meeting meeting, StateType state){
         this.member = member;
@@ -51,7 +51,7 @@ public class MeetingMember {
     }
     @Builder
     public MeetingMember (Member member, Meeting meeting, String startPlace, String startAddress
-        ,Double startLat, Double startLng, StateType state, Double spentMoney) {
+        ,Double startLat, Double startLng, StateType state, int spentMoney) {
         this.member = member;
         this.meeting = meeting;
         this.startPlace = startPlace;
@@ -64,5 +64,17 @@ public class MeetingMember {
 
     public void updateState(StateType stateType) {
         this.state = stateType;
+    }
+
+    public void updateSpentMoney(int spentMoney){
+        this.spentMoney = spentMoney;
+    }
+
+    /* 출발장소 update */
+    public void updateStartPlace(MeetingStartPlaceRequestDto meetingStartPlaceRequestDto) {
+        this.startPlace = meetingStartPlaceRequestDto.getStartPlace();
+        this.startAddress = meetingStartPlaceRequestDto.getStartAddress();
+        this.startLat = meetingStartPlaceRequestDto.getStartLat();
+        this.startLng = meetingStartPlaceRequestDto.getStartLng();
     }
 }

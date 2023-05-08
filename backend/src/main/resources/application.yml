@@ -9,6 +9,10 @@ server:
       force: true
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,6 +20,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          batch_size: 10000
+          order_inserts: true
       dialect: org.hibernate.dialect.MySQL8InnoDBDialect
 
   profiles:
@@ -30,6 +37,9 @@ spring:
     host: localhost # 서버 host
     port: 6379 # redis 서버 포트
 
+redis:
+  locationData:
+    expire-length: 5 #1분
 
 logging:
   level:
@@ -72,6 +82,10 @@ spring:
     password: ${DATABASE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  redis:
+    host: ${REDIS_URL} # 서버 host
+    port: 6379 # redis 서버 포트
+
   security:
     oauth2:
       client:
@@ -86,8 +100,6 @@ spring:
               - profile_nickname
               - account_email
               - profile_image
-              - gender
-              - age_range
             client_name: kakao
         provider:
           kakao:

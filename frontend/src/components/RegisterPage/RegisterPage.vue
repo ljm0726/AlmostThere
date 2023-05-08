@@ -41,7 +41,6 @@
           :return-value.sync="date"
           transition="scale-transition"
           offset-y
-          max-width="280px"
           min-width="280px"
           :nudge-right="40"
         >
@@ -53,13 +52,31 @@
               readonly
               v-bind="attrs"
               v-on="on"
-              hide-details
             ></v-text-field>
           </template>
-          <v-date-picker v-model="date" no-title scrollable>
+          <v-date-picker
+            class="regular-font"
+            locale="ko"
+            v-model="date"
+            no-title
+            scrollable
+            color="var(--main-col-1)"
+            :day-format="(date) => new Date(date).getDate()"
+            :allowed-dates="disablePastDates"
+          >
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
-            <v-btn text color="primary" @click="$refs.menu.save(date)">
+            <v-btn
+              text
+              class="bold-font xl-font main-col-1"
+              @click="menu = false"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              text
+              class="bold-font xl-font main-col-1"
+              @click="$refs.menu.save(date)"
+            >
               OK
             </v-btn>
           </v-date-picker>
@@ -90,6 +107,7 @@
             v-if="menu2"
             v-model="time"
             full-width
+            color="var(--main-col-1)"
             @click:minute="$refs.menu2.save(time)"
             format="24hr"
           ></v-time-picker>
@@ -123,6 +141,8 @@
 <script>
 // 추가해야할 부분 -> 현재 시간 이전을 설정하면 불가능하게
 import { mapActions, mapState } from "vuex";
+import { getMostRecentMeeting } from "@/api/modules/meeting.js";
+
 // const meetingStore = "meetingStore";
 
 export default {
@@ -130,7 +150,7 @@ export default {
   data() {
     return {
       meetingname: null,
-      date: null,
+      date: new Date().toISOString().substring(0, 10),
       menu: null,
       time: null,
       menu2: null,
@@ -147,6 +167,7 @@ export default {
       "meeting_time",
       "place_name",
       "place_addr",
+      "recent_meeting",
     ]),
   },
   watch: {
@@ -164,15 +185,16 @@ export default {
     },
   },
   methods: {
-    ...mapActions("meetingStore", ["register"]),
+    ...mapActions("meetingStore", ["register", "setMeeting"]),
     ...mapActions("meetingStore", [
       "SET_MEETING_NAME",
       "SET_MEETING_DATE",
       "SET_MEETING_TIME",
     ]),
+    ...mapActions("placeStore", ["resetPlace"]),
+    ...mapActions("halfwayStore", ["resetStartPlace"]),
 
     setMeetingName() {
-      console.log(this.meetingname);
       this.SET_MEETING_NAME(this.meetingname);
     },
     setMeetingDate() {
@@ -203,7 +225,23 @@ export default {
 
         console.log(meeting_name, " ", date_time);
 
-        this.register({ meeting_name, date_time, place_name, place_addr });
+        this.register({ meeting_name, date_time, place_name, place_addr }).then(
+          () => {
+            getMostRecentMeeting().then((res) => {
+              const newRecentMeeting = res;
+              const savedRecentMeeting = this.recent_meeting;
+
+              if (
+                savedRecentMeeting == null ||
+                savedRecentMeeting.meetingTime > newRecentMeeting.meetingTime
+              ) {
+                this.setMeeting(newRecentMeeting);
+              }
+            });
+          }
+        );
+        this.resetPlace();
+        this.resetStartPlace();
       }
     },
 
@@ -226,12 +264,20 @@ export default {
         minute: "2-digit",
       });
     },
+    disablePastDates(val) {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
+      return val >= formattedDate;
+    },
   },
 
   mounted() {
     // this.date = new Date().toLocaleDateString();
     if (this.place_name !== null && this.place_addr !== null) {
-      this.meeting_place = this.place_name + ", " + this.place_addr;
+      this.meeting_place = this.place_name + "(" + this.place_addr + ")";
     }
 
     console.log(

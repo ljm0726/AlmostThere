@@ -24,7 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic"); // 메시지 수신을 위한 서버 연결 주소 prefix
+        registry.enableSimpleBroker("/topic", "/send", "/enter"); // 메시지 수신을 위한 서버 연결 주소 prefix
         registry.setApplicationDestinationPrefixes("/message"); // 메시지 발신을 위한 서버 연결 주소 prefix
     }
 
@@ -33,5 +33,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureClientInboundChannel(ChannelRegistration registration){
         registration.interceptors(stompHandler);
     }
-
 }

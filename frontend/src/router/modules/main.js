@@ -10,7 +10,7 @@ import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
 import SearchPlacePage2 from "@/components/PlacePage/SearchPlace/SearchPlacePage2";
 
 const isLogin = async (to, from, next) => {
-  console.log(to, " ", to.query);
+  // console.log(to, " ", to.query);
   const access_token = localStorage.getItem("Authorization");
   if (to.name === "landing") {
     next();
@@ -19,7 +19,10 @@ const isLogin = async (to, from, next) => {
   if (to.query.login || access_token) {
     console.log("login 성공 ");
     if (Object.keys(to.query).length !== 0) {
-      localStorage.setItem("Authorization", to.query.login.substring(7));
+      localStorage.setItem(
+        "Authorization",
+        "Bearer " + to.query.login.substring(7)
+      );
     }
     next({
       name: "home",

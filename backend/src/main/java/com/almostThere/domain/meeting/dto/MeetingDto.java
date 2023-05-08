@@ -22,7 +22,7 @@ public class MeetingDto {
     private double meetingLng;
     private Integer lateAmount;
     private String regdate;
-    private int roomCode;
+    private String roomCode;
     private List<MeetingMemberDto> meetingMembers;
     private List<CalculateDetailDto> calculateDetails;
 

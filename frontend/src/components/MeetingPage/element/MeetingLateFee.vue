@@ -5,7 +5,7 @@
       class="my-1 py-3 px-4 d-flex flex-column justify-center detail-border"
       rounded="lg"
     >
-      <span class="light-font sm-font main-col-1">{{ lateAmount }}원</span>
+      <span class="sm-font main-col-1">{{ lateAmount | formatPrice }}</span>
     </v-sheet>
   </v-sheet>
 </template>
@@ -15,6 +15,12 @@ export default {
   name: "MeetingLateFee",
   props: {
     lateAmount: Number,
+  },
+  filters: {
+    formatPrice(value) {
+      if (value === null) return "지각비를 설정하지 않았습니다";
+      else return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
   },
 };
 </script>
