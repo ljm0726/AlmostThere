@@ -112,6 +112,8 @@ async function postReceiptInfo(receipt) {
     .then(async (res) => {
       if (res.data.statusCode == 200) {
         result = res.data.data;
+      } else {
+        result = null;
       }
     })
     .catch();
