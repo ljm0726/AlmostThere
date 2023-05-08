@@ -37,10 +37,12 @@ export default {
     formatPlace(value) {
       // console.log("장소: " + value);
       if (value === null) return "출발지를 설정하지 않았습니다.";
+      else return value;
     },
     formatAddress(value) {
       // console.log("주소: " + value);
       if (value === null) return "";
+      else return value;
     },
   },
   methods: {

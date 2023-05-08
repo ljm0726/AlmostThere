@@ -90,12 +90,6 @@ export default {
       this.meeting = res;
       this.setting(this.meeting.meetingMembers);
     });
-
-    // #21# test용
-    this.startPlace = "뚝섬한강공원";
-    this.startAddress = "서울특별시 광진구 자양동";
-    this.startLat = 37.5296;
-    this.startLng = 127.0698;
   },
   methods: {
     setting(meetingMembers) {
@@ -104,6 +98,8 @@ export default {
       )[0];
       this.startPlace = member.startPlace;
       this.startAddress = member.startAddress;
+      this.startLat = member.startLat;
+      this.startLng = member.startLng;
       this.spentMoney = member.spentMoney === null ? 0 : member.spentMoney;
       this.lateTotal =
         member.state == "LATE"
