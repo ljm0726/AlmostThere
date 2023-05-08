@@ -9,6 +9,8 @@ import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.service.MeetingService;
 import com.almostThere.domain.user.dto.MemberAccessDto;
+import com.almostThere.global.error.ErrorCode;
+import com.almostThere.global.error.exception.NotFoundException;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -74,9 +76,21 @@ public class MeetingApiController {
      * @return 모임 상세정보를 조회한다.
      */
     @GetMapping("/detail/{meetingId}")
-    public BaseResponse getMeetingDetail(Authentication authentication, @PathVariable Long meetingId){
-        Long memberId = ((MemberAccessDto)authentication.getPrincipal()).getId();
-        MeetingDetailResponseDto meetingDetailResponseDto = meetingService.getMeetingDetail(memberId, meetingId);
+    public BaseResponse getMeetingDetail(Authentication authentication, @PathVariable Long meetingId) {
+        MeetingDetailResponseDto meetingDetailResponseDto = null;
+        try {
+            Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
+            meetingDetailResponseDto = meetingService.getMeetingDetail(memberId, meetingId);
+        }catch (NotFoundException e) {
+            if(e.getErrorCode().equals(ErrorCode.MEETING_NOT_FOUND)){
+                System.out.println("존재하지 않는 미팅입니다.");
+                return BaseResponse.customFail(ErrorCode.MEETING_NOT_FOUND);
+            }
+            else if(e.getErrorCode().equals(ErrorCode.MEETING_MEMBER_NOT_FOUND)){
+                System.out.println("존재하지 않는 멤버입니다");
+                return BaseResponse.customFail(ErrorCode.MEETING_MEMBER_NOT_FOUND);
+            }
+        }
         return BaseResponse.success(meetingDetailResponseDto);
     }
 
