@@ -1,17 +1,27 @@
-import { meetingRegister } from "@/api/modules/meeting";
+import { meetingRegister, modifyMeeting } from "@/api/modules/meeting";
 import placeStore from "./place";
+import memberStore from "./member";
 import router from "@/router"; // 라우터 import
 
 const meetingStore = {
   namespaced: true,
   state: {
+    meeting_host_id: null,
     meeting_name: null,
     meeting_date: null,
     meeting_time: null,
     place_name: null,
     place_addr: null,
+    meeting_lat: null,
+    meeting_lng: null,
+    late_amount: 0, //지각비
+    recent_meeting: null,
   },
-  getters: {},
+  getters: {
+    GET_RECENT_MEETING: function (state) {
+      return state.recent_meeting;
+    },
+  },
   mutations: {
     SET_MEETING_NAME(state, meeting_name) {
       state.meeting_name = meeting_name;
@@ -32,16 +42,61 @@ const meetingStore = {
       state.place_addr = place_addr;
       console.log(state.place_addr);
     },
+    SET_MEETING_INFO(state, meeting) {
+      state.state.meeting_name = meeting.meetingName;
+      state.place_name = meeting.meetingPlace;
+      state.place_addr = meeting.meetingAddress;
+      state.meeting_lat = meeting.meetingLat;
+      state.meeting_lng = meeting.meetingLng;
+      state.late_amount = meeting.lateAmount;
+    },
+    SET_RECENT_MEETING(state, recent_meeting) {
+      console.log(recent_meeting);
+      state.recent_meeting = recent_meeting;
+      console.log("# meeting set 확인: ", recent_meeting);
+    },
   },
   actions: {
     async register(
       { commit },
       { meeting_name, date_time, place_name, place_addr }
     ) {
-      console.log(meeting_name, date_time);
+      console.log(meeting_name, memberStore.state.member.id);
       await meetingRegister(
         // this.,
-        1,
+        memberStore.state.member.id,
+        meeting_name,
+        date_time,
+        place_name,
+        place_addr,
+        placeStore.state.placeX,
+        placeStore.state.placeY,
+        ({ data }) => {
+          console.log(data);
+          commit("SET_MEETING_NAME", null);
+          commit("SET_MEETING_DATE", null);
+          commit("SET_MEETING_TIME", null);
+          commit("SET_PLACE_NAME", null);
+          commit("SET_PLACE_ADDR", null);
+          router.push({ name: "home" });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
+
+    async modify(
+      { commit },
+      { meeting_name, date_time, place_name, place_addr }
+    ) {
+      //meeting x,y 좌표를 받음.
+      console.log(this.meeting_host_id, date_time);
+      await modifyMeeting(
+        // this.,
+        // 장소 버튼을 누를 때 place store에있는 update actions 실행 해주기
+        // 처음 가져올 때는 meeting에만 data 저장.
+        this.meeting_host_id,
         meeting_name,
         date_time,
         place_name,
@@ -71,6 +126,15 @@ const meetingStore = {
     },
     SET_MEETING_TIME({ commit }, meeting_time) {
       commit("SET_MEETING_TIME", meeting_time);
+    },
+
+    SET_MEETING_INFO({ commit }, meeting) {
+      console.log(meeting);
+      commit("SET_MEETING_INFO", meeting);
+    },
+    //
+    setMeeting({ commit }, meeting) {
+      commit("SET_RECENT_MEETING", meeting);
     },
   },
 };

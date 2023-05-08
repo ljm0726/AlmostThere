@@ -40,22 +40,25 @@
       id="chatting-snackbar"
       v-model="snackbar"
       color="var(--main-col-1)"
-      style="margin: 0px 0px 65px 5px"
+      style="margin: 0px 0px 58px 0px"
       min-width="250"
-      width="70%"
-      max-width="400"
+      width="95%"
+      max-width="480"
       min-height="0"
-      timeout="5000"
+      timeout="-1"
       outlined
       elevation="5"
     >
-      <div class="d-flex flex-column">
-        <span class="light-font" v-if="newMessageMemberId">
-          {{ members[newMessageMemberId].nickname }}
-        </span>
-        <span class="medium-font">
-          {{ newMessage }}
-        </span>
+      <div class="d-flex flex-row justify-space-between align-center">
+        <div class="d-flex flex-column">
+          <span class="light-font" v-if="newMessageMemberId">
+            {{ members[newMessageMemberId].nickname }}
+          </span>
+          <span class="medium-font">
+            {{ newMessage }}
+          </span>
+        </div>
+        <v-icon color="var(--main-col-1)">mdi-arrow-down</v-icon>
       </div>
     </v-snackbar>
     <!-- 채팅 정보를 불러올 수 없는 경우 -->
@@ -69,16 +72,22 @@
       min-height="100%"
     > -->
       <!-- scroll 맨 아래로 내리는 버튼 -->
-      <scroll-bottom-button></scroll-bottom-button>
+      <scroll-bottom-button ref="scrollDownBtn"></scroll-bottom-button>
       <!-- 채팅창 -->
-      <v-sheet class="d-flex flex-column">
+      <v-sheet style="margin: 55px 0px 72px 0px">
         <!-- 무한스크롤 -->
         <infinite-loading
+          spinner="circles"
           direction="top"
           @infinite="infiniteHandler"
-        ></infinite-loading>
+        >
+          <div slot="no-more"></div>
+        </infinite-loading>
 
         <!-- 메세지 반복 -->
+        <!-- <div> -->
+        <!-- header 여백 -->
+        <!-- <v-sheet height="55" max-width="500" width="100%"></v-sheet> -->
         <div v-for="(item, idx) in chatList" :key="idx">
           <!-- 날짜 : 년월일 (날짜가 같은 경우처음에만 노출) -->
           <div
@@ -200,8 +209,11 @@
             </v-sheet>
           </div>
         </div>
+        <!-- footer 여백 -->
+        <!-- <v-sheet height="72" max-width="500" width="100%"></v-sheet> -->
+        <!-- </div> -->
       </v-sheet>
-      <v-sheet max-width="500" height="72"></v-sheet>
+      <!-- <v-sheet max-width="500" height="72"></v-sheet> -->
       <!-- 메세지 입력창 -->
       <v-sheet
         class="px-3 pb-4"
@@ -265,7 +277,16 @@ export default {
       snackbar: false,
       newMessage: "",
       newMessageMemberId: null,
+      bottom: false,
     };
+  },
+  watch: {
+    bottom(bottom) {
+      if (bottom) {
+        this.$refs.scrollDownBtn.close();
+        this.snackbar = false;
+      } else this.$refs.scrollDownBtn.open();
+    },
   },
   computed: {
     ...mapState("websocketStore", ["connected", "stompClient"]),
@@ -296,7 +317,22 @@ export default {
   },
   methods: {
     ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
+    bottomVisible() {
+      const scrollY = window.scrollY;
+      const visible = document.documentElement.clientHeight;
+      const pageHeight = document.documentElement.scrollHeight;
+      // + 90은 Footer의 높이
+      const bottomOfPage = visible + scrollY + 90 >= pageHeight;
+      return bottomOfPage || pageHeight < visible;
+    },
+    onTheBottom() {
+      this.bottom = this.bottomVisible();
+    },
     // 오른쪽 멤버 프로필 목록 상태 변경
+    watchNewMessage() {
+      this.snackbar = false;
+      this.goBottom();
+    },
     openDrawer() {
       this.drawer = !this.drawer;
     },
@@ -353,11 +389,10 @@ export default {
             await this.chatList.push(data.data);
             // console.log(">> 여기", data.data);
             // 스크롤 맨 아래로 이동
-            // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우
+            // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우 this.memberId == data.data.memberId ||
             if (
-              this.memberId == data.data.memberId ||
               document.documentElement.scrollTop + window.innerHeight + 100 >=
-                document.querySelector("body").scrollHeight
+              document.querySelector("body").scrollHeight
             ) {
               await this.goBottom();
             } else {
@@ -399,6 +434,10 @@ export default {
             // loading 상태 변경
             this.loading = await false;
             // await this.goBottom();
+            document
+              .querySelector(".v-snack__wrapper")
+              .addEventListener("click", this.watchNewMessage);
+            window.addEventListener("scroll", this.onTheBottom);
           },
           (error) => {
             console.log("소켓 연결 실패", error);
@@ -410,6 +449,10 @@ export default {
         this.subscribe();
         this.getMember();
         this.loading = false;
+        document
+          .querySelector(".v-snack__wrapper")
+          .addEventListener("click", this.watchNewMessage);
+        window.addEventListener("scroll", this.onTheBottom);
       }
     },
   },
@@ -417,6 +460,10 @@ export default {
   destroyed() {
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`member-subscribe-${this.$route.params.id}`);
+    document
+      .querySelector(".v-snack__wrapper")
+      .removeEventListener("click", this.watchNewMessage);
+    window.removeEventListener("scroll", this.onTheBottom);
   },
 };
 </script>

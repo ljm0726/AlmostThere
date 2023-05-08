@@ -1,6 +1,10 @@
 package com.almostThere.domain.meeting.repository;
 
+
 import com.almostThere.domain.meeting.entity.Meeting;
+import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,23 +20,25 @@ import java.util.Optional;
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     @Query("select m.meeting " +
-            " from MeetingMember m " +
+            "from MeetingMember m " +
             "where m.member.id=:memberId " +
-            "  and m.meeting.meetingTime between now() and :oneDayAfterDate")
+            "and m.meeting.meetingTime between now() and :oneDayAfterDate "+
+            "order by m.meeting.meetingTime")
     List <Meeting> findTodayMeetings(@Param("memberId") Long memberId, @Param("oneDayAfterDate") LocalDateTime oneDayAfterDate);
 
     @Query("select m.meeting " +
             " from MeetingMember m " +
             "where m.member.id=:memberId " +
-            "  and m.meeting.meetingTime between :oneDayAfterDate and :oneMonthAfterDate")
+            "  and m.meeting.meetingTime between :oneDayAfterDate and :oneMonthAfterDate" +
+            " order by m.meeting.meetingTime")
     List <Meeting> findUpcomingMeetings(@Param("memberId") Long memberId, @Param("oneDayAfterDate") LocalDateTime oneDayAfterDate, @Param("oneMonthAfterDate") LocalDateTime oneMonthAfterDate);
 
-    @Query("select count(m.meeting) "
-        + " from MeetingMember m "
+    @Query("select m.meeting "
+        + "from MeetingMember m "
         + "where m.member.id=:memberId "
-        + "and m.meeting.meetingTime "
-        + "between now() and :after3hours")
-    int countMeetingsWithin3hours(@Param("memberId") Long memberId, @Param("after3hours") LocalDateTime after3hours);
+        + "and m.meeting.meetingTime >= now()"
+        + "order by m.meeting.meetingTime ")
+    List<Meeting> getMostRecentMeeting(@Param("memberId") Long memberId, Pageable pageable);
 
     Optional<Meeting> findByRoomCode(@Param("roomCode") String roomCode);
 }

@@ -10,7 +10,7 @@ import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
 import SearchPlacePage2 from "@/components/PlacePage/SearchPlace/SearchPlacePage2";
 
 const isLogin = async (to, from, next) => {
-  console.log(to, " ", to.query);
+  // console.log(to, " ", to.query);
   const access_token = localStorage.getItem("Authorization");
   if (to.name === "landing") {
     next();

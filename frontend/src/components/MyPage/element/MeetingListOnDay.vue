@@ -1,6 +1,8 @@
 <template>
-  <v-sheet>
-    <div v-if="meetings.length == 0"><no-meeting /></div>
+  <v-sheet class="mt-4">
+    <div v-if="meetings.length == 0">
+      <no-meeting />
+    </div>
     <div v-else>
       <meeting-list-card :key="date" :date="date" :meetings="meetings" />
     </div>

@@ -1,18 +1,22 @@
 <template>
-  <v-sheet class="mt-6 mb-3 align-center" style="width: 100%">
+  <v-sheet class="mt-7" width="100%">
     <v-date-picker
-      class="regular-font v-picker"
+      id="my-page-calendar"
+      class="regular-font"
       locale="ko"
-      v-model="date"
+      v-model="selectedDate"
       scrollable
       no-title
+      full-width
       color="var(--main-col-1)"
       :day-format="(date) => new Date(date).getDate()"
       :events="highlightedDates"
-      event-color="var(--main-col-1)"
+      :event-color="
+        (date) => (date == selectedDate ? 'white' : 'var(--main-col-1)')
+      "
     >
     </v-date-picker>
-    <meeting-list-on-day :date="date"></meeting-list-on-day>
+    <meeting-list-on-day :date="selectedDate"></meeting-list-on-day>
   </v-sheet>
 </template>
 
@@ -24,7 +28,7 @@ export default {
   name: "MemberCalendar",
   data() {
     return {
-      date: new Date().toISOString().substring(0, 10), // calendar로 선택한 date
+      selectedDate: new Date().toISOString().substring(0, 10), // calendar로 선택한 date
       highlightedDates: null, // highlight 처리할 날짜 배열
     };
   },
@@ -55,20 +59,33 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+#my-page-calendar .v-btn--rounded {
+  border-radius: 10px !important;
+  height: 32px !important;
+  width: 32px !important;
+}
+#my-page-calendar .v-date-picker-table--date .v-date-picker-table__events {
+  bottom: 9px !important;
+}
+#my-page-calendar .v-date-picker-table__events > div {
+  width: 18px !important;
+  border-radius: 5px !important;
+  height: 5px !important;
+}
 /* date-picker calendar 부분 */
-.v-picker {
+/* .v-picker {
   flex-direction: row !important;
   width: 100%;
   font-size: large;
-}
+} */
 
 /* date-picker highlight 표시 */
-::v-deep .v-date-picker-table__events > div {
+/* ::v-deep .v-date-picker-table__events > div {
   border-radius: 25%;
   display: inline-block;
   height: 5.5px;
   margin: 0 1px;
   width: 15px;
-}
+} */
 </style>

@@ -48,6 +48,7 @@
 import { mapState, mapActions } from "vuex";
 import placeInfo from "./placeInfo.vue";
 import HalfwayModal from "./placeModal/HalfwayModal.vue";
+import axios from "axios";
 
 export default {
   components: { placeInfo, HalfwayModal },
@@ -68,6 +69,7 @@ export default {
       contentNode: null,
       isRecommend: false,
       currentMarker: null,
+      polylines: [],
     };
   },
 
@@ -81,6 +83,8 @@ export default {
     // 나중에 장소 추천지 있으면 여기에 추천장소 마커 추가해야함.
     middlePlace() {
       if (this.middlePlace != null) {
+        this.resetPolylines();
+
         // 1. 검색한게 있으면 false 처리
         this.isSelect = false;
         this.isRecommend = true;
@@ -132,6 +136,8 @@ export default {
   },
 
   mounted() {
+    this.resetPolylines();
+
     if (window.kakao && window.kakao.maps) {
       // 카카오 객체가 있고, 카카오 맵 그릴 준비가 되어 있다면 맵 실행
       this.loadMap();
@@ -182,13 +188,15 @@ export default {
       }
     },
     onClickCategory(e) {
-      var id = e.target.id;
+      if (e.target.id != this.currCategory) {
+        var id = e.target.id;
 
-      this.placeOverlay.setMap(null);
-
-      this.currCategory = id;
-      // this.changeCategoryClass(e);
-      this.searchPlaces();
+        this.placeOverlay.setMap(null);
+        this.resetPolylines();
+        this.currCategory = id;
+        // this.changeCategoryClass(e);
+        this.searchPlaces();
+      }
     },
     displayPlaceInfo(place) {
       var content =
@@ -241,6 +249,16 @@ export default {
         .querySelector(".click")
         .addEventListener("click", function () {
           self.recommendData(place);
+        });
+      this.contentNode
+        .querySelector("#bus-icon")
+        .addEventListener("click", function () {
+          self.findBusWay(place);
+        });
+      this.contentNode
+        .querySelector("#car-icon")
+        .addEventListener("click", function () {
+          self.findCarWay(place);
         });
       this.placeOverlay.setContent(this.contentNode);
 
@@ -304,8 +322,7 @@ export default {
         (function (marker, p) {
           window.kakao.maps.event.addListener(marker, "click", function () {
             if (marker == self.currentMarker) {
-              self.currentMarker = null;
-              self.placeOverlay.setMap(null);
+              self.closeOveray();
             } else {
               self.currentMarker = marker;
               self.displayPlaceInfo(p);
@@ -313,6 +330,11 @@ export default {
           });
         })(marker, place[i]);
       }
+    },
+
+    closeOveray() {
+      this.currentMarker = null;
+      this.placeOverlay.setMap(null);
     },
 
     placesSearchCB(data, status) {
@@ -347,14 +369,267 @@ export default {
       });
     },
 
+    findCarWay(place) {
+      this.resetPolylines();
+
+      const REST_API_KEY = `${process.env.VUE_APP_KAKAO_CAR_WAY_KEY}`;
+      const destination = `${place.x},${place.y}`; // 목적지
+
+      this.startPlaces[0].get("x");
+      this.startPlaces[0].get("x");
+
+      const waypoints = "";
+      const priority = "RECOMMEND";
+      const car_fuel = "GASOLINE";
+      const car_hipass = false;
+      const alternatives = false;
+      const road_details = false;
+
+      // const placeCnt = this.startPlaces.length;
+
+      // const car_routes = [];
+
+      Promise.all(
+        this.startPlaces.map((element) => {
+          const origin = element.get("x") + "," + element.get("y");
+          return axios
+            .get(`https://apis-navi.kakaomobility.com/v1/directions`, {
+              params: {
+                origin,
+                destination,
+                waypoints,
+                priority,
+                car_fuel,
+                car_hipass,
+                alternatives,
+                road_details,
+              },
+              headers: {
+                Authorization: `KakaoAK ${REST_API_KEY}`,
+              },
+            })
+            .then((response) => {
+              const guides = response.data.routes[0].sections[0].guides;
+              const car_route = guides.map((element) => {
+                return new window.kakao.maps.LatLng(
+                  Number(element.y),
+                  Number(element.x)
+                );
+              });
+              car_route.color = element.get("color"); // 색상 저장
+              return car_route;
+            })
+            .catch((error) => {
+              console.log(error);
+              return []; // 에러 발생시 빈 배열 반환
+            });
+        })
+      ).then((car_routes) => {
+        const path_color = [
+          "#0000FF",
+          "#8A2BE2",
+          "#A52A2A",
+          "#DEB887",
+          "#5F9EA0",
+          "#7FFF00",
+          "#D2691E",
+          "#008B8B",
+          "#9400D3",
+          "#FF69B4",
+        ];
+        for (var i = 0; i < car_routes.length; i++) {
+          //
+          //
+          var item = car_routes[i];
+          var polyline = new window.kakao.maps.Polyline({
+            path: item,
+            strokeWeight: 5,
+            strokeColor: path_color[i],
+            strokeOpacity: 1,
+            strokeStyle: "solid",
+          });
+          this.polylines.push(polyline);
+          polyline.setMap(this.map);
+        }
+      });
+
+      this.closeOveray();
+    },
+
+    findBusWay(place) {
+      this.resetPolylines();
+
+      //출발지를 for문 돌면서 odsay API 호출
+      for (var i = 0; i < this.startPlaces.length; i++) {
+        const x = this.startPlaces[i].get("x");
+        const y = this.startPlaces[i].get("y");
+        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${x}&SY=${y}&EX=${place.x}&EY=${place.y}&OPT = 0&apiKey=${process.env.VUE_APP_ODSAY_KEY}`;
+        axios
+          .get(url)
+          .then((response) => {
+            this.callMapObjApiAJAX(
+              response.data["result"]["path"][0].info.mapObj
+            );
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    },
+
+    callMapObjApiAJAX(mabObj) {
+      axios
+        .get(
+          `https://api.odsay.com/v1/api/loadLane?mapObject=0:0@` +
+            mabObj +
+            `&apiKey=${process.env.VUE_APP_ODSAY_KEY}`
+        )
+        .then((response) => {
+          this.drawPolyLine(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
+    drawPolyLine(data) {
+      let lineArray;
+      this.closeOveray();
+      for (let i = 0; i < data.result.lane.length; i++) {
+        for (let j = 0; j < data.result.lane[i].section.length; j++) {
+          lineArray = null;
+          lineArray = new Array();
+          for (
+            let k = 0;
+            k < data.result.lane[i].section[j].graphPos.length;
+            k++
+          ) {
+            lineArray.push(
+              new window.kakao.maps.LatLng(
+                data.result.lane[i].section[j].graphPos[k].y,
+                data.result.lane[i].section[j].graphPos[k].x
+              )
+            );
+          }
+          let polyline;
+          //지하철결과의 경우 노선에 따른 라인색상 지정하는 부분 (1,2호선의 경우만 예로 들음)
+          if (data.result.lane[i].type == 1) {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+              strokeColor: "#0052A4",
+            });
+          } else if (data.result.lane[i].type == 2) {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+              strokeColor: "#00A84D",
+            });
+          } else if (data.result.lane[i].type == 3) {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+              strokeColor: "#EF7C1C",
+            });
+          } else if (data.result.lane[i].type == 4) {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+              strokeColor: "#00A5DE",
+            });
+          } else if (data.result.lane[i].type == 5) {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+              strokeColor: "#996CAC",
+            });
+          } else if (data.result.lane[i].type == 6) {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+              strokeColor: "#CD7C2F",
+            });
+          } else if (data.result.lane[i].type == 7) {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+              strokeColor: "#747F00",
+            });
+          } else if (data.result.lane[i].type == 8) {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+              strokeColor: "#E6186C",
+            });
+          } else if (data.result.lane[i].type == 9) {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+              strokeColor: "#BDB092",
+            });
+          } else {
+            polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: lineArray,
+              strokeWeight: 5,
+              storkeOpacity: 1,
+              strokeStyle: "solid",
+            });
+          }
+          this.polylines.push(polyline);
+        }
+      }
+    },
+
+    resetPolylines() {
+      for (let i = 0; i < this.polylines.length; i++) {
+        this.polylines[i].setMap(null);
+      }
+      this.polylines = [];
+    },
     //----------------------------------------------------------------------
 
     findHalfway() {
       sessionStorage.setItem("findHalfwayModal", true);
       this.$refs.halfway.openDialog();
     },
+
     moveRegisterPage() {
-      this.$router.push("/register");
+      const from = sessionStorage.getItem("from");
+      console.log(from);
+      if (from !== null) {
+        this.$router.push("/Place");
+        this.$router.push(`/meeting/${from}`);
+      } else {
+        this.$router.push("/register"); // register페이지
+      }
     },
 
     goToPage(url) {

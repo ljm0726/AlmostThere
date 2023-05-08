@@ -11,7 +11,7 @@
       </span>
     </v-tooltip>
     <swiper
-      v-if="meetings.length > 0"
+      v-if="meetings && meetings.length > 0"
       class="swiper mt-2 px-3"
       :options="swiperOption"
     >
