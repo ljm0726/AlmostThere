@@ -45,24 +45,15 @@ export default {
   watch: {
     recent_meeting(newVal) {
       if (newVal != null) {
-        console.log(
-          "새로 등록한 미팅이 더 최근 미팅이라면 setTimeout 변경 :",
-          this.timeOut
-        );
         clearTimeout(this.timeOut);
-        console.log("타임 아웃 클리어 한 후 다시 할 때: ", this.timeOut);
         const now = new Date();
         const meetingTime = new Date(newVal.meetingTime);
 
         if (now < meetingTime) {
-          console.log("if문 진입");
-
           this.timeOut = setTimeout(
             this.connectHandler,
             this.calculateRemainTimeForTimeOut(newVal.meetingTime)
           );
-
-          console.log("타임아웃 다시 세팅하고 나서: ", this.timeOut);
         }
       }
     },

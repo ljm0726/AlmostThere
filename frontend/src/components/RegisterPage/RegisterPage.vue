@@ -228,17 +228,10 @@ export default {
               const newRecentMeeting = res;
               const savedRecentMeeting = this.recent_meeting;
 
-              console.log("newRecentMeeting ", newRecentMeeting);
-              // console.log(
-              //   "saveRecentMeeting.meetingTime ",
-              //   savedRecentMeeting.meetingTime
-              // );
-
               if (
                 savedRecentMeeting == null ||
                 savedRecentMeeting.meetingTime > newRecentMeeting.meetingTime
               ) {
-                console.log("새로 등록한 미팅이 더 빠름");
                 this.setMeeting(newRecentMeeting);
               }
             });
