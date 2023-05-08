@@ -74,7 +74,10 @@
       <!-- scroll 맨 아래로 내리는 버튼 -->
       <scroll-bottom-button ref="scrollDownBtn"></scroll-bottom-button>
       <!-- 채팅창 -->
-      <v-sheet style="margin: 55px 0px 72px 0px">
+      <v-sheet
+        style="margin: 55px 0px 72px 0px; overflow-y: auto"
+        :height="chattingHeight"
+      >
         <!-- 무한스크롤 -->
         <infinite-loading
           spinner="circles"
@@ -292,6 +295,10 @@ export default {
     ...mapState("websocketStore", ["connected", "stompClient"]),
     member_list() {
       return Object.keys(this.members).map((item) => this.members[item]);
+    },
+    chattingHeight() {
+      const pageHeight = document.documentElement.scrollHeight - 127;
+      return pageHeight;
     },
   },
   async created() {
