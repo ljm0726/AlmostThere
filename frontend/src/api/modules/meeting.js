@@ -13,27 +13,18 @@ async function meetingRegister(
   success,
   fail
 ) {
-  const Authorization = "Bearer " + localStorage.getItem("Authorization");
   console.log(" at ", id, name, date_time, place, address, lat, lng);
   await api
-    .post(
-      `/meeting`,
-      {
-        hostId: id,
-        meetingName: name,
-        meetingTime: date_time,
-        meetingPlace: place,
-        meetingAddress: address,
-        meetingLat: lat,
-        meetingLng: lng,
-        roomCode: "",
-      },
-      {
-        headers: {
-          Authorization: Authorization,
-        },
-      }
-    )
+    .post(`/meeting`, {
+      hostId: id,
+      meetingName: name,
+      meetingTime: date_time,
+      meetingPlace: place,
+      meetingAddress: address,
+      meetingLat: lat,
+      meetingLng: lng,
+      roomCode: "",
+    })
     .then(success)
     .catch(fail);
 }
@@ -64,10 +55,10 @@ async function getUpcomingMeetings() {
   return await Promise.resolve(result);
 }
 
-function getcntMeetingsWithin3hours() {
+function getMostRecentMeeting() {
   return new Promise((resolve, reject) => {
     api
-      .get("/meeting/3hours", {
+      .get("/meeting/most-recent", {
         headers: {
           Authorization: localStorage.getItem("Authorization"),
         },
@@ -158,7 +149,7 @@ export {
   getMeeting,
   getTodayMeetings,
   getUpcomingMeetings,
-  getcntMeetingsWithin3hours,
+  getMostRecentMeeting,
   getBestMember,
   postReceiptInfo,
   saveCalculateDetail,

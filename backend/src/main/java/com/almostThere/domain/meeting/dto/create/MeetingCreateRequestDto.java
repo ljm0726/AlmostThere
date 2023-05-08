@@ -2,6 +2,7 @@ package com.almostThere.domain.meeting.dto.create;
 
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.user.entity.Member;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
