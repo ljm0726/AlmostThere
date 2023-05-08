@@ -1,5 +1,6 @@
 <template>
   <div class="live-map">
+    <arrive-btn :id="meetingId"></arrive-btn>
     <v-btn @click="ssafyLogin()">싸피 로그인</v-btn>
     <v-btn @click="heeLogin()">희정 로그인</v-btn>
     <v-btn @click="seoLogin()">서찰스 로그인</v-btn>
@@ -9,10 +10,16 @@
 
 <script>
 import LiveMap from "./element/LiveMap.vue";
+import ArriveBtn from "./element/ArriveBtn.vue";
 
 export default {
   name: "LiveMapPage",
-  components: { LiveMap },
+  components: { LiveMap, ArriveBtn },
+  computed: {
+    meetingId() {
+      return this.$route.params.id;
+    },
+  },
   // 임시, TEST용
   methods: {
     ssafyLogin() {

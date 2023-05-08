@@ -4,8 +4,10 @@ import com.almostThere.domain.map.Service.MapService;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
+import com.almostThere.domain.user.dto.MemberAccessDto;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,14 +21,14 @@ public class MapController {
     /**
      * 서지윤
      * @param meetingId 모임ID
-     * @param x 위도
-     * @param y 경도
+     * @param x 위도(latitude)
+     * @param y 경도(longitude)
      * @return 도착 완료 시 success, 실패 시 fail
      * **/
     @PostMapping("/arrive/{meetingId}")
-    public BaseResponse reach(@PathVariable Long meetingId, @RequestParam double x, @RequestParam double y) {
-        
-        Long memberId = 1L;
+    public BaseResponse reach(@PathVariable Long meetingId, @RequestParam double x, @RequestParam double y, Authentication authentication) {
+
+        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
         
         // memberId가 meetingMember에 속해 있는지 확인
         MeetingMember meetingMember = mapService.isMeetingMember(meetingId, memberId);
