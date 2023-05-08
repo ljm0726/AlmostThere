@@ -43,7 +43,7 @@ const meetingStore = {
       console.log(state.place_addr);
     },
     SET_MEETING_INFO(state, meeting) {
-      state.state.meeting_name = meeting.meetingName;
+      state.meeting_name = meeting.meetingName;
       state.place_name = meeting.meetingPlace;
       state.place_addr = meeting.meetingAddress;
       state.meeting_lat = meeting.meetingLat;
