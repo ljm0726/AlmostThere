@@ -54,6 +54,18 @@ import { mapActions, mapState } from "vuex";
 
 export default {
   name: "MeetingPage",
+  components: {
+    MeetingTitle,
+    MeetingDatetime,
+    MeetingPlace,
+    MeetingStartPoint,
+    MeetingMember,
+    MeetingLateFee,
+    MeetingCost,
+    MeetingGame,
+    InternetError,
+    MeetingLoading,
+  },
   data() {
     return {
       loading: true,
@@ -99,18 +111,6 @@ export default {
       this.meeting.meetingAddress = this.place_addr;
     },
   },
-  components: {
-    MeetingTitle,
-    MeetingDatetime,
-    MeetingPlace,
-    MeetingStartPoint,
-    MeetingMember,
-    MeetingLateFee,
-    MeetingCost,
-    MeetingGame,
-    InternetError,
-    MeetingLoading,
-  },
   async created() {
     this.loading = true;
     await getMeeting(this.$route.params.id).then(async (res) => {
@@ -130,8 +130,9 @@ export default {
 
     setting(meetingMembers) {
       const member = meetingMembers.filter(
-        (member) => member.memberId == "1"
+        (member) => member.memberId == this.member.id
       )[0];
+
       this.startPlace = member.startPlace;
       this.startAddress = member.startAddress;
       this.startLat = member.startLat;
