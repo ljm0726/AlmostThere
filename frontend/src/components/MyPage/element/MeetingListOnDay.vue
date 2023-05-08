@@ -29,7 +29,7 @@ export default {
   },
   components: { NoMeeting, MeetingListCard },
   computed: {
-    ...mapState("memberStore", ["attendMeetings"]),
+    ...mapState("mypageStore", ["attendMeetings"]),
   },
   watch: {
     date() {
