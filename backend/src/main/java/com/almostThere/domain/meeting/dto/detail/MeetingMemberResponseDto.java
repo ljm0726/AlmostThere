@@ -15,6 +15,8 @@ public class MeetingMemberResponseDto {
     private String memberProfileImg;
     private String startPlace;
     private String startAddress;
+    private Double startLat;
+    private Double startLng;
     private int spentMoney;
     private StateType state;
 
@@ -25,6 +27,8 @@ public class MeetingMemberResponseDto {
         this.memberProfileImg = meetingMember.getMember().getMemberProfileImg();
         this.startPlace = meetingMember.getStartPlace();
         this.startAddress = meetingMember.getStartAddress();
+        this.startLat = meetingMember.getStartLat();
+        this.startLng = meetingMember.getStartLng();
         this.spentMoney = meetingMember.getSpentMoney();
         this.state = meetingMember.getState();
     }

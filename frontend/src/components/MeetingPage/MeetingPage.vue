@@ -19,6 +19,8 @@
     <meeting-start-point
       :startPlace="startPlace"
       :startAddress="startAddress"
+      :startLat="startLat"
+      :startLng="startLng"
     ></meeting-start-point>
     <meeting-member :memberList="meeting.meetingMembers"></meeting-member>
     <meeting-game></meeting-game>
@@ -66,6 +68,8 @@ export default {
       },
       startPlace: null,
       startAddress: null,
+      startLat: null,
+      startLng: null,
       spentMoney: null,
       lateTotal: null,
       total: null,
@@ -94,6 +98,8 @@ export default {
       )[0];
       this.startPlace = member.startPlace;
       this.startAddress = member.startAddress;
+      this.startLat = member.startLat;
+      this.startLng = member.startLng;
       this.spentMoney = member.spentMoney === null ? 0 : member.spentMoney;
       this.lateTotal =
         member.state == "LATE"
