@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- test용 (!추후 삭제) -->
-    <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
-    <v-btn @click="sendChatTest()">채팅 test</v-btn>
+    <!-- <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
+    <v-btn @click="sendChatTest()">채팅 test</v-btn> -->
     <v-btn @click="resizeMapLevel()">범위 재조정</v-btn>
     <!-- --- -->
     <div id="map"></div>
@@ -12,13 +12,14 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
+import { mapState } from "vuex";
 
 export default {
   name: "LiveMap",
   data() {
     return {
       /* # memberId, meetingId */
-      memberId: JSON.parse(localStorage.getItem("member")).memberId,
+      memberId: null,
       meetingId: this.$route.params.id,
       /* # marker 설정 */
       markerType: 0, // marker 이미지 순서
@@ -51,13 +52,18 @@ export default {
       maxMemberDistance: 2500,
     };
   },
+  computed: {
+    ...mapState("memberStore", ["member"]),
+  },
   watch: {
     chatting() {
       this.updateChatOverlay(this.chatting);
     },
   },
   mounted() {
-    // Kakao Map Script import
+    // i) memberId 저장
+    this.memberId = this.member.id;
+    // ii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
       this.initMap();
     } else {
@@ -241,79 +247,6 @@ export default {
         this.send();
       }, 1000);
     },
-    // [@Method] 현재 로그인한 사용자의 접속위치 얻기 (GeoLocation)
-    // getGeoLocation() {
-    //   console.log("# getGeoLocation 현 위치 얻기 동작");
-
-    //   if (navigator.geolocation) {
-    //     const memberId = JSON.parse(localStorage.getItem("member")).memberId;
-
-    //     // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-    //     navigator.geolocation.getCurrentPosition(
-    //       // i) GPS 얻어온 경우
-    //       (position) => {
-    //         // GeoLocation 경고 over-lay 삭제
-    //         const warningOverlayIndex = this.checkGeoWarningOverlay(memberId);
-    //         if (warningOverlayIndex != -1) {
-    //           const warningOverlay =
-    //             this.geoWarningOverlayList[warningOverlayIndex][memberId];
-    //           warningOverlay.setMap(null);
-    //         }
-
-    //         // 현 로그인한 사용자의 정보(id, nickname, latlng[]) 객체 생성
-    //         const member = {
-    //           memberId: memberId,
-    //           memberNickname: JSON.parse(localStorage.getItem("member"))
-    //             .memberNickName,
-    //           memberLatLng: [
-    //             position.coords.latitude,
-    //             position.coords.longitude,
-    //           ],
-    //         };
-    //         // console.log("#21# 현 로그인한 사용자 정보: ", member);
-
-    //         // - 현 사용자의 위치 저장 (redis)
-    //         this.saveSend(member);
-    //         // - 해당 모임룸 redis 저장되어 있는 member의 info 조회 (topic에서 받음)
-    //         this.send(member);
-    //       },
-    //       // ii) GPS를 가져올 수 없는 경우
-    //       (error) => {
-    //         console.log("# GeoLocation 위치 부정확 error: ", error);
-
-    //         let memberIndex = -1;
-    //         for (let i = 0; i < this.memberLocation.length; i++) {
-    //           if (this.memberLocation[i].memberId == memberId) {
-    //             memberIndex = i;
-    //             break;
-    //           }
-    //         }
-
-    //         if (
-    //           memberIndex != -1 &&
-    //           this.checkGeoWarningOverlay(memberId) == -1
-    //         ) {
-    //           // 위치 부정확 over-lay 표시 (변경된 memberId])
-    //           this.showLocationUnavailableOverlay(
-    //             this.memberLocation[memberIndex].memberId
-    //           );
-    //         }
-    //       }
-    //     );
-    //   } else {
-    //     console.log("#error# geolocation 사용불가");
-    //   }
-    // },
-    // [@Method] client에서 server로 현 로그인 member의 정보 객체 send (redis에 저장)
-    // saveSend(member) {
-    //   // console.log("# save send message: ", member);
-
-    //   if (this.stompClient && this.stompClient.connected) {
-    //     const msg = member;
-    //     this.stompClient.send(`/message/locShare`, JSON.stringify(msg), {});
-    //   }
-    // },
-    //
     // [@Method] client에서 server로 message 보내기(send) - 해당 모임의 member 객체 얻기
     send() {
       if (this.stompClient && this.stompClient.connected) {
