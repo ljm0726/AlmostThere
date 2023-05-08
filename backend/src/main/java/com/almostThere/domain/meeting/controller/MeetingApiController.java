@@ -117,12 +117,11 @@ public class MeetingApiController {
      * @return
      */
     @PostMapping("/start-place")
-//    public BaseResponse setStartPlace(@RequestBody MeetingStartPlaceRequestDto meetingStartPlaceRequestDto, Authentication authentication) {
-    public BaseResponse setStartPlace(@RequestBody MeetingStartPlaceRequestDto meetingStartPlaceRequestDto) {
+    public BaseResponse setStartPlace(@RequestBody MeetingStartPlaceRequestDto meetingStartPlaceRequestDto, Authentication authentication) {
         System.out.println("#[MemberController]# setStartPlace 출발장소 수정 - request: " + meetingStartPlaceRequestDto);
-        meetingStartPlaceRequestDto.setMeetingId(14L);
-        meetingStartPlaceRequestDto.setMemberId(1L);
-//        meetingStartPlaceRequestDto.setMemberId(((MemberAccessDto)authentication.getPrincipal()).getId()); // * token을 활용하여 현 로그인 member의 id 추출
+
+        // * token을 활용하여 현 로그인 member의 id 추출
+        meetingStartPlaceRequestDto.setMemberId(((MemberAccessDto)authentication.getPrincipal()).getId());
 
         // 변경된 출발장소 update
         meetingService.updateMemberStartPlace(meetingStartPlaceRequestDto);
