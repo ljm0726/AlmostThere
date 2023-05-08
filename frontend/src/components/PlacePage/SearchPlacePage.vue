@@ -119,11 +119,11 @@ export default {
             // i) 중간장소
             if (this.$route.query.type == null) {
               this.updatePlace(placeMap);
-              this.$router.push("/place");
+              this.$router.replace("/place");
             }
             // ii) 출발지
             else {
-              this.$router.push({
+              this.$router.replace({
                 path: `/start-place/${this.$route.query.id}`,
                 query: {
                   startPlace: placeMap.get("name"),
