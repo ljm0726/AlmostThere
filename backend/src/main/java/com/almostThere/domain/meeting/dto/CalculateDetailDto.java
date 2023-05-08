@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CalculateDetailDto {
     private Long id;
-    private Meeting meeting;
+    private Long meetingId;
     private CalculateType type;
     private String filePath;
     private String fileName;
@@ -19,7 +19,7 @@ public class CalculateDetailDto {
 
     public CalculateDetailDto(CalculateDetail c) {
         this.id = c.getId();
-        this.meeting = c.getMeeting();
+        this.meetingId = c.getMeeting().getId();
         this.type = c.getType();
         this.filePath = c.getFilePath();
         this.fileName = c.getFileName();
