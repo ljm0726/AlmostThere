@@ -19,7 +19,7 @@ export default {
     return {
       /* # memberId, meetingId */
       memberId: JSON.parse(localStorage.getItem("member")).memberId,
-      meetingId: 1, // !! 추후 모임 id에 따라 변경되도록 구현 필요
+      meetingId: this.$route.params.id,
       /* # marker 설정 */
       markerType: 0, // marker 이미지 순서
       placeMarkerSize: [50, 70], // 모임장소 marker 크기
@@ -236,10 +236,13 @@ export default {
         }
       );
     },
-    // [@Method] 1초마다 현 사용자의 위치 얻기
+    // [@Method] 1초마다 해당 모임에 member 좌표 얻기
     startIntervalMemberLocation() {
+      // setInterval(() => {
+      //   this.getGeoLocation();
+      // }, 1000);
       setInterval(() => {
-        this.getGeoLocation();
+        this.send();
       }, 1000);
     },
     // [@Method] 현재 로그인한 사용자의 접속위치 얻기 (GeoLocation)
@@ -315,14 +318,22 @@ export default {
       }
     },
     // [@Method] client에서 server로 message 보내기(send)
-    send(member) {
-      // console.log("# send message: ", member);
+    // send(member) {
+    //   // console.log("# send message: ", member);
 
+    //   if (this.stompClient && this.stompClient.connected) {
+    //     const msg = member;
+    //     this.stompClient.send(
+    //       `/message/locShare/meetingId/${this.meetingId}/memberId/${this.memberId}`,
+    //       JSON.stringify(msg),
+    //       {}
+    //     );
+    //   }
+    // },
+    send() {
       if (this.stompClient && this.stompClient.connected) {
-        const msg = member;
         this.stompClient.send(
           `/message/locShare/meetingId/${this.meetingId}/memberId/${this.memberId}`,
-          JSON.stringify(msg),
           {}
         );
       }
@@ -335,6 +346,8 @@ export default {
       // );
 
       for (const member of membersLocation) {
+        if (member == null) continue;
+
         // memberId를 통해 해당 member 찾기
         let memberIndex = -1;
         if (this.memberLocation != 0) {
