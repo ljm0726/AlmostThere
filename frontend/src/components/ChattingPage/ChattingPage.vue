@@ -458,11 +458,11 @@ export default {
               document
                 .querySelector(".v-snack__wrapper")
                 .addEventListener("click", this.watchNewMessage);
-              console.log("여기");
+              // console.log("여기");
               document
                 .getElementById("chattingMessages")
                 .addEventListener("scroll", this.onTheBottom);
-            }, 500);
+            }, 300);
           },
           (error) => {
             console.log("소켓 연결 실패", error);
@@ -482,11 +482,11 @@ export default {
           document
             .querySelector(".v-snack__wrapper")
             .addEventListener("click", this.watchNewMessage);
-          console.log("여기");
+          // console.log("여기");
           document
             .getElementById("chattingMessages")
             .addEventListener("scroll", this.onTheBottom);
-        }, 500);
+        }, 300);
       }
     },
   },
@@ -494,13 +494,15 @@ export default {
   destroyed() {
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`member-subscribe-${this.$route.params.id}`);
-    document
-      .querySelector(".v-snack__wrapper")
-      .removeEventListener("click", this.watchNewMessage);
-    document
-      .getElementById("chattingMessages")
-      .removeEventListener("scroll", this.onTheBottom);
-    // window.removeEventListener("scroll", this.onTheBottom);
+    if (this.loading) {
+      document
+        .querySelector(".v-snack__wrapper")
+        .removeEventListener("click", this.watchNewMessage);
+      document
+        .getElementById("chattingMessages")
+        .removeEventListener("scroll", this.onTheBottom);
+      // window.removeEventListener("scroll", this.onTheBottom);
+    }
   },
 };
 </script>
