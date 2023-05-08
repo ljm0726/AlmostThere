@@ -30,6 +30,12 @@ router.beforeEach((to, from, next) => {
   } else if (to.name === "landing" || to.name === "login") {
     //login page를 가거나 login이 성공 됐을 때는 다음으로 넘어감
     next();
+  } else if (to.name === "meeting") {
+    const meetingId = to.params.id;
+    alert(meetingId);
+    next({
+      name: "login",
+    });
   } else {
     //그 외에 모든 경로는 login으로
     next({
