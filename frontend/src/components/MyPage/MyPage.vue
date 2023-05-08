@@ -43,7 +43,6 @@ export default {
     });
   },
   methods: {
-    // ...mapActions("memberStore", ["excuteGetMemberInfo"]),
     ...mapActions("mypageStore", ["excuteGetMemberInfo"]),
   },
 };
