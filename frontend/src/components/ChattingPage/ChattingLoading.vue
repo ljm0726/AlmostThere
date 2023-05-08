@@ -2,7 +2,7 @@
   <v-sheet
     min-height="100%"
     class="d-flex flex-column justify-end mx-3"
-    style="padding: 55px 0px 72px 0px"
+    style="padding: 55px 0px 20px 0px"
   >
     <div class="align-self-end d-flex flex-column align-end">
       <v-skeleton-loader
