@@ -75,6 +75,7 @@
       <scroll-bottom-button ref="scrollDownBtn"></scroll-bottom-button>
       <!-- 채팅창 -->
       <v-sheet
+        id="chattingMessages"
         style="margin: 55px 0px 72px 0px; overflow-y: auto"
         :height="chattingHeight"
       >
@@ -325,14 +326,22 @@ export default {
   methods: {
     ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
     bottomVisible() {
-      const scrollY = window.scrollY;
-      const visible = document.documentElement.clientHeight;
-      const pageHeight = document.documentElement.scrollHeight;
+      // const scrollY = window.scrollY;
+      // const visible = document.documentElement.clientHeight;
+      // const pageHeight = document.documentElement.scrollHeight;
+      const scrollY = document.getElementById("chattingMessages").scrollTop;
+      const visible = document.getElementById("chattingMessages").clientHeight;
+      const pageHeight =
+        document.getElementById("chattingMessages").scrollHeight;
+      // console.log(document.getElementById("chattingMessages").scrollTop);
+      // console.log(document.getElementById("chattingMessages").scrollHeight);
+      // console.log(document.getElementById("chattingMessages").clientHeight);
       // + 90은 Footer의 높이
       const bottomOfPage = visible + scrollY + 90 >= pageHeight;
       return bottomOfPage || pageHeight < visible;
     },
     onTheBottom() {
+      // console.log("onTheBottom");
       this.bottom = this.bottomVisible();
     },
     // 오른쪽 멤버 프로필 목록 상태 변경
@@ -366,7 +375,10 @@ export default {
     },
     // 맨 아래로 스크롤 이동
     goBottom() {
-      window.scrollTo(0, document.querySelector("body").scrollHeight);
+      // window.scrollTo(0, document.querySelector("body").scrollHeight);
+      document
+        .getElementById("chattingMessages")
+        .scrollTo(0, document.getElementById("chattingMessages").scrollHeight);
     },
     // 메세지 보내고, 입력 내용 초기화
     sendMessage() {
@@ -397,10 +409,11 @@ export default {
             // console.log(">> 여기", data.data);
             // 스크롤 맨 아래로 이동
             // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우 this.memberId == data.data.memberId ||
-            if (
-              document.documentElement.scrollTop + window.innerHeight + 100 >=
-              document.querySelector("body").scrollHeight
-            ) {
+            // if (
+            //   document.documentElement.scrollTop + window.innerHeight + 100 >=
+            //   document.querySelector("body").scrollHeight
+            // )
+            if (this.bottom) {
               await this.goBottom();
             } else {
               this.newMessage = await data.data.message;
@@ -441,10 +454,15 @@ export default {
             // loading 상태 변경
             this.loading = await false;
             // await this.goBottom();
-            document
-              .querySelector(".v-snack__wrapper")
-              .addEventListener("click", this.watchNewMessage);
-            window.addEventListener("scroll", this.onTheBottom);
+            setTimeout(() => {
+              document
+                .querySelector(".v-snack__wrapper")
+                .addEventListener("click", this.watchNewMessage);
+              console.log("여기");
+              document
+                .getElementById("chattingMessages")
+                .addEventListener("scroll", this.onTheBottom);
+            }, 500);
           },
           (error) => {
             console.log("소켓 연결 실패", error);
@@ -456,10 +474,19 @@ export default {
         this.subscribe();
         this.getMember();
         this.loading = false;
-        document
-          .querySelector(".v-snack__wrapper")
-          .addEventListener("click", this.watchNewMessage);
-        window.addEventListener("scroll", this.onTheBottom);
+        // document
+        //   .querySelector(".v-snack__wrapper")
+        //   .addEventListener("click", this.watchNewMessage);
+        // window.addEventListener("scroll", this.onTheBottom);
+        setTimeout(() => {
+          document
+            .querySelector(".v-snack__wrapper")
+            .addEventListener("click", this.watchNewMessage);
+          console.log("여기");
+          document
+            .getElementById("chattingMessages")
+            .addEventListener("scroll", this.onTheBottom);
+        }, 500);
       }
     },
   },
@@ -470,7 +497,10 @@ export default {
     document
       .querySelector(".v-snack__wrapper")
       .removeEventListener("click", this.watchNewMessage);
-    window.removeEventListener("scroll", this.onTheBottom);
+    document
+      .getElementById("chattingMessages")
+      .removeEventListener("scroll", this.onTheBottom);
+    // window.removeEventListener("scroll", this.onTheBottom);
   },
 };
 </script>
