@@ -1,4 +1,8 @@
-import { meetingRegister, modifyMeeting } from "@/api/modules/meeting";
+import {
+  meetingRegister,
+  modifyMeeting,
+  outMeeting,
+} from "@/api/modules/meeting";
 import placeStore from "./place";
 import memberStore from "./member";
 import router from "@/router"; // 라우터 import
@@ -126,6 +130,25 @@ const meetingStore = {
           commit("SET_PLACE_NAME", place_name);
           commit("SET_PLACE_ADDR", place_addr);
           // router.push({ name: "home" });
+        },
+        (error) => {
+          console.log(error);
+          throw error;
+        }
+      );
+    },
+
+    async outMeeting({ state }) {
+      // console.log(date_time, place_name, place_addr, amount);
+      console.log(state.meeitng_id, memberStore.state.member.id);
+      await outMeeting(
+        // this.,
+        // 장소 버튼을 누를 때 place store에있는 update actions 실행 해주기
+        // 처음 가져올 때는 meeting에만 data 저장.
+        memberStore.state.member.id,
+        state.meeitng_id,
+        ({ data }) => {
+          console.log(data);
         },
         (error) => {
           console.log(error);

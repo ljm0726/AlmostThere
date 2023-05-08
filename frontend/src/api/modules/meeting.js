@@ -67,6 +67,17 @@ async function modifyMeeting(
     .then(success)
     .catch(fail);
 }
+
+async function outMeeting(member_id, meeting_id, success, fail) {
+  console.log(member_id, meeting_id);
+  await api
+    .put("/meeting/exit", {
+      memberId: member_id,
+      meetingId: meeting_id,
+    })
+    .then(success, console.log(success))
+    .catch(fail, console.log(fail));
+}
 async function getMeeting(meetingId) {
   var result = null;
   await api
@@ -195,4 +206,5 @@ export {
   deleteCalculateDetail,
   modifyMeeting,
   saveMemberStartPlace,
+  outMeeting,
 };
