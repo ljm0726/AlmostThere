@@ -110,7 +110,7 @@ public class MeetingApiController {
      * @param meetingDeleteRequestDto
      * @return 모임방에서 나간다.
      */
-    @DeleteMapping("/exit")
+    @PutMapping("/exit")
     public BaseResponse exitMeeting(@RequestBody MeetingDeleteRequestDto meetingDeleteRequestDto){
         meetingService.exitMeeting(meetingDeleteRequestDto);
         return new BaseResponse(200, "SUCCESS",null);

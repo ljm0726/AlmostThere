@@ -8,16 +8,14 @@
 export default {
   name: "HomeButton",
   props: {
-    color: String
+    color: String,
   },
   methods: {
     goHome() {
-      this.$router.push("/")
-    }
-  }
-}
+      this.$router.push("/");
+    },
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

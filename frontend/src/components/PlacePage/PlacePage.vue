@@ -276,7 +276,7 @@ export default {
       placeMap.set("name", place.place_name);
       placeMap.set("addr", place.address_name);
       this.updatePlace(placeMap);
-      this.$router.push("/register");
+      this.$router.replace("/register");
     },
 
     removeMarker() {
@@ -625,15 +625,15 @@ export default {
       const from = sessionStorage.getItem("from");
       console.log(from);
       if (from !== null) {
-        this.$router.push("/Place");
-        this.$router.push(`/meeting/${from}`);
+        // this.$router.push("/Place");
+        this.$router.replace(`/meeting/${from}`);
       } else {
-        this.$router.push("/register"); // register페이지
+        this.$router.replace("/register"); // register페이지
       }
     },
 
     goToPage(url) {
-      this.$router.push(url);
+      this.$router.replace(url);
     },
     goBack() {
       this.$router.go(-1);

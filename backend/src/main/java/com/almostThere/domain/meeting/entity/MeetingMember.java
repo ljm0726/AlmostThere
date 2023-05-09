@@ -62,6 +62,10 @@ public class MeetingMember {
         this.spentMoney = spentMoney;
     }
 
+    public void updateState(StateType stateType) {
+        this.state = stateType;
+    }
+
     public void updateSpentMoney(int spentMoney){
         this.spentMoney = spentMoney;
     }
