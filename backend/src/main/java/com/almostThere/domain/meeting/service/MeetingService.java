@@ -1,12 +1,11 @@
 package com.almostThere.domain.meeting.service;
 
-import com.almostThere.domain.meeting.dto.MeetingTimeDto;
 import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
+import com.almostThere.domain.meeting.dto.MeetingTimeDto;
 import com.almostThere.domain.meeting.dto.create.MeetingCreateRequestDto;
 import com.almostThere.domain.meeting.dto.delete.MeetingDeleteRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingCalculateDetailDto;
-import com.almostThere.domain.meeting.dto.detail.MeetingDetailRequestDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingDetailResponseDto;
 import com.almostThere.domain.meeting.dto.detail.MeetingMemberResponseDto;
 import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
@@ -22,16 +21,17 @@ import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import com.almostThere.global.error.exception.NotFoundException;
-import java.util.ArrayList;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,14 +108,17 @@ public class MeetingService {
 
     /**
      * 모임상세정보, 모임멤버, 정산상세내역을 조회한다.
-     * @param meetingDetailRequestDto
+     * @param
      * @return 모임 상세정보
      */
-    public MeetingDetailResponseDto getMeetingDetail(MeetingDetailRequestDto meetingDetailRequestDto){
-        Long memberId = meetingDetailRequestDto.getMemberId();
-        final Meeting meeting = meetingRepository.findById(meetingDetailRequestDto.getMeetingId())
+    public MeetingDetailResponseDto getMeetingDetail(Long memberId, Long meetingId){
+        final Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(()->new NotFoundException(
                         ErrorCode.MEETING_NOT_FOUND));
+        MeetingMember meetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(
+                meetingId,
+                memberId
+        ).orElseThrow(() -> new NotFoundException(ErrorCode.MEETING_MEMBER_NOT_FOUND));
 
         List<MeetingMemberResponseDto> meetingMembers = meeting.getMeetingMembers()
                 .stream().map(m->new MeetingMemberResponseDto(m)).collect(Collectors.toList());
@@ -138,12 +141,12 @@ public class MeetingService {
      */
     @Transactional
     public void deleteMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto) {
-        final Meeting meeting = meetingRepository.findById(meetingDeleteRequestDto.getMeetingid())
+        final Meeting meeting = meetingRepository.findById(meetingDeleteRequestDto.getMeetingId())
                 .orElseThrow(() -> new NotFoundException(
                         ErrorCode.MEETING_NOT_FOUND));
 
-        if (meeting.getHost().getId() == meetingDeleteRequestDto.getMemberid())
-            meetingRepository.deleteById(meetingDeleteRequestDto.getMeetingid());
+        if (meeting.getHost().getId() == meetingDeleteRequestDto.getMeetingId())
+            meetingRepository.deleteById(meetingDeleteRequestDto.getMeetingId());
         else throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
     }
 
@@ -154,7 +157,7 @@ public class MeetingService {
     @Transactional
     public void exitMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto){
         meetingMemberRepository.deleteMeetingMemberByMeetingIdAndMemberID(
-                meetingDeleteRequestDto.getMemberid(),meetingDeleteRequestDto.getMeetingid());
+                meetingDeleteRequestDto.getMemberId(),meetingDeleteRequestDto.getMeetingId());
     }
 
     /**

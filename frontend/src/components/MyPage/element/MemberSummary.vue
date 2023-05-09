@@ -47,7 +47,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState("memberStore", [
+    ...mapState("mypageStore", [
       "attendMeetings",
       "thisMonthAttendMeetingCnt",
       "totalLateCnt",

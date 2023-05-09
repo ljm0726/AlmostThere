@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MeetingDeleteRequestDto {
 
-    private Long memberid;
+    private Long memberId;
 
-    private Long meetingid;
+    private Long meetingId;
 }

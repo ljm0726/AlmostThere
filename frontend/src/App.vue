@@ -60,6 +60,7 @@ export default {
 
   computed: {
     ...mapState("meetingStore", ["recent_meeting"]),
+    ...mapState("memberStore", ["member"]),
   },
 
   watch: {
@@ -101,7 +102,10 @@ export default {
       const formattedTime = new Date(
         `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
       );
-      const diffTime = meetingTime.getTime() - formattedTime.getTime();
+
+      const diffTime =
+        new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
+        formattedTime.getTime();
 
       console.log("diffTime :", diffTime);
 
@@ -150,15 +154,15 @@ export default {
     },
 
     getGeoLocation() {
-      console.log("#21# getGeoLocation 현 위치 얻기 동작");
+      console.log("#[getGeoLocation]# 현 위치 얻기 동작");
       // alert("## geo", navigator.geolocation);
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition((position) => {
           // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
           const member = {
-            memberId: 1,
-            memberNickname: "이싸피",
+            memberId: this.member.id,
+            memberNickname: this.member.memberNickname,
             memberLatLng: [position.coords.latitude, position.coords.longitude],
           };
 
