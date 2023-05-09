@@ -232,7 +232,7 @@ export default {
           // 소켓 연결 성공
           this.connected = true;
           this.isConnect = true;
-          console.log("소켓 연결 성공", frame);
+          console.log("#[실시간 지도]# 소켓 연결 성공", frame);
 
           // 서버의 메시지 전송 endpoint를 구독합니다.
           // 이런형태를 pub sub 구조라고 합니다.
@@ -244,7 +244,7 @@ export default {
           });
 
           // GeoLocation - 1초마다 현 위치 얻기
-          // this.startIntervalMemberLocation();
+          this.startIntervalMemberLocation();
           this.subscribeChatting();
         },
         (error) => {
@@ -366,6 +366,8 @@ export default {
         position: location,
         image: markerImage,
       });
+      if (member.memberId == this.memberId) marker.setZIndex(9999);
+
       // marker 저장 (for. 삭제)
       const object = new Object();
       object[member.memberId] = marker;
@@ -386,12 +388,26 @@ export default {
       const position = marker.getPosition();
 
       // over-lay 생성
-      const customOverlay = new kakao.maps.CustomOverlay({
-        position: position,
-        content: content,
-        xAnchor: this.memberOverlay[0], // 오버레이 표시 x, y 위치
-        yAnchor: this.memberOverlay[1],
-      });
+      var customOverlay = null;
+      if (member.memberId == this.meetingId) {
+        customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: content,
+          xAnchor: this.memberOverlay[0], // 오버레이 표시 x, y 위치
+          yAnchor: this.memberOverlay[1],
+          style: {
+            zIndex: 1000,
+          },
+        });
+      } else {
+        customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: content,
+          xAnchor: this.memberOverlay[0],
+          yAnchor: this.memberOverlay[1],
+        });
+      }
+
       // over-lay 저장 (for. 삭제)
       const object = new Object();
       object[member.memberId] = customOverlay;
@@ -445,12 +461,26 @@ export default {
       const position = marker.getPosition();
 
       // over-lay 생성
-      const customOverlay = new kakao.maps.CustomOverlay({
-        position: position,
-        content: content,
-        xAnchor: this.distanceOverlay[0],
-        yAnchor: this.distanceOverlay[1],
-      });
+      var customOverlay = null;
+      if (member.memberId == this.meetingId) {
+        customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: content,
+          xAnchor: this.distanceOverlay[0],
+          yAnchor: this.distanceOverlay[1],
+          style: {
+            zIndex: 1000,
+          },
+        });
+      } else {
+        customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: content,
+          xAnchor: this.memberOverlay[0],
+          yAnchor: this.memberOverlay[1],
+        });
+      }
+
       // over-lay 저장 (for. 삭제)
       const object = new Object();
       object[member.memberId] = customOverlay;

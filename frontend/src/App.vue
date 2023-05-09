@@ -91,7 +91,7 @@ export default {
       const access_token = localStorage.getItem("Authorization");
 
       if (access_token) {
-        console.log("connect");
+        // console.log("connect");
         this.connect();
       }
     },
@@ -142,7 +142,7 @@ export default {
           };
 
           // 현 사용자의 위치 저장
-          console.log("getGeoLocation :", member);
+          // console.log("getGeoLocation :", member);
           this.send(member);
         });
       } else {
@@ -150,7 +150,7 @@ export default {
       }
     },
     send(member) {
-      console.log("# send message: ", member);
+      // console.log("# send message: ", member);
 
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
