@@ -36,11 +36,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         log.info("Filter 진입");
         log.info("요청 타입 {}", request.getMethod());
         log.info("요청 타입 uri {}", request.getRequestURI());
-        log.info("cookies {}", request.getCookies());
-
-        for(Cookie c: request.getCookies()) {
-            log.info("C {}, ", c.getName());
-        }
 
         String accessTokenHeader = request.getHeader("Authorization");
         log.info("accessToken {} ", accessTokenHeader);

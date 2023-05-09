@@ -106,7 +106,6 @@ const meetingStore = {
         placeStore.state.placeY == 0
           ? state.meeting_lng
           : placeStore.state.placeY;
-      console.log("XY", X, Y);
       // console.log(date_time, place_name, place_addr, amount);
       await modifyMeeting(
         // this.,

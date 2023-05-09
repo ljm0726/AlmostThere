@@ -4,13 +4,16 @@ import { getLoginMember } from "@/api/modules/member";
 const memberStore = {
   namespaced: true,
   state: {
+    member_id: null,
     member: null, // member 객체
   },
   getters: {},
   mutations: {
     SET_MEMBER(state, member) {
       state.member = member;
-      console.log(state.member.id);
+    },
+    SET_MEMBER_ID(state, id) {
+      state.member_id = id;
     },
   },
   actions: {
@@ -37,6 +40,11 @@ const memberStore = {
           // await dispatch("tokenRegeneration");
         }
       );
+    },
+
+    async SET_MEMBER_ID({ commit }, id) {
+      console.log("IDDD ", id);
+      await commit("SET_MEMBER_ID", id);
     },
   },
 };
