@@ -321,6 +321,7 @@ export default {
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     });
+
     this.loading = true;
     // 저장된 채팅 정보를 가져옵니다.
     await getChatting(this.$route.params.id).then(async (res) => {
@@ -408,7 +409,7 @@ export default {
     },
     // 메세지 전송
     send() {
-      if (this.stompClient && this.connected) {
+      if (this.stompClient && this.stompClient.ws.readyState == 1) {
         this.stompClient.send(
           `/message/receive/${this.$route.params.id}`,
           JSON.stringify({ message: this.message, memberId: this.memberId }),
@@ -417,7 +418,7 @@ export default {
       }
     },
     // 메세지 구독
-    subscribe() {
+    chatSubscribe() {
       this.stompClient.subscribe(
         `/send/${this.$route.params.id}`,
         async (res) => {
@@ -457,37 +458,50 @@ export default {
         { id: `member-subscribe-${this.$route.params.id}` }
       );
     },
+    // 소켓 연결 후 동작
+    async connectAction() {
+      await this.chatSubscribe();
+      await this.getMember();
+      this.loading = await false;
+      await document
+        .querySelector(".v-snack__wrapper")
+        .addEventListener("click", this.watchNewMessage);
+      await window.addEventListener("scroll", this.onTheBottom);
+      await this.goBottom();
+    },
+    // 소켓 연결 기다리기
+    waitConnect() {
+      setTimeout(() => {
+        if (this.stompClient.ws.readyState == 1) {
+          this.connectAction();
+        } else {
+          this.waitConnect();
+        }
+      }, 1);
+    },
     // Websocket 연결
     connect() {
-      if (!this.connected) {
+      // 연결 시도 중거나 이미 연결됐거나
+      if (
+        this.connected ||
+        (this.stompClient && this.stompClient.ws.readyState == 1)
+      ) {
+        this.waitConnect();
+      }
+      // 연결 시도
+      else {
+        this.updateConnected(true);
         const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
         let socket = new SockJS(serverURL);
         this.updateStompClient(Stomp.over(socket));
+
+        console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
         this.stompClient.connect(
           {},
           async (frame) => {
             console.log("소켓 연결 성공", frame);
-            await this.updateConnected(true);
-            await this.subscribe();
-            await this.getMember();
-            // loading 상태 변경
-            this.loading = await false;
-            // await this.goBottom();
-            document
-              .querySelector(".v-snack__wrapper")
-              .addEventListener("click", this.watchNewMessage);
-            window.addEventListener("scroll", this.onTheBottom);
-            await this.goBottom();
-            // setTimeout(() => {
-            //   document
-            //     .querySelector(".v-snack__wrapper")
-            //     .addEventListener("click", this.watchNewMessage);
-            //   // console.log("여기");
-            //   document
-            //     .getElementById("chattingMessages")
-            //     .addEventListener("scroll", this.onTheBottom);
-            //   this.goBottom();
-            // }, 100);
+            this.updateConnected(false);
+            this.connectAction();
           },
           (error) => {
             console.log("소켓 연결 실패", error);
@@ -495,25 +509,6 @@ export default {
             this.updateConnected(false);
           }
         );
-      } else {
-        this.subscribe();
-        this.getMember();
-        this.loading = false;
-        document
-          .querySelector(".v-snack__wrapper")
-          .addEventListener("click", this.watchNewMessage);
-        window.addEventListener("scroll", this.onTheBottom);
-        this.goBottom();
-        // setTimeout(() => {
-        //   document
-        //     .querySelector(".v-snack__wrapper")
-        //     .addEventListener("click", this.watchNewMessage);
-        //   // console.log("여기");
-        //   document
-        //     .getElementById("chattingMessages")
-        //     .addEventListener("scroll", this.onTheBottom);
-        //   this.goBottom();
-        // }, 100);
       }
     },
   },
@@ -521,6 +516,7 @@ export default {
   destroyed() {
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`member-subscribe-${this.$route.params.id}`);
+
     if (this.loading) {
       document
         .querySelector(".v-snack__wrapper")
