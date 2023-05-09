@@ -454,7 +454,6 @@ export default {
       const destination = `${place.x},${place.y}`; // 목적지
 
       this.startPlaces[0].get("x");
-      this.startPlaces[0].get("x");
       const waypoints = "";
       const priority = "RECOMMEND";
       const car_fuel = "GASOLINE";
@@ -465,7 +464,7 @@ export default {
       // const placeCnt = this.startPlaces.length;
 
       // const car_routes = [];
-
+      this.minTimes = [];
       Promise.all(
         this.startPlaces.map((element) => {
           const origin = element.get("x") + "," + element.get("y");
@@ -487,6 +486,15 @@ export default {
             })
             .then((response) => {
               const guides = response.data.routes[0].sections[0].guides;
+              console.log(
+                response.data.routes[0],
+                response.data.routes[0].summary.duration
+              );
+
+              this.minTimes.push(
+                Math.round(response.data.routes[0].summary.duration / 60)
+              );
+
               const car_route = guides.map((element) => {
                 return new window.kakao.maps.LatLng(
                   Number(element.y),
@@ -502,17 +510,29 @@ export default {
             });
         })
       ).then((car_routes) => {
+        // const path_color = [
+        //   "#0000FF",
+        //   "#8A2BE2",
+        //   "#A52A2A",
+        //   "#DEB887", //색 바꿔야함
+        //   "#5F9EA0",
+        //   "#7FFF00",
+        //   "#D2691E", //
+        //   "#008B8B",
+        //   "#9400D3",
+        //   "#FF69B4", //
+        // ];
         const path_color = [
-          "#0000FF",
-          "#8A2BE2",
-          "#A52A2A",
-          "#DEB887",
-          "#5F9EA0",
-          "#7FFF00",
-          "#D2691E",
-          "#008B8B",
+          "#32CD32",
+          "#7B68EE",
+          "#FFD700",
+          "#4B0082", //
+          "#00CED1",
+          "#FF00FF",
+          "#87CEFA",
+          "#6B8E23", //
           "#9400D3",
-          "#FF69B4",
+          "#8B0000",
         ];
         for (var i = 0; i < car_routes.length; i++) {
           //
