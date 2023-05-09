@@ -20,11 +20,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MapService {
-
     private final MeetingMemberRepository meetingMemberRepository;
-
     private final MeetingRepository meetingRepository;
-
     private final double earthRadius = 6400;
 
     /**

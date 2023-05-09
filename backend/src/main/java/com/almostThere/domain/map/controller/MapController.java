@@ -49,4 +49,20 @@ public class MapController {
         }
         else return BaseResponse.fail();
     }
+
+    /**
+     * 서지윤
+     * @param meetingId 모임ID
+     * @return 멤버별 최근 채팅 1개씩 꺼내기
+    **/
+    @GetMapping("/chat/{meetingId}")
+    public BaseResponse recentChat(@PathVariable Long meetingId, Authentication authentication) {
+
+        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
+
+        // memberId가 meetingMember에 속해 있는지 확인
+        MeetingMember meetingMember = mapService.isMeetingMember(meetingId, memberId);
+
+        //
+    }
 }
