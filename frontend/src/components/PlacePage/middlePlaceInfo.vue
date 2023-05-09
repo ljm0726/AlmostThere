@@ -139,8 +139,8 @@ export default {
   width: 30%;
 }
 .detail {
-  margin-bottom: 3%;
-  margin-left: 80%;
+  margin-block: 3%;
+  margin-left: 6%;
 }
 a {
   text-decoration: none;

@@ -41,7 +41,7 @@
     <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
-    <div v-if="placeSelect" @click="moveRegisterPage">
+    <div v-if="placeSelect">
       <middle-place-info
         class="middle-place-info"
         v-if="minTimes.length == startPlaces.length"
@@ -535,7 +535,7 @@ export default {
       this.placeSelect = true;
     },
 
-    findBusWay(place) {
+    async findBusWay(place) {
       this.resetPolylines();
       this.stateTraffic = "bus";
       this.loading = true;
@@ -548,31 +548,72 @@ export default {
       this.curRecommendPlaceUrl = place.place_url;
 
       this.minTimes = [];
-      //출발지를 for문 돌면서 odsay API 호출
       let maxTime = 99999999;
       let maxPayment = 99999999;
       let totalChange = 99999999;
       let idx = 0;
       console.log("startPlaces는 이렇게", this.startPlaces);
+
       for (var i = 0; i < this.startPlaces.length; i++) {
         const x = this.startPlaces[i].get("x");
         const y = this.startPlaces[i].get("y");
         const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${x}&SY=${y}&EX=${place.x}&EY=${place.y}&OPT=0&apiKey=${process.env.VUE_APP_ODSAY_KEY}`;
         idx = 0;
-        setTimeout(() => {
-          axios
-            .get(url)
-            .then((response) => {
-              maxTime = 99999999;
-              maxPayment = 99999999;
-              totalChange = 99999999;
-              console.log("과연", response.data);
-              console.log("과연길이", response.data["result"]["path"].length);
-              // 경로 추천: 최소시간 -> 최소금액 -> 최소환승 순으로 정렬
-              for (var j = 0; j < response.data["result"]["path"].length; j++) {
+
+        await new Promise((resolve) => setTimeout(resolve, i * 40));
+
+        try {
+          const response = await axios.get(url);
+          maxTime = 99999999;
+          maxPayment = 99999999;
+          totalChange = 99999999;
+          console.log("과연", response.data);
+          console.log("과연길이", response.data["result"]["path"].length);
+
+          for (var j = 0; j < response.data["result"]["path"].length; j++) {
+            if (
+              maxTime > response.data["result"]["path"][j]["info"]["totalTime"]
+            ) {
+              idx = j;
+              maxTime = response.data["result"]["path"][j]["info"]["totalTime"];
+              maxPayment =
+                response.data["result"]["path"][j]["info"]["payment"];
+              totalChange =
+                response.data["result"]["path"][j]["info"]["busTransitCount"] +
+                response.data["result"]["path"][j]["info"][
+                  "subwayTransitCount"
+                ];
+            } else if (
+              maxTime == response.data["result"]["path"][j]["info"]["totalTime"]
+            ) {
+              if (
+                maxPayment >
+                response.data["result"]["path"][j]["info"]["payment"]
+              ) {
+                idx = j;
+                maxTime =
+                  response.data["result"]["path"][j]["info"]["totalTime"];
+                maxPayment =
+                  response.data["result"]["path"][j]["info"]["payment"];
+                totalChange =
+                  response.data["result"]["path"][j]["info"][
+                    "busTransitCount"
+                  ] +
+                  response.data["result"]["path"][j]["info"][
+                    "subwayTransitCount"
+                  ];
+              } else if (
+                maxPayment ==
+                response.data["result"]["path"][j]["info"]["payment"]
+              ) {
                 if (
-                  maxTime >
-                  response.data["result"]["path"][j]["info"]["totalTime"]
+                  totalChange >
+                  response.data["result"]["path"][j]["info"][
+                    "busTransitCount"
+                  ] +
+                    response.data["result"]["path"][j]["info"][
+                      "subwayTransitCount"
+                    ]
                 ) {
                   idx = j;
                   maxTime =
@@ -586,66 +627,21 @@ export default {
                     response.data["result"]["path"][j]["info"][
                       "subwayTransitCount"
                     ];
-                } else if (
-                  maxTime ==
-                  response.data["result"]["path"][j]["info"]["totalTime"]
-                ) {
-                  if (
-                    maxPayment >
-                    response.data["result"]["path"][j]["info"]["payment"]
-                  ) {
-                    idx = j;
-                    maxTime =
-                      response.data["result"]["path"][j]["info"]["totalTime"];
-                    maxPayment =
-                      response.data["result"]["path"][j]["info"]["payment"];
-                    totalChange =
-                      response.data["result"]["path"][j]["info"][
-                        "busTransitCount"
-                      ] +
-                      response.data["result"]["path"][j]["info"][
-                        "subwayTransitCount"
-                      ];
-                  } else if (
-                    maxPayment ==
-                    response.data["result"]["path"][j]["info"]["payment"]
-                  ) {
-                    if (
-                      totalChange >
-                      response.data["result"]["path"][j]["info"][
-                        "busTransitCount"
-                      ] +
-                        response.data["result"]["path"][j]["info"][
-                          "subwayTransitCount"
-                        ]
-                    ) {
-                      idx = j;
-                      maxTime =
-                        response.data["result"]["path"][j]["info"]["totalTime"];
-                      maxPayment =
-                        response.data["result"]["path"][j]["info"]["payment"];
-                      totalChange =
-                        response.data["result"]["path"][j]["info"][
-                          "busTransitCount"
-                        ] +
-                        response.data["result"]["path"][j]["info"][
-                          "subwayTransitCount"
-                        ];
-                    }
-                  }
                 }
               }
-              this.minTimes.push(maxTime);
+            }
+          }
 
-              this.callMapObjApiAJAX(
-                response.data["result"]["path"][idx].info.mapObj
-              );
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }, i * 200);
+          this.minTimes.push(maxTime);
+
+          this.callMapObjApiAJAX(
+            response.data["result"]["path"][idx].info.mapObj
+          );
+        } catch (error) {
+          console.error(error);
+        }
       }
+
       console.log("maxTime!!!!!", this.minTimes);
 
       this.mapReload();
