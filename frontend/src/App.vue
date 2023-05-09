@@ -19,6 +19,8 @@ import SockJS from "sockjs-client";
 import { getMostRecentMeeting } from "@/api/modules/meeting.js";
 import { mapActions, mapState } from "vuex";
 
+import store from "@/store";
+
 export default {
   name: "App",
 
@@ -54,7 +56,7 @@ export default {
 
   computed: {
     ...mapState("meetingStore", ["recent_meeting"]),
-    ...mapState("memberStore", ["member"]),
+    ...mapState("memberStore", ["member", "member_id"]),
     ...mapState("websocketStore", ["connected", "stompClient"]),
   },
 
@@ -170,15 +172,18 @@ export default {
       }, 3000);
     },
 
-    getGeoLocation() {
+    async getGeoLocation() {
       console.log("#[getGeoLocation]# 현 위치 얻기 동작");
+      if (this.member == null) {
+        await store.dispatch("memberStore/isLogin");
+      }
       // alert("## geo", navigator.geolocation);
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition((position) => {
           // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
           const member = {
-            memberId: this.member.id,
+            memberId: this.member_id,
             memberNickname: this.member.memberNickname,
             memberLatLng: [position.coords.latitude, position.coords.longitude],
           };
