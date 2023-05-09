@@ -101,12 +101,12 @@ export default {
         `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
       );
 
-      // const diffTime =
-      //   new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
-      //   formattedTime.getTime();
       const diffTime =
-        new Date(meetingTime.getTime() + 3 * 60 * 60 * 1000) -
+        new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
         formattedTime.getTime();
+      // const diffTime =
+      //   new Date(meetingTime.getTime() + 3 * 60 * 60 * 1000) -
+      //   formattedTime.getTime();
 
       console.log("diffTime :", diffTime);
 
