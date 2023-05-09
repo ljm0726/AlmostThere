@@ -10,8 +10,8 @@ public enum ErrorCode {
     NOT_AUTHORIZATION(403, "not authorization"),
     MEETING_NOT_FOUND(404, "meeting not found."),
     MEETING_MEMBER_NOT_FOUND(404, "meeting-member not found."),
-    MEMBER_NOT_FOUND(404, "member not found."),
-    ;
+    MEETING_ALREADY_FULLED( 403, "모임의 정원을 초과하였습니다."),
+    MEMBER_NOT_FOUND(404, "member not found.");
 
     private int code;
     private String message;

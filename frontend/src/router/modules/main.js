@@ -8,6 +8,7 @@ import LoginPage from "@/components/LoginPage/LoginPage.vue";
 import PlacePage from "@/components/PlacePage/PlacePage.vue";
 import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
 import SearchPlacePage2 from "@/components/PlacePage/SearchPlace/SearchPlacePage2";
+import meetingStore from "@/store/modules/meeting";
 
 const isLogin = async (to, from, next) => {
   // console.log(to, " ", to.query);
@@ -24,9 +25,21 @@ const isLogin = async (to, from, next) => {
         "Bearer " + to.query.login.substring(7)
       );
     }
-    next({
-      name: "home",
-    });
+
+    // if meeting store에 roomcode가 저장되어 있으면
+    if (meetingStore.getters.GET_INVITED_MEETING) {
+      const savedRoomCode = meetingStore.getters.GET_INVITED_MEETING;
+      // store 값을 null로 초기화하고
+      meetingStore.mutations.SET_INVITED_MEETING = null;
+      // 해당 룸코드로 entrance/:roomcode 로 보내서 모임에 가입되어 있는지 아닌지
+      // 확인하는 로직 실행 후 meeting detail페이지로 보냄
+      next({ name: "entrance", params: { roomCode: savedRoomCode } });
+    } else {
+      // 그게 아니면 아래의 next home으로 보냄
+      next({
+        name: "home",
+      });
+    }
   } else if (to.name !== "landing") {
     // console.log("로그인 하러 옴");
     next({ name: "landing" });

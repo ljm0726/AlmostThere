@@ -43,7 +43,42 @@ public class MeetingService {
     private final MemberRepository memberRepository;
     private final MeetingMemberRepository meetingMemberRepository;
     private final CalculateDetailRepository calculateDetailRepository;
+    private final CalculateDetailService calculateDetailService;
 
+
+    public Long checkAndSaveMeetingMember(String roomCode, Long memberId){
+
+        Meeting meeting = meetingRepository.findByRoomCode(roomCode)
+            .orElseThrow(() -> new NotFoundException(ErrorCode.MEETING_NOT_FOUND));
+
+        List<MeetingMember> meetingMembers = meeting.getMeetingMembers();
+
+        boolean isJoined = false;
+        for(MeetingMember meetingMember : meetingMembers){
+            if(meetingMember.getMember().getId() == memberId){
+                isJoined = true;
+                break;
+            };
+        }
+
+        Long meetingId = meeting.getId();
+        if(isJoined){
+            
+        }else{
+            if(meetingMembers.size() < 10){
+                Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+                MeetingMember meetingMember = new MeetingMember(member, meeting, StateType.GOING);
+                calculateDetailService.updateSpentMoney(meeting);
+            }
+        }
+        return meetingId;
+    }
+    /**
+     * 지금 시간 이후로 가장 빠른 미팅 조회
+     * @param memberId
+     * @return
+     */
     public MeetingTimeDto getMostRecentMeeting(Long memberId){
 
         PageRequest pageRequest = PageRequest.of(0, 1);

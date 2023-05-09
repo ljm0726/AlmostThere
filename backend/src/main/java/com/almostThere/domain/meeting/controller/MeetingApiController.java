@@ -26,6 +26,11 @@ public class MeetingApiController {
 
     private final MeetingService meetingService;
 
+    /**
+     * 소켓 연결 시간 설정을 위해 다가올 모임 중 가장 이른 모임을 조회한다.
+     * @param authentication for memberId
+     * @return
+     */
     @GetMapping("/most-recent")
     public BaseResponse getMostRecentMeeting(Authentication authentication){
 

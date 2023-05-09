@@ -106,8 +106,9 @@ export default {
           {
             title: "초대 모임 참여하기",
             link: {
-              mobileWebUrl: "http://localhost:8080",
-              webUrl: "http://localhost:8080",
+              // 룸코드 props? store로 받아와서 url에 추가하기
+              mobileWebUrl: "http://localhost:3000/entrance/28452569",
+              webUrl: "http://localhost:3000/entrance/28452569",
             },
           },
         ],
