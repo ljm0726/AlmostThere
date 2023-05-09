@@ -477,8 +477,8 @@ export default {
         customOverlay = new kakao.maps.CustomOverlay({
           position: position,
           content: content,
-          xAnchor: this.memberOverlay[0],
-          yAnchor: this.memberOverlay[1],
+          xAnchor: this.distanceOverlay[0],
+          yAnchor: this.distanceOverlay[1],
         });
       }
 
