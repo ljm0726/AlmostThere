@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 // !store 값 유지: npm i --save vuex-persistedstate 설치 필요
-import createPersistedState from "vuex-persistedstate";
+// import createPersistedState from "vuex-persistedstate";
 
 import placeStore from "./modules/place";
 import meetingStore from "./modules/meeting";
@@ -22,10 +22,10 @@ export default new Vuex.Store({
     mypageStore: mypageStore,
     websocketStore: websocketStore,
   },
-  plugins: [
-    createPersistedState({
-      // ! localStorage에 저장할 store만을 path에 등록
-      paths: ["memberStore"],
-    }),
-  ],
+  // plugins: [
+  //   createPersistedState({
+  //     // ! localStorage에 저장할 store만을 path에 등록
+  //     paths: ["memberStore"],
+  //   }),
+  // ],
 });
