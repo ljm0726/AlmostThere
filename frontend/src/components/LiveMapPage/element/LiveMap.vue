@@ -23,7 +23,7 @@ export default {
       placeMarkerOption: [25, 65], // 모임장소 - image marker 위치 (좌표 X)
       memberMarkerOption: [60, 85], // member - image marker 위치
       /* # over-lay 설정 */
-      memberOverlay: [0.5, 3.2], // member over-lay (x, y) 위치 좌표
+      memberOverlay: [0.5, 3.2], // member nickname over-lay (x, y) 위치 좌표
       distanceOverlay: [-0.4, -0.1], // distance over-lay 좌표
       chatOverlay: [0.5, 4], // chat over-lay 좌표
       warningOverlay: [6.0, 3.5], // GPS 수신불가 over-lay 좌표
@@ -372,6 +372,9 @@ export default {
       // iii) 멤버 별 over-lay, polyline 생성 (닉네임, 모임장소와의 거리)
       this.createMemberOverlay(member, marker);
       this.createDistance(member, marker);
+
+      // iv) map rebound
+      this.resizeMapLevel();
     },
     // [@Method] member 별 닉네임 over-lay 생성
     createMemberOverlay(member, marker) {
