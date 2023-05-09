@@ -11,6 +11,7 @@ public enum ErrorCode {
     MEETING_NOT_FOUND(404, "meeting not found."),
     MEETING_MEMBER_NOT_FOUND(404, "meeting-member not found."),
     MEMBER_NOT_FOUND(404, "member not found."),
+    TIMEOVER(404, "meeting timeover."),
     ;
 
     private int code;
