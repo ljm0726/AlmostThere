@@ -305,13 +305,13 @@ export default {
     member_list() {
       return Object.keys(this.members).map((item) => this.members[item]);
     },
-    chattingHeight() {
-      const pageHeight = document.documentElement.scrollHeight - 127;
-      return pageHeight;
-    },
-    chattingPageHeight() {
-      return window.innerHeight * 0.01;
-    },
+    // chattingHeight() {
+    //   const pageHeight = document.documentElement.scrollHeight - 127;
+    //   return pageHeight;
+    // },
+    // chattingPageHeight() {
+    //   return window.innerHeight * 0.01;
+    // },
   },
   async created() {
     let vh = window.innerHeight * 0.01;

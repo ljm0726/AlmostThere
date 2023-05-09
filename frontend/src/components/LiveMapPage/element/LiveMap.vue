@@ -240,7 +240,7 @@ export default {
           });
 
           // GeoLocation - 1초마다 현 위치 얻기
-          // this.startIntervalMemberLocation();
+          this.startIntervalMemberLocation();
           this.subscribeChatting();
         },
         (error) => {
@@ -260,6 +260,7 @@ export default {
           if (data.statusCode == 200) {
             // console.log("dddddddddd", String(data.data.memberId));
             this.chatting[String(data.data.memberId)] = data.data.message;
+            this.updateChatOverlay();
           }
         },
         { id: `chatting-subscribe-${this.$route.params.id}` }
