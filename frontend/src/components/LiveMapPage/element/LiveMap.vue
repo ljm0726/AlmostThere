@@ -12,7 +12,7 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "LiveMap",
@@ -54,6 +54,7 @@ export default {
   },
   computed: {
     ...mapState("memberStore", ["member"]),
+    ...mapState("websocketStore", ["connected", "stompClient"]),
   },
   watch: {
     chatting: {
@@ -82,6 +83,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
     // [@Method] Kakao Map 생성
     // initMap() {
     //   const container = document.getElementById("map");
@@ -215,37 +217,69 @@ export default {
       // marker 표시
       marker.setMap(this.map);
     },
-    // [@Method] WebSocket 연결
-    connect() {
-      const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
-      let socket = new SockJS(serverURL);
-      this.stompClient = Stomp.over(socket);
-
-      // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
-      this.stompClient.connect(
-        {},
-        (frame) => {
-          // 소켓 연결 성공
-          this.connected = true;
-          this.isConnect = true;
-          console.log("소켓 연결 성공", frame);
-
-          // 서버의 메시지 전송 endpoint를 구독합니다.
-          // 이런형태를 pub sub 구조라고 합니다.
-          this.stompClient.subscribe(`/topic/${this.memberId}`, (res) => {
-            // console.log("구독으로 받은 메시지 입니다.", res.body);
-
-            // socket을 통해 받은 message(사용자 좌표) 저장
-            this.saveMembersLocation(JSON.parse(res.body));
-          });
-
-          // GeoLocation - 1초마다 현 위치 얻기
+    // 소켓 연결 기다리기
+    waitConnect() {
+      setTimeout(() => {
+        if (this.stompClient.ws.readyState == 1) {
+          this.subscribeLocation();
           this.startIntervalMemberLocation();
           this.subscribeChatting();
+        } else {
+          this.waitConnect();
+        }
+      }, 1);
+    },
+    // [@Method] WebSocket 연결
+    connect() {
+      if (
+        this.connected ||
+        (this.stompClient && this.stompClient.ws.readyState == 1)
+      ) {
+        this.waitConnect();
+      } else {
+        this.updateConnected(true);
+        const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
+        let socket = new SockJS(serverURL);
+        // this.stompClient = Stomp.over(socket);
+        this.updateStompClient(Stomp.over(socket));
+        // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+        this.stompClient.connect(
+          {},
+          (frame) => {
+            // 소켓 연결 성공
+            // this.connected = true;
+            // this.isConnect = true;
+            console.log("소켓 연결 성공", frame);
+            this.updateConnected(false);
+
+            // 서버의 메시지 전송 endpoint를 구독합니다.
+            // 이런형태를 pub sub 구조라고 합니다.
+            this.subscribeLocation();
+
+            // GeoLocation - 1초마다 현 위치 얻기
+            this.startIntervalMemberLocation();
+            this.subscribeChatting();
+          },
+          (error) => {
+            // 소켓 연결 실패
+            console.log("소켓 연결 실패", error);
+            this.updateConnected(false);
+          }
+        );
+      }
+    },
+    subscribeLocation() {
+      this.stompClient.subscribe(
+        `/topic/${this.memberId}`,
+        (res) => {
+          // console.log("구독으로 받은 메시지 입니다.", res.body);
+
+          // socket을 통해 받은 message(사용자 좌표) 저장
+          console.log("before error", JSON.parse(res.body));
+          this.saveMembersLocation(JSON.parse(res.body));
         },
-        (error) => {
-          // 소켓 연결 실패
-          console.log("소켓 연결 실패", error);
+        {
+          id: `location-subscribe-${this.$route.params.id}`,
         }
       );
     },
@@ -658,6 +692,9 @@ export default {
     //   ];
     // },
     destroyed() {
+      this.stompClient.unsubscribe(
+        `location-subscribe-${this.$route.params.id}`
+      );
       this.stompClient.unsubscribe(
         `chatting-subscribe-${this.$route.params.id}`
       );

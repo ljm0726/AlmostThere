@@ -47,7 +47,7 @@
       <v-card rounded="xl">
         <v-card-title class="d-flex flex-column">
           <div class="align-self-end">
-            <close-button @closeDialog="success = false"></close-button>
+            <close-button @closeDialog="closeSuccess"></close-button>
           </div>
           <img src="@/assets/images/dialog/o.png" width="40%" />
           <span class="point-font xxxxxxl-font main-col-1">도착 완료</span>
@@ -59,7 +59,7 @@
             color="var(--main-col-1)"
             dark
             rounded
-            @click="success = false"
+            @click="closeSuccess"
             block
           >
             닫기
@@ -71,7 +71,7 @@
       <v-card rounded="xl">
         <v-card-title class="d-flex flex-column">
           <div class="align-self-end">
-            <close-button @closeDialog="failure = false"></close-button>
+            <close-button @closeDialog="closeFailure"></close-button>
           </div>
           <img src="@/assets/images/dialog/x.png" width="40%" />
           <span class="point-font xxxxxxl-font main-col-1">도착 불가</span>
@@ -88,7 +88,7 @@
             color="var(--main-col-1)"
             dark
             rounded
-            @click="failure = false"
+            @click="closeFailure"
             block
           >
             닫기
@@ -100,7 +100,7 @@
       <v-card rounded="xl">
         <v-card-title class="d-flex flex-column">
           <div class="align-self-end">
-            <close-button @closeDialog="timeover = false"></close-button>
+            <close-button @closeDialog="closeTimeover"></close-button>
           </div>
           <img src="@/assets/images/dialog/x.png" width="40%" />
           <span class="point-font xxxxxxl-font main-col-1">시간 초과</span>
@@ -117,7 +117,7 @@
             color="var(--main-col-1)"
             dark
             rounded
-            @click="timeover = false"
+            @click="closeTimeover"
             block
           >
             닫기
@@ -129,7 +129,7 @@
       <v-card rounded="xl">
         <v-card-title class="d-flex flex-column">
           <div class="align-self-end">
-            <close-button @closeDialog="error = false"></close-button>
+            <close-button @closeDialog="closeError"></close-button>
           </div>
           <img src="@/assets/images/dialog/x.png" width="40%" />
           <span class="logo-font xxxxxxl-font main-col-1">Server Error</span>
@@ -146,7 +146,7 @@
             color="var(--main-col-1)"
             dark
             rounded
-            @click="error = false"
+            @click="closeError"
             block
           >
             닫기
@@ -178,6 +178,18 @@ export default {
     };
   },
   methods: {
+    closeSuccess() {
+      this.success = false;
+    },
+    closeFailure() {
+      this.failure = false;
+    },
+    closeTimeover() {
+      this.timeover = false;
+    },
+    closeError() {
+      this.error = false;
+    },
     // [@Method] 지도 범위 조정
     resizeMapLevel() {
       this.$emit("resizeMapLevel");

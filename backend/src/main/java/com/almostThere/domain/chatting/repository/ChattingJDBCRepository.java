@@ -32,7 +32,6 @@ public class ChattingJDBCRepository {
                         ps.setLong(3, chattingList.get(i).getMemberId());
                         ps.setString(4, chattingList.get(i).getChattingTime().toString());
                     }
-
                     @Override
                     public int getBatchSize() {
                         return chattingList.size();

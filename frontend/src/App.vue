@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       timeOut: null,
-      isSocketConnected: false,
+      // isSocketConnected: false,
     };
   },
 
@@ -55,6 +55,7 @@ export default {
   computed: {
     ...mapState("meetingStore", ["recent_meeting"]),
     ...mapState("memberStore", ["member"]),
+    ...mapState("websocketStore", ["connected", "stompClient"]),
   },
 
   watch: {
@@ -75,6 +76,7 @@ export default {
   },
 
   methods: {
+    ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
     ...mapActions("meetingStore", ["setMeeting"]),
     // setScreenSize() {
     //   //먼저 뷰포트 높이를 얻고 1%를 곱하여 vh 단위 값을 얻습니다.
@@ -114,20 +116,29 @@ export default {
         this.connect();
       }
     },
+    // Websocket 연결
     connect() {
-      if (!this.isSocketConnected) {
+      if (
+        this.connected ||
+        (this.stompClient && this.stompClient.ws.readyState == 1)
+      ) {
+        this.waitConnect();
+      } else {
+        this.updateConnected(true);
         const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
         let socket = new SockJS(serverURL);
-        this.stompClient = Stomp.over(socket);
+        // this.stompClient = Stomp.over(socket);
+        this.updateStompClient(Stomp.over(socket));
 
         console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
         this.stompClient.connect(
           {},
           (frame) => {
             // 소켓 연결 성공
-            this.isSocketConnected = true;
-            this.isConnect = true;
+            // this.isSocketConnected = true;
+            // this.isConnect = true;
             console.log("소켓 연결 성공", frame);
+            this.updateConnected(false);
 
             // GeoLocation - 1초마다 현 위치 얻기
             this.getGeoLocation();
@@ -136,9 +147,21 @@ export default {
           (error) => {
             // 소켓 연결 실패
             console.log("소켓 연결 실패", error);
+            this.updateConnected(false);
           }
         );
       }
+    },
+    // 소켓 연결 기다리기
+    waitConnect() {
+      setTimeout(() => {
+        if (this.stompClient.ws.readyState == 1) {
+          this.getGeoLocation();
+          this.startIntervalMemberLocation();
+        } else {
+          this.waitConnect();
+        }
+      }, 1);
     },
 
     startIntervalMemberLocation() {
