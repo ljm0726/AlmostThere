@@ -177,6 +177,7 @@ export default {
         });
 
         // circle 표시
+        if (window.location.pathname.split("/")[1] != "live-map") return;
         circle.setMap(this.map);
         // circle 저장 (for. 삭제)
         this.circleList.push(circle);
@@ -408,7 +409,7 @@ export default {
       this.createDistance(member, marker);
 
       // iv) map rebound
-      this.resizeMapLevel();
+      // this.resizeMapLevel();
     },
     // [@Method] member 별 닉네임 over-lay 생성
     createMemberOverlay(member, marker) {
