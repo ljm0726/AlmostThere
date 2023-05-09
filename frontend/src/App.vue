@@ -37,6 +37,20 @@ export default {
       }
     });
   },
+  created() {
+    // window.onload = function() {
+    //   setTimeout(function() {
+    //     window.scrollTo(0, 1);}, 100);
+    // };
+    // window.addEventListener("load", function() {
+    //   setTimeout(scrollTo, 0, 0, 1);
+    // }, false);
+    // let vh = window.innerHeight * 0.01;
+    // document.documentElement.style.setProperty("--vh", `${vh}px`);
+    // this.setScreenSize();
+    // window.addEventListener("resize", this.setScreenSize);
+    // window.addEventListener("touched", this.setScreenSize);
+  },
 
   computed: {
     ...mapState("meetingStore", ["recent_meeting"]),
@@ -62,7 +76,12 @@ export default {
 
   methods: {
     ...mapActions("meetingStore", ["setMeeting"]),
-
+    // setScreenSize() {
+    //   //먼저 뷰포트 높이를 얻고 1%를 곱하여 vh 단위 값을 얻습니다.
+    //   let vh = window.innerHeight * 0.01;
+    //   //그런 다음 --vh 사용자 정의 속성의 값을 문서의 루트로 설정합니다.
+    //   document.documentElement.style.setProperty("--vh", `${vh}px`);
+    // },
     calculateRemainTimeForTimeOut(newDate) {
       const now = new Date();
       const meetingTime = new Date(newDate);
@@ -111,7 +130,7 @@ export default {
             console.log("소켓 연결 성공", frame);
 
             // GeoLocation - 1초마다 현 위치 얻기
-            // this.getGeoLocation();
+            this.getGeoLocation();
             this.startIntervalMemberLocation();
           },
           (error) => {
@@ -184,11 +203,30 @@ html body {
   margin: 0 auto;
   height: 100%;
   min-height: 100%;
+  /* height: var(--vh); */
+  /* height: -webkit-fill-available; */
+  /* height: fill-available; */
+  /* height: 100vh;
+  height: calc(var(--vh, 1vh) * 100); */
 }
 #app {
+  /* height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  height: -webkit-fill-available; */
   max-width: 100%;
   min-height: 100%;
+  /* height: 100%; */
+  /* height: -webkit-fill-available; */
 
   font-family: var(--regular-font);
 }
+/* .v-application {
+  display: block;
+} */
+/* .v-application--wrap { */
+/* min-height: 100% !important; */
+/* flex-direction: column !important; */
+/* display: block !important; */
+/* flex-wrap: wrap !important; */
+/* } */
 </style>
