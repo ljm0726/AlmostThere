@@ -62,6 +62,7 @@ export default {
     };
   },
   methods: {
+    // [@Method] 실시간 위치공유 지도 페이지로 이동
     moveLivemap() {
       // 모임시간으로부터 3시간 전/후 check
       this.checkMeetingTime();
