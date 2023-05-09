@@ -77,60 +77,17 @@
             </div>
           </div>
         </section>
-        <!-- 실시간 위치공유 지도 페이지 이동 -->
-        <v-dialog v-model="dialog" scrollable max-width="300px" rounded="xl">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="ml-1 mt-4"
-              id="square-btn"
-              outlined
-              color="var(--main-col-1)"
-              rounded
-              small
-              @click="goLiveMap(meeting.id, meeting.meetingTime)"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon>$vuetify.icons.map_outline</v-icon>
-            </v-btn>
-          </template>
-
-          <!-- 실시간 위치 공유 페이지 접근불가 -->
-          <v-card rounded="xl">
-            <v-card-title class="d-flex flex-column">
-              <div class="align-self-end">
-                <close-button @closeDialog="closeDialog"></close-button>
-              </div>
-              <img src="@/assets/images/dialog/dont_enter.png" width="60%" />
-              <span class="point-font xxxxxxl-font main-col-1">
-                위치 공유 불가</span
-              >
-              <span class="extralight-font sm-font mt-2"
-                >멤버들과 실시간 위치 공유는
-              </span>
-              <span class="extralight-font sm-font mb-2"
-                >모임 시간 전후 3시간 동안만 지원됩니다.</span
-              >
-            </v-card-title>
-            <v-card-text>
-              <v-row>
-                <v-col class="pl-1">
-                  <v-btn
-                    elevation="0"
-                    color="white"
-                    outlined
-                    dark
-                    rounded
-                    @click="closeDialog"
-                    block
-                    style="background-color: var(--main-col-1)"
-                    >확인</v-btn
-                  >
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
+        <v-btn
+          class="ml-1 mt-4"
+          id="square-btn"
+          outlined
+          color="var(--main-col-1)"
+          rounded
+          small
+          @click="goLiveMap(meeting.id, meeting.meetingTime)"
+        >
+          <v-icon>$vuetify.icons.map_outline</v-icon>
+        </v-btn>
       </div>
     </v-sheet>
   </v-card>
@@ -149,8 +106,6 @@ export default {
       menuMaxHeight: `${60 * 5 + 4}px`,
       stackedLimit: 6,
       stackedMenu: false,
-      enterTimeCheckFlag: false, // 모임 시간 3시간 전/후 check flag
-      dialog: false,
     };
   },
   filters: {
@@ -189,44 +144,16 @@ export default {
     },
   },
   methods: {
+    goLiveMap(id, time) {
+      this.$router.push({
+        path: `/live-map/${id}`,
+        query: {
+          time: time,
+        },
+      });
+    },
     goDetail(id) {
       this.$router.push(`/meeting/${id}`);
-    },
-    // [@Method] 실시간 위치공유 지도 페이지로 이동
-    goLiveMap(id, time) {
-      this.checkMeetingTime(time);
-
-      if (this.enterTimeCheckFlag) {
-        this.$router.push(`/live-map/${id}`);
-      } else {
-        this.dialog = true;
-      }
-    },
-    // [@Method] 모임시간 3시간 전/후 check
-    checkMeetingTime(time) {
-      const meetingTime = new Date(time);
-      const threeHoursAgoTime = new Date(
-        meetingTime.getTime() - 3 * 60 * 60 * 1000
-      );
-      const threeHoursAfterTime = new Date(
-        meetingTime.getTime() + 3 * 60 * 60 * 1000
-      );
-      const currentTime = new Date();
-
-      // i) 현재 시각이 모임 시간의 3시간 전/후 이내
-      if (
-        threeHoursAgoTime.getTime() <= currentTime.getTime() &&
-        currentTime.getTime() <= threeHoursAfterTime.getTime()
-      ) {
-        this.enterTimeCheckFlag = true;
-      }
-      // ii) 그 외 시간
-      else {
-        this.enterTimeCheckFlag = false;
-      }
-    },
-    closeDialog() {
-      this.dialog = false;
     },
   },
 };
