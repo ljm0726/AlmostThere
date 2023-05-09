@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!-- test용 (!추후 삭제) -->
-    <!-- <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
-    <v-btn @click="sendChatTest()">채팅 test</v-btn> -->
-    <!-- <v-btn @click="resizeMapLevel()">범위 재조정</v-btn>
-    -->
     <div id="map"></div>
   </div>
 </template>
@@ -36,7 +31,6 @@ export default {
       placeLatLng: [], // 모임장소 좌표
       memberLocation: [], // 사용자들의 좌표 (memberId, memberNickname, LatLng)
       /* # member 채팅 */
-      testChatContent: "", // test용 (!추후 삭제)
       chatting: {}, // 멤버 별 실시간 chatting 내용
       /* # 생성한 marker, overlay 저장 (memberId 기준) */
       memberMarkerList: [], // marker
@@ -64,9 +58,6 @@ export default {
       },
       deep: true,
     },
-    // chatting() {
-    //   alert("여기닷");
-    // },
   },
   mounted() {
     // i) memberId 저장
@@ -119,7 +110,7 @@ export default {
       };
       kakao.maps.Tileset.add(
         "PLAN",
-        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 19) // 0, 10으로 level 범위
+        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 19) // 0, 19으로 level 범위
       );
 
       const container = document.getElementById("map");
@@ -673,24 +664,6 @@ export default {
         customOverlay.setMap(this.map);
       }
     },
-    // [@Method] TEST (!추후 삭제)
-    // sendChatTest() {
-    //   this.chatting = [
-    //     // {10: "100m 남음!"}
-    //     {
-    //       member: {
-    //         memberId: 1,
-    //         content: "100m 남음~",
-    //       },
-    //     },
-    //     {
-    //       member: {
-    //         memberId: 2,
-    //         content: this.testChatContent,
-    //       },
-    //     },
-    //   ];
-    // },
     destroyed() {
       this.stompClient.unsubscribe(
         `chatting-subscribe-${this.$route.params.id}`
