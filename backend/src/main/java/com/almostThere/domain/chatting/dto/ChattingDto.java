@@ -1,5 +1,6 @@
 package com.almostThere.domain.chatting.dto;
 
+import com.almostThere.domain.chatting.entity.Chatting;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -28,4 +29,10 @@ public class ChattingDto implements Serializable {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime chattingTime;
+
+    public ChattingDto(Chatting chatting) {
+        this.memberId = chatting.getMember().getId();
+        this.message = chatting.getMessage();
+        this.chattingTime = chatting.getChattingTime();
+    }
 }

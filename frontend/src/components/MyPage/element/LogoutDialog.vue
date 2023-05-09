@@ -12,10 +12,21 @@
       <v-card-text>
         <v-row>
           <v-col class="pr-1">
-            <v-btn elevation="0" color="var(--main-col-1)" dark rounded block>로그아웃</v-btn>
+            <v-btn elevation="0" color="var(--main-col-1)" dark rounded block
+              >로그아웃</v-btn
+            >
           </v-col>
           <v-col class="pl-1">
-            <v-btn elevation="0" color="var(--main-col-1)" outlined dark rounded @click="closeDialog" block>취소</v-btn>
+            <v-btn
+              elevation="0"
+              color="var(--main-col-1)"
+              outlined
+              dark
+              rounded
+              @click="closeDialog"
+              block
+              >취소</v-btn
+            >
           </v-col>
         </v-row>
       </v-card-text>
@@ -24,14 +35,14 @@
 </template>
 
 <script>
-import CloseButton from '@/common/component/button/CloseButton.vue';
+import CloseButton from "@/common/component/button/CloseButton.vue";
 export default {
   name: "LogoutDialog",
   components: { CloseButton },
   data() {
     return {
-      dialog: false
-    }
+      dialog: false,
+    };
   },
   methods: {
     openDialog() {
@@ -39,11 +50,9 @@ export default {
     },
     closeDialog() {
       this.dialog = false;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -39,7 +39,7 @@
           </v-list-item>
         </div>
         <!-- 미팅 방 페이지로 가는 버튼 -->
-        <detail-button></detail-button>
+        <detail-button :isIcon="false"></detail-button>
       </v-sheet>
     </v-navigation-drawer>
     <!-- 새로 들어온 채팅 -->
@@ -327,7 +327,7 @@ export default {
       if (res && res.data.statusCode == 200) {
         const info = await res.data.data;
         // 룸 코드
-        this.roomCode = await info.roomCode;
+        // this.roomCode = await info.roomCode;
         // 방 이름
         this.meetingName = await info.meetingName;
         // 멤버 정보
@@ -383,7 +383,7 @@ export default {
           // 무한 스크롤 페이지
           this.page += 1;
           // 채팅 기록 리스트에 넣기
-          this.chatList.unshift(...chat.chattingDetailDtoList.reverse());
+          this.chatList.unshift(...chat.chattingDtoList.reverse());
           // 마지막 Index 업데이트
           this.last = await chat.lastNumber;
           // Rerendering
@@ -410,7 +410,7 @@ export default {
     send() {
       if (this.stompClient && this.connected) {
         this.stompClient.send(
-          `/message/receive/${this.roomCode}`,
+          `/message/receive/${this.$route.params.id}`,
           JSON.stringify({ message: this.message, memberId: this.memberId }),
           {}
         );
@@ -419,7 +419,7 @@ export default {
     // 메세지 구독
     subscribe() {
       this.stompClient.subscribe(
-        `/send/${this.roomCode}`,
+        `/send/${this.$route.params.id}`,
         async (res) => {
           const data = await JSON.parse(res.body);
           if (data.statusCode == 200) {

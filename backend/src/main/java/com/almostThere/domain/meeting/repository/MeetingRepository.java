@@ -2,13 +2,10 @@ package com.almostThere.domain.meeting.repository;
 
 
 import com.almostThere.domain.meeting.entity.Meeting;
-import java.util.Optional;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -33,6 +30,8 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             " order by m.meeting.meetingTime")
     List <Meeting> findUpcomingMeetings(@Param("memberId") Long memberId, @Param("oneDayAfterDate") LocalDateTime oneDayAfterDate, @Param("oneMonthAfterDate") LocalDateTime oneMonthAfterDate);
 
+    List<Meeting> findAllByMeetingTime(LocalDateTime meetingTime);
+
     @Query("select m.meeting "
         + "from MeetingMember m "
         + "where m.member.id=:memberId "
@@ -41,4 +40,5 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     List<Meeting> getMostRecentMeeting(@Param("memberId") Long memberId, Pageable pageable);
 
     Optional<Meeting> findByRoomCode(@Param("roomCode") String roomCode);
+
 }

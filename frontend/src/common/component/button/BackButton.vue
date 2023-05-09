@@ -1,5 +1,15 @@
 <template>
-  <v-btn id="square-btn" outlined :color="color" @click="goBack()" rounded>
+  <v-btn
+    id="square-btn"
+    outlined
+    :color="color"
+    @click="goBack()"
+    rounded
+    :style="{
+      'background-color':
+        color == 'white' ? 'var(--main-col-1)' : 'white' + ' !important',
+    }"
+  >
     <v-icon v-if="color == 'white'">$vuetify.icons.arrow_left_white</v-icon>
     <v-icon v-else>$vuetify.icons.arrow_left</v-icon>
   </v-btn>
@@ -9,16 +19,14 @@
 export default {
   name: "BackButton",
   props: {
-    color: String
+    color: String,
   },
   methods: {
     goBack() {
-      this.$router.go(-1)
-    }
-  }
-}
+      this.$router.go(-1);
+    },
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
