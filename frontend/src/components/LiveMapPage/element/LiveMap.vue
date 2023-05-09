@@ -271,7 +271,7 @@ export default {
           // console.log("구독으로 받은 메시지 입니다.", res.body);
 
           // socket을 통해 받은 message(사용자 좌표) 저장
-          console.log("before error", JSON.parse(res.body));
+          // console.log("before error", JSON.parse(res.body));
           this.saveMembersLocation(JSON.parse(res.body));
         },
         {

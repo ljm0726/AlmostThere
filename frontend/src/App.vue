@@ -33,7 +33,7 @@ export default {
 
   beforeCreate() {
     getMostRecentMeeting().then((res) => {
-      console.log("getMostRecentMeeting response", res);
+      // console.log("getMostRecentMeeting response", res);
       if (res != null) {
         this.setMeeting(res);
       }
@@ -101,8 +101,11 @@ export default {
         `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
       );
 
+      // const diffTime =
+      //   new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
+      //   formattedTime.getTime();
       const diffTime =
-        new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
+        new Date(meetingTime.getTime() + 3 * 60 * 60 * 1000) -
         formattedTime.getTime();
 
       console.log("diffTime :", diffTime);
@@ -173,7 +176,7 @@ export default {
     },
 
     async getGeoLocation() {
-      console.log("#[getGeoLocation]# 현 위치 얻기 동작");
+      // console.log("#[getGeoLocation]# 현 위치 얻기 동작");
       if (this.member == null) {
         await store.dispatch("memberStore/isLogin");
       }
@@ -194,6 +197,7 @@ export default {
         });
       } else {
         console.log("# geolocation을 사용할수 없어요..");
+        alert("# geolocation을 사용할수 없어요..");
       }
     },
     send(member) {
