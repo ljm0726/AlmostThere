@@ -112,7 +112,7 @@ export default {
       };
       kakao.maps.Tileset.add(
         "PLAN",
-        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 10) // 0, 10으로 level 범위
+        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 19) // 0, 10으로 level 범위
       );
 
       const container = document.getElementById("map");
@@ -218,7 +218,7 @@ export default {
       let socket = new SockJS(serverURL);
       this.stompClient = Stomp.over(socket);
 
-      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+      // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
       this.stompClient.connect(
         {},
         (frame) => {
@@ -282,19 +282,19 @@ export default {
         }
 
         if (memberIndex == -1) {
-          console.log(
-            "#21# 현 memberLocaion에 저장되어 있지 않은 새로운 member 확인",
-            member
-          );
+          // console.log(
+          //   "#21# 현 memberLocaion에 저장되어 있지 않은 새로운 member 확인",
+          //   member
+          // );
           this.memberLocation.push(member);
 
           // 멤버 별 marker 생성
           this.createMemberMarker(member);
         } else {
-          console.log(
-            "#21# 이미 저장되어 있는 member 위치 값 update: ",
-            this.memberLocation[memberIndex]
-          );
+          // console.log(
+          //   "#21# 이미 저장되어 있는 member 위치 값 update: ",
+          //   this.memberLocation[memberIndex]
+          // );
           // 위치 값 update
           this.memberLocation[memberIndex].memberLatLng = member.memberLatLng;
 
@@ -441,7 +441,7 @@ export default {
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
       // this.updateMemberInfo[1] = 변경된 memberId
-      console.log("#21# refresh member 확인: ", refreshMember);
+      // console.log("#21# refresh member 확인: ", refreshMember);
 
       const newPosition = new kakao.maps.LatLng(
         refreshMember.memberLatLng[0],
