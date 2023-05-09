@@ -264,6 +264,7 @@ export default {
           if (data.statusCode == 200) {
             // console.log("dddddddddd", String(data.data.memberId));
             this.chatting[String(data.data.memberId)] = data.data.message;
+            this.updateChatOverlay();
           }
         },
         { id: `chatting-subscribe-${this.$route.params.id}` }
