@@ -1,6 +1,12 @@
 <template>
-  <!-- <v-sheet height="100%"> -->
-  <v-sheet :style="{ height: '100vh', height: 'calc(var(--vh, 1vh) * 100)' }">
+  <v-sheet height="100%">
+    <!-- <v-sheet
+    :style="{
+      height: '100vh',
+      height: 'calc(var(--vh, 1vh) * 100)',
+      height: '-webkit-fill-available',
+    }"
+  > -->
     <!-- header -->
     <chatting-header
       @openDrawer="openDrawer"
@@ -33,7 +39,7 @@
           </v-list-item>
         </div>
         <!-- 미팅 방 페이지로 가는 버튼 -->
-        <detail-button></detail-button>
+        <detail-button :isIcon="false"></detail-button>
       </v-sheet>
     </v-navigation-drawer>
     <!-- 새로 들어온 채팅 -->
@@ -83,7 +89,7 @@
       <v-sheet id="chattingMessages">
         <!-- 무한스크롤 -->
         <infinite-loading
-          spinner="circles"
+          spinner="spiral"
           direction="top"
           @infinite="infiniteHandler"
         >
@@ -299,31 +305,30 @@ export default {
     member_list() {
       return Object.keys(this.members).map((item) => this.members[item]);
     },
-    chattingHeight() {
-      const pageHeight = document.documentElement.scrollHeight - 127;
-      return pageHeight;
-    },
-    chattingPageHeight() {
-      return window.innerHeight * 0.01;
-    },
+    // chattingHeight() {
+    //   const pageHeight = document.documentElement.scrollHeight - 127;
+    //   return pageHeight;
+    // },
+    // chattingPageHeight() {
+    //   return window.innerHeight * 0.01;
+    // },
   },
-  beforeCreate() {
+  async created() {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
     window.addEventListener("resize", () => {
-      console.log("resize");
+      // console.log("resize");
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     });
-  },
-  async created() {
+
     this.loading = true;
     // 저장된 채팅 정보를 가져옵니다.
     await getChatting(this.$route.params.id).then(async (res) => {
       if (res && res.data.statusCode == 200) {
         const info = await res.data.data;
         // 룸 코드
-        this.roomCode = await info.roomCode;
+        // this.roomCode = await info.roomCode;
         // 방 이름
         this.meetingName = await info.meetingName;
         // 멤버 정보
@@ -379,7 +384,7 @@ export default {
           // 무한 스크롤 페이지
           this.page += 1;
           // 채팅 기록 리스트에 넣기
-          this.chatList.unshift(...chat.chattingDetailDtoList.reverse());
+          this.chatList.unshift(...chat.chattingDtoList.reverse());
           // 마지막 Index 업데이트
           this.last = await chat.lastNumber;
           // Rerendering
@@ -404,18 +409,18 @@ export default {
     },
     // 메세지 전송
     send() {
-      if (this.stompClient && this.connected) {
+      if (this.stompClient && this.stompClient.ws.readyState == 1) {
         this.stompClient.send(
-          `/message/receive/${this.roomCode}`,
+          `/message/receive/${this.$route.params.id}`,
           JSON.stringify({ message: this.message, memberId: this.memberId }),
           {}
         );
       }
     },
     // 메세지 구독
-    subscribe() {
+    chatSubscribe() {
       this.stompClient.subscribe(
-        `/send/${this.roomCode}`,
+        `/send/${this.$route.params.id}`,
         async (res) => {
           const data = await JSON.parse(res.body);
           if (data.statusCode == 200) {
@@ -453,37 +458,50 @@ export default {
         { id: `member-subscribe-${this.$route.params.id}` }
       );
     },
+    // 소켓 연결 후 동작
+    async connectAction() {
+      await this.chatSubscribe();
+      await this.getMember();
+      this.loading = await false;
+      await document
+        .querySelector(".v-snack__wrapper")
+        .addEventListener("click", this.watchNewMessage);
+      await window.addEventListener("scroll", this.onTheBottom);
+      await this.goBottom();
+    },
+    // 소켓 연결 기다리기
+    waitConnect() {
+      setTimeout(() => {
+        if (this.stompClient.ws.readyState == 1) {
+          this.connectAction();
+        } else {
+          this.waitConnect();
+        }
+      }, 1);
+    },
     // Websocket 연결
     connect() {
-      if (!this.connected) {
+      // 연결 시도 중거나 이미 연결됐거나
+      if (
+        this.connected ||
+        (this.stompClient && this.stompClient.ws.readyState == 1)
+      ) {
+        this.waitConnect();
+      }
+      // 연결 시도
+      else {
+        this.updateConnected(true);
         const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
         let socket = new SockJS(serverURL);
         this.updateStompClient(Stomp.over(socket));
+
+        console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
         this.stompClient.connect(
           {},
           async (frame) => {
             console.log("소켓 연결 성공", frame);
-            await this.updateConnected(true);
-            await this.subscribe();
-            await this.getMember();
-            // loading 상태 변경
-            this.loading = await false;
-            // await this.goBottom();
-            document
-              .querySelector(".v-snack__wrapper")
-              .addEventListener("click", this.watchNewMessage);
-            window.addEventListener("scroll", this.onTheBottom);
-            await this.goBottom();
-            // setTimeout(() => {
-            //   document
-            //     .querySelector(".v-snack__wrapper")
-            //     .addEventListener("click", this.watchNewMessage);
-            //   // console.log("여기");
-            //   document
-            //     .getElementById("chattingMessages")
-            //     .addEventListener("scroll", this.onTheBottom);
-            //   this.goBottom();
-            // }, 100);
+            this.updateConnected(false);
+            this.connectAction();
           },
           (error) => {
             console.log("소켓 연결 실패", error);
@@ -491,25 +509,6 @@ export default {
             this.updateConnected(false);
           }
         );
-      } else {
-        this.subscribe();
-        this.getMember();
-        this.loading = false;
-        document
-          .querySelector(".v-snack__wrapper")
-          .addEventListener("click", this.watchNewMessage);
-        window.addEventListener("scroll", this.onTheBottom);
-        this.goBottom();
-        // setTimeout(() => {
-        //   document
-        //     .querySelector(".v-snack__wrapper")
-        //     .addEventListener("click", this.watchNewMessage);
-        //   // console.log("여기");
-        //   document
-        //     .getElementById("chattingMessages")
-        //     .addEventListener("scroll", this.onTheBottom);
-        //   this.goBottom();
-        // }, 100);
       }
     },
   },
@@ -517,6 +516,7 @@ export default {
   destroyed() {
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`member-subscribe-${this.$route.params.id}`);
+
     if (this.loading) {
       document
         .querySelector(".v-snack__wrapper")
@@ -526,12 +526,18 @@ export default {
       //   .removeEventListener("scroll", this.onTheBottom);
       window.removeEventListener("scroll", this.onTheBottom);
     }
+    window.removeEventListener("resize", () => {
+      // console.log("resize");
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
   },
 };
 </script>
 <style scoped>
-#chatting-page {
+/* #chatting-page {
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
-}
+  height: -webkit-fill-available;
+} */
 </style>

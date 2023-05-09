@@ -40,7 +40,10 @@
         </v-card>
       </v-timeline-item>
       <!-- 무한스크롤 감지 -->
-      <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+      <infinite-loading @infinite="infiniteHandler" spinner="spiral">
+        <div slot="no-more"></div>
+        <div slot="no-results"></div>
+      </infinite-loading>
     </v-timeline>
   </v-sheet>
 </template>

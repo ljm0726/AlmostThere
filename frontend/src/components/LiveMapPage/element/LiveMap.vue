@@ -3,8 +3,8 @@
     <!-- test용 (!추후 삭제) -->
     <!-- <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
     <v-btn @click="sendChatTest()">채팅 test</v-btn> -->
-    <v-btn @click="resizeMapLevel()">범위 재조정</v-btn>
-    <!-- --- -->
+    <!-- <v-btn @click="resizeMapLevel()">범위 재조정</v-btn>
+    -->
     <div id="map"></div>
   </div>
 </template>
@@ -12,7 +12,7 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "LiveMap",
@@ -37,7 +37,7 @@ export default {
       memberLocation: [], // 사용자들의 좌표 (memberId, memberNickname, LatLng)
       /* # member 채팅 */
       testChatContent: "", // test용 (!추후 삭제)
-      chatting: [], // 멤버 별 실시간 chatting 내용
+      chatting: {}, // 멤버 별 실시간 chatting 내용
       /* # 생성한 marker, overlay 저장 (memberId 기준) */
       memberMarkerList: [], // marker
       memberChatOverlayList: [], // 채팅 over-lay
@@ -54,11 +54,19 @@ export default {
   },
   computed: {
     ...mapState("memberStore", ["member"]),
+    ...mapState("websocketStore", ["connected", "stompClient"]),
   },
   watch: {
-    chatting() {
-      this.updateChatOverlay(this.chatting);
+    chatting: {
+      handler(val, oldVal) {
+        alert("여기닷", val, oldVal);
+        this.updateChatOverlay(this.chatting);
+      },
+      deep: true,
     },
+    // chatting() {
+    //   alert("여기닷");
+    // },
   },
   mounted() {
     // i) memberId 저장
@@ -75,6 +83,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
     // [@Method] Kakao Map 생성
     // initMap() {
     //   const container = document.getElementById("map");
@@ -208,37 +217,87 @@ export default {
       // marker 표시
       marker.setMap(this.map);
     },
+    // 소켓 연결 기다리기
+    waitConnect() {
+      setTimeout(() => {
+        if (this.stompClient.ws.readyState == 1) {
+          this.subscribeLocation();
+          this.startIntervalMemberLocation();
+          this.subscribeChatting();
+        } else {
+          this.waitConnect();
+        }
+      }, 1);
+    },
     // [@Method] WebSocket 연결
     connect() {
-      const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
-      let socket = new SockJS(serverURL);
-      this.stompClient = Stomp.over(socket);
+      if (
+        this.connected ||
+        (this.stompClient && this.stompClient.ws.readyState == 1)
+      ) {
+        this.waitConnect();
+      } else {
+        this.updateConnected(true);
+        const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
+        let socket = new SockJS(serverURL);
+        // this.stompClient = Stomp.over(socket);
+        this.updateStompClient(Stomp.over(socket));
+        // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+        this.stompClient.connect(
+          {},
+          (frame) => {
+            // 소켓 연결 성공
+            // this.connected = true;
+            // this.isConnect = true;
+            console.log("소켓 연결 성공", frame);
+            this.updateConnected(false);
 
-      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
-      this.stompClient.connect(
-        {},
-        (frame) => {
-          // 소켓 연결 성공
-          this.connected = true;
-          this.isConnect = true;
-          console.log("소켓 연결 성공", frame);
+            // 서버의 메시지 전송 endpoint를 구독합니다.
+            // 이런형태를 pub sub 구조라고 합니다.
+            this.subscribeLocation();
 
-          // 서버의 메시지 전송 endpoint를 구독합니다.
-          // 이런형태를 pub sub 구조라고 합니다.
-          this.stompClient.subscribe(`/topic/${this.memberId}`, (res) => {
-            console.log("구독으로 받은 메시지 입니다.", res.body);
+            // GeoLocation - 1초마다 현 위치 얻기
+            this.startIntervalMemberLocation();
+            this.subscribeChatting();
+          },
+          (error) => {
+            // 소켓 연결 실패
+            console.log("소켓 연결 실패", error);
+            this.updateConnected(false);
+          }
+        );
+      }
+    },
+    subscribeLocation() {
+      this.stompClient.subscribe(
+        `/topic/${this.memberId}`,
+        (res) => {
+          // console.log("구독으로 받은 메시지 입니다.", res.body);
 
-            // socket을 통해 받은 message(사용자 좌표) 저장
-            this.saveMembersLocation(JSON.parse(res.body));
-          });
-
-          // GeoLocation - 1초마다 현 위치 얻기
-          this.startIntervalMemberLocation();
+          // socket을 통해 받은 message(사용자 좌표) 저장
+          console.log("before error", JSON.parse(res.body));
+          this.saveMembersLocation(JSON.parse(res.body));
         },
-        (error) => {
-          // 소켓 연결 실패
-          console.log("소켓 연결 실패", error);
+        {
+          id: `location-subscribe-${this.$route.params.id}`,
         }
+      );
+    },
+    subscribeChatting() {
+      this.stompClient.subscribe(
+        `/send/${this.$route.params.id}`,
+        async (res) => {
+          const data = await JSON.parse(res.body);
+          // console.log(
+          //   "chaa>>>> " + data.data.memberId + " " + data.data.message
+          // );
+          if (data.statusCode == 200) {
+            // console.log("dddddddddd", String(data.data.memberId));
+            this.chatting[String(data.data.memberId)] = data.data.message;
+            this.updateChatOverlay();
+          }
+        },
+        { id: `chatting-subscribe-${this.$route.params.id}` }
       );
     },
     // [@Method] 1초마다 해당 모임에 member 객체(좌표) 얻기
@@ -564,14 +623,22 @@ export default {
       return index;
     },
     // [@Method] chatting 내용 over-lay 표시
+    // 여기
     updateChatOverlay() {
-      for (var chat of this.chatting) {
+      //     {
+      //       member: {
+      //         memberId: 1,
+      //         content: "100m 남음~",
+      //       },
+      //     },
+      for (var key of Object.keys(this.chatting)) {
+        console.log("key " + key);
         // chatting 내용이 없는 경우 생성 X
-        if (chat.member.content == null || chat.member.content == "") continue;
+        if (this.chatting[key] == null || this.chatting[key] == "") continue;
 
-        const content = `<div class="chat-overlay point-font">${chat.member.content}</div>`;
+        const content = `<div class="chat-overlay point-font">${this.chatting[key]}</div>`;
         const memberMarkerLatLng = this.memberLocation.find(
-          (loc) => loc.memberId == chat.member.memberId
+          (loc) => loc.memberId == key
         ).memberLatLng;
         const position = new kakao.maps.LatLng(
           memberMarkerLatLng[0],
@@ -588,18 +655,17 @@ export default {
 
         // 생성한 오버레이 삭제 후 업데이트 or 저장
         const index = this.memberChatOverlayList.findIndex(
-          (obj) => Object.keys(obj)[0] == chat.member.memberId
+          (obj) => Object.keys(obj)[0] == key
         );
         // i) 해당 member의 chatOverlay가 있는 경우 값 업데이트(삭제, 추가)
         if (index > -1) {
-          this.memberChatOverlayList[index][chat.member.memberId].setMap(null); // 기존 오버레이 삭제
-          this.memberChatOverlayList[index][chat.member.memberId] =
-            customOverlay; // 새로운 오버레이 추가
+          this.memberChatOverlayList[index][key].setMap(null); // 기존 오버레이 삭제
+          this.memberChatOverlayList[index][key] = customOverlay; // 새로운 오버레이 추가
         }
         // ii) 없는 경우, 오버레이 추가
         else {
           const object = new Object();
-          object[chat.member.memberId] = customOverlay;
+          object[key] = customOverlay;
           this.memberChatOverlayList.push(object);
         }
 
@@ -608,21 +674,30 @@ export default {
       }
     },
     // [@Method] TEST (!추후 삭제)
-    sendChatTest() {
-      this.chatting = [
-        {
-          member: {
-            memberId: 1,
-            content: "100m 남음~",
-          },
-        },
-        {
-          member: {
-            memberId: 2,
-            content: this.testChatContent,
-          },
-        },
-      ];
+    // sendChatTest() {
+    //   this.chatting = [
+    //     // {10: "100m 남음!"}
+    //     {
+    //       member: {
+    //         memberId: 1,
+    //         content: "100m 남음~",
+    //       },
+    //     },
+    //     {
+    //       member: {
+    //         memberId: 2,
+    //         content: this.testChatContent,
+    //       },
+    //     },
+    //   ];
+    // },
+    destroyed() {
+      this.stompClient.unsubscribe(
+        `location-subscribe-${this.$route.params.id}`
+      );
+      this.stompClient.unsubscribe(
+        `chatting-subscribe-${this.$route.params.id}`
+      );
     },
   },
 };

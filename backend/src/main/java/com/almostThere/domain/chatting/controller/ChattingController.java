@@ -26,13 +26,13 @@ public class ChattingController {
 
     /**
      * jeey0124
-     * @param roomCode 모임 코드
+     * @param meetingId 모임 ID
      * @param chattingRequestDto 채팅 내용 및 작성자
      * @return 보낸 메시지 정보를 반환한다.
      * **/
-    @MessageMapping("/receive/{roomCode}") // 메시지를 받을 endpoint 설정
-    @SendTo("/send/{roomCode}") // 메시지를 보낼 곳 설정
-    public BaseResponse sendChatting(@DestinationVariable String roomCode, ChattingRequestDto chattingRequestDto) {
+    @MessageMapping("/receive/{meetingId}") // 메시지를 받을 endpoint 설정
+    @SendTo("/send/{meetingId}") // 메시지를 보낼 곳 설정
+    public BaseResponse sendChatting(@DestinationVariable String meetingId, ChattingRequestDto chattingRequestDto) {
 
         String message = chattingRequestDto.getMessage();
         // 메세지 내용은 최대 255자 이하
@@ -47,10 +47,10 @@ public class ChattingController {
             LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
             // redis에 저장
-            ChattingDto chattingDto = chattingService.addChattingRedis(memberId, roomCode, message, now);
+            ChattingDto chattingDto = chattingService.addChattingRedis(memberId, meetingId, message, now);
 
             // 반환
-            return BaseResponse.success(new ChattingDetailDto(chattingDto, roomCode));
+            return BaseResponse.success(chattingDto);
         }
         return BaseResponse.fail();
     }
@@ -110,7 +110,7 @@ public class ChattingController {
         chattingService.isChattingMember(meetingId, memberId);
 
         // 채팅 기록 전부 가져오기
-        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, lastNumber, chattingService.getMeetingInfo(meetingId).getRoomCode());
+        ChattingListDto chattingListDto = chattingService.getChattingLog(meetingId, lastNumber);
 
         return BaseResponse.success(chattingListDto);
     }

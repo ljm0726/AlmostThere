@@ -115,6 +115,10 @@ public class MeetingService {
         final Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(()->new NotFoundException(
                         ErrorCode.MEETING_NOT_FOUND));
+        MeetingMember meetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(
+                meetingId,
+                memberId
+        ).orElseThrow(() -> new NotFoundException(ErrorCode.MEETING_MEMBER_NOT_FOUND));
 
         List<MeetingMemberResponseDto> meetingMembers = meeting.getMeetingMembers()
                 .stream().map(m->new MeetingMemberResponseDto(m)).collect(Collectors.toList());
@@ -137,12 +141,12 @@ public class MeetingService {
      */
     @Transactional
     public void deleteMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto) {
-        final Meeting meeting = meetingRepository.findById(meetingDeleteRequestDto.getMeetingid())
+        final Meeting meeting = meetingRepository.findById(meetingDeleteRequestDto.getMeetingId())
                 .orElseThrow(() -> new NotFoundException(
                         ErrorCode.MEETING_NOT_FOUND));
 
-        if (meeting.getHost().getId() == meetingDeleteRequestDto.getMemberid())
-            meetingRepository.deleteById(meetingDeleteRequestDto.getMeetingid());
+        if (meeting.getHost().getId() == meetingDeleteRequestDto.getMeetingId())
+            meetingRepository.deleteById(meetingDeleteRequestDto.getMeetingId());
         else throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
     }
 
@@ -153,7 +157,7 @@ public class MeetingService {
     @Transactional
     public void exitMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto){
         meetingMemberRepository.deleteMeetingMemberByMeetingIdAndMemberID(
-                meetingDeleteRequestDto.getMemberid(),meetingDeleteRequestDto.getMeetingid());
+                meetingDeleteRequestDto.getMemberId(),meetingDeleteRequestDto.getMeetingId());
     }
 
     /**
