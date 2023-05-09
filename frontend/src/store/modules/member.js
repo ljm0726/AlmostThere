@@ -18,9 +18,10 @@ const memberStore = {
   },
   actions: {
     // [@Method] 로그인 회원 확인
-    async isLogin({ commit }) {
+    async isLogin({ commit, state }) {
       // console.log("2. getUserInfo() decodeToken :: ");
       await getLoginMember(
+        state.member_id,
         ({ data }) => {
           if (data.message === "SUCCESS") {
             // console.log()
@@ -43,7 +44,6 @@ const memberStore = {
     },
 
     async SET_MEMBER_ID({ commit }, id) {
-      console.log("IDDD ", id);
       await commit("SET_MEMBER_ID", id);
     },
   },

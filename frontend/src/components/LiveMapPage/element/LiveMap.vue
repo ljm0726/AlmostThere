@@ -53,7 +53,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("memberStore", ["member"]),
+    ...mapState("memberStore", ["member", "member_id"]),
     ...mapState("websocketStore", ["connected", "stompClient"]),
   },
   watch: {
@@ -70,7 +70,7 @@ export default {
   },
   mounted() {
     // i) memberId 저장
-    this.memberId = this.member.id;
+    this.memberId = this.member_id;
     // ii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
       this.initMap();
