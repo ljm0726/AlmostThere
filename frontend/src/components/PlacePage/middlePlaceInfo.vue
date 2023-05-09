@@ -22,9 +22,10 @@
     <div class="parent">
       <div v-for="(time, index) in minTimes" :key="index" class="child">
         <img :src="startMarkerImage[index]" class="marker-image" /><span
+          v-if="time != 2"
           class="time"
           >{{ time }}분</span
-        >
+        ><span class="time2" v-else>700m 이내</span>
         <div v-show="minTimes.length % 2 == 1"></div>
       </div>
     </div>
@@ -133,6 +134,12 @@ export default {
   font-size: 20px;
   font-family: var(--medium-font);
   margin-top: 8%;
+  margin-inline: 8%;
+}
+.time2 {
+  font-size: 17px;
+  font-family: var(--medium-font);
+  margin-top: 10%;
   margin-inline: 8%;
 }
 .marker-image {
