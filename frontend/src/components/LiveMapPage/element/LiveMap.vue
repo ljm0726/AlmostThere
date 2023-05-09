@@ -277,13 +277,14 @@ export default {
       }
     },
     // [@Method] socket을 통해 받은 message(사용자 좌표) 저장
-    saveMembersLocation(membersLocation) {
+    saveMembersLocation(receivedMemberLocations) {
       // console.log(
       //   "#21# socket을 통해 받은 사용자 정보 state에 저장 ",
       //   membersLocation
       // );
+      if (receivedMemberLocations.length == 0) return;
 
-      for (const member of membersLocation) {
+      for (const member of receivedMemberLocations) {
         if (member == null) continue;
 
         // memberId를 통해 해당 member 찾기
