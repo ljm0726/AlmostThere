@@ -12,41 +12,10 @@ import ArriveAndChatBtn from "./element/ArriveAndChatBtn.vue";
 export default {
   name: "LiveMapPage",
   components: { LiveMap, ArriveAndChatBtn },
-  // computed: {
-  //   meetingId() {
-  //     return this.$route.params.id;
-  //   },
-  // },
-  // 임시, TEST용
   methods: {
     resizeMapLevel() {
       this.$refs.livemap.resizeMapLevel();
     },
-    //   ssafyLogin() {
-    //     // 현 로그인한 member의 정보
-    //     // console.log("#21# ssafy 로그인");
-    //     const memberStore = {
-    //       memberId: 1,
-    //       memberNickName: "김싸피",
-    //     };
-    //     localStorage.setItem("member", JSON.stringify(memberStore));
-    //   },
-    //   heeLogin() {
-    //     // console.log("#21# hee 로그인");
-    //     const memberStore = {
-    //       memberId: 2,
-    //       memberNickName: "희정",
-    //     };
-    //     localStorage.setItem("member", JSON.stringify(memberStore));
-    //   },
-    //   seoLogin() {
-    //     // console.log("#21# hee 로그인");
-    //     const memberStore = {
-    //       memberId: 3,
-    //       memberNickName: "찰스",
-    //     };
-    //     localStorage.setItem("member", JSON.stringify(memberStore));
-    //   },
   },
 };
 </script>
