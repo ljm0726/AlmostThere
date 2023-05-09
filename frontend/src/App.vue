@@ -33,7 +33,7 @@ export default {
 
   beforeCreate() {
     getMostRecentMeeting().then((res) => {
-      console.log("getMostRecentMeeting response", res);
+      // console.log("getMostRecentMeeting response", res);
       if (res != null) {
         this.setMeeting(res);
       }
@@ -104,6 +104,9 @@ export default {
       const diffTime =
         new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
         formattedTime.getTime();
+      // const diffTime =
+      //   new Date(meetingTime.getTime() + 3 * 60 * 60 * 1000) -
+      //   formattedTime.getTime();
 
       console.log("diffTime :", diffTime);
 
@@ -114,7 +117,7 @@ export default {
       const access_token = localStorage.getItem("Authorization");
 
       if (access_token) {
-        console.log("connect");
+        // console.log("connect");
         this.connect();
       }
     },
@@ -173,7 +176,7 @@ export default {
     },
 
     async getGeoLocation() {
-      console.log("#[getGeoLocation]# 현 위치 얻기 동작");
+      // console.log("#[getGeoLocation]# 현 위치 얻기 동작");
       if (this.member == null) {
         await store.dispatch("memberStore/isLogin");
       }
@@ -189,15 +192,16 @@ export default {
           };
 
           // 현 사용자의 위치 저장
-          console.log("getGeoLocation :", member);
+          // console.log("getGeoLocation :", member);
           this.send(member);
         });
       } else {
         console.log("# geolocation을 사용할수 없어요..");
+        alert("# geolocation을 사용할수 없어요..");
       }
     },
     send(member) {
-      console.log("# send message: ", member);
+      // console.log("# send message: ", member);
 
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;

@@ -568,7 +568,16 @@ export default {
           maxPayment = 99999999;
           totalChange = 99999999;
           console.log("과연", response.data);
-          console.log("과연길이", response.data["result"]["path"].length);
+          console.log("이전 몇번");
+
+          if (
+            response.data["error"] != undefined &&
+            response.data["error"]["code"] == -98
+          ) {
+            this.minTimes.push(2);
+            continue;
+          }
+          console.log("이후 몇번");
 
           for (var j = 0; j < response.data["result"]["path"].length; j++) {
             if (
