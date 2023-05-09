@@ -548,13 +548,17 @@ export default {
       distanceOverlay.setMap(this.map);
       // - 채팅 over-lay
       if (this.memberChatOverlayList.length != 0) {
-        const chatIndex = this.memberChatOverlayList.findIndex(
+        var chatIndex = -1;
+        chatIndex = this.memberChatOverlayList.findIndex(
           (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
         );
-        const chatOverlay =
-          this.memberChatOverlayList[chatIndex][this.updateMemberInfo[1]];
-        chatOverlay.setPosition(newPosition);
-        chatOverlay.setMap(this.map);
+
+        if (chatIndex != -1) {
+          const chatOverlay =
+            this.memberChatOverlayList[chatIndex][this.updateMemberInfo[1]];
+          chatOverlay.setPosition(newPosition);
+          chatOverlay.setMap(this.map);
+        }
       }
 
       // iii) circle
