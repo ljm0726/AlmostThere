@@ -118,6 +118,20 @@ function getMostRecentMeeting() {
   });
 }
 
+// [GET] 현재 시각으로부터 지난 가장 최근의 모임
+function getRecentPastMeeting() {
+  return new Promise((resolve, reject) => {
+    api
+      .get("/meeting/past-recent")
+      .then((response) => {
+        resolve(response.data.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
 async function getBestMember() {
   var result = null;
   await api.get("/member/best-member").then((res) => {
@@ -205,4 +219,5 @@ export {
   modifyMeeting,
   saveMemberStartPlace,
   outMeeting,
+  getRecentPastMeeting,
 };

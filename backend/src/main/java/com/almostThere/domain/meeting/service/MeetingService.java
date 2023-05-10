@@ -203,4 +203,17 @@ public class MeetingService {
         // iii) meeting-member 저장
         meetingMemberRepository.save(meetingMember);
     }
+
+    /**
+     * 현재 시각을 기준으로 최근에 지난 모임시간을 조회한다.
+     * @param
+     */
+    public MeetingTimeDto getRecentPastMeeting(Long memberId){
+        List<Meeting> meeting = meetingRepository.getRecentPastMeeting(memberId, PageRequest.of(0, 1));
+        if (meeting.size() != 0) {
+            return new MeetingTimeDto(meeting.get(0));
+        }
+
+        return null;
+    }
 }
