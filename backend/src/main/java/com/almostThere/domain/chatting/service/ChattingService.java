@@ -59,19 +59,19 @@ public class ChattingService {
 
     /**
      * @param memberId 멤버ID
-     * @param roomCode 모임 코드
+     * @param meetingId 모임 ID
      * @param message 채팅 내용
      * @param now 채팅 전송 시간
      * @return 저장한 채팅 정보를 반환한다.
      * **/
-    public ChattingDto addChattingRedis(Long memberId, String roomCode, String message, LocalDateTime now) {
+    public ChattingDto addChattingRedis(Long memberId, String meetingId, String message, LocalDateTime now) {
 
         // ChattingDto 생성
         ChattingDto chattingDto = new ChattingDto(memberId, message, now);
 
         // redis에 ChattingDto 저장
         ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
-        listOperations.rightPush("chat:"+roomCode, chattingDto);
+        listOperations.rightPush("chat:"+meetingId, chattingDto);
 
         return chattingDto;
     }
@@ -81,7 +81,8 @@ public class ChattingService {
      * **/
 //    @Scheduled(cron = "0 0 0/1 * * *") // 1시간 주기
 //    @Scheduled(cron = "0 0/10 * * * *") // 10분 주기
-    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
+//    @Scheduled(cron = "0 * * * * *") // 테스트 위해 1분 주기
+    @Scheduled(fixedDelay = 60000)
     @Transactional
     public void addChattingMysql() {
 
@@ -102,7 +103,8 @@ public class ChattingService {
                 List<ChattingDto> chattingDtoList = listOperations.range(key, 0, listOperations.size(key));
 
                 // roomCode로 meetingId 가져오기
-                Optional<Meeting> meetingOptional = meetingRepository.findByRoomCode(key.substring(5));
+                Optional<Meeting> meetingOptional = meetingRepository.findById(Long.valueOf(key.substring(5)));
+//                Optional<Meeting> meetingOptional = meetingRepository.findByRoomCode(key.substring(5));
                 if (!meetingOptional.isPresent()) throw new AccessDeniedException(ErrorCode.MEETING_NOT_FOUND);
 
                 // mysql에 저장 - batchInsert 여러 행을 한 번에 넣기
@@ -155,7 +157,7 @@ public class ChattingService {
      * @param lastNumber 최근 조회 최소 인덱스
      * @return 기록 20개를 조회한다.
      * **/
-    public ChattingListDto getChattingLog(Long meetingId, Long lastNumber, String roomCode) {
+    public ChattingListDto getChattingLog(Long meetingId, Long lastNumber) {
 
         // redis에서 meetingId의 채팅 정보를 가져온다.
         ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
@@ -163,7 +165,7 @@ public class ChattingService {
         // 꺼내야 하는 개수
         int default_num = 30;
         // meetingId에 해당하는 채팅의 크기 확인
-        Long redisSize = listOperations.size("chat:"+roomCode);
+        Long redisSize = listOperations.size("chat:"+meetingId.toString());
         // MySQL에 저장된 값 가져오기
         Long mysqlSize = chattingRepository.countByMeeting_Id(meetingId);
         // 전체 개수
@@ -171,7 +173,7 @@ public class ChattingService {
         if (lastNumber < 0) lastNumber = length;
 
         // chattingDtoList 생성
-        List<ChattingDetailDto> chattingDetailDtoList = new ArrayList<>();
+        List<ChattingDto> chattingDtoList = new ArrayList<>();
         
         // Redis에 저장된 값을 가져와야 하는 경우
         if (lastNumber > mysqlSize) {
@@ -181,19 +183,19 @@ public class ChattingService {
 
             // Redis에 저장된 값으로 충분한 경우
             if (redisIdx >= default_num) {
-                chattingDetailDtoList.addAll(listOperations.range("chat:"+roomCode, redisIdx - default_num + 1, redisIdx).stream()
-                        .map(m -> new ChattingDetailDto(m, roomCode))
-                        .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
+                chattingDtoList.addAll(listOperations.range("chat:"+meetingId, redisIdx - default_num + 1, redisIdx).stream()
+                        .sorted(Comparator.comparing(ChattingDto::getChattingTime)
                         .reversed()).collect(Collectors.toList()));
-                return new ChattingListDto(chattingDetailDtoList, redisIdx - default_num);
+                //                        .map(m -> new ChattingDetailDto(m, meetingId.toString()))
+                return new ChattingListDto(chattingDtoList, redisIdx - default_num);
             }
             
             // Redis에 저장된 값으로 충분하지 않나, Redis에 저장된 값도 가져와야 하는 경우
             else {
-                chattingDetailDtoList.addAll(listOperations.range("chat:"+roomCode, 0, redisIdx).stream()
-                        .map(m -> new ChattingDetailDto(m, roomCode))
-                        .sorted(Comparator.comparing(ChattingDetailDto::getChattingTime)
+                chattingDtoList.addAll(listOperations.range("chat:"+meetingId, 0, redisIdx).stream()
+                        .sorted(Comparator.comparing(ChattingDto::getChattingTime)
                         .reversed()).collect(Collectors.toList()));
+//                .map(m -> new ChattingDetailDto(m, roomCode))
                 lastNumber -= redisIdx;
             }
         }
@@ -209,15 +211,16 @@ public class ChattingService {
             Page<Chatting> chattingPage = chattingRepository.findAllByMeeting_IdOrderByChattingTimeDescIdDesc(meetingId, pageRequest);
 
             // MySQL에서 가져온 리스트
-            List<ChattingDetailDto> chattingDetailDtos = chattingPage.getContent().stream().map(m -> new ChattingDetailDto(m)).collect(Collectors.toList());
+            List<ChattingDto> chattingDtos = chattingPage.getContent().stream()
+                    .map(m -> new ChattingDto(m)).collect(Collectors.toList());
 
             // 나눠 떨어지면 전체 반환, 그 외에는 이미 보여진 부분은 제외하고 잘라서 보여주기
             int rest = (int) ((mysqlSize - lastNumber) % default_num);
-            if (rest != 0) chattingDetailDtos = chattingDetailDtos.subList(rest, chattingDetailDtos.size());
-            chattingDetailDtoList.addAll(chattingDetailDtos);
-            lastNumber -= chattingDetailDtos.size();
+            if (rest != 0) chattingDtos = chattingDtos.subList(rest, chattingDtos.size());
+            chattingDtoList.addAll(chattingDtos);
+            lastNumber -= chattingDtos.size();
         }
 
-        return new ChattingListDto(chattingDetailDtoList, lastNumber);
+        return new ChattingListDto(chattingDtoList, lastNumber);
     }
 }

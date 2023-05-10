@@ -25,7 +25,13 @@
       <v-card-text>
         <v-row>
           <v-col class="pr-1">
-            <v-btn elevation="0" color="var(--main-col-1)" dark rounded block
+            <v-btn
+              elevation="0"
+              color="var(--main-col-1)"
+              dark
+              rounded
+              block
+              @click="clickOutMeeting"
               >나가기</v-btn
             >
           </v-col>
@@ -49,6 +55,7 @@
 
 <script>
 import CloseButton from "@/common/component/button/CloseButton.vue";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "MeetingOutBtn",
@@ -58,7 +65,28 @@ export default {
       dialog: false,
     };
   },
+  computed: {
+    ...mapState("memberStore", ["member", "member_id"]),
+  },
   methods: {
+    ...mapActions("meetingStore", ["outMeeting"]),
+    clickOutMeeting() {
+      console.log("모임 탈출 ~");
+      this.outMeeting(this.member_id)
+        .then(() => {
+          console.log("정상실행");
+          this.$nextTick(() => {
+            // this.$refs.modifySheet.close();
+            this.$router.replace("/home");
+            //reload를 해야 하나??
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("모임 탈출 실패 ~ ");
+        });
+    },
+
     openDialog() {
       this.dialog = true;
     },

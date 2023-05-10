@@ -169,6 +169,7 @@ export default {
       "place_addr",
       "recent_meeting",
     ]),
+    ...mapState("memberStore", ["member_id"]),
   },
   watch: {
     date: {
@@ -206,7 +207,7 @@ export default {
     },
 
     movePlacePage() {
-      this.$router.push("/place");
+      this.$router.replace("/place");
     },
 
     regist_meeting() {
@@ -222,24 +223,29 @@ export default {
         const meeting_name = this.meetingname;
         const place_name = this.place_name;
         const place_addr = this.place_addr;
+        const member_id = this.member_id;
 
         console.log(meeting_name, " ", date_time);
 
-        this.register({ meeting_name, date_time, place_name, place_addr }).then(
-          () => {
-            getMostRecentMeeting().then((res) => {
-              const newRecentMeeting = res;
-              const savedRecentMeeting = this.recent_meeting;
+        this.register({
+          member_id,
+          meeting_name,
+          date_time,
+          place_name,
+          place_addr,
+        }).then(() => {
+          getMostRecentMeeting().then((res) => {
+            const newRecentMeeting = res;
+            const savedRecentMeeting = this.recent_meeting;
 
-              if (
-                savedRecentMeeting == null ||
-                savedRecentMeeting.meetingTime > newRecentMeeting.meetingTime
-              ) {
-                this.setMeeting(newRecentMeeting);
-              }
-            });
-          }
-        );
+            if (
+              savedRecentMeeting == null ||
+              savedRecentMeeting.meetingTime > newRecentMeeting.meetingTime
+            ) {
+              this.setMeeting(newRecentMeeting);
+            }
+          });
+        });
         this.resetPlace();
         this.resetStartPlace();
       }
@@ -279,14 +285,7 @@ export default {
     if (this.place_name !== null && this.place_addr !== null) {
       this.meeting_place = this.place_name + "(" + this.place_addr + ")";
     }
-
-    console.log(
-      this.meeting_name,
-      " ",
-      this.meeting_date,
-      " ",
-      this.meeting_time
-    );
+    // console.log(this.member_id);
 
     this.meetingname = this.meeting_name;
     this.date = this.meeting_date;

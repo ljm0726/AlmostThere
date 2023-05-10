@@ -8,6 +8,8 @@ import com.almostThere.domain.user.dto.MemberAccessDto;
 import com.almostThere.domain.user.dto.MemberDto;
 import com.almostThere.domain.user.dto.MemberInfoDto;
 import com.almostThere.domain.user.service.MemberService;
+import com.almostThere.global.error.ErrorCode;
+import com.almostThere.global.error.exception.AccessDeniedException;
 import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,10 +42,14 @@ public class MemberController {
      * @param authentication
      * @return
      */
-    @GetMapping
-    public BaseResponse getMemberInfo(Authentication authentication) {
+    @GetMapping("/{memberId}")
+    public BaseResponse getMemberInfo(@PathVariable Long memberId, Authentication authentication) {
         //401 error : 는 인증이 안된유저임 즉 토큰이 없거나 만료된 유저, ExceptionHandlerFilter에서 처리해야함.
-        Long memberId = ((MemberAccessDto)authentication.getPrincipal()).getId();
+        Long authId = ((MemberAccessDto)authentication.getPrincipal()).getId();
+
+        if(authId != memberId) {
+            throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
+        }
 //        log.info("request 내 정보 조회 ID {}", 1L);
 
         MemberDto member = memberService.getMemberByMemberId(memberId);

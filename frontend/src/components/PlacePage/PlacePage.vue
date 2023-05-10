@@ -41,17 +41,33 @@
     <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
+    <div v-if="placeSelect">
+      <middle-place-info
+        class="middle-place-info"
+        v-if="minTimes.length == startPlaces.length"
+        :minTimes="minTimes"
+        :stateTraffic="stateTraffic"
+        :placeName="currentRecommendPlaceName"
+        :addressName="currentRecommendPlaceAddress"
+        :placeUrl="curRecommendPlaceUrl"
+        :placeX="curRecommendX"
+        :placeY="curRecommendY"
+      ></middle-place-info>
+    </div>
+    <loading-modal v-if="loading"></loading-modal>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
 import placeInfo from "./placeInfo.vue";
+import middlePlaceInfo from "./middlePlaceInfo.vue";
 import HalfwayModal from "./placeModal/HalfwayModal.vue";
 import axios from "axios";
+import LoadingModal from "./placeModal/LoadingModal.vue";
 
 export default {
-  components: { placeInfo, HalfwayModal },
+  components: { placeInfo, HalfwayModal, middlePlaceInfo, LoadingModal },
   name: "PlacePage",
   data() {
     return {
@@ -60,6 +76,7 @@ export default {
       current: { lat: 37.5, lng: 127.039 },
       geocoder: null,
       isSelect: false,
+      placeSelect: false,
       startMarker: null,
       recommendMarker: null,
       curIntroduceMarker: null,
@@ -70,6 +87,26 @@ export default {
       isRecommend: false,
       currentMarker: null,
       polylines: [],
+      minTimes: [],
+      currentRecommendPlaceName: null,
+      currentRecommendPlaceAddress: null,
+      curRecommendX: null,
+      stateTraffic: null,
+      curRecommendY: null,
+      curRecommendPlaceUrl: null,
+      startMarkerImage: [
+        require(`@/assets/images/icons/marker1.png`),
+        require(`@/assets/images/icons/marker2.png`),
+        require(`@/assets/images/icons/marker3.png`),
+        require(`@/assets/images/icons/marker4.png`),
+        require(`@/assets/images/icons/marker5.png`),
+        require(`@/assets/images/icons/marker6.png`),
+        require(`@/assets/images/icons/marker7.png`),
+        require(`@/assets/images/icons/marker8.png`),
+        require(`@/assets/images/icons/marker9.png`),
+        require(`@/assets/images/icons/marker10.png`),
+      ],
+      loading: false,
     };
   },
 
@@ -79,6 +116,12 @@ export default {
   },
 
   watch: {
+    minTimes() {
+      console.log("watch minTImes");
+      if (this.minTimes.length == this.startPlaces.length) {
+        this.loading = false;
+      }
+    },
     // 중간 위치 찾기 후 출발지 마커
     // 나중에 장소 추천지 있으면 여기에 추천장소 마커 추가해야함.
     middlePlace() {
@@ -113,12 +156,19 @@ export default {
         if (this.startMarker) this.startMarker.setMap(null);
         if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
         for (var i = 0; i < positions.length; i++) {
-          // 마커를 생성합니다
-          console.log("생성?");
+          const imageSrc = this.startMarkerImage[i], // 마커이미지의 주소입니다
+            imageSize = new window.kakao.maps.Size(54, 57); // 마커이미지의 크기입니다
+
+          const markerImage = new window.kakao.maps.MarkerImage(
+            imageSrc,
+            imageSize
+          );
+
           this.startMarker = new window.kakao.maps.Marker({
             map: this.map, // 마커를 표시할 지도
             position: positions[i].get("latlng"), // 마커를 표시할 위치
             title: positions[i].get("title"), // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+            image: markerImage,
           });
         }
         this.map.setBounds(bounds);
@@ -176,6 +226,26 @@ export default {
   methods: {
     ...mapActions("placeStore", ["updatePlace"]),
     // 카테고리별 함수
+    mapReload() {
+      var bounds = new window.kakao.maps.LatLngBounds();
+      for (var i = 0; i < this.startPlaces.length; i++) {
+        bounds.extend(
+          new window.kakao.maps.LatLng(
+            this.startPlaces[i].get("y"),
+            this.startPlaces[i].get("x")
+          )
+        );
+      }
+      this.map.setBounds(bounds);
+      // var level = this.map.getLevel();
+      // this.map.setLevel(level + 1);
+      var center = this.map.getCenter();
+      var projection = this.map.getProjection();
+      var point = projection.pointFromCoords(center);
+      point.y += 100;
+      var newCenter = projection.coordsFromPoint(point);
+      this.map.panTo(newCenter);
+    },
     changeCategoryClass(el) {
       var category = document.getElementById("category"),
         children = category.children,
@@ -276,7 +346,7 @@ export default {
       placeMap.set("name", place.place_name);
       placeMap.set("addr", place.address_name);
       this.updatePlace(placeMap);
-      this.$router.push("/register");
+      this.$router.replace("/register");
     },
 
     removeMarker() {
@@ -317,6 +387,7 @@ export default {
         var marker = this.addMarker(
           new window.kakao.maps.LatLng(place[i].y, place[i].x)
         );
+
         // 마커와 검색결과 항목을 클릭 했을 때
         // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
         (function (marker, p) {
@@ -370,14 +441,20 @@ export default {
     },
 
     findCarWay(place) {
+      this.stateTraffic = "car";
       this.resetPolylines();
+      console.log("이거야 이거!!", place);
+      this.currentRecommendPlaceName = place.place_name;
+      this.currentRecommendPlaceAddress = place.road_address_name;
+      this.curRecommendX = place.x;
+      this.curRecommendY = place.y;
+      this.curRecommendPlaceUrl = place.place_url;
 
       const REST_API_KEY = `${process.env.VUE_APP_KAKAO_CAR_WAY_KEY}`;
       const destination = `${place.x},${place.y}`; // 목적지
 
       this.startPlaces[0].get("x");
       this.startPlaces[0].get("x");
-
       const waypoints = "";
       const priority = "RECOMMEND";
       const car_fuel = "GASOLINE";
@@ -454,27 +531,130 @@ export default {
       });
 
       this.closeOveray();
+      this.mapReload();
+      this.placeSelect = true;
     },
 
-    findBusWay(place) {
+    async findBusWay(place) {
       this.resetPolylines();
+      this.stateTraffic = "bus";
+      this.loading = true;
+      console.log("이거야 이거!!", place);
 
-      //출발지를 for문 돌면서 odsay API 호출
+      this.currentRecommendPlaceName = place.place_name;
+      this.currentRecommendPlaceAddress = place.road_address_name;
+      this.curRecommendX = place.x;
+      this.curRecommendY = place.y;
+      this.curRecommendPlaceUrl = place.place_url;
+
+      this.minTimes = [];
+      let maxTime = 99999999;
+      let maxPayment = 99999999;
+      let totalChange = 99999999;
+      let idx = 0;
+      console.log("startPlaces는 이렇게", this.startPlaces);
+
       for (var i = 0; i < this.startPlaces.length; i++) {
         const x = this.startPlaces[i].get("x");
         const y = this.startPlaces[i].get("y");
-        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${x}&SY=${y}&EX=${place.x}&EY=${place.y}&OPT = 0&apiKey=${process.env.VUE_APP_ODSAY_KEY}`;
-        axios
-          .get(url)
-          .then((response) => {
-            this.callMapObjApiAJAX(
-              response.data["result"]["path"][0].info.mapObj
-            );
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+        const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${x}&SY=${y}&EX=${place.x}&EY=${place.y}&OPT=0&apiKey=${process.env.VUE_APP_ODSAY_KEY}`;
+        idx = 0;
+
+        await new Promise((resolve) => setTimeout(resolve, i * 40));
+
+        try {
+          const response = await axios.get(url);
+          maxTime = 99999999;
+          maxPayment = 99999999;
+          totalChange = 99999999;
+          console.log("과연", response.data);
+          console.log("이전 몇번");
+
+          if (
+            response.data["error"] != undefined &&
+            response.data["error"]["code"] == -98
+          ) {
+            this.minTimes.push(2);
+            continue;
+          }
+          console.log("이후 몇번");
+
+          for (var j = 0; j < response.data["result"]["path"].length; j++) {
+            if (
+              maxTime > response.data["result"]["path"][j]["info"]["totalTime"]
+            ) {
+              idx = j;
+              maxTime = response.data["result"]["path"][j]["info"]["totalTime"];
+              maxPayment =
+                response.data["result"]["path"][j]["info"]["payment"];
+              totalChange =
+                response.data["result"]["path"][j]["info"]["busTransitCount"] +
+                response.data["result"]["path"][j]["info"][
+                  "subwayTransitCount"
+                ];
+            } else if (
+              maxTime == response.data["result"]["path"][j]["info"]["totalTime"]
+            ) {
+              if (
+                maxPayment >
+                response.data["result"]["path"][j]["info"]["payment"]
+              ) {
+                idx = j;
+                maxTime =
+                  response.data["result"]["path"][j]["info"]["totalTime"];
+                maxPayment =
+                  response.data["result"]["path"][j]["info"]["payment"];
+                totalChange =
+                  response.data["result"]["path"][j]["info"][
+                    "busTransitCount"
+                  ] +
+                  response.data["result"]["path"][j]["info"][
+                    "subwayTransitCount"
+                  ];
+              } else if (
+                maxPayment ==
+                response.data["result"]["path"][j]["info"]["payment"]
+              ) {
+                if (
+                  totalChange >
+                  response.data["result"]["path"][j]["info"][
+                    "busTransitCount"
+                  ] +
+                    response.data["result"]["path"][j]["info"][
+                      "subwayTransitCount"
+                    ]
+                ) {
+                  idx = j;
+                  maxTime =
+                    response.data["result"]["path"][j]["info"]["totalTime"];
+                  maxPayment =
+                    response.data["result"]["path"][j]["info"]["payment"];
+                  totalChange =
+                    response.data["result"]["path"][j]["info"][
+                      "busTransitCount"
+                    ] +
+                    response.data["result"]["path"][j]["info"][
+                      "subwayTransitCount"
+                    ];
+                }
+              }
+            }
+          }
+
+          this.minTimes.push(maxTime);
+
+          this.callMapObjApiAJAX(
+            response.data["result"]["path"][idx].info.mapObj
+          );
+        } catch (error) {
+          console.error(error);
+        }
       }
+
+      console.log("maxTime!!!!!", this.minTimes);
+
+      this.mapReload();
+      this.placeSelect = true;
     },
 
     callMapObjApiAJAX(mabObj) {
@@ -519,8 +699,7 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
-              strokeColor: "#0052A4",
+              strokeColor: "#0D347F",
             });
           } else if (data.result.lane[i].type == 2) {
             polyline = new window.kakao.maps.Polyline({
@@ -528,8 +707,7 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
-              strokeColor: "#00A84D",
+              strokeColor: "#379206",
             });
           } else if (data.result.lane[i].type == 3) {
             polyline = new window.kakao.maps.Polyline({
@@ -537,8 +715,7 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
-              strokeColor: "#EF7C1C",
+              strokeColor: "#EC6C27",
             });
           } else if (data.result.lane[i].type == 4) {
             polyline = new window.kakao.maps.Polyline({
@@ -546,8 +723,7 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
-              strokeColor: "#00A5DE",
+              strokeColor: "#3165A8",
             });
           } else if (data.result.lane[i].type == 5) {
             polyline = new window.kakao.maps.Polyline({
@@ -555,8 +731,7 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
-              strokeColor: "#996CAC",
+              strokeColor: "#703E8C",
             });
           } else if (data.result.lane[i].type == 6) {
             polyline = new window.kakao.maps.Polyline({
@@ -564,8 +739,7 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
-              strokeColor: "#CD7C2F",
+              strokeColor: "#904D23",
             });
           } else if (data.result.lane[i].type == 7) {
             polyline = new window.kakao.maps.Polyline({
@@ -573,8 +747,7 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
-              strokeColor: "#747F00",
+              strokeColor: "#5B692E",
             });
           } else if (data.result.lane[i].type == 8) {
             polyline = new window.kakao.maps.Polyline({
@@ -582,8 +755,7 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
-              strokeColor: "#E6186C",
+              strokeColor: "#C82363",
             });
           } else if (data.result.lane[i].type == 9) {
             polyline = new window.kakao.maps.Polyline({
@@ -591,8 +763,7 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
-              strokeColor: "#BDB092",
+              strokeColor: "#B39627",
             });
           } else {
             polyline = new window.kakao.maps.Polyline({
@@ -600,7 +771,6 @@ export default {
               path: lineArray,
               strokeWeight: 5,
               storkeOpacity: 1,
-              strokeStyle: "solid",
             });
           }
           this.polylines.push(polyline);
@@ -625,15 +795,15 @@ export default {
       const from = sessionStorage.getItem("from");
       console.log(from);
       if (from !== null) {
-        this.$router.push("/Place");
-        this.$router.push(`/meeting/${from}`);
+        // this.$router.push("/Place");
+        this.$router.replace(`/meeting/${from}`);
       } else {
-        this.$router.push("/register"); // register페이지
+        this.$router.replace("/register"); // register페이지
       }
     },
 
     goToPage(url) {
-      this.$router.push(url);
+      this.$router.replace(url);
     },
     goBack() {
       this.$router.go(-1);
@@ -802,6 +972,12 @@ export default {
   z-index: 2;
   position: absolute;
   bottom: 5%;
+  left: 8.5%;
+}
+.middle-place-info {
+  z-index: 50;
+  position: absolute;
+  bottom: 10%;
   left: 8.5%;
 }
 input {
