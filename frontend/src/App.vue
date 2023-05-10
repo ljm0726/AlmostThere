@@ -104,9 +104,6 @@ export default {
       const diffTime =
         new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
         formattedTime.getTime();
-      // const diffTime =
-      //   new Date(meetingTime.getTime() + 3 * 60 * 60 * 1000) -
-      //   formattedTime.getTime();
 
       console.log("diffTime :", diffTime);
 
