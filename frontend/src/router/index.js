@@ -39,7 +39,7 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   const access_token = localStorage.getItem("Authorization");
 
-  // console.log("Before", access_token, from, to);
+  console.log("Before", from, to);
   if (access_token && to.name === "entrance") {
     store.dispatch(
       "memberStore/SET_MEMBER_ID",
@@ -64,18 +64,27 @@ router.beforeEach(async (to, from, next) => {
         name: "home",
       });
     }
+
+    return;
   } else if (to.name === "entrance") {
     // # 초대 링크 클릭 시 로그인 안 되어 있을 때
     const roomCode = to.params.roomCode;
     console.log("roomcode: ", roomCode);
     // 룸코드 store에 저장
-    store.dispatch("meetingStore/setInvitedMeeting", roomCode);
+    // store.dispatch("meetingStore/setInvitedMeeting", roomCode);
+    sessionStorage.setItem("roomCode", roomCode);
     // login으로 보냄
+    console.log("로그인호출111111111");
     next({
       name: "login",
     });
     // login 성공하면 store에 roomcode 저장되어있는지 확인하는 로직 실행
-  } else if (to.name === "landing" || to.name === "login") {
+    return;
+  }
+
+  if (to.name === "landing" || to.name === "login") {
+    // alert(to.name);
+    console.log("login호출44444444444");
     //login page를 가거나 login이 성공 됐을 때는 다음으로 넘어감
     next();
   } else if (access_token) {
@@ -87,6 +96,8 @@ router.beforeEach(async (to, from, next) => {
     next();
   } else {
     //그 외에 모든 경로는 login으로
+    console.log("로그인호출22222222222");
+
     next({
       name: "login",
     });
