@@ -5,6 +5,7 @@
     <!-- Main -->
     <v-main>
       <router-view />
+      <location-permission-error ref="denied" />
     </v-main>
     <!-- Footer -->
     <router-view name="footer" />
@@ -19,12 +20,15 @@ import SockJS from "sockjs-client";
 import jwt_decode from "jwt-decode";
 import { getMostRecentMeeting } from "@/api/modules/meeting.js";
 import { mapActions, mapState } from "vuex";
+import LocationPermissionError from "@/common/component/dialog/LocationPermissionError.vue";
 
 import store from "@/store";
 
 export default {
   name: "App",
-
+  components: {
+    LocationPermissionError,
+  },
   data() {
     return {
       timeOut: null,
@@ -211,7 +215,7 @@ export default {
           (error) => {
             // console.log("#[GeoLocation]# GeoLocation 사용불가 error: ", error);
             if (error.code == 1) {
-              alert("#[GeoLocation]# 위치권한을 허용해주세요!");
+              this.$refs.denied.openDialog();
               clearInterval(this.intervalGeolocation);
             }
           }
