@@ -61,14 +61,19 @@
     <v-btn class="my-3" color="var(--main-col-1)" dark rounded @click="open()">
       영수증 추가
     </v-btn>
-    <vue-bottom-sheet ref="costSheet" max-width="500px">
+    <vue-bottom-sheet
+      ref="costSheet"
+      max-width="500px"
+      max-height="90% !important"
+      height="fit-content !important"
+    >
       <v-sheet class="px-5 d-flex flex-column pb-10">
         <span class="point-font xxxxl-font main-col-1 align-self-center">
           영수증 등록
         </span>
         <v-file-input
           v-model="receipt"
-          class="pt-5 mb-2"
+          class="pt-5"
           accept="image/png, image/jpeg, image/jpg"
           placeholder="영수증 사진을 첨부해 주세요."
           prepend-icon="mdi-camera"
@@ -76,6 +81,7 @@
         <v-sheet
           v-if="imageLoading"
           class="mt-5 mb-5 d-flex flex-column justify-center align-center"
+          height="300px"
         >
           <v-progress-circular
             :size="40"
@@ -85,7 +91,7 @@
           ></v-progress-circular>
           <span class="point-font main-col-1 lg-font">영수증 정보 읽는 중</span>
         </v-sheet>
-        <div v-else>
+        <div class="mt-5 mb-5" v-else style="height: 300px">
           <div class="d-flex justify-center align-center">
             <img :src="imageUrl" width="90%" />
           </div>
@@ -129,6 +135,17 @@
                 ></v-text-field>
               </v-col>
             </v-row>
+            <div class="d-flex flex-column">
+              <v-btn
+                v-if="this.ocrSuccess"
+                class="mb-5"
+                color="var(--main-col-1)"
+                rounded
+                dark
+                @click="addCalculateDetail()"
+                >등록</v-btn
+              >
+            </div>
           </div>
           <div
             v-else
@@ -142,13 +159,6 @@
             >
           </div>
         </div>
-        <v-btn
-          color="var(--main-col-1)"
-          rounded
-          dark
-          @click="addCalculateDetail()"
-          >등록</v-btn
-        >
       </v-sheet>
     </vue-bottom-sheet>
   </v-sheet>
