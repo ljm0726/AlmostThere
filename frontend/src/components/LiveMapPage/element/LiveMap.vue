@@ -676,14 +676,28 @@ export default {
         customOverlay.setMap(this.map);
       }
     },
-    destroyed() {
-      this.stompClient.unsubscribe(
-        `location-subscribe-${this.$route.params.id}`
-      );
-      this.stompClient.unsubscribe(
-        `chatting-subscribe-${this.$route.params.id}`
-      );
-    },
+    // [@Method] TEST (!추후 삭제)
+    // sendChatTest() {
+    //   this.chatting = [
+    //     // {10: "100m 남음!"}
+    //     {
+    //       member: {
+    //         memberId: 1,
+    //         content: "100m 남음~",
+    //       },
+    //     },
+    //     {
+    //       member: {
+    //         memberId: 2,
+    //         content: this.testChatContent,
+    //       },
+    //     },
+    //   ];
+    // },
+  },
+  beforeDestroy() {
+    this.stompClient.unsubscribe(`location-subscribe-${this.$route.params.id}`);
+    this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
   },
 };
 </script>

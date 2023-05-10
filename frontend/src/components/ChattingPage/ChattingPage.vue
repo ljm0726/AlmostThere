@@ -1,7 +1,7 @@
 <template>
-  <v-sheet height="100%">
+  <v-sheet height="100%" style="padding-top: 55px">
     <!-- <v-sheet
-    :style="{
+      :style="{
       height: '100vh',
       height: 'calc(var(--vh, 1vh) * 100)',
       height: '-webkit-fill-available',
@@ -71,21 +71,22 @@
     <!-- 채팅 정보를 불러올 수 없는 경우 -->
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
-    <!-- <v-sheet v-else class="d-flex flex-column justify-end" min-height="100%"> -->
-    <v-sheet
-      v-else
-      class="d-flex flex-column justify-end"
-      style="padding: 55px 0px 72px 0px"
-      min-height="100%"
-    >
+    <v-sheet v-else class="d-flex flex-column justify-end" min-height="100%">
+      <!-- <v-sheet
+        v-else
+        class="d-flex flex-column justify-end"
+        style="padding: 55px 0px 72px 0px"
+        min-height="100%"
+        > -->
       <!-- scroll 맨 아래로 내리는 버튼 -->
       <scroll-bottom-button ref="scrollDownBtn"></scroll-bottom-button>
       <!-- 채팅창 -->
       <!-- <v-sheet
-        id="chattingMessages"
-        style="margin: 55px 0px 72px 0px; overflow-y: auto"
-        :height="chattingHeight"
-      > -->
+          id="chattingMessages"
+          style="margin: 55px 0px 72px 0px; overflow-y: auto"
+          :height="chattingHeight"
+          > -->
+      <!-- <v-sheet height="55" max-width="500" width="100%"></v-sheet> -->
       <v-sheet id="chattingMessages">
         <!-- 무한스크롤 -->
         <infinite-loading
@@ -99,7 +100,6 @@
         <!-- 메세지 반복 -->
         <!-- <div> -->
         <!-- header 여백 -->
-        <!-- <v-sheet height="55" max-width="500" width="100%"></v-sheet> -->
         <div v-for="(item, idx) in chatList" :key="idx">
           <!-- 날짜 : 년월일 (날짜가 같은 경우처음에만 노출) -->
           <div
@@ -220,6 +220,7 @@
               </v-sheet>
             </v-sheet>
           </div>
+          <v-sheet height="72" v-if="idx == chatList.length - 1"></v-sheet>
         </div>
         <!-- footer 여백 -->
         <!-- <v-sheet height="72" max-width="500" width="100%"></v-sheet> -->
@@ -314,13 +315,13 @@ export default {
     // },
   },
   async created() {
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-    window.addEventListener("resize", () => {
-      // console.log("resize");
-      let vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    });
+    // let vh = window.innerHeight * 0.01;
+    // document.documentElement.style.setProperty("--vh", `${vh}px`);
+    // window.addEventListener("resize", () => {
+    //   // console.log("resize");
+    //   let vh = window.innerHeight * 0.01;
+    //   document.documentElement.style.setProperty("--vh", `${vh}px`);
+    // });
 
     this.loading = true;
     // 저장된 채팅 정보를 가져옵니다.
@@ -467,7 +468,7 @@ export default {
         .querySelector(".v-snack__wrapper")
         .addEventListener("click", this.watchNewMessage);
       await window.addEventListener("scroll", this.onTheBottom);
-      await this.goBottom();
+      // await this.goBottom();
     },
     // 소켓 연결 기다리기
     waitConnect() {
@@ -513,7 +514,7 @@ export default {
     },
   },
   // 메시지 구독 끊기
-  destroyed() {
+  beforeDestroy() {
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`member-subscribe-${this.$route.params.id}`);
 
@@ -526,11 +527,11 @@ export default {
       //   .removeEventListener("scroll", this.onTheBottom);
       window.removeEventListener("scroll", this.onTheBottom);
     }
-    window.removeEventListener("resize", () => {
-      // console.log("resize");
-      let vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    });
+    // window.removeEventListener("resize", () => {
+    //   // console.log("resize");
+    //   let vh = window.innerHeight * 0.01;
+    //   document.documentElement.style.setProperty("--vh", `${vh}px`);
+    // });
   },
 };
 </script>
