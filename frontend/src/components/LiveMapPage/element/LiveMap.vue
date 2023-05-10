@@ -130,7 +130,7 @@ export default {
     createCircle() {
       const unit = 500; // m 단위
       const maxRadius = 2500;
-      const radiusIncrement = 5000; // 2500m 이상부터 5km 반경의 circle
+      const radiusIncrement = 10000; // 2500m 이상부터 10km 반경의 circle
 
       // 2500m 이하 > 500m 반경의 원 생성
       for (let radius = unit; radius <= maxRadius; radius += unit) {
@@ -151,7 +151,7 @@ export default {
         circle.setMap(this.map);
       }
 
-      // 2500m 이상 > 5km 반경의 원 생성
+      // 2500m 이상 > 10km 반경의 원 생성
       for (
         let radius = maxRadius + radiusIncrement;
         radius <= 100000;
