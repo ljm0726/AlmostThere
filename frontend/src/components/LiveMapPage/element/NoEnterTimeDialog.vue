@@ -9,7 +9,7 @@
     <v-card rounded="xl">
       <v-card-title class="d-flex flex-column">
         <div class="align-self-end">
-          <close-button @closeDialog="closeDialog"></close-button>
+          <close-button @closeDialog="goBack()"></close-button>
         </div>
         <img src="@/assets/images/dialog/dont_enter.png" width="60%" />
         <span class="point-font xxxxxxl-font main-col-1"> 위치 공유 불가</span>
@@ -29,7 +29,7 @@
               outlined
               dark
               rounded
-              @click="closeDialog"
+              @click="goBack()"
               block
               style="background-color: var(--main-col-1)"
               >뒤로가기</v-btn
@@ -55,6 +55,9 @@ export default {
     };
   },
   methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
     closeDialog() {
       this.dialog = false;
     },
