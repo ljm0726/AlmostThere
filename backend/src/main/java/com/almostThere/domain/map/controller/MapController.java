@@ -64,5 +64,6 @@ public class MapController {
         MeetingMember meetingMember = mapService.isMeetingMember(meetingId, memberId);
 
         //
+        return BaseResponse.fail();
     }
 }
