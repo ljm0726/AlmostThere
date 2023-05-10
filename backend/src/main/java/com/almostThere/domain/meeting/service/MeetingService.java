@@ -139,7 +139,8 @@ public class MeetingService {
         int roomCode = (int)(rand.nextLong()%100000000L);
         roomCode = Math.abs(roomCode);
         String rc = Integer.toString(roomCode);
-        meetingCreateRequestDto.setMeetingTime(meetingCreateRequestDto.getMeetingTime().plusHours(9));
+//        meetingCreateRequestDto.setMeetingTime(meetingCreateRequestDto.getMeetingTime().plusHours(9));
+        meetingCreateRequestDto.setMeetingTime(meetingCreateRequestDto.getMeetingTime());
         Meeting meeting = meetingCreateRequestDto.toEntity(meetingCreateRequestDto, meetingHost,rc);
         meeting = meetingRepository.save(meeting);
         MeetingMember meetingMember = new MeetingMember(meetingHost, meeting, StateType.GOING);
@@ -242,5 +243,18 @@ public class MeetingService {
         meetingMember.updateStartPlace(meetingStartPlaceRequestDto);
         // iii) meeting-member 저장
         meetingMemberRepository.save(meetingMember);
+    }
+
+    /**
+     * 현재 시각을 기준으로 최근에 지난 모임시간을 조회한다.
+     * @param
+     */
+    public MeetingTimeDto getRecentPastMeeting(Long memberId){
+        List<Meeting> meeting = meetingRepository.getRecentPastMeeting(memberId, PageRequest.of(0, 1));
+        if (meeting.size() != 0) {
+            return new MeetingTimeDto(meeting.get(0));
+        }
+
+        return null;
     }
 }
