@@ -105,7 +105,7 @@ export default {
             link: {
               // 룸코드 props? store로 받아와서 url에 추가하기
               mobileWebUrl: `https://k8a401.p.ssafy.io/entrance/${roomCode}`,
-              webUrl: `https://k8a401.p.ssafy.io/${roomCode}`,
+              webUrl: `https://k8a401.p.ssafy.io/entrance/${roomCode}`,
             },
           },
         ],

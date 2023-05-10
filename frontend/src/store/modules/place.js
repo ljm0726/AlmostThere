@@ -1,4 +1,4 @@
-// import meetingStore from "./meeting";
+// import meetingStore from "./meeting";st
 
 const placeStore = {
   namespaced: true,
@@ -21,6 +21,12 @@ const placeStore = {
       state.placeY = null;
       state.placeName = null;
       state.placeAddr = null;
+    },
+    SET_SELECT_PLACE(state, placeMap) {
+      state.regist_placeX = placeMap.get("x");
+      state.regist_placeY = placeMap.get("y");
+      state.regist_placeName = placeMap.get("name");
+      state.regist_placeAddr = placeMap.get("addr");
     },
   },
   actions: {
