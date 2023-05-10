@@ -1,8 +1,7 @@
 import axios from "axios";
 
 function apiInstance() {
-  const Authorization = localStorage.getItem("Authorization");
-  console.log("API Auth ", Authorization);
+  // const Authorization = localStorage.getItem("Authorization");
   const instance = axios.create({
     baseURL: `${process.env.VUE_APP_API_BASE_URL}`,
     withCredentials: true,

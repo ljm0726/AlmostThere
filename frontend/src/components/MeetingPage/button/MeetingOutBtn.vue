@@ -66,13 +66,13 @@ export default {
     };
   },
   computed: {
-    ...mapState("memberStore", ["member"]),
+    ...mapState("memberStore", ["member", "member_id"]),
   },
   methods: {
     ...mapActions("meetingStore", ["outMeeting"]),
     clickOutMeeting() {
       console.log("모임 탈출 ~");
-      this.outMeeting(this.member.id)
+      this.outMeeting(this.member_id)
         .then(() => {
           console.log("정상실행");
           this.$nextTick(() => {

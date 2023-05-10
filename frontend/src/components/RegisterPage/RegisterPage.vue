@@ -169,7 +169,7 @@ export default {
       "place_addr",
       "recent_meeting",
     ]),
-    ...mapState("memberStore", ["member"]),
+    ...mapState("memberStore", ["member_id"]),
   },
   watch: {
     date: {
@@ -223,7 +223,7 @@ export default {
         const meeting_name = this.meetingname;
         const place_name = this.place_name;
         const place_addr = this.place_addr;
-        const member_id = this.member.id;
+        const member_id = this.member_id;
 
         console.log(meeting_name, " ", date_time);
 
@@ -285,14 +285,7 @@ export default {
     if (this.place_name !== null && this.place_addr !== null) {
       this.meeting_place = this.place_name + "(" + this.place_addr + ")";
     }
-
-    console.log(
-      this.meeting_name,
-      " ",
-      this.meeting_date,
-      " ",
-      this.meeting_time
-    );
+    // console.log(this.member_id);
 
     this.meetingname = this.meeting_name;
     this.date = this.meeting_date;
