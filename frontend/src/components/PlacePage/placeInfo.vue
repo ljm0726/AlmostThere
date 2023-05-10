@@ -31,11 +31,11 @@ export default {
   props: {
     startPlace: {
       type: String,
-      required: true,
+      required: false,
     },
     startAddress: {
       type: String,
-      required: true,
+      required: false,
     },
   },
 };
