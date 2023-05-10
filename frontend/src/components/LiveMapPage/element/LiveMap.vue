@@ -691,14 +691,10 @@ export default {
     //     },
     //   ];
     // },
-    destroyed() {
-      this.stompClient.unsubscribe(
-        `location-subscribe-${this.$route.params.id}`
-      );
-      this.stompClient.unsubscribe(
-        `chatting-subscribe-${this.$route.params.id}`
-      );
-    },
+  },
+  beforeDestroy() {
+    this.stompClient.unsubscribe(`location-subscribe-${this.$route.params.id}`);
+    this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
   },
 };
 </script>

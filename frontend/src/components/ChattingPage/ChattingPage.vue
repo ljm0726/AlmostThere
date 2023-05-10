@@ -314,13 +314,13 @@ export default {
     // },
   },
   async created() {
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-    window.addEventListener("resize", () => {
-      // console.log("resize");
-      let vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    });
+    // let vh = window.innerHeight * 0.01;
+    // document.documentElement.style.setProperty("--vh", `${vh}px`);
+    // window.addEventListener("resize", () => {
+    //   // console.log("resize");
+    //   let vh = window.innerHeight * 0.01;
+    //   document.documentElement.style.setProperty("--vh", `${vh}px`);
+    // });
 
     this.loading = true;
     // 저장된 채팅 정보를 가져옵니다.
@@ -513,7 +513,7 @@ export default {
     },
   },
   // 메시지 구독 끊기
-  destroyed() {
+  beforeDestroy() {
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`member-subscribe-${this.$route.params.id}`);
 
@@ -526,11 +526,11 @@ export default {
       //   .removeEventListener("scroll", this.onTheBottom);
       window.removeEventListener("scroll", this.onTheBottom);
     }
-    window.removeEventListener("resize", () => {
-      // console.log("resize");
-      let vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    });
+    // window.removeEventListener("resize", () => {
+    //   // console.log("resize");
+    //   let vh = window.innerHeight * 0.01;
+    //   document.documentElement.style.setProperty("--vh", `${vh}px`);
+    // });
   },
 };
 </script>
