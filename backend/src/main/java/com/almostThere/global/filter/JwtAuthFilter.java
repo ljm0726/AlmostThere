@@ -60,7 +60,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             tokenService.verifyToken(accessToken, response);
         } catch (Exception e) {
-            log.error("{}", e);
+            log.error("{}", e.getMessage());
 //            filterChain.doFilter(request, response);
             return;
         }

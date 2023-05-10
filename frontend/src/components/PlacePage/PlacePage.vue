@@ -510,18 +510,6 @@ export default {
             });
         })
       ).then((car_routes) => {
-        // const path_color = [
-        //   "#0000FF",
-        //   "#8A2BE2",
-        //   "#A52A2A",
-        //   "#DEB887", //색 바꿔야함
-        //   "#5F9EA0",
-        //   "#7FFF00",
-        //   "#D2691E", //
-        //   "#008B8B",
-        //   "#9400D3",
-        //   "#FF69B4", //
-        // ];
         const path_color = [
           "#32CD32",
           "#7B68EE",

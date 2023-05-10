@@ -20,6 +20,16 @@ const meetingStore = {
     meeting_lng: null,
     late_amount: 0, //지각비
     recent_meeting: null,
+
+    regist: {
+      name: null,
+      date: null,
+      time: null,
+      lat: null,
+      lng: null,
+      place_name: null,
+      place_addr: null,
+    },
   },
   getters: {
     GET_RECENT_MEETING: function (state) {
@@ -61,7 +71,29 @@ const meetingStore = {
       state.recent_meeting = recent_meeting;
       console.log("# meeting set 확인: ", recent_meeting);
     },
+    SET_REGIST_INFO(state, regist) {
+      state.regist.name = regist.name;
+      state.regist.date = regist.date;
+      state.regist.time = regist.time;
+      state.regist.lat = regist.lat;
+      state.regist.lng = regist.lng;
+      state.regist.place_name = regist.place_name;
+      state.regist.place_addr = regist.place_addr;
+    },
+
+    RESET_REGIST(state) {
+      state.regist = {
+        name: null,
+        date: null,
+        time: null,
+        lat: null,
+        lng: null,
+        place_name: null,
+        place_addr: null,
+      };
+    },
   },
+
   actions: {
     async register(
       { commit },
@@ -164,14 +196,38 @@ const meetingStore = {
     SET_MEETING_TIME({ commit }, meeting_time) {
       commit("SET_MEETING_TIME", meeting_time);
     },
-
     SET_MEETING_INFO({ commit }, meeting) {
       console.log(meeting);
       commit("SET_MEETING_INFO", meeting);
     },
-    //
     setMeeting({ commit }, meeting) {
       commit("SET_RECENT_MEETING", meeting);
+    },
+
+    setRegistMeeting(
+      { commit },
+      name,
+      date,
+      time,
+      lat,
+      lng,
+      place_name,
+      place_addr
+    ) {
+      commit(
+        "SET_REGIST_INFO",
+        name,
+        date,
+        time,
+        lat,
+        lng,
+        place_name,
+        place_addr
+      );
+    },
+
+    resetRegist({ commit }) {
+      commit("RESET_REGIST");
     },
   },
 };

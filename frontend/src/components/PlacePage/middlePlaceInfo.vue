@@ -29,9 +29,22 @@
         <div v-show="minTimes.length % 2 == 1"></div>
       </div>
     </div>
-    <div class="detail">
-      <a :href="placeUrl">상세보기</a>
-    </div>
+    <!-- <div
+      class="detail"
+      style="display: flex; justify-content: space-between; width: 88%"
+    >
+      <a :href="placeUrl" class="xs-font">상세보기</a>
+      <v-btn
+        class="px-5"
+        color="var(--main-col-1)"
+        dark
+        rounded
+        medium
+        @click="regist_meeting"
+      >
+        선택
+      </v-btn>
+    </div> -->
   </div>
 </template>
 
@@ -67,6 +80,19 @@ export default {
     placeX: String,
     placeY: String,
     stateTraffic: String,
+  },
+
+  method: {
+    moveRegisterPage() {
+      const from = sessionStorage.getItem("from");
+      console.log(from);
+      if (from !== null) {
+        // this.$router.push("/Place");
+        this.$router.replace(`/meeting/${from}`);
+      } else {
+        this.$router.replace("/register"); // register페이지
+      }
+    },
   },
 
   // watch: {
