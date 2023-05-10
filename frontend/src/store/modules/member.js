@@ -44,6 +44,7 @@ const memberStore = {
     },
 
     async SET_MEMBER_ID({ commit }, id) {
+      console.log("SET_MEMBER_ID", id);
       await commit("SET_MEMBER_ID", id);
     },
   },

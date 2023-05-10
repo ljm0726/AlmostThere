@@ -9,6 +9,7 @@ import PlacePage from "@/components/PlacePage/PlacePage.vue";
 import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
 import SearchPlacePage2 from "@/components/PlacePage/SearchPlace/SearchPlacePage2";
 import meetingStore from "@/store/modules/meeting";
+import store from "@/store";
 
 const isLogin = async (to, from, next) => {
   // console.log(to, " ", to.query);
@@ -20,19 +21,19 @@ const isLogin = async (to, from, next) => {
   if (to.query.login || access_token) {
     console.log("login 성공 ");
     if (Object.keys(to.query).length !== 0) {
-      localStorage.setItem("Authorization", to.query.login);
+      localStorage.setItem(
+        "Authorization",
+        "Bearer " + to.query.login.substring(7)
+      );
     }
-
+    console.log(meetingStore.state.invited_meeting);
     // if meeting store에 roomcode가 저장되어 있으면
-    if (meetingStore.getters.GET_INVITED_MEETING) {
-      const savedRoomCode = meetingStore.getters.GET_INVITED_MEETING;
+    if (meetingStore.state.invited_meeting) {
+      const savedRoomCode = meetingStore.state.invited_meeting;
       console.log("초대 링크 접속 후 저장된 RoomCode", savedRoomCode);
       // store 값을 null로 초기화하고
-      meetingStore.mutations.SET_INVITED_MEETING = null;
-      console.log(
-        "스토어 룸코드 초기화 후",
-        meetingStore.getters.GET_INVITED_MEETING
-      );
+      store.dispatch("meetingStore/setInvitedMeeting", null);
+      console.log("스토어 룸코드 초기화", meetingStore.state.invited_meeting);
       // 해당 룸코드로 entrance/:roomcode 로 보내서 모임에 가입되어 있는지 아닌지
       // 확인하는 로직 실행 후 meeting detail페이지로 보냄
       next({ name: "entrance", params: { roomCode: savedRoomCode } });

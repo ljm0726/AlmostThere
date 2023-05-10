@@ -66,13 +66,9 @@ export default {
   },
   methods: {
     sendkakao: function () {
-      console.log("모임 이름: ", this.meetingName);
-      console.log("모임 날짜: ", this.meetingDate);
-      console.log("모임 시간: ", this.meetingTime);
-      console.log("모임 장소: ", this.meetingPlace);
-
       const filterMeetingDate = this.formatDate(this.meetingTime);
       const filterMeetingTime = this.formatTime(this.meetingTime);
+      const roomCode = this.roomCode;
 
       window.Kakao.Share.sendDefault({
         objectType: "feed",
@@ -108,8 +104,8 @@ export default {
             title: "초대 모임 참여하기",
             link: {
               // 룸코드 props? store로 받아와서 url에 추가하기
-              mobileWebUrl: `http://localhost:3000/entrance/${this.roomCode}`,
-              webUrl: `http://localhost:3000/entrance/${this.roomCode}`,
+              mobileWebUrl: `http://localhost:3000/entrance/${roomCode}`,
+              webUrl: `http://localhost:3000/entrance/${roomCode}`,
             },
           },
         ],

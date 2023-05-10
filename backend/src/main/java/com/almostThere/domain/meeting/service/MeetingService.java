@@ -74,7 +74,7 @@ public class MeetingService {
             MeetingMember meetingMember = new MeetingMember(member, meeting, StateType.GOING);
             meetingMemberRepository.save(meetingMember);
             calculateDetailService.updateSpentMoney(meeting);
-        }else{
+        }else if(meetingMembers.size() > 10){
             meetingId = -1L;
         }
         return meetingId;

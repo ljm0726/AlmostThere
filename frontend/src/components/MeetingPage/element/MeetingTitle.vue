@@ -19,7 +19,6 @@
           :meetingPlace="meetingPlace"
           :meetingAddress="meetingAddress"
           :lateAmount="lateAmount"
-          :roomCode="roomCode"
         ></meeting-modify-btn>
         <!-- 초대 버튼 -->
         <meeting-invite-btn
@@ -27,6 +26,7 @@
           :meetingDate="meetingDate"
           :meetingTime="meetingTime"
           :meetingPlace="meetingPlace"
+          :roomCode="roomCode"
         ></meeting-invite-btn>
         <!-- 모임 삭제 버튼 -->
         <meeting-delete-btn></meeting-delete-btn>

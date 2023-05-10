@@ -22,15 +22,7 @@ const meetingStore = {
     recent_meeting: null,
     invited_meeting: null,
   },
-  getters: {
-    GET_RECENT_MEETING: function (state) {
-      return state.recent_meeting;
-    },
-
-    GET_INVITED_MEETING: function (state) {
-      return state.invited_meeting;
-    },
-  },
+  getters: {},
   mutations: {
     SET_MEETING_NAME(state, meeting_name) {
       state.meeting_name = meeting_name;
@@ -180,7 +172,6 @@ const meetingStore = {
       commit("SET_RECENT_MEETING", meeting);
     },
     setInvitedMeeting({ commit }, roomCode) {
-      console.log("setInvitedMeeting 진입");
       commit("SET_INVITED_MEETING", roomCode);
     },
   },

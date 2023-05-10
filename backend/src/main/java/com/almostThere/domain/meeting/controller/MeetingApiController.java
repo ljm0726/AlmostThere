@@ -35,10 +35,11 @@ public class MeetingApiController {
     @GetMapping("/meeting-member/{roomCode}")
     public BaseResponse checkAndSaveMeetingMember(Authentication authentication, @PathVariable String roomCode){
 
+        System.out.println("roomCode :"+ roomCode);
         Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
         Long meetingId = meetingService.checkAndSaveMeetingMember(roomCode, memberId);
 
-        return meetingId != -1 ? BaseResponse.customSuccess(200, "가입이 성공적으로 완료됨", meetingId)
+        return meetingId != -1 ? BaseResponse.customSuccess(200, "가입 or 멤버 확인이 성공적으로 완료됨", meetingId)
             : BaseResponse.customSuccess(403, "가입 정원 초과", meetingId);
     }
 

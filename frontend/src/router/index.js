@@ -13,10 +13,14 @@ import { apiInstance } from "@/api/index";
 const api = apiInstance();
 
 async function checkMeetingMember(roomCode) {
+  var result = null;
   await api.get(`/meeting/meeting-member/${roomCode}`).then((res) => {
-    if (res.data.statusCode == "403") return null;
-    if (res.data.statusCode == "200") return res.data.data; // meetingId return
+    console.log(res.data);
+    if (res.data.statusCode == "200") {
+      result = res.data.data;
+    }
   });
+  return await Promise.resolve(result); // meetingId return
 }
 
 Vue.use(VueRouter);
@@ -32,24 +36,30 @@ const router = new VueRouter({
   },
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const access_token = localStorage.getItem("Authorization");
 
   // console.log("Before", access_token, from, to);
   if (access_token && to.name === "entrance") {
+    store.dispatch(
+      "memberStore/SET_MEMBER_ID",
+      jwt_decode(access_token.substring(7)).id
+    );
     // # 초대 링크 클릭 시 로그인 되어 있을 때
 
     // 파람 룸코드 받기
     const roomCode = to.params.roomCode;
 
     // 가입되어 있는지, 아닌지 체크하고 가입시킨 다음 meetingId 받기
-    const meetingId = checkMeetingMember(roomCode);
+
+    const meetingId = await checkMeetingMember(roomCode);
+    console.log("할당된 meetingId", meetingId);
     // const meetingId = 29;
     if (meetingId) {
       next({ name: "meeting", params: { id: meetingId } });
     } else {
       // 정원초과이면 meetingId가 null
-      alert("모임의 정원을 초과하였습니다.");
+      // alert("모임의 정원을 초과하였습니다.");
       next({
         name: "home",
       });
