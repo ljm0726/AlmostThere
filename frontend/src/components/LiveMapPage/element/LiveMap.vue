@@ -38,7 +38,7 @@ export default {
       memberDistanceOverlayList: [], // 거리(m) over-lay
       memberNicknameOverlayList: [], // nickname over-lay
       memberPolylineList: [], // polyline
-      circleList: [], // 모임장소 반경 circle
+      // circleList: [], // 모임장소 반경 circle
       geoWarningOverlayList: [], // GeoLocation 경고 over-lay
       /* # 위치 변경된 member[index, id] */
       updateMemberInfo: [], // [index, id] 위치 업데이트 된 member의 > memberLocation index와 memberId 저장
@@ -51,15 +51,6 @@ export default {
     ...mapState("meetingStore", ["meeting_lat", "meeting_lng"]),
     ...mapState("websocketStore", ["connected", "stompClient"]),
   },
-  // watch: {
-  //   chatting: {
-  //     handler(val, oldVal) {
-  //       alert("여기닷", val, oldVal);
-  //       this.updateChatOverlay(this.chatting);
-  //     },
-  //     deep: true,
-  //   },
-  // },
   mounted() {
     // i) memberId 저장
     this.memberId = this.member_id;
@@ -137,32 +128,11 @@ export default {
     },
     // [@Method] 모임장소로 부터 원 표시
     createCircle() {
-      this.setInitValue(); // 원 범위 초기화
-
-      // 가장 먼 곳에 있는 member를 기준으로 (unit)m 단위 circle 생성
-      for (let i = 0; i < this.memberDistanceOverlayList.length; i++) {
-        const memberId = Object.keys(this.memberDistanceOverlayList[i])[0];
-        const overlay = this.memberDistanceOverlayList[i][memberId];
-
-        // distance 추출
-        const contentEl = overlay.getContent();
-        const distanceStr = contentEl.replace(/[^\d]/g, "");
-        const distance = parseInt(distanceStr);
-
-        this.maxMemberDistance = Math.max(this.maxMemberDistance, distance);
-      }
       const unit = 500; // m 단위
-      const maxRadius = Math.ceil(this.maxMemberDistance / unit) * unit; // 반지름
+      const maxRadius = 2500;
+      const radiusIncrement = 5000; // 2500m 이상부터 5km 반경의 circle
 
-      // 기존에 있던 circle 삭제
-      if (this.circleList.length != 0) {
-        for (const circle of this.circleList) {
-          circle.setMap(null);
-        }
-        this.circleList = [];
-      }
-
-      // circle 생성
+      // 2500m 이하 > 500m 반경의 원 생성
       for (let radius = unit; radius <= maxRadius; radius += unit) {
         const circle = new kakao.maps.Circle({
           center: new kakao.maps.LatLng(
@@ -179,8 +149,28 @@ export default {
         // circle 표시
         if (window.location.pathname.split("/")[1] != "live-map") return;
         circle.setMap(this.map);
-        // circle 저장 (for. 삭제)
-        this.circleList.push(circle);
+      }
+
+      // 2500m 이상 > 5km 반경의 원 생성
+      for (
+        let radius = maxRadius + radiusIncrement;
+        radius <= 100000;
+        radius += radiusIncrement
+      ) {
+        const circle = new kakao.maps.Circle({
+          center: new kakao.maps.LatLng(
+            this.placeLatLng[0],
+            this.placeLatLng[1]
+          ),
+          radius: radius,
+          strokeWeight: 0.5,
+          strokeColor: "var(--main-col-2)",
+          strokeOpacity: 1,
+          strokeStyle: "solid",
+        });
+        // circle 표시
+        if (window.location.pathname.split("/")[1] != "live-map") return;
+        circle.setMap(this.map);
       }
     },
     // [@Method] 초기값 설정
@@ -597,7 +587,7 @@ export default {
       }
 
       // iii) circle
-      this.createCircle();
+      // this.createCircle();
     },
     // [@Method] 지도 범위 조정
     resizeMapLevel() {
