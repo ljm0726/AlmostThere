@@ -123,11 +123,10 @@ export default {
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-left: 5%;
-  width: 95%;
 }
 .child {
   display: flex;
-  width: 40vw;
+  width: 50%;
   justify-content: space-between;
 }
 .time {

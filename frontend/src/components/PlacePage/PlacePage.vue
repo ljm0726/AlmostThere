@@ -591,7 +591,7 @@ export default {
                 "endY"
               ];
 
-            var linePath = [];
+            let linePath = [];
             for (let i = 0; i < pathLen; i++) {
               linePath.push(
                 new window.kakao.maps.LatLng(
@@ -620,24 +620,42 @@ export default {
             const startUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${x}&SY=${y}&EX=${sx}&EY=${sy}&OPT=0&apiKey=${process.env.VUE_APP_ODSAY_KEY}`;
             const endUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${ex}&SY=${ey}&EX=${place.x}&EY=${place.y}&OPT=0&apiKey=${process.env.VUE_APP_ODSAY_KEY}`;
 
+            //출발지에서 출발 터미널 까지
             const startResponse = await axios.get(startUrl);
+            if (
+              startResponse.data["error"] != undefined &&
+              startResponse.data["error"]["code"] == -98
+            ) {
+              console.log(1);
+            } else {
+              moveTime +=
+                startResponse.data["result"]["path"][0]["info"]["totalTime"];
 
-            moveTime +=
-              startResponse.data["result"]["path"][0]["info"]["totalTime"];
+              this.callMapObjApiAJAX(
+                startResponse.data["result"]["path"][0].info.mapObj
+              );
+              console.log("start 끝?", moveTime);
+            }
 
-            this.callMapObjApiAJAX(
-              startResponse.data["result"]["path"][0].info.mapObj
-            );
-
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            //도착 터미널에서 목적지 까지
             const endResponse = await axios.get(endUrl);
+            console.log("end 중간1?", endResponse.data);
+            if (
+              endResponse.data["error"] != undefined &&
+              endResponse.data["error"]["code"] == -98
+            ) {
+              console.log(1);
+            } else {
+              moveTime +=
+                endResponse.data["result"]["path"][0]["info"]["totalTime"];
+              console.log("end 중간2?");
 
-            moveTime +=
-              endResponse.data["result"]["path"][0]["info"]["totalTime"];
-
-            this.callMapObjApiAJAX(
-              endResponse.data["result"]["path"][0].info.mapObj
-            );
-
+              this.callMapObjApiAJAX(
+                endResponse.data["result"]["path"][0].info.mapObj
+              );
+              console.log("end 끝?", moveTime);
+            }
             this.minTimes.push(moveTime);
           } else {
             console.log("도시내이동");
