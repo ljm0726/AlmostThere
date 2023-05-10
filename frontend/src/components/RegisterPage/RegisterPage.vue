@@ -226,6 +226,7 @@ export default {
         const member_id = this.member_id;
 
         console.log(meeting_name, " ", date_time);
+        console.log("member_id", member_id);
 
         this.register({
           member_id,

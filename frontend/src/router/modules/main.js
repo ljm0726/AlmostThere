@@ -13,20 +13,39 @@ const isLogin = async (to, from, next) => {
   // console.log(to, " ", to.query);
   const access_token = localStorage.getItem("Authorization");
   if (to.name === "landing") {
-    next();
+    if (Object.keys(to.query).length === 0) {
+      next();
+    } else {
+      next({
+        name: "login",
+      });
+    }
   }
 
   if (to.query.login || access_token) {
     console.log("login 성공 ");
     if (Object.keys(to.query).length !== 0) {
-      localStorage.setItem("Authorization", to.query.login);
+      localStorage.setItem(
+        "Authorization",
+        "Bearer " + to.query.login.substring(7)
+      );
     }
-    next({
-      name: "home",
-    });
+
+    const savedRoomCode = sessionStorage.getItem("roomCode");
+    // if meeting store에 roomcode가 저장되어 있으면
+    if (savedRoomCode) {
+      sessionStorage.removeItem("roomCode");
+
+      next({ name: "entrance", params: { roomCode: savedRoomCode } });
+    } else {
+      // 그게 아니면 아래의 next home으로 보냄
+      next({
+        name: "home",
+      });
+    }
   } else if (to.name !== "landing") {
-    // console.log("로그인 하러 옴");
-    next({ name: "landing" });
+    console.log("로그인33333333333333");
+    next({ name: "login" });
   }
 };
 
