@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class TokenService {
+
     private final Environment env;
     private final RedisTemplate redisTemplate;
     private final MemberService memberService;
@@ -45,14 +46,24 @@ public class TokenService {
             .encodeToString(env.getProperty("jwt.token.secret-key").getBytes());
     }
 
-    public Token generateToken(Long uid, String role) {
-        long tokenPeriod = Long.parseLong(
-            env.getProperty("jwt.access-token.expire-length")); // 30 min
-        long refreshPeriod = Long.parseLong(
-            env.getProperty("jwt.refresh-token.expire-length")); // 2 week
+    public Claims setClaims(Member member) {
+        Claims claims = Jwts.claims().setSubject(member.getId().toString());
 
-        Claims claims = Jwts.claims().setSubject(uid.toString());
+        claims.put("id", member.getId());
+
+        return claims;
+    }
+
+    public Token generateToken(Member member, String role) {
+        long tokenPeriod = Long.parseLong(env.getProperty("jwt.access-token.expire-length"));
+        long refreshPeriod = Long.parseLong(env.getProperty("jwt.refresh-token.expire-length"));
+
+        Claims claims = setClaims(member);
+        Claims refreshClaims = setClaims(member);
         claims.put("role", role);
+        refreshClaims.put("role", role);
+
+        log.info("getId {}", member.getId().toString());
 
         Date now = new Date();
         return new Token(
@@ -63,18 +74,17 @@ public class TokenService {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact(),
             Jwts.builder()
-                .setClaims(claims)
+                .setClaims(refreshClaims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + refreshPeriod))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact());
     }
 
-    public Token generateToken(Long uid, String role, String refreshToken) {
+    public Token generateToken(Member member, String role, String refreshToken) {
         long tokenPeriod = Long.parseLong(
             env.getProperty("jwt.access-token.expire-length")); // 15 min
-
-        Claims claims = Jwts.claims().setSubject(uid.toString());
+        Claims claims = setClaims(member);
         claims.put("role", role);
 
         Date now = new Date();
@@ -109,7 +119,8 @@ public class TokenService {
                 .getExpiration()
                 .after(new Date());
         } catch (ExpiredJwtException e) {
-            ((HttpServletResponse) response).sendError(ErrorCode.NOT_AUTHENTICATION.getCode(), ErrorCode.NOT_AUTHENTICATION.getMessage());
+            ((HttpServletResponse) response).sendError(ErrorCode.NOT_AUTHENTICATION.getCode(),
+                ErrorCode.NOT_AUTHENTICATION.getMessage());
         } catch (SignatureException | MalformedJwtException e) {
             ((HttpServletResponse) response).sendError(401, "SignatureException error");
         } catch (Exception e) {
@@ -138,7 +149,8 @@ public class TokenService {
                 .getExpiration()
                 .after(new Date());
         } catch (ExpiredJwtException e) {
-            ((HttpServletResponse) response).sendError(ErrorCode.EXPIRED_ACCESSTOKEN.getCode(), ErrorCode.NOT_AUTHENTICATION.getMessage());
+            ((HttpServletResponse) response).sendError(ErrorCode.EXPIRED_ACCESSTOKEN.getCode(),
+                ErrorCode.NOT_AUTHENTICATION.getMessage());
             // Exception 핸들링을 추가할 경우 아래 형태로 사용하면 됨.
 //            throw new AccessDeniedException(ErrorCode.EXPIRED_ACCESSTOKEN);
 
@@ -188,7 +200,7 @@ public class TokenService {
             }
         }
 
-        if(refreshToken == null){
+        if (refreshToken == null) {
             throw new AccessDeniedException(ErrorCode.NOT_AUTHENTICATION.getMessage());
         }
 
@@ -198,7 +210,8 @@ public class TokenService {
         //member Respository로 바로 안될 경우 Service에서 새로 만들어서 아래 주석 해제
 //        String email = memberService.getMemberById(id).getEmail();
 
-        final Member member = memberRepository.findById(id).orElseThrow(()->new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+        final Member member = memberRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         String email = member.getMemberEmail();
 
@@ -210,6 +223,6 @@ public class TokenService {
 
         String role = getRole(refreshToken);
 
-        return generateToken(id, role, refreshToken).getToken();
+        return generateToken(member, role, refreshToken).getToken();
     }
 }

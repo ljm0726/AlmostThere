@@ -102,7 +102,7 @@ export default {
       "meeting_lng",
     ]),
     ...mapState("placeStoremet", ["placeName", "placeAddr"]),
-    ...mapState("memberStore", ["member"]),
+    ...mapState("memberStore", ["member", "member_id"]),
   },
   watch: {
     place_name() {
@@ -131,7 +131,7 @@ export default {
 
     setting(meetingMembers) {
       const member = meetingMembers.filter(
-        (member) => member.memberId == this.member.id
+        (member) => member.memberId == this.member_id
       )[0];
 
       this.startPlace = member.startPlace;

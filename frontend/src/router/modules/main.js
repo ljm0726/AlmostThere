@@ -20,10 +20,7 @@ const isLogin = async (to, from, next) => {
   if (to.query.login || access_token) {
     console.log("login 성공 ");
     if (Object.keys(to.query).length !== 0) {
-      localStorage.setItem(
-        "Authorization",
-        "Bearer " + to.query.login.substring(7)
-      );
+      localStorage.setItem("Authorization", to.query.login);
     }
 
     // if meeting store에 roomcode가 저장되어 있으면

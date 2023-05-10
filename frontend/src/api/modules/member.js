@@ -7,8 +7,8 @@ async function getMemberInfo(success, fail) {
   await api.get(`/member/info`).then(success).catch(fail);
 }
 
-async function getLoginMember(success, fail) {
-  await api.get(`/member`).then(success).catch(fail);
+async function getLoginMember(id, success, fail) {
+  await api.get(`/member/${id}`).then(success).catch(fail);
 }
 
 export { getMemberInfo, getLoginMember };

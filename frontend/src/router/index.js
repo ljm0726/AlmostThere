@@ -7,6 +7,7 @@ import meeting from "@/router/modules/meeting";
 import error from "@/router/modules/error";
 
 import store from "@/store";
+import jwt_decode from "jwt-decode";
 
 import { apiInstance } from "@/api/index";
 const api = apiInstance();
@@ -22,7 +23,6 @@ Vue.use(VueRouter);
 Vue.use(Vuex); //
 
 const routes = [...main, ...meeting, ...error];
-
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
@@ -34,9 +34,8 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const access_token = localStorage.getItem("Authorization");
-  // console.log("Before", access_token, from, to);
-  store.dispatch("memberStore/isLogin");
 
+  // console.log("Before", access_token, from, to);
   if (access_token && to.name === "entrance") {
     // # 초대 링크 클릭 시 로그인 되어 있을 때
 
@@ -66,10 +65,15 @@ router.beforeEach((to, from, next) => {
       name: "login",
     });
     // login 성공하면 store에 roomcode 저장되어있는지 확인하는 로직 실행
-  } else if (access_token) {
-    next();
   } else if (to.name === "landing" || to.name === "login") {
     //login page를 가거나 login이 성공 됐을 때는 다음으로 넘어감
+    next();
+  } else if (access_token) {
+    store.dispatch(
+      "memberStore/SET_MEMBER_ID",
+      jwt_decode(access_token.substring(7)).id
+    );
+    //router 이동할 때 로그인된 member 정보 가져오기
     next();
   } else {
     //그 외에 모든 경로는 login으로

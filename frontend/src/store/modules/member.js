@@ -4,20 +4,24 @@ import { getLoginMember } from "@/api/modules/member";
 const memberStore = {
   namespaced: true,
   state: {
+    member_id: null,
     member: null, // member 객체
   },
   getters: {},
   mutations: {
     SET_MEMBER(state, member) {
       state.member = member;
-      console.log(state.member.id);
+    },
+    SET_MEMBER_ID(state, id) {
+      state.member_id = id;
     },
   },
   actions: {
     // [@Method] 로그인 회원 확인
-    async isLogin({ commit }) {
+    async isLogin({ commit, state }) {
       // console.log("2. getUserInfo() decodeToken :: ");
       await getLoginMember(
+        state.member_id,
         ({ data }) => {
           if (data.message === "SUCCESS") {
             // console.log()
@@ -37,6 +41,10 @@ const memberStore = {
           // await dispatch("tokenRegeneration");
         }
       );
+    },
+
+    async SET_MEMBER_ID({ commit }, id) {
+      await commit("SET_MEMBER_ID", id);
     },
   },
 };

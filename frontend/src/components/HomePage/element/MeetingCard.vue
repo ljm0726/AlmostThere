@@ -84,7 +84,7 @@
           color="var(--main-col-1)"
           rounded
           small
-          @click="goLiveMap(meeting.id)"
+          @click="goLiveMap(meeting.id, meeting.meetingTime)"
         >
           <v-icon>$vuetify.icons.map_outline</v-icon>
         </v-btn>
@@ -144,8 +144,13 @@ export default {
     },
   },
   methods: {
-    goLiveMap(id) {
-      this.$router.push(`/live-map/${id}`);
+    goLiveMap(id, time) {
+      this.$router.push({
+        path: `/live-map/${id}`,
+        query: {
+          time: time,
+        },
+      });
     },
     goDetail(id) {
       this.$router.push(`/meeting/${id}`);

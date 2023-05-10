@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!-- test용 (!추후 삭제) -->
-    <!-- <v-text-field label="채팅 test" v-model="testChatContent"></v-text-field>
-    <v-btn @click="sendChatTest()">채팅 test</v-btn> -->
-    <v-btn @click="resizeMapLevel()">범위 재조정</v-btn>
-    <!-- --- -->
     <div id="map"></div>
   </div>
 </template>
@@ -12,7 +7,7 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "LiveMap",
@@ -28,23 +23,22 @@ export default {
       placeMarkerOption: [25, 65], // 모임장소 - image marker 위치 (좌표 X)
       memberMarkerOption: [60, 85], // member - image marker 위치
       /* # over-lay 설정 */
-      memberOverlay: [0.5, 3.2], // member over-lay (x, y) 위치 좌표
+      memberOverlay: [0.5, 3.2], // member nickname over-lay (x, y) 위치 좌표
       distanceOverlay: [-0.4, -0.1], // distance over-lay 좌표
       chatOverlay: [0.5, 4], // chat over-lay 좌표
       warningOverlay: [6.0, 3.5], // GPS 수신불가 over-lay 좌표
-      /* # 현재 좌표 */
-      placeLatLng: [37.5049, 127.0371], // 모임장소 좌표
+      /* # 좌표 */
+      placeLatLng: [], // 모임장소 좌표
       memberLocation: [], // 사용자들의 좌표 (memberId, memberNickname, LatLng)
       /* # member 채팅 */
-      testChatContent: "", // test용 (!추후 삭제)
-      chatting: [], // 멤버 별 실시간 chatting 내용
+      chatting: {}, // 멤버 별 실시간 chatting 내용
       /* # 생성한 marker, overlay 저장 (memberId 기준) */
       memberMarkerList: [], // marker
       memberChatOverlayList: [], // 채팅 over-lay
       memberDistanceOverlayList: [], // 거리(m) over-lay
       memberNicknameOverlayList: [], // nickname over-lay
       memberPolylineList: [], // polyline
-      circleList: [], // 모임장소 반경 circle
+      // circleList: [], // 모임장소 반경 circle
       geoWarningOverlayList: [], // GeoLocation 경고 over-lay
       /* # 위치 변경된 member[index, id] */
       updateMemberInfo: [], // [index, id] 위치 업데이트 된 member의 > memberLocation index와 memberId 저장
@@ -53,17 +47,17 @@ export default {
     };
   },
   computed: {
-    ...mapState("memberStore", ["member"]),
-  },
-  watch: {
-    chatting() {
-      this.updateChatOverlay(this.chatting);
-    },
+    ...mapState("memberStore", ["member", "member_id"]),
+    ...mapState("meetingStore", ["meeting_lat", "meeting_lng"]),
+    ...mapState("websocketStore", ["connected", "stompClient"]),
   },
   mounted() {
     // i) memberId 저장
-    this.memberId = this.member.id;
-    // ii) Kakao Map Script import
+    this.memberId = this.member_id;
+    // ii) 모임장소 좌표 저장
+    this.placeLatLng.push(this.meeting_lat);
+    this.placeLatLng.push(this.meeting_lng);
+    // iii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
       this.initMap();
     } else {
@@ -75,6 +69,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
     // [@Method] Kakao Map 생성
     // initMap() {
     //   const container = document.getElementById("map");
@@ -108,7 +103,7 @@ export default {
       };
       kakao.maps.Tileset.add(
         "PLAN",
-        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 10) // 0, 10으로 level 범위
+        new kakao.maps.Tileset(512, 512, plan, "", false, 0, 19) // 0, 19으로 level 범위
       );
 
       const container = document.getElementById("map");
@@ -133,32 +128,11 @@ export default {
     },
     // [@Method] 모임장소로 부터 원 표시
     createCircle() {
-      this.setInitValue(); // 원 범위 초기화
-
-      // 가장 먼 곳에 있는 member를 기준으로 (unit)m 단위 circle 생성
-      for (let i = 0; i < this.memberDistanceOverlayList.length; i++) {
-        const memberId = Object.keys(this.memberDistanceOverlayList[i])[0];
-        const overlay = this.memberDistanceOverlayList[i][memberId];
-
-        // distance 추출
-        const contentEl = overlay.getContent();
-        const distanceStr = contentEl.replace(/[^\d]/g, "");
-        const distance = parseInt(distanceStr);
-
-        this.maxMemberDistance = Math.max(this.maxMemberDistance, distance);
-      }
       const unit = 500; // m 단위
-      const maxRadius = Math.ceil(this.maxMemberDistance / unit) * unit; // 반지름
+      const maxRadius = 2500;
+      const radiusIncrement = 5000; // 2500m 이상부터 5km 반경의 circle
 
-      // 기존에 있던 circle 삭제
-      if (this.circleList.length != 0) {
-        for (const circle of this.circleList) {
-          circle.setMap(null);
-        }
-        this.circleList = [];
-      }
-
-      // circle 생성
+      // 2500m 이하 > 500m 반경의 원 생성
       for (let radius = unit; radius <= maxRadius; radius += unit) {
         const circle = new kakao.maps.Circle({
           center: new kakao.maps.LatLng(
@@ -173,9 +147,30 @@ export default {
         });
 
         // circle 표시
+        if (window.location.pathname.split("/")[1] != "live-map") return;
         circle.setMap(this.map);
-        // circle 저장 (for. 삭제)
-        this.circleList.push(circle);
+      }
+
+      // 2500m 이상 > 5km 반경의 원 생성
+      for (
+        let radius = maxRadius + radiusIncrement;
+        radius <= 100000;
+        radius += radiusIncrement
+      ) {
+        const circle = new kakao.maps.Circle({
+          center: new kakao.maps.LatLng(
+            this.placeLatLng[0],
+            this.placeLatLng[1]
+          ),
+          radius: radius,
+          strokeWeight: 0.5,
+          strokeColor: "var(--main-col-2)",
+          strokeOpacity: 1,
+          strokeStyle: "solid",
+        });
+        // circle 표시
+        if (window.location.pathname.split("/")[1] != "live-map") return;
+        circle.setMap(this.map);
       }
     },
     // [@Method] 초기값 설정
@@ -208,37 +203,87 @@ export default {
       // marker 표시
       marker.setMap(this.map);
     },
+    // 소켓 연결 기다리기
+    waitConnect() {
+      setTimeout(() => {
+        if (this.stompClient.ws.readyState == 1) {
+          this.subscribeLocation();
+          this.startIntervalMemberLocation();
+          this.subscribeChatting();
+        } else {
+          this.waitConnect();
+        }
+      }, 1);
+    },
     // [@Method] WebSocket 연결
     connect() {
-      const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
-      let socket = new SockJS(serverURL);
-      this.stompClient = Stomp.over(socket);
+      if (
+        this.connected ||
+        (this.stompClient && this.stompClient.ws.readyState == 1)
+      ) {
+        this.waitConnect();
+      } else {
+        this.updateConnected(true);
+        const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
+        let socket = new SockJS(serverURL);
+        // this.stompClient = Stomp.over(socket);
+        this.updateStompClient(Stomp.over(socket));
+        // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+        this.stompClient.connect(
+          {},
+          (frame) => {
+            // 소켓 연결 성공
+            // this.connected = true;
+            // this.isConnect = true;
+            console.log("소켓 연결 성공", frame);
+            this.updateConnected(false);
 
-      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
-      this.stompClient.connect(
-        {},
-        (frame) => {
-          // 소켓 연결 성공
-          this.connected = true;
-          this.isConnect = true;
-          console.log("소켓 연결 성공", frame);
+            // 서버의 메시지 전송 endpoint를 구독합니다.
+            // 이런형태를 pub sub 구조라고 합니다.
+            this.subscribeLocation();
 
-          // 서버의 메시지 전송 endpoint를 구독합니다.
-          // 이런형태를 pub sub 구조라고 합니다.
-          this.stompClient.subscribe(`/topic/${this.memberId}`, (res) => {
-            console.log("구독으로 받은 메시지 입니다.", res.body);
+            // GeoLocation - 1초마다 현 위치 얻기
+            this.startIntervalMemberLocation();
+            this.subscribeChatting();
+          },
+          (error) => {
+            // 소켓 연결 실패
+            console.log("소켓 연결 실패", error);
+            this.updateConnected(false);
+          }
+        );
+      }
+    },
+    subscribeLocation() {
+      this.stompClient.subscribe(
+        `/topic/${this.memberId}`,
+        (res) => {
+          // console.log("구독으로 받은 메시지 입니다.", res.body);
 
-            // socket을 통해 받은 message(사용자 좌표) 저장
-            this.saveMembersLocation(JSON.parse(res.body));
-          });
-
-          // GeoLocation - 1초마다 현 위치 얻기
-          this.startIntervalMemberLocation();
+          // socket을 통해 받은 message(사용자 좌표) 저장
+          // console.log("before error", JSON.parse(res.body));
+          this.saveMembersLocation(JSON.parse(res.body));
         },
-        (error) => {
-          // 소켓 연결 실패
-          console.log("소켓 연결 실패", error);
+        {
+          id: `location-subscribe-${this.$route.params.id}`,
         }
+      );
+    },
+    subscribeChatting() {
+      this.stompClient.subscribe(
+        `/send/${this.$route.params.id}`,
+        async (res) => {
+          const data = await JSON.parse(res.body);
+          // console.log(
+          //   "chaa>>>> " + data.data.memberId + " " + data.data.message
+          // );
+          if (data.statusCode == 200) {
+            // console.log("dddddddddd", String(data.data.memberId));
+            this.chatting[String(data.data.memberId)] = data.data.message;
+            this.updateChatOverlay();
+          }
+        },
+        { id: `chatting-subscribe-${this.$route.params.id}` }
       );
     },
     // [@Method] 1초마다 해당 모임에 member 객체(좌표) 얻기
@@ -257,13 +302,14 @@ export default {
       }
     },
     // [@Method] socket을 통해 받은 message(사용자 좌표) 저장
-    saveMembersLocation(membersLocation) {
+    saveMembersLocation(receivedMemberLocations) {
       // console.log(
       //   "#21# socket을 통해 받은 사용자 정보 state에 저장 ",
       //   membersLocation
       // );
+      if (receivedMemberLocations.length == 0) return;
 
-      for (const member of membersLocation) {
+      for (const member of receivedMemberLocations) {
         if (member == null) continue;
 
         // memberId를 통해 해당 member 찾기
@@ -278,19 +324,19 @@ export default {
         }
 
         if (memberIndex == -1) {
-          console.log(
-            "#21# 현 memberLocaion에 저장되어 있지 않은 새로운 member 확인",
-            member
-          );
+          // console.log(
+          //   "#21# 현 memberLocaion에 저장되어 있지 않은 새로운 member 확인",
+          //   member
+          // );
           this.memberLocation.push(member);
 
           // 멤버 별 marker 생성
           this.createMemberMarker(member);
         } else {
-          console.log(
-            "#21# 이미 저장되어 있는 member 위치 값 update: ",
-            this.memberLocation[memberIndex]
-          );
+          // console.log(
+          //   "#21# 이미 저장되어 있는 member 위치 값 update: ",
+          //   this.memberLocation[memberIndex]
+          // );
           // 위치 값 update
           this.memberLocation[memberIndex].memberLatLng = member.memberLatLng;
 
@@ -338,6 +384,8 @@ export default {
         position: location,
         image: markerImage,
       });
+      if (member.memberId == this.memberId) marker.setZIndex(9999);
+
       // marker 저장 (for. 삭제)
       const object = new Object();
       object[member.memberId] = marker;
@@ -349,6 +397,9 @@ export default {
       // iii) 멤버 별 over-lay, polyline 생성 (닉네임, 모임장소와의 거리)
       this.createMemberOverlay(member, marker);
       this.createDistance(member, marker);
+
+      // iv) map rebound
+      // this.resizeMapLevel();
     },
     // [@Method] member 별 닉네임 over-lay 생성
     createMemberOverlay(member, marker) {
@@ -358,12 +409,26 @@ export default {
       const position = marker.getPosition();
 
       // over-lay 생성
-      const customOverlay = new kakao.maps.CustomOverlay({
-        position: position,
-        content: content,
-        xAnchor: this.memberOverlay[0], // 오버레이 표시 x, y 위치
-        yAnchor: this.memberOverlay[1],
-      });
+      var customOverlay = null;
+      if (member.memberId == this.meetingId) {
+        customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: content,
+          xAnchor: this.memberOverlay[0], // 오버레이 표시 x, y 위치
+          yAnchor: this.memberOverlay[1],
+          style: {
+            zIndex: 1000,
+          },
+        });
+      } else {
+        customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: content,
+          xAnchor: this.memberOverlay[0],
+          yAnchor: this.memberOverlay[1],
+        });
+      }
+
       // over-lay 저장 (for. 삭제)
       const object = new Object();
       object[member.memberId] = customOverlay;
@@ -417,12 +482,26 @@ export default {
       const position = marker.getPosition();
 
       // over-lay 생성
-      const customOverlay = new kakao.maps.CustomOverlay({
-        position: position,
-        content: content,
-        xAnchor: this.distanceOverlay[0],
-        yAnchor: this.distanceOverlay[1],
-      });
+      var customOverlay = null;
+      if (member.memberId == this.meetingId) {
+        customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: content,
+          xAnchor: this.distanceOverlay[0],
+          yAnchor: this.distanceOverlay[1],
+          style: {
+            zIndex: 1000,
+          },
+        });
+      } else {
+        customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: content,
+          xAnchor: this.distanceOverlay[0],
+          yAnchor: this.distanceOverlay[1],
+        });
+      }
+
       // over-lay 저장 (for. 삭제)
       const object = new Object();
       object[member.memberId] = customOverlay;
@@ -437,7 +516,7 @@ export default {
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
       // this.updateMemberInfo[1] = 변경된 memberId
-      console.log("#21# refresh member 확인: ", refreshMember);
+      // console.log("#21# refresh member 확인: ", refreshMember);
 
       const newPosition = new kakao.maps.LatLng(
         refreshMember.memberLatLng[0],
@@ -492,9 +571,23 @@ export default {
       distanceOverlay.setPosition(newPosition);
       distanceOverlay.setContent(newContent);
       distanceOverlay.setMap(this.map);
+      // - 채팅 over-lay
+      if (this.memberChatOverlayList.length != 0) {
+        var chatIndex = -1;
+        chatIndex = this.memberChatOverlayList.findIndex(
+          (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
+        );
+
+        if (chatIndex != -1) {
+          const chatOverlay =
+            this.memberChatOverlayList[chatIndex][this.updateMemberInfo[1]];
+          chatOverlay.setPosition(newPosition);
+          chatOverlay.setMap(this.map);
+        }
+      }
 
       // iii) circle
-      this.createCircle();
+      // this.createCircle();
     },
     // [@Method] 지도 범위 조정
     resizeMapLevel() {
@@ -564,14 +657,22 @@ export default {
       return index;
     },
     // [@Method] chatting 내용 over-lay 표시
+    // 여기
     updateChatOverlay() {
-      for (var chat of this.chatting) {
+      //     {
+      //       member: {
+      //         memberId: 1,
+      //         content: "100m 남음~",
+      //       },
+      //     },
+      for (var key of Object.keys(this.chatting)) {
+        console.log("key " + key);
         // chatting 내용이 없는 경우 생성 X
-        if (chat.member.content == null || chat.member.content == "") continue;
+        if (this.chatting[key] == null || this.chatting[key] == "") continue;
 
-        const content = `<div class="chat-overlay point-font">${chat.member.content}</div>`;
+        const content = `<div class="chat-overlay point-font">${this.chatting[key]}</div>`;
         const memberMarkerLatLng = this.memberLocation.find(
-          (loc) => loc.memberId == chat.member.memberId
+          (loc) => loc.memberId == key
         ).memberLatLng;
         const position = new kakao.maps.LatLng(
           memberMarkerLatLng[0],
@@ -588,18 +689,17 @@ export default {
 
         // 생성한 오버레이 삭제 후 업데이트 or 저장
         const index = this.memberChatOverlayList.findIndex(
-          (obj) => Object.keys(obj)[0] == chat.member.memberId
+          (obj) => Object.keys(obj)[0] == key
         );
         // i) 해당 member의 chatOverlay가 있는 경우 값 업데이트(삭제, 추가)
         if (index > -1) {
-          this.memberChatOverlayList[index][chat.member.memberId].setMap(null); // 기존 오버레이 삭제
-          this.memberChatOverlayList[index][chat.member.memberId] =
-            customOverlay; // 새로운 오버레이 추가
+          this.memberChatOverlayList[index][key].setMap(null); // 기존 오버레이 삭제
+          this.memberChatOverlayList[index][key] = customOverlay; // 새로운 오버레이 추가
         }
         // ii) 없는 경우, 오버레이 추가
         else {
           const object = new Object();
-          object[chat.member.memberId] = customOverlay;
+          object[key] = customOverlay;
           this.memberChatOverlayList.push(object);
         }
 
@@ -607,22 +707,13 @@ export default {
         customOverlay.setMap(this.map);
       }
     },
-    // [@Method] TEST (!추후 삭제)
-    sendChatTest() {
-      this.chatting = [
-        {
-          member: {
-            memberId: 1,
-            content: "100m 남음~",
-          },
-        },
-        {
-          member: {
-            memberId: 2,
-            content: this.testChatContent,
-          },
-        },
-      ];
+    destroyed() {
+      this.stompClient.unsubscribe(
+        `location-subscribe-${this.$route.params.id}`
+      );
+      this.stompClient.unsubscribe(
+        `chatting-subscribe-${this.$route.params.id}`
+      );
     },
   },
 };
