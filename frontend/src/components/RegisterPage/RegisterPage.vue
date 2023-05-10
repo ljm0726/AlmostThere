@@ -219,9 +219,19 @@ export default {
         const meeting_name = this.meetingname;
         const place_name = this.regist.place_name;
         const place_addr = this.regist.place_addr;
+        const meeting_lat = this.regist.lat;
+        const meeting_lng = this.regist.lng;
+
         const member_id = this.member_id;
 
-        console.log(meeting_name, date_time, place_name, place_addr);
+        console.log(
+          meeting_name,
+          date_time,
+          place_name,
+          place_addr,
+          meeting_lat,
+          meeting_lng
+        );
 
         this.register({
           member_id,
@@ -229,6 +239,8 @@ export default {
           date_time,
           place_name,
           place_addr,
+          meeting_lat,
+          meeting_lng,
         }).then(() => {
           getMostRecentMeeting().then((res) => {
             const newRecentMeeting = res;

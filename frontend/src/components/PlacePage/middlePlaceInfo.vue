@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -72,6 +74,10 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState("meetingStore", ["regist"]),
+  },
+
   props: {
     minTimes: Array,
     placeName: String,
@@ -82,14 +88,39 @@ export default {
     stateTraffic: String,
   },
 
-  method: {
-    moveRegisterPage() {
+  methods: {
+    ...mapActions("meetingStore", ["setRegistMeeting"]),
+    ...mapActions("meetingStore", ["setRegistMeeting"]),
+    ...mapActions("placeStore", ["updatePlace"]),
+
+    regist_meeting() {
       const from = sessionStorage.getItem("from");
+
+      console.log(
+        "m p",
+        this.placeX,
+        this.placeY,
+        this.placeName,
+        this.addressName
+      );
+
       console.log(from);
       if (from !== null) {
-        // this.$router.push("/Place");
+        const placeMap = new Map();
+        placeMap.set("x", this.placeX);
+        placeMap.set("y", this.placeY);
+        placeMap.set("name", this.placeName);
+        placeMap.set("addr", this.addressName);
+        this.updatePlace(placeMap);
+
         this.$router.replace(`/meeting/${from}`);
       } else {
+        this.regist.lat = this.placeX;
+        this.regist.lng = this.placeY;
+        this.regist.place_name = this.placeName;
+        this.regist.place_addr = this.addressName;
+
+        this.setRegistMeeting(this.regist);
         this.$router.replace("/register"); // register페이지
       }
     },

@@ -95,9 +95,24 @@ const meetingStore = {
   actions: {
     async register(
       { commit },
-      { member_id, meeting_name, date_time, place_name, place_addr }
+      {
+        member_id,
+        meeting_name,
+        date_time,
+        place_name,
+        place_addr,
+        meeting_lat,
+        meeting_lng,
+      }
     ) {
-      // console.log(meeting_name, memberStore.state.member.id);
+      console.log(
+        meeting_name,
+        date_time,
+        place_name,
+        place_addr,
+        meeting_lat,
+        meeting_lng
+      );
       await meetingRegister(
         // this.,
         member_id,
@@ -105,8 +120,8 @@ const meetingStore = {
         date_time,
         place_name,
         place_addr,
-        placeStore.state.placeX,
-        placeStore.state.placeY,
+        meeting_lat,
+        meeting_lng,
         ({ data }) => {
           console.log(data);
           commit("SET_MEETING_NAME", null);
@@ -202,26 +217,8 @@ const meetingStore = {
       commit("SET_RECENT_MEETING", meeting);
     },
 
-    setRegistMeeting(
-      { commit },
-      name,
-      date,
-      time,
-      lat,
-      lng,
-      place_name,
-      place_addr
-    ) {
-      commit(
-        "SET_REGIST_INFO",
-        name,
-        date,
-        time,
-        lat,
-        lng,
-        place_name,
-        place_addr
-      );
+    setRegistMeeting({ commit }, regist) {
+      commit("SET_REGIST_INFO", regist);
     },
 
     resetRegist({ commit }) {
