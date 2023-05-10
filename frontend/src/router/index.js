@@ -7,17 +7,16 @@ import meeting from "@/router/modules/meeting";
 import error from "@/router/modules/error";
 
 import store from "@/store";
-// import meetingStore from "@/store/modules/meeting";
 
-// import { apiInstance } from "@/api/index";
-// const api = apiInstance();
+import { apiInstance } from "@/api/index";
+const api = apiInstance();
 
-// async function checkMeetingMember(roomCode) {
-//   await api.get(`/meeting/meeting-member/${roomCode}`).then((res) => {
-//     if (res.data.statusCode == "403") return null;
-//     if (res.data.statusCode == "400") return res.data.data; // meetingId return
-//   });
-// }
+async function checkMeetingMember(roomCode) {
+  await api.get(`/meeting/meeting-member/${roomCode}`).then((res) => {
+    if (res.data.statusCode == "403") return null;
+    if (res.data.statusCode == "200") return res.data.data; // meetingId return
+  });
+}
 
 Vue.use(VueRouter);
 Vue.use(Vuex); //
@@ -42,11 +41,11 @@ router.beforeEach((to, from, next) => {
     // # 초대 링크 클릭 시 로그인 되어 있을 때
 
     // 파람 룸코드 받기
-    // const roomCode = to.params.roomCode;
+    const roomCode = to.params.roomCode;
 
     // 가입되어 있는지, 아닌지 체크하고 가입시킨 다음 meetingId 받기
-    // const meetingId = checkMeetingMember(roomCode);
-    const meetingId = 29;
+    const meetingId = checkMeetingMember(roomCode);
+    // const meetingId = 29;
     if (meetingId) {
       next({ name: "meeting", params: { id: meetingId } });
     } else {

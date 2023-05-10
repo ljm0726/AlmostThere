@@ -62,6 +62,7 @@ export default {
     meetingDate: String,
     meetingTime: String,
     meetingPlace: String,
+    roomCode: String,
   },
   methods: {
     sendkakao: function () {
@@ -107,8 +108,8 @@ export default {
             title: "초대 모임 참여하기",
             link: {
               // 룸코드 props? store로 받아와서 url에 추가하기
-              mobileWebUrl: "http://localhost:3000/entrance/28452569",
-              webUrl: "http://localhost:3000/entrance/28452569",
+              mobileWebUrl: `http://localhost:3000/entrance/${this.roomCode}`,
+              webUrl: `http://localhost:3000/entrance/${this.roomCode}`,
             },
           },
         ],

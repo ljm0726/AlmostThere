@@ -19,6 +19,7 @@
           :meetingPlace="meetingPlace"
           :meetingAddress="meetingAddress"
           :lateAmount="lateAmount"
+          :roomCode="roomCode"
         ></meeting-modify-btn>
         <!-- 초대 버튼 -->
         <meeting-invite-btn
@@ -73,6 +74,7 @@ export default {
     meetingPlace: String,
     meetingAddress: String,
     lateAmount: Number,
+    roomCode: String,
   },
 };
 </script>
