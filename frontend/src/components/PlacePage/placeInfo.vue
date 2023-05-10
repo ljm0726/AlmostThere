@@ -30,7 +30,7 @@ export default {
     infoStyle() {
       // 현재 화면의 높이 계산하여 margin-bottom 게산
       const windowHeight = window.innerHeight;
-      const marginBottom = Math.round(windowHeight * 0.2);
+      const marginBottom = Math.round(windowHeight * 0.1);
 
       // 스타일 객체 반환
       return { marginBottom: `${marginBottom}px` };
