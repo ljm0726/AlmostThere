@@ -649,12 +649,33 @@ export default {
         );
 
         // over-lay 생성
-        const customOverlay = new kakao.maps.CustomOverlay({
-          position: position,
-          content: content,
-          xAnchor: this.chatOverlay[0],
-          yAnchor: this.chatOverlay[1],
-        });
+        var customOverlay = null;
+        // i) 로그인 member의 채팅 over-lay
+        if (key == this.memberId) {
+          customOverlay = new kakao.maps.CustomOverlay({
+            position: position,
+            content: content,
+            xAnchor: this.chatOverlay[0],
+            yAnchor: this.chatOverlay[1],
+            zIndex: 9999,
+          });
+        }
+        // ii) 다른 member의 채팅 over-lay
+        else {
+          customOverlay = new kakao.maps.CustomOverlay({
+            position: position,
+            content: content,
+            xAnchor: this.chatOverlay[0],
+            yAnchor: this.chatOverlay[1],
+            zIndex: 9999,
+          });
+        }
+        // const customOverlay = new kakao.maps.CustomOverlay({
+        //   position: position,
+        //   content: content,
+        //   xAnchor: this.chatOverlay[0],
+        //   yAnchor: this.chatOverlay[1],
+        // });
 
         // 생성한 오버레이 삭제 후 업데이트 or 저장
         const index = this.memberChatOverlayList.findIndex(
