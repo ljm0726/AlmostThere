@@ -41,4 +41,10 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     Optional<Meeting> findByRoomCode(@Param("roomCode") String roomCode);
 
+    @Query("select m.meeting "
+            + "from MeetingMember m "
+            + "where m.member.id= :memberId "
+            + "and m.meeting.meetingTime <= now()"
+            + "order by m.meeting.meetingTime desc")
+    List<Meeting> getRecentPastMeeting(@Param("memberId") Long memberId, Pageable pageable);
 }

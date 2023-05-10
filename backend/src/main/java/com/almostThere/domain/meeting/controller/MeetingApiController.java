@@ -135,7 +135,7 @@ public class MeetingApiController {
      */
     @PostMapping("/start-place")
     public BaseResponse setStartPlace(@RequestBody MeetingStartPlaceRequestDto meetingStartPlaceRequestDto, Authentication authentication) {
-        System.out.println("#[MemberController]# setStartPlace 출발장소 수정 - request: " + meetingStartPlaceRequestDto);
+//        System.out.println("#[MemberController]# setStartPlace 출발장소 수정 - request: " + meetingStartPlaceRequestDto);
 
         // * token을 활용하여 현 로그인 member의 id 추출
         meetingStartPlaceRequestDto.setMemberId(((MemberAccessDto)authentication.getPrincipal()).getId());
@@ -144,5 +144,20 @@ public class MeetingApiController {
         meetingService.updateMemberStartPlace(meetingStartPlaceRequestDto);
 
         return BaseResponse.success(null);
+    }
+
+    /**
+     * halo
+     * 현재 시각을 기준으로 최근에 지난 모임시간을 조회한다.
+     * @param
+     * @return meetingTimeDto
+     */
+    @GetMapping("/past-recent")
+    public BaseResponse getRecentPastMeetingTime(Authentication authentication){
+//        System.out.println("#[MemberController]# getRecentPastMeetingTime 최근에 지난 모임시간 조회");
+        MeetingTimeDto meetingTimeDto = meetingService.getRecentPastMeeting(((MemberAccessDto) authentication.getPrincipal()).getId());
+
+        if (meetingTimeDto == null) return BaseResponse.fail();
+        return BaseResponse.success(meetingTimeDto);
     }
 }

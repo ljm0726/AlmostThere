@@ -18,7 +18,10 @@
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
 import jwt_decode from "jwt-decode";
-import { getMostRecentMeeting } from "@/api/modules/meeting.js";
+import {
+  getMostRecentMeeting,
+  getRecentPastMeeting,
+} from "@/api/modules/meeting.js";
 import { mapActions, mapState } from "vuex";
 import LocationPermissionError from "@/common/component/dialog/LocationPermissionError.vue";
 
@@ -114,13 +117,30 @@ export default {
         `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
       );
 
-      const diffTime =
+      var diffTime =
         new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
         formattedTime.getTime();
 
-      console.log("diffTime :", diffTime);
+      // diffTime이 양수인 경우 > 최근 지난 모임 중 3시간 이내인 모임이 있는 지 확인
+      if (diffTime > 0) {
+        getRecentPastMeeting().then((res) => {
+          if (res != null) {
+            const meetingTime = new Date(res.meetingTime);
+            const threeHoursAfterTime = new Date(
+              meetingTime.getTime() + 3 * 60 * 60 * 1000
+            );
+            if (new Date().getTime() <= threeHoursAfterTime.getTime()) {
+              diffTime = -1;
+              return diffTime;
+            }
+          }
+        });
+      } else {
+        return diffTime;
+      }
 
-      return diffTime;
+      // console.log("diffTime :", diffTime);
+      // return diffTime;
     },
 
     connectHandler() {
