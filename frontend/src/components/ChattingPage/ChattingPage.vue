@@ -468,7 +468,7 @@ export default {
         .querySelector(".v-snack__wrapper")
         .addEventListener("click", this.watchNewMessage);
       await window.addEventListener("scroll", this.onTheBottom);
-      await this.goBottom();
+      // await this.goBottom();
     },
     // 소켓 연결 기다리기
     waitConnect() {
