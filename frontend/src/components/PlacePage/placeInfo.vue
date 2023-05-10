@@ -1,5 +1,6 @@
 <template>
-  <div class="p">
+  <!-- <div class="p"> -->
+  <div class="p" :style="infoStyle">
     <!-- 중간 장소 info -->
     <div v-if="this.placeName != null">
       <div class="name">
@@ -26,6 +27,14 @@ import { mapState } from "vuex";
 export default {
   computed: {
     ...mapState("placeStore", ["placeX", "placeY", "placeName", "placeAddr"]),
+    infoStyle() {
+      // 현재 화면의 높이 계산하여 margin-bottom 게산
+      const windowHeight = window.innerHeight;
+      const marginBottom = Math.round(windowHeight * 0.2);
+
+      // 스타일 객체 반환
+      return { marginBottom: `${marginBottom}px` };
+    },
   },
   // 출발지 선정으로 component로 접근 시 props로 데이터 전달
   props: {
