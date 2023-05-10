@@ -29,6 +29,7 @@ export default {
     return {
       timeOut: null,
       // isSocketConnected: false,
+      intervalGeolocation: null,
     };
   },
 
@@ -175,7 +176,10 @@ export default {
     },
 
     startIntervalMemberLocation() {
-      setInterval(() => {
+      // setInterval(() => {
+      //   this.getGeoLocation();
+      // }, 3000);
+      this.intervalGeolocation = setInterval(() => {
         this.getGeoLocation();
       }, 3000);
     },
@@ -188,21 +192,35 @@ export default {
       // alert("## geo", navigator.geolocation);
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-        navigator.geolocation.getCurrentPosition((position) => {
-          // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
-          const member = {
-            memberId: this.member_id,
-            memberNickname: this.member.memberNickname,
-            memberLatLng: [position.coords.latitude, position.coords.longitude],
-          };
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
+            const member = {
+              memberId: this.member_id,
+              memberNickname: this.member.memberNickname,
+              memberLatLng: [
+                position.coords.latitude,
+                position.coords.longitude,
+              ],
+            };
 
-          // 현 사용자의 위치 저장
-          // console.log("getGeoLocation :", member);
-          this.send(member);
-        });
+            // 현 사용자의 위치 저장
+            // console.log("getGeoLocation :", member);
+            this.send(member);
+          },
+          (error) => {
+            // console.log("#[GeoLocation]# GeoLocation 사용불가 error: ", error);
+            if (error.code == 1) {
+              alert("#[GeoLocation]# 위치권한을 허용해주세요!");
+              clearInterval(this.intervalGeolocation);
+            }
+          }
+        );
       } else {
-        console.log("# geolocation을 사용할수 없어요..");
-        alert("# geolocation을 사용할수 없어요..");
+        console.log(
+          "#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다."
+        );
+        alert("#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다.");
       }
     },
     send(member) {
