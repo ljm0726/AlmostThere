@@ -29,7 +29,7 @@
         <div v-show="minTimes.length % 2 == 1"></div>
       </div>
     </div>
-    <!-- <div
+    <div
       class="detail"
       style="display: flex; justify-content: space-between; width: 88%"
     >
@@ -44,7 +44,7 @@
       >
         선택
       </v-btn>
-    </div> -->
+    </div>
   </div>
 </template>
 
