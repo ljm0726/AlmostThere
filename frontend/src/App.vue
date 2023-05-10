@@ -16,6 +16,7 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
+import jwt_decode from "jwt-decode";
 import { getMostRecentMeeting } from "@/api/modules/meeting.js";
 import { mapActions, mapState } from "vuex";
 
@@ -32,12 +33,19 @@ export default {
   },
 
   beforeCreate() {
-    getMostRecentMeeting().then((res) => {
-      // console.log("getMostRecentMeeting response", res);
-      if (res != null) {
-        this.setMeeting(res);
-      }
-    });
+    // login 여부 & 만료시간 check
+    if (
+      localStorage.getItem("Authorization") != null &&
+      jwt_decode(localStorage.getItem("Authorization").substring(7)).exp >=
+        Math.floor(Date.now() / 1000)
+    ) {
+      getMostRecentMeeting().then((res) => {
+        // console.log("getMostRecentMeeting response", res);
+        if (res != null) {
+          this.setMeeting(res);
+        }
+      });
+    }
   },
   created() {
     // window.onload = function() {
