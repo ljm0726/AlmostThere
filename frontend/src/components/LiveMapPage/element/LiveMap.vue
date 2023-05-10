@@ -54,9 +54,14 @@ export default {
   mounted() {
     // i) memberId 저장
     this.memberId = this.member_id;
+
     // ii) 모임장소 좌표 저장
-    this.placeLatLng.push(this.meeting_lat);
-    this.placeLatLng.push(this.meeting_lng);
+    // this.placeLatLng.push(this.meeting_lat);
+    // this.placeLatLng.push(this.meeting_lng);
+    // !! test용으로 잠시 lat, lng 고정
+    this.placeLatLng.push(37.5004);
+    this.placeLatLng.push(127.0361);
+
     // iii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
       this.initMap();
