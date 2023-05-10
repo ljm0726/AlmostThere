@@ -30,12 +30,9 @@ const meetingStore = {
       place_name: null,
       place_addr: null,
     },
+    invited_meeting: null,
   },
-  getters: {
-    GET_RECENT_MEETING: function (state) {
-      return state.recent_meeting;
-    },
-  },
+  getters: {},
   mutations: {
     SET_MEETING_NAME(state, meeting_name) {
       state.meeting_name = meeting_name;
@@ -67,9 +64,10 @@ const meetingStore = {
       state.late_amount = meeting.lateAmount;
     },
     SET_RECENT_MEETING(state, recent_meeting) {
-      console.log(recent_meeting);
       state.recent_meeting = recent_meeting;
-      console.log("# meeting set 확인: ", recent_meeting);
+    },
+    SET_INVITED_MEETING(state, invited_meeting) {
+      state.invited_meeting = invited_meeting;
     },
     SET_REGIST_INFO(state, regist) {
       state.regist.name = regist.name;
@@ -228,6 +226,9 @@ const meetingStore = {
 
     resetRegist({ commit }) {
       commit("RESET_REGIST");
+    },
+    setInvitedMeeting({ commit }, roomCode) {
+      commit("SET_INVITED_MEETING", roomCode);
     },
   },
 };

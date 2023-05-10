@@ -11,6 +11,7 @@
         :meetingPlace="meeting.meetingPlace"
         :meetingAddress="meeting.meetingAddress"
         :lateAmount="meeting.lateAmount"
+        :roomCode="meeting.roomCode"
       ></meeting-title>
       <meeting-datetime :meetingTime="meeting.meetingTime"></meeting-datetime>
       <meeting-place

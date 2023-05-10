@@ -43,7 +43,47 @@ public class MeetingService {
     private final MemberRepository memberRepository;
     private final MeetingMemberRepository meetingMemberRepository;
     private final CalculateDetailRepository calculateDetailRepository;
+    private final CalculateDetailService calculateDetailService;
 
+    /**
+     * 유저가 roomCode에 해당하는 모임에 가입해있는지 조회한다.
+     * @param roomCode
+     * @param memberId
+     * @return 해당 모임의 meetingId를 반환한다.
+     *          만약 가입되어 있지 않고 모임의 가입 가능 인원(10명)이 남았다면 가입시키고 meetingId를 반환하고,
+     *          가입할 수 없다면 -1을 반환한다.
+     */
+    public Long checkAndSaveMeetingMember(String roomCode, Long memberId){
+
+        Meeting meeting = meetingRepository.findByRoomCode(roomCode)
+            .orElseThrow(() -> new NotFoundException(ErrorCode.MEETING_NOT_FOUND));
+        List<MeetingMember> meetingMembers = meeting.getMeetingMembers();
+
+        boolean isJoined = false;
+        for(MeetingMember meetingMember : meetingMembers){
+            if(meetingMember.getMember().getId() == memberId){
+                isJoined = true;
+                break;
+            };
+        }
+
+        Long meetingId = meeting.getId();
+        if(!isJoined && meetingMembers.size() < 10){
+            Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
+            MeetingMember meetingMember = new MeetingMember(member, meeting, StateType.GOING);
+            meetingMemberRepository.save(meetingMember);
+            calculateDetailService.updateSpentMoney(meeting);
+        }else if(meetingMembers.size() > 10){
+            meetingId = -1L;
+        }
+        return meetingId;
+    }
+    /**
+     * 지금 시간 이후로 가장 빠른 미팅 조회
+     * @param memberId
+     * @return
+     */
     public MeetingTimeDto getMostRecentMeeting(Long memberId){
 
         PageRequest pageRequest = PageRequest.of(0, 1);
@@ -99,7 +139,8 @@ public class MeetingService {
         int roomCode = (int)(rand.nextLong()%100000000L);
         roomCode = Math.abs(roomCode);
         String rc = Integer.toString(roomCode);
-        meetingCreateRequestDto.setMeetingTime(meetingCreateRequestDto.getMeetingTime().plusHours(9));
+//        meetingCreateRequestDto.setMeetingTime(meetingCreateRequestDto.getMeetingTime().plusHours(9));
+        meetingCreateRequestDto.setMeetingTime(meetingCreateRequestDto.getMeetingTime());
         Meeting meeting = meetingCreateRequestDto.toEntity(meetingCreateRequestDto, meetingHost,rc);
         meeting = meetingRepository.save(meeting);
         MeetingMember meetingMember = new MeetingMember(meetingHost, meeting, StateType.GOING);
@@ -202,5 +243,18 @@ public class MeetingService {
         meetingMember.updateStartPlace(meetingStartPlaceRequestDto);
         // iii) meeting-member 저장
         meetingMemberRepository.save(meetingMember);
+    }
+
+    /**
+     * 현재 시각을 기준으로 최근에 지난 모임시간을 조회한다.
+     * @param
+     */
+    public MeetingTimeDto getRecentPastMeeting(Long memberId){
+        List<Meeting> meeting = meetingRepository.getRecentPastMeeting(memberId, PageRequest.of(0, 1));
+        if (meeting.size() != 0) {
+            return new MeetingTimeDto(meeting.get(0));
+        }
+
+        return null;
     }
 }

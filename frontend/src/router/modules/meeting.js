@@ -8,6 +8,10 @@ import StartPlace from "@/components/MeetingPage/element/StartPlace.vue";
 
 const meeting = [
   {
+    path: "/entrance/:roomCode",
+    name: "entrance",
+  },
+  {
     path: "/meeting/:id",
     name: "meeting",
     components: {

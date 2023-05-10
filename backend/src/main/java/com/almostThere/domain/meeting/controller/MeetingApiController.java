@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -26,6 +27,28 @@ public class MeetingApiController {
 
     private final MeetingService meetingService;
 
+    /**
+     * 사용자가 름코드에 해당하는 모임에 가입되어 있는지 확인 후 가입시킨다.
+     * @param authentication
+     * @param roomCode
+     * @return
+     */
+    @GetMapping("/meeting-member/{roomCode}")
+    public BaseResponse checkAndSaveMeetingMember(Authentication authentication, @PathVariable String roomCode){
+
+        System.out.println("roomCode :"+ roomCode);
+        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
+        Long meetingId = meetingService.checkAndSaveMeetingMember(roomCode, memberId);
+
+        return meetingId != -1 ? BaseResponse.customSuccess(200, "가입 or 멤버 확인이 성공적으로 완료됨", meetingId)
+            : BaseResponse.customSuccess(403, "가입 정원 초과", meetingId);
+    }
+
+    /**
+     * 소켓 연결 시간 설정을 위해 다가올 모임 중 가장 이른 모임을 조회한다.
+     * @param authentication for memberId
+     * @return
+     */
     @GetMapping("/most-recent")
     public BaseResponse getMostRecentMeeting(Authentication authentication){
 
@@ -66,6 +89,8 @@ public class MeetingApiController {
      */
     @PostMapping
     public BaseResponse createMeeting(@RequestBody MeetingCreateRequestDto meetingCreateRequestDto){
+        System.out.println("#[모임 생성]# 현재 시간: " + LocalDateTime.now());
+        System.out.println("#[모임 생성]# 모임 시간: " + meetingCreateRequestDto.getMeetingTime());
         meetingService.createMeeting(meetingCreateRequestDto);
         return new BaseResponse(200, "SUCCESS",null);
     }
@@ -135,7 +160,7 @@ public class MeetingApiController {
      */
     @PostMapping("/start-place")
     public BaseResponse setStartPlace(@RequestBody MeetingStartPlaceRequestDto meetingStartPlaceRequestDto, Authentication authentication) {
-        System.out.println("#[MemberController]# setStartPlace 출발장소 수정 - request: " + meetingStartPlaceRequestDto);
+//        System.out.println("#[MemberController]# setStartPlace 출발장소 수정 - request: " + meetingStartPlaceRequestDto);
 
         // * token을 활용하여 현 로그인 member의 id 추출
         meetingStartPlaceRequestDto.setMemberId(((MemberAccessDto)authentication.getPrincipal()).getId());
@@ -144,5 +169,20 @@ public class MeetingApiController {
         meetingService.updateMemberStartPlace(meetingStartPlaceRequestDto);
 
         return BaseResponse.success(null);
+    }
+
+    /**
+     * halo
+     * 현재 시각을 기준으로 최근에 지난 모임시간을 조회한다.
+     * @param
+     * @return meetingTimeDto
+     */
+    @GetMapping("/past-recent")
+    public BaseResponse getRecentPastMeetingTime(Authentication authentication){
+//        System.out.println("#[MemberController]# getRecentPastMeetingTime 최근에 지난 모임시간 조회");
+        MeetingTimeDto meetingTimeDto = meetingService.getRecentPastMeeting(((MemberAccessDto) authentication.getPrincipal()).getId());
+
+        if (meetingTimeDto == null) return BaseResponse.fail();
+        return BaseResponse.success(meetingTimeDto);
     }
 }
