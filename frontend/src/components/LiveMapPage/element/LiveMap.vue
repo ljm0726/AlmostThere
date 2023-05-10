@@ -46,9 +46,17 @@ export default {
       maxMemberDistance: 2500,
     };
   },
+  props: {
+    member_id: Number,
+    meeting_lat: Number,
+    meeting_lng: Number,
+    meeting_name: String,
+    chatting_map: Object,
+  },
   computed: {
-    ...mapState("memberStore", ["member", "member_id"]),
-    ...mapState("meetingStore", ["meeting_lat", "meeting_lng"]),
+    ...mapState("memberStore", ["member"]),
+    // ...mapState("memberStore", ["member", "member_id"]),
+    // ...mapState("meetingStore", ["meeting_lat", "meeting_lng"]),
     ...mapState("websocketStore", ["connected", "stompClient"]),
   },
   mounted() {
@@ -57,6 +65,8 @@ export default {
     // ii) 모임장소 좌표 저장
     this.placeLatLng.push(this.meeting_lat);
     this.placeLatLng.push(this.meeting_lng);
+    // ii-1) 채팅 저장
+    this.chatting = this.chatting_map;
     // iii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
       this.initMap();
@@ -400,6 +410,9 @@ export default {
 
       // iv) map rebound
       // this.resizeMapLevel();
+
+      // V) 멤버별 채팅 붙이기
+      this.updateChatOverlay();
     },
     // [@Method] member 별 닉네임 over-lay 생성
     createMemberOverlay(member, marker) {
@@ -663,48 +676,53 @@ export default {
       //       member: {
       //         memberId: 1,
       //         content: "100m 남음~",
-      //       },
+      //       }
       //     },
       for (var key of Object.keys(this.chatting)) {
         console.log("key " + key);
         // chatting 내용이 없는 경우 생성 X
         if (this.chatting[key] == null || this.chatting[key] == "") continue;
 
+        console.log("#21# memberLocation 확인: ", this.memberLocation);
         const content = `<div class="chat-overlay point-font">${this.chatting[key]}</div>`;
-        const memberMarkerLatLng = this.memberLocation.find(
+        const memberMarker = this.memberLocation.find(
           (loc) => loc.memberId == key
-        ).memberLatLng;
-        const position = new kakao.maps.LatLng(
-          memberMarkerLatLng[0],
-          memberMarkerLatLng[1]
         );
+        // console.log(memberMarker);
+        if (typeof memberMarker != "undefined" && memberMarker) {
+          const memberMarkerLatLng = memberMarker.memberLatLng;
+          const position = new kakao.maps.LatLng(
+            memberMarkerLatLng[0],
+            memberMarkerLatLng[1]
+          );
 
-        // over-lay 생성
-        const customOverlay = new kakao.maps.CustomOverlay({
-          position: position,
-          content: content,
-          xAnchor: this.chatOverlay[0],
-          yAnchor: this.chatOverlay[1],
-        });
+          // over-lay 생성
+          const customOverlay = new kakao.maps.CustomOverlay({
+            position: position,
+            content: content,
+            xAnchor: this.chatOverlay[0],
+            yAnchor: this.chatOverlay[1],
+          });
 
-        // 생성한 오버레이 삭제 후 업데이트 or 저장
-        const index = this.memberChatOverlayList.findIndex(
-          (obj) => Object.keys(obj)[0] == key
-        );
-        // i) 해당 member의 chatOverlay가 있는 경우 값 업데이트(삭제, 추가)
-        if (index > -1) {
-          this.memberChatOverlayList[index][key].setMap(null); // 기존 오버레이 삭제
-          this.memberChatOverlayList[index][key] = customOverlay; // 새로운 오버레이 추가
+          // 생성한 오버레이 삭제 후 업데이트 or 저장
+          const index = this.memberChatOverlayList.findIndex(
+            (obj) => Object.keys(obj)[0] == key
+          );
+          // i) 해당 member의 chatOverlay가 있는 경우 값 업데이트(삭제, 추가)
+          if (index > -1) {
+            this.memberChatOverlayList[index][key].setMap(null); // 기존 오버레이 삭제
+            this.memberChatOverlayList[index][key] = customOverlay; // 새로운 오버레이 추가
+          }
+          // ii) 없는 경우, 오버레이 추가
+          else {
+            const object = new Object();
+            object[key] = customOverlay;
+            this.memberChatOverlayList.push(object);
+          }
+
+          // over-lay 표시
+          customOverlay.setMap(this.map);
         }
-        // ii) 없는 경우, 오버레이 추가
-        else {
-          const object = new Object();
-          object[key] = customOverlay;
-          this.memberChatOverlayList.push(object);
-        }
-
-        // over-lay 표시
-        customOverlay.setMap(this.map);
       }
     },
     // [@Method] TEST (!추후 삭제)

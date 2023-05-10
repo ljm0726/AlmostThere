@@ -1,6 +1,7 @@
 package com.almostThere.domain.map.controller;
 
 import com.almostThere.domain.map.Service.MapService;
+import com.almostThere.domain.map.dto.MapResponseDto;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
@@ -55,15 +56,18 @@ public class MapController {
      * @param meetingId 모임ID
      * @return 멤버별 최근 채팅 1개씩 꺼내기
     **/
-    @GetMapping("/chat/{meetingId}")
+    @GetMapping("/{meetingId}")
     public BaseResponse recentChat(@PathVariable Long meetingId, Authentication authentication) {
 
         Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
 
         // memberId가 meetingMember에 속해 있는지 확인
-        MeetingMember meetingMember = mapService.isMeetingMember(meetingId, memberId);
+        mapService.isMeetingMember(meetingId, memberId);
 
-        //
-        return BaseResponse.fail();
+        // LiveMap에서 필요한 정보 불러오기
+        MapResponseDto mapResponseDto = mapService.getLiveMapInfo(meetingId);
+        mapResponseDto.setMemberId(memberId);
+
+        return BaseResponse.success(mapResponseDto);
     }
 }

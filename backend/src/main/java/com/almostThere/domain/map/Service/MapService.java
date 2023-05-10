@@ -1,5 +1,8 @@
 package com.almostThere.domain.map.Service;
 
+import com.almostThere.domain.chatting.entity.Chatting;
+import com.almostThere.domain.chatting.repository.ChattingRepository;
+import com.almostThere.domain.map.dto.MapResponseDto;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
@@ -22,6 +25,7 @@ import java.util.Optional;
 public class MapService {
     private final MeetingMemberRepository meetingMemberRepository;
     private final MeetingRepository meetingRepository;
+    private final ChattingRepository chattingRepository;
     private final double earthRadius = 6400;
 
     /**
@@ -99,5 +103,23 @@ public class MapService {
             Long meetingId = meeting.getId();
             meetingMemberRepository.updateMeetingMemberState(meetingId);
         }
+    }
+
+    /**
+     * LiveMap에서 필요한 정보를 조회한다
+     * **/
+    public MapResponseDto getLiveMapInfo(Long meetingId) {
+
+        Meeting meeting = isMeeting(meetingId);
+
+        LocalDateTime meetingTime = meeting.getMeetingTime();
+        LocalDateTime startTime = meetingTime.minusHours(3);
+        LocalDateTime endTime = meetingTime.plusHours(3);
+
+        List<Chatting> chattingList = chattingRepository.findRecentMessage(meetingId, startTime, endTime);
+
+        MapResponseDto mapResponseDto = new MapResponseDto(meeting, chattingList);
+
+        return mapResponseDto;
     }
 }
