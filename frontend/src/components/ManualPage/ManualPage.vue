@@ -117,7 +117,7 @@
                 <span class="mr-2 black-font">STEP 1</span>
                 <span>모임 등록하기</span>
               </v-chip>
-              <div>dd</div>
+              <!-- <div>dd</div> -->
             </div>
             <div class="d-flex flex-column my-3">
               <v-chip color="var(--yellow-col)" dark>
@@ -136,12 +136,12 @@
                 <span class="mr-2 black-font">STEP 4</span>
                 <span>정산하기</span>
               </v-chip>
-              <div class="mt-2 d-flex flex-column">
+              <!-- <div class="mt-2 d-flex flex-column">
                 <span>1. 지각비 설정</span>
                 <span>2. 영수증 등록</span>
                 <span>3. 정산 내역 확인</span>
                 <span>TIP. 돌려돌려 돌림판</span>
-              </div>
+              </div> -->
             </div>
           </div>
         </v-sheet>
