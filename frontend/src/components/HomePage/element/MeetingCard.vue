@@ -118,11 +118,11 @@ export default {
       const result = `${year}년 ${
         month + 1 < 10 ? `0${month + 1}` : month + 1
       }월 ${day < 10 ? `0${day}` : day}일
-    ${
-      hour < 13
-        ? ` 오전 ${hour - 12 < 10 ? `0${hour - 12}` : hour - 12}`
-        : ` 오후 ${hour - 12 < 10 ? `0${hour - 12}` : hour - 12}`
-    }시 ${min < 10 ? `0${min}` : min}분`;
+      ${
+        hour >= 12
+          ? `오후 ${hour == 12 ? `${hour}` : hour - 12}`
+          : `오전 ${hour}`
+      }시 ${min < 10 ? `0${min}` : min}분`;
       return result;
     },
     remainTime(value) {
