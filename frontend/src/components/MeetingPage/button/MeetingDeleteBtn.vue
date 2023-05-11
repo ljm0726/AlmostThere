@@ -29,7 +29,13 @@
       <v-card-text>
         <v-row>
           <v-col class="pr-1">
-            <v-btn elevation="0" color="var(--main-col-1)" dark rounded block
+            <v-btn
+              elevation="0"
+              color="var(--main-col-1)"
+              dark
+              rounded
+              block
+              @click="delMeeting()"
               >삭제</v-btn
             >
           </v-col>
@@ -53,16 +59,28 @@
 
 <script>
 import CloseButton from "@/common/component/button/CloseButton.vue";
-
+import { deleteMeeting } from "@/api/modules/meeting.js";
+import { mapState } from "vuex";
 export default {
   name: "MeetingDeleteBtn",
   components: { CloseButton },
+  props: {
+    meetingId: Number,
+  },
   data() {
     return {
       dialog: false,
     };
   },
+  computed: {
+    ...mapState("memberStore", ["member", "member_id"]),
+  },
   methods: {
+    async delMeeting() {
+      await deleteMeeting(this.meetingId).then(async () => {
+        this.$router.replace("/home");
+      });
+    },
     openDialog() {
       this.dialog = true;
     },

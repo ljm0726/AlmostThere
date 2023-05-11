@@ -118,15 +118,15 @@ export default {
         itemContent: {
           items: [
             {
-              item: "모임 장소:",
+              item: "장소:",
               itemOp: this.meetingPlace,
             },
             {
-              item: "모임 날짜:",
+              item: "날짜:",
               itemOp: filterMeetingDate,
             },
             {
-              item: "모임 시간:",
+              item: "시간:",
               itemOp: filterMeetingTime,
             },
           ],
@@ -167,8 +167,7 @@ export default {
       const date = new Date(value);
       const hour = date.getHours();
       const min = date.getMinutes();
-      const result = `
-      ${
+      const result = `${
         hour >= 12
           ? `오후 ${hour == 12 ? `${hour}` : hour - 12}`
           : `오전 ${hour}`
