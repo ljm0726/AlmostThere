@@ -142,7 +142,7 @@ const meetingStore = {
       { meeting_name, date, time, place_name, place_addr, amount }
     ) {
       //meeting x,y 좌표를 받음.
-      const date_time = new Date(date + " " + time);
+      const date_time = date + " " + time;
       const X =
         placeStore.state.placeX == 0
           ? state.meeting_lat
