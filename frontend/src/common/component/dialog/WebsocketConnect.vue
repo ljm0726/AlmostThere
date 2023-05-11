@@ -1,0 +1,44 @@
+<template>
+  <v-dialog
+    v-model="dialog"
+    scrollable
+    max-width="300px"
+    rounded="xl"
+    persistent
+  >
+    <v-card rounded="xl">
+      <v-card-title class="d-flex flex-column">
+        <div class="align-self-end">
+          <close-button @closeDialog="goBack"></close-button>
+        </div>
+        <img src="@/assets/images/dialog/logout.png" width="60%" />
+        <span class="logo-font xxxxxxl-font main-col-1">Server Error</span>
+        <span
+          class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
+        >
+          <div>인터넷 연결이 되지 않았거나</div>
+          <div>접속 불가능한 링크입니다.</div>
+        </span>
+      </v-card-title>
+      <v-card-text>
+        <v-btn
+          elevation="0"
+          color="var(--main-col-1)"
+          dark
+          rounded
+          block
+          @click="goBack"
+          >뒤로가기</v-btn
+        >
+      </v-card-text>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script>
+export default {
+  name: "WebsocketConnet",
+};
+</script>
+
+<style></style>

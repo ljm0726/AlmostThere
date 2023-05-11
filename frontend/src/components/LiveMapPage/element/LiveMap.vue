@@ -263,6 +263,7 @@ export default {
           (error) => {
             console.log("소켓 연결 실패", error);
             this.updateConnected(false);
+            this.connect();
           }
         );
       }

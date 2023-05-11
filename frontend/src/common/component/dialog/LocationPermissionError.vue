@@ -17,8 +17,8 @@
           class="mt-2 extralight-font xs-font d-flex flex-column align-center seminarrow-font"
         >
           <div>위치 권한이 허용되어 있지 않아</div>
-          <div>서비스를 이용할 수 없습니다.</div>
-          <div class="mt-1 mb-2">위치 권한을 허용해주세요!</div>
+          <div>위치 공유 서비스를 이용할 수 없습니다.</div>
+          <div class="medium-font">위치 권한을 허용해주세요!</div>
         </span>
       </v-card-title>
       <v-card-text>
@@ -29,7 +29,7 @@
           rounded
           block
           @click="closeDialog"
-          >뒤로가기</v-btn
+          >닫기</v-btn
         >
       </v-card-text>
     </v-card>
