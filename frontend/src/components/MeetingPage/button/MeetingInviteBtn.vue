@@ -30,7 +30,9 @@
             link.length > 22 ? link.substr(0, 22) + "···" : link
           }}</span>
           <div>
-            <v-btn icon><v-icon>$vuetify.icons.copy_outline</v-icon></v-btn>
+            <v-btn icon @click="copyLink"
+              ><v-icon>$vuetify.icons.copy_outline</v-icon></v-btn
+            >
             <v-btn icon @click="sendkakao"
               ><v-icon>$vuetify.icons.share_outline</v-icon></v-btn
             >
@@ -41,6 +43,20 @@
         </span>
       </v-card-title>
     </v-card>
+    <v-snackbar
+      v-model="snackbar"
+      :multi-line="multiLine"
+      :timeout="timeout"
+      rounded="pill"
+    >
+      {{ text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-dialog>
 </template>
 
@@ -55,6 +71,10 @@ export default {
       dialog: false,
       link: "https://k8a401.p.ssafy.io/invite",
       image: require("@/assets/images/banner/home.png"),
+      multiLine: true,
+      snackbar: false,
+      text: `초대링크가 복사되었습니다.`,
+      timeout: 2000,
     };
   },
   props: {
@@ -65,6 +85,18 @@ export default {
     roomCode: String,
   },
   methods: {
+    copyLink: async function () {
+      const roomCode = this.roomCode;
+      const textToCopy = `https://k8a401.p.ssafy.io/entrance/${roomCode}`;
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        console.log("Text copied to clipboard");
+        this.snackbar = true;
+      } catch (err) {
+        console.error("Failed to copy text: ", err);
+      }
+    },
+
     sendkakao: function () {
       const filterMeetingDate = this.formatDate(this.meetingTime);
       const filterMeetingTime = this.formatTime(this.meetingTime);
@@ -106,6 +138,8 @@ export default {
               // 룸코드 props? store로 받아와서 url에 추가하기
               mobileWebUrl: `https://k8a401.p.ssafy.io/entrance/${roomCode}`,
               webUrl: `https://k8a401.p.ssafy.io/entrance/${roomCode}`,
+              // mobileWebUrl: `http://localhost:3000/entrance/${roomCode}`,
+              // webUrl: `http://localhost:3000/entrance/${roomCode}`,
             },
           },
         ],

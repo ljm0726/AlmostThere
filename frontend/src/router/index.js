@@ -10,19 +10,19 @@ import banner from "@/router/modules/banner";
 import store from "@/store";
 import jwt_decode from "jwt-decode";
 
-import { apiInstance } from "@/api/index";
-const api = apiInstance();
+// import { apiInstance } from "@/api/index";
+// const api = apiInstance();
 
-async function checkMeetingMember(roomCode) {
-  var result = null;
-  await api.get(`/meeting/meeting-member/${roomCode}`).then((res) => {
-    console.log(res.data);
-    if (res.data.statusCode == "200") {
-      result = res.data.data;
-    }
-  });
-  return await Promise.resolve(result); // meetingId return
-}
+// // async function checkMeetingMember(roomCode) {
+// //   var result = null;
+// //   await api.get(`/meeting/meeting-member/${roomCode}`).then((res) => {
+// //     console.log(res.data);
+// //     if (res.data.statusCode == "200") {
+// //       result = res.data.data;
+// //     }
+// //   });
+// //   return await Promise.resolve(result); // meetingId return
+// // }
 
 Vue.use(VueRouter);
 Vue.use(Vuex); //
@@ -49,20 +49,19 @@ router.beforeEach(async (to, from, next) => {
     // # 초대 링크 클릭 시 로그인 되어 있을 때
 
     // 파람 룸코드 받기
-    const roomCode = to.params.roomCode;
+    // const roomCode = to.params.roomCode;
 
     // 가입되어 있는지, 아닌지 체크하고 가입시킨 다음 meetingId 받기
 
-    const meetingId = await checkMeetingMember(roomCode);
+    // const meetingId = await checkMeetingMember(roomCode);
+    const meetingId = null;
     console.log("할당된 meetingId", meetingId);
     // const meetingId = 29;
     if (meetingId) {
       next({ name: "meeting", params: { id: meetingId } });
     } else {
-      // 정원초과이면 meetingId가 null
-      // alert("모임의 정원을 초과하였습니다.");
       next({
-        name: "home",
+        name: "entrance-denied",
       });
     }
 
@@ -70,12 +69,10 @@ router.beforeEach(async (to, from, next) => {
   } else if (to.name === "entrance") {
     // # 초대 링크 클릭 시 로그인 안 되어 있을 때
     const roomCode = to.params.roomCode;
-    console.log("roomcode: ", roomCode);
     // 룸코드 store에 저장
     // store.dispatch("meetingStore/setInvitedMeeting", roomCode);
     sessionStorage.setItem("roomCode", roomCode);
     // login으로 보냄
-    console.log("로그인호출111111111");
     next({
       name: "login",
     });
@@ -85,7 +82,6 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.name === "landing" || to.name === "login") {
     // alert(to.name);
-    console.log("login호출44444444444");
     //login page를 가거나 login이 성공 됐을 때는 다음으로 넘어감
     next();
   } else if (access_token) {
@@ -97,7 +93,6 @@ router.beforeEach(async (to, from, next) => {
     next();
   } else {
     //그 외에 모든 경로는 login으로
-    console.log("로그인호출22222222222");
 
     next({
       name: "login",
