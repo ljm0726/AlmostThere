@@ -10,19 +10,19 @@ import banner from "@/router/modules/banner";
 import store from "@/store";
 import jwt_decode from "jwt-decode";
 
-// import { apiInstance } from "@/api/index";
-// const api = apiInstance();
+import { apiInstance } from "@/api/index";
+const api = apiInstance();
 
-// // async function checkMeetingMember(roomCode) {
-// //   var result = null;
-// //   await api.get(`/meeting/meeting-member/${roomCode}`).then((res) => {
-// //     console.log(res.data);
-// //     if (res.data.statusCode == "200") {
-// //       result = res.data.data;
-// //     }
-// //   });
-// //   return await Promise.resolve(result); // meetingId return
-// // }
+async function checkMeetingMember(roomCode) {
+  var result = null;
+  await api.get(`/meeting/meeting-member/${roomCode}`).then((res) => {
+    console.log(res.data);
+    if (res.data.statusCode == "200") {
+      result = res.data.data;
+    }
+  });
+  return await Promise.resolve(result); // meetingId return
+}
 
 Vue.use(VueRouter);
 Vue.use(Vuex); //
@@ -49,14 +49,12 @@ router.beforeEach(async (to, from, next) => {
     // # 초대 링크 클릭 시 로그인 되어 있을 때
 
     // 파람 룸코드 받기
-    // const roomCode = to.params.roomCode;
+    const roomCode = to.params.roomCode;
 
     // 가입되어 있는지, 아닌지 체크하고 가입시킨 다음 meetingId 받기
 
-    // const meetingId = await checkMeetingMember(roomCode);
-    const meetingId = null;
-    console.log("할당된 meetingId", meetingId);
-    // const meetingId = 29;
+    const meetingId = await checkMeetingMember(roomCode);
+
     if (meetingId) {
       next({ name: "meeting", params: { id: meetingId } });
     } else {
