@@ -44,8 +44,6 @@ export default {
       updateMemberInfo: [], // [index, id] 위치 업데이트 된 member의 > memberLocation index와 memberId 저장
       /* # 가장 먼 곳에 있는 memeber distance */
       maxMemberDistance: 2500,
-      /* # 다른 페이지로 떠날 때 감지하기 위함 */
-      isRefreshingMap: true,
     };
   },
   props: {
@@ -167,7 +165,6 @@ export default {
         });
 
         // circle 표시
-        if (window.location.pathname.split("/")[1] != "live-map") return;
         circle.setMap(this.map);
       }
 
@@ -189,7 +186,6 @@ export default {
           strokeStyle: "solid",
         });
         // circle 표시
-        if (window.location.pathname.split("/")[1] != "live-map") return;
         circle.setMap(this.map);
       }
     },
@@ -464,6 +460,7 @@ export default {
       this.memberPolylineList.push(object);
 
       // polyline 표시
+      if (window.location.pathname.split("/")[1] != "live-map") return;
       polyline.setMap(this.map);
 
       // * 두 좌표의 거리 over-lay 표시
@@ -536,6 +533,8 @@ export default {
       const markerIndex = this.memberMarkerList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
+      if (markerIndex == -1 || this.memberMarkerList.length == 0) return;
+
       // 기존 marker
       const marker =
         this.memberMarkerList[markerIndex][this.updateMemberInfo[1]];
@@ -551,8 +550,11 @@ export default {
       const nickIndex = this.memberNicknameOverlayList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
+
+      if (nickIndex == -1 || this.memberNicknameOverlayList.length == 0) return;
       const nickOverlay =
         this.memberNicknameOverlayList[nickIndex][this.updateMemberInfo[1]];
+
       nickOverlay.setPosition(newPosition);
       nickOverlay.setMap(this.map);
     },
@@ -561,6 +563,8 @@ export default {
       const polyIndex = this.memberPolylineList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
+
+      if (polyIndex == -1 || this.memberPolylineList.length == 0) return;
       const polyline =
         this.memberPolylineList[polyIndex][this.updateMemberInfo[1]];
       const newPath = [
@@ -568,6 +572,7 @@ export default {
         newPosition,
       ];
       polyline.setPath(newPath);
+      if (window.location.pathname.split("/")[1] != "live-map") return;
       polyline.setMap(this.map);
 
       // - 거리 over-lay
@@ -578,6 +583,9 @@ export default {
       const distanceIndex = this.memberDistanceOverlayList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
+
+      if (distanceIndex == -1 || this.memberDistanceOverlayList.length == 0)
+        return;
       const distance = Math.round(polyline.getLength());
       const distanceOverlay =
         this.memberDistanceOverlayList[distanceIndex][this.updateMemberInfo[1]];
@@ -748,9 +756,6 @@ export default {
   beforeDestroy() {
     this.stompClient.unsubscribe(`location-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
-  },
-  beforeUnmount() {
-    this.isRefreshingMap = false;
   },
 };
 </script>
