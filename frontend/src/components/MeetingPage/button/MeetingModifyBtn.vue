@@ -173,8 +173,10 @@ export default {
       "meeting_lat",
       "meeting_lng",
       "recent_meeting",
+      "meeting_members",
     ]),
     ...mapState("placeStore", ["placeName", "placeAddr", "placeX", "placeY"]),
+    ...mapState("halfwayStore", ["meeting_start_places"]),
   },
   watch: {
     place_name: function (newValue, oldValue) {
@@ -186,7 +188,7 @@ export default {
     ...mapMutations("placeStore", ["UPDATE_PLACE"]),
     ...mapActions("meetingStore", ["modify"]),
     ...mapActions("placeStore", ["resetPlace"]),
-    ...mapActions("halfwayStore", ["resetStartPlace"]),
+    ...mapActions("halfwayStore", ["resetStartPlace", "setStartPlace"]),
 
     open() {
       if (this.$refs.modifySheet) {
@@ -196,9 +198,31 @@ export default {
     isOpened() {
       console.log("M", this.name, this.placeName);
       console.log("Sheet is open.");
+
+      const startMembersInfo = [];
+      const startInfo = this.meeting_members;
+
+      console.log("halfway", startInfo, startInfo.length);
+
+      for (let i = 0; i < startInfo.length; i++) {
+        if (startInfo[i].startLng == null || startInfo[i].startLat == null)
+          continue;
+
+        const placeMap = new Map();
+        placeMap.set("x", startInfo[i].startLng);
+        placeMap.set("y", startInfo[i].startLat);
+        placeMap.set("name", startInfo[i].startPlace);
+        placeMap.set("addr", startInfo[i].startAddress);
+
+        console.log("for", placeMap);
+        startMembersInfo.push(placeMap);
+      }
+
+      this.setStartPlace(startMembersInfo);
     },
     isClosed() {
       sessionStorage.removeItem("from");
+      this.resetStartPlace();
 
       const [date, time2] = this.meetingTime.split("T");
       const time = time2.slice(0, -3);
@@ -280,6 +304,8 @@ export default {
           time: this.time,
           place_name: this.place,
           place_addr: this.address,
+          place_x: this.lat,
+          place_y: this.lng,
           amount: this.amount,
         })
           .then(() => {
@@ -363,9 +389,11 @@ export default {
 
     handleBeforeUnload() {
       sessionStorage.removeItem("from");
+      this.resetStartPlace();
     },
     handlePopstate() {
       sessionStorage.removeItem("from");
+      this.resetStartPlace();
       history.back();
     },
   },

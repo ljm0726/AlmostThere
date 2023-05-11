@@ -113,6 +113,7 @@ export default {
   computed: {
     ...mapState("placeStore", ["placeX", "placeY", "placeName", "placeAddr"]),
     ...mapState("halfwayStore", ["startPlaces", "middlePlace"]),
+    ...mapState("meetingStore", ["meeting_members"]),
   },
 
   watch: {
@@ -196,7 +197,7 @@ export default {
       this.loadScript();
     }
 
-    console.log("마운티드", this.placeX, this.placeY);
+    console.log("마운티드", this.meeting_members);
     if (sessionStorage.getItem("findHalfwayModal") !== null) {
       this.$refs.halfway.openDialog();
     }

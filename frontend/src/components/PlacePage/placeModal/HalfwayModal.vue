@@ -84,18 +84,45 @@ export default {
   data() {
     return {
       dialog: false,
-      starts: [null, null],
+      starts: [null, null], //모달에서 보여줄 정보
       isSearchPage: false,
       selectedPlace: {},
       size: 0,
     };
   },
   computed: {
-    ...mapState("halfwayStore", ["startPlaces"]),
+    ...mapState("halfwayStore", ["startPlaces", "meeting_start_places"]),
+    ...mapState("meetingStore", ["meeting_members"]),
   },
   mounted() {
-    console.log(this.startPlaces);
+    console.log(this.startPlaces, this.meeting_members);
+    // if (sessionStorage.getItem("from") !== null) {
+    //업데이트 startPlaces에 추가
+    //   const startMembersInfo = [];
+    //   const startInfo = this.meeting_members;
+
+    //   console.log("halfway", startInfo, startInfo.length);
+
+    //   for (let i = 0; i < startInfo.length; i++) {
+    //     if (startInfo[i].startLng == null || startInfo[i].startLat == null)
+    //       continue;
+
+    //     const placeMap = new Map();
+    //     placeMap.set("x", startInfo[i].startLng);
+    //     placeMap.set("y", startInfo[i].startLat);
+    //     placeMap.set("name", startInfo[i].startPlace);
+    //     placeMap.set("addr", startInfo[i].startAddress);
+
+    //     console.log("for", placeMap);
+    //     startMembersInfo.push(placeMap);
+    //   }
+
+    //   this.setStartPlace(startMembersInfo);
+    // }
     this.starts = this.startPlaces;
+    if (this.starts.length < 2) {
+      this.starts.push(null);
+    }
   },
   watch: {
     dialog() {
@@ -110,7 +137,11 @@ export default {
       "addPlaceList",
       "removePlaceList",
     ]),
-    ...mapActions("halfwayStore", ["removePlaceList", "addMiddlePlace"]),
+    ...mapActions("halfwayStore", [
+      "removePlaceList",
+      "addMiddlePlace",
+      "setStartPlace",
+    ]),
     openDialog() {
       this.dialog = true;
     },
@@ -188,6 +219,7 @@ export default {
 
       const combinations = [];
       for (let i = 1; i <= this.size; i++) {
+        console.log("출발정보", this.startPlaces);
         const result = this.combine(this.startPlaces, i);
         combinations.push(...result);
       }
