@@ -55,8 +55,6 @@ export default {
   },
   computed: {
     ...mapState("memberStore", ["member"]),
-    // ...mapState("memberStore", ["member", "member_id"]),
-    // ...mapState("meetingStore", ["meeting_lat", "meeting_lng"]),
     ...mapState("websocketStore", ["connected", "stompClient"]),
   },
   mounted() {
@@ -66,7 +64,7 @@ export default {
     // ii) 모임장소 좌표 저장
     // this.placeLatLng.push(this.meeting_lat);
     // this.placeLatLng.push(this.meeting_lng);
-    // !! test용으로 잠시 lat, lng 고정
+    // !! test용으로 잠시 lat, lng 고정 (역삼역)
     this.placeLatLng.push(37.5004);
     this.placeLatLng.push(127.0361);
 
