@@ -135,9 +135,9 @@ export default {
       const min = date.getMinutes();
       const result = `
       ${
-        hour < 13
-          ? ` 오전 ${hour - 12 < 10 ? `0${hour - 12}` : hour - 12}`
-          : ` 오후 ${hour - 12 < 10 ? `0${hour - 12}` : hour - 12}`
+        hour >= 12
+          ? `오후 ${hour == 12 ? `${hour}` : hour - 12}`
+          : `오전 ${hour}`
       }시 ${min < 10 ? `0${min}` : min}분`;
       return result;
     },

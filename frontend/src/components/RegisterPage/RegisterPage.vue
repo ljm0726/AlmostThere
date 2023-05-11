@@ -215,7 +215,7 @@ export default {
         alert("모든 정보를 입력해주세요!");
       } else {
         console.log(this.date, " ", this.time);
-        const date_time = new Date(this.date + " " + this.time); //LocalDate 타입에 맞게 변환
+        const date_time = this.date + " " + this.time; //LocalDate 타입에 맞게 변환
         const meeting_name = this.meetingname;
         const place_name = this.regist.place_name;
         const place_addr = this.regist.place_addr;
