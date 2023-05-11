@@ -18,6 +18,8 @@
           :meetingTime="meetingTime"
           :meetingPlace="meetingPlace"
           :meetingAddress="meetingAddress"
+          :meetingLat="meetingLat"
+          :meetingLng="meetingLng"
           :lateAmount="lateAmount"
         ></meeting-modify-btn>
         <!-- 초대 버튼 -->
@@ -73,6 +75,8 @@ export default {
     meetingTime: String,
     meetingPlace: String,
     meetingAddress: String,
+    meetingLat: Number,
+    meetingLng: Number,
     lateAmount: Number,
     roomCode: String,
   },

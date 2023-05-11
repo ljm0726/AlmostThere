@@ -10,6 +10,8 @@
         :meetingTime="meeting.meetingTime"
         :meetingPlace="meeting.meetingPlace"
         :meetingAddress="meeting.meetingAddress"
+        :meetingLat="meeting.meeting_lat"
+        :meetingLng="meeting.meeting_lng"
         :lateAmount="meeting.lateAmount"
         :roomCode="meeting.roomCode"
       ></meeting-title>
