@@ -14,11 +14,10 @@
         <img src="@/assets/images/dialog/logout.png" width="60%" />
         <span class="logo-font xxxxxxl-font main-col-1">Permission Error</span>
         <span
-          class="mt-2 extralight-font xs-font d-flex flex-column align-center seminarrow-font"
+          class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
         >
-          <div>위치 권한이 허용되어 있지 않아</div>
-          <div>서비스를 이용할 수 없습니다.</div>
-          <div class="mt-1 mb-2">위치 권한을 허용해주세요!</div>
+          <div>모임 정원을 초과했습니다.</div>
+          <div>호스트에게 문의해보세요.</div>
         </span>
       </v-card-title>
       <v-card-text>
@@ -29,7 +28,7 @@
           rounded
           block
           @click="closeDialog"
-          >뒤로가기</v-btn
+          >확인</v-btn
         >
       </v-card-text>
     </v-card>
@@ -44,7 +43,7 @@ export default {
   components: { CloseButton },
   data() {
     return {
-      dialog: false,
+      dialog: true,
     };
   },
   methods: {
@@ -53,6 +52,7 @@ export default {
     },
     closeDialog() {
       this.dialog = false;
+      this.$router.push(`/home`);
     },
   },
 };

@@ -212,7 +212,7 @@ const meetingStore = {
       commit("SET_MEETING_TIME", meeting_time);
     },
     SET_MEETING_INFO({ commit }, meeting) {
-      console.log(meeting);
+      // console.log(meeting);
       commit("SET_MEETING_INFO", meeting);
     },
     setMeeting({ commit }, meeting) {
@@ -228,6 +228,9 @@ const meetingStore = {
     },
     setInvitedMeeting({ commit }, roomCode) {
       commit("SET_INVITED_MEETING", roomCode);
+    },
+    setRecentMeeting({ commit }, recent_meeting) {
+      commit("SET_RECENT_MEETING", recent_meeting);
     },
   },
 };

@@ -1,4 +1,5 @@
 import MeetingPage from "@/components/MeetingPage/MeetingPage.vue";
+import MeetingEntrance from "@/components/MeetingPage/element/MeetingEntrance.vue";
 import MeetingHeader from "@/views/Header/MeetingHeader.vue";
 import LiveMapPage from "@/components/LiveMapPage/LiveMapPage.vue";
 import LiveMapHeader from "@/views/Header/LiveMapHeader.vue";
@@ -10,6 +11,13 @@ const meeting = [
   {
     path: "/entrance/:roomCode",
     name: "entrance",
+  },
+  {
+    path: "/entrance-denied",
+    name: "entrance-denied",
+    components: {
+      default: MeetingEntrance,
+    },
   },
   {
     path: "/meeting/:id",

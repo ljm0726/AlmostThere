@@ -80,6 +80,20 @@ async function outMeeting(member_id, meeting_id, success, fail) {
     .then(success, console.log(success))
     .catch(fail, console.log(fail));
 }
+
+async function deleteMeeting(meetingId) {
+  var result = null;
+  await api
+    .delete(`/meeting/${meetingId}`)
+    .then((res) => {
+      result = res.data.data;
+    })
+    .catch((err) => {
+      err;
+    });
+  return await Promise.resolve(result);
+}
+
 async function getMeeting(meetingId) {
   var result = null;
   await api.get(`/meeting/detail/${meetingId}`).then((res) => {
@@ -181,7 +195,6 @@ async function postReceiptInfo(receipt) {
 async function saveCalculateDetail(meetingId, receipt, storeName, totalPrice) {
   var result = false;
   var formData = new FormData();
-  console.log("미팅ID: " + meetingId);
   formData.append("meetingId", meetingId);
   formData.append("receipt", receipt);
   formData.append("storeName", storeName);
@@ -237,4 +250,5 @@ export {
   saveMemberStartPlace,
   outMeeting,
   getRecentPastMeeting,
+  deleteMeeting,
 };
