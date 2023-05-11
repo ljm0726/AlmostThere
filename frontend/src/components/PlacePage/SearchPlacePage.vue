@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "SearchPlacePage",
@@ -35,6 +35,9 @@ export default {
       isListOpen: false,
     };
   },
+  computed: {
+    ...mapState("meetingStore", ["regist"]),
+  },
   mounted() {
     this.loadScript();
     this.$refs.myInput.focus();
@@ -43,6 +46,8 @@ export default {
 
   methods: {
     ...mapActions("placeStore", ["updatePlace"]),
+    ...mapActions("meetingStore", ["setRegistMeeting"]),
+
     goBack() {
       this.$router.go(-1);
     },
@@ -114,11 +119,18 @@ export default {
             placeMap.set("y", y);
             placeMap.set("name", this.place);
             placeMap.set("addr", this.address);
+            this.regist.lat = x;
+            this.regist.lng = y;
+            this.regist.place_name = this.place;
+            this.regist.place_addr = this.address;
 
             // 중간장소 선정 or 출발지 선정에 따라 다른 페이지로 이동
             // i) 중간장소
             if (this.$route.query.type == null) {
               this.updatePlace(placeMap);
+
+              this.setRegistMeeting(this.regist);
+
               this.$router.replace("/place");
             }
             // ii) 출발지

@@ -161,14 +161,7 @@ export default {
   },
 
   computed: {
-    ...mapState("meetingStore", [
-      "meeting_name",
-      "meeting_date",
-      "meeting_time",
-      "place_name",
-      "place_addr",
-      "recent_meeting",
-    ]),
+    ...mapState("meetingStore", ["regist"]),
     ...mapState("memberStore", ["member_id"]),
   },
   watch: {
@@ -186,28 +179,31 @@ export default {
     },
   },
   methods: {
-    ...mapActions("meetingStore", ["register", "setMeeting"]),
     ...mapActions("meetingStore", [
-      "SET_MEETING_NAME",
-      "SET_MEETING_DATE",
-      "SET_MEETING_TIME",
+      "register",
+      "setMeeting",
+      "setRegistMeeting",
+      "resetRegist",
     ]),
     ...mapActions("placeStore", ["resetPlace"]),
     ...mapActions("halfwayStore", ["resetStartPlace"]),
 
     setMeetingName() {
-      this.SET_MEETING_NAME(this.meetingname);
+      this.regist.name = this.meetingname;
+      console.log(this.regist);
+      this.setRegistMeeting(this.regist);
     },
     setMeetingDate() {
       this.getCurTime();
 
       console.log(this.date + " " + this.time);
-      this.SET_MEETING_DATE(this.date);
-      this.SET_MEETING_TIME(this.time);
+      this.regist.date = this.date;
+      this.regist.time = this.time;
+      this.setRegistMeeting(this.regist);
     },
 
     movePlacePage() {
-      this.$router.replace("/place");
+      this.$router.push("/place");
     },
 
     regist_meeting() {
@@ -221,11 +217,21 @@ export default {
         console.log(this.date, " ", this.time);
         const date_time = new Date(this.date + " " + this.time); //LocalDate 타입에 맞게 변환
         const meeting_name = this.meetingname;
-        const place_name = this.place_name;
-        const place_addr = this.place_addr;
+        const place_name = this.regist.place_name;
+        const place_addr = this.regist.place_addr;
+        const meeting_lat = this.regist.lat;
+        const meeting_lng = this.regist.lng;
+
         const member_id = this.member_id;
 
-        console.log(meeting_name, " ", date_time);
+        console.log(
+          meeting_name,
+          date_time,
+          place_name,
+          place_addr,
+          meeting_lat,
+          meeting_lng
+        );
 
         this.register({
           member_id,
@@ -233,6 +239,8 @@ export default {
           date_time,
           place_name,
           place_addr,
+          meeting_lat,
+          meeting_lng,
         }).then(() => {
           getMostRecentMeeting().then((res) => {
             const newRecentMeeting = res;
@@ -248,6 +256,7 @@ export default {
         });
         this.resetPlace();
         this.resetStartPlace();
+        this.resetRegist();
       }
     },
 
@@ -282,14 +291,17 @@ export default {
 
   mounted() {
     // this.date = new Date().toLocaleDateString();
-    if (this.place_name !== null && this.place_addr !== null) {
-      this.meeting_place = this.place_name + "(" + this.place_addr + ")";
+
+    console.log("@#@#", this.regist);
+    if (this.regist.place_name !== null && this.regist.place_addr !== null) {
+      this.meeting_place =
+        this.regist.place_name + "(" + this.regist.place_addr + ")";
     }
     // console.log(this.member_id);
 
-    this.meetingname = this.meeting_name;
-    this.date = this.meeting_date;
-    this.time = this.meeting_time;
+    this.meetingname = this.regist.name;
+    this.date = this.regist.date;
+    this.time = this.regist.time;
 
     // console.log(this.name, " ", this.date, " ", this.time);
     if (this.date === null || this.time === null) {

@@ -454,7 +454,6 @@ export default {
       const destination = `${place.x},${place.y}`; // 목적지
 
       this.startPlaces[0].get("x");
-      this.startPlaces[0].get("x");
       const waypoints = "";
       const priority = "RECOMMEND";
       const car_fuel = "GASOLINE";
@@ -465,7 +464,7 @@ export default {
       // const placeCnt = this.startPlaces.length;
 
       // const car_routes = [];
-
+      this.minTimes = [];
       Promise.all(
         this.startPlaces.map((element) => {
           const origin = element.get("x") + "," + element.get("y");
@@ -487,6 +486,15 @@ export default {
             })
             .then((response) => {
               const guides = response.data.routes[0].sections[0].guides;
+              console.log(
+                response.data.routes[0],
+                response.data.routes[0].summary.duration
+              );
+
+              this.minTimes.push(
+                Math.round(response.data.routes[0].summary.duration / 60)
+              );
+
               const car_route = guides.map((element) => {
                 return new window.kakao.maps.LatLng(
                   Number(element.y),
@@ -503,16 +511,16 @@ export default {
         })
       ).then((car_routes) => {
         const path_color = [
-          "#0000FF",
-          "#8A2BE2",
-          "#A52A2A",
-          "#DEB887",
-          "#5F9EA0",
-          "#7FFF00",
-          "#D2691E",
-          "#008B8B",
+          "#32CD32",
+          "#7B68EE",
+          "#FFD700",
+          "#4B0082", //
+          "#00CED1",
+          "#FF00FF",
+          "#87CEFA",
+          "#6B8E23", //
           "#9400D3",
-          "#FF69B4",
+          "#8B0000",
         ];
         for (var i = 0; i < car_routes.length; i++) {
           //
@@ -564,11 +572,8 @@ export default {
 
         try {
           const response = await axios.get(url);
-          maxTime = 99999999;
-          maxPayment = 99999999;
-          totalChange = 99999999;
+
           console.log("과연", response.data);
-          console.log("이전 몇번");
 
           if (
             response.data["error"] != undefined &&
@@ -577,27 +582,100 @@ export default {
             this.minTimes.push(2);
             continue;
           }
-          console.log("이후 몇번");
 
-          for (var j = 0; j < response.data["result"]["path"].length; j++) {
+          if (response.data["result"]["searchType"] != 0) {
+            console.log("도시간이동");
+            let moveTime =
+              response.data["result"]["path"][0]["info"]["totalTime"];
+            let pathLen = response.data["result"]["path"][0]["subPath"].length;
+            let sx = response.data["result"]["path"][0]["subPath"][0]["startX"];
+            let sy = response.data["result"]["path"][0]["subPath"][0]["startY"];
+            let ex =
+              response.data["result"]["path"][0]["subPath"][pathLen - 1][
+                "endX"
+              ];
+            let ey =
+              response.data["result"]["path"][0]["subPath"][pathLen - 1][
+                "endY"
+              ];
+
+            let linePath = [];
+            for (let i = 0; i < pathLen; i++) {
+              linePath.push(
+                new window.kakao.maps.LatLng(
+                  response.data["result"]["path"][0]["subPath"][i]["startY"],
+                  response.data["result"]["path"][0]["subPath"][i]["startX"]
+                )
+              );
+              linePath.push(
+                new window.kakao.maps.LatLng(
+                  response.data["result"]["path"][0]["subPath"][i]["endY"],
+                  response.data["result"]["path"][0]["subPath"][i]["endX"]
+                )
+              );
+            }
+            console.log("linePath는 이거야!", linePath);
+            // 지도에 도시간 이동 경로 생성
+            let polyline = new window.kakao.maps.Polyline({
+              map: this.map,
+              path: linePath,
+              strokeWeight: 5,
+              strokeColor: "#ff0000 ",
+              strokeOpacity: 1,
+            });
+            this.polylines.push(polyline);
+
+            const startUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${x}&SY=${y}&EX=${sx}&EY=${sy}&OPT=0&apiKey=${process.env.VUE_APP_ODSAY_KEY}`;
+            const endUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${ex}&SY=${ey}&EX=${place.x}&EY=${place.y}&OPT=0&apiKey=${process.env.VUE_APP_ODSAY_KEY}`;
+
+            //출발지에서 출발 터미널 까지
+            const startResponse = await axios.get(startUrl);
             if (
-              maxTime > response.data["result"]["path"][j]["info"]["totalTime"]
+              startResponse.data["error"] != undefined &&
+              startResponse.data["error"]["code"] == -98
             ) {
-              idx = j;
-              maxTime = response.data["result"]["path"][j]["info"]["totalTime"];
-              maxPayment =
-                response.data["result"]["path"][j]["info"]["payment"];
-              totalChange =
-                response.data["result"]["path"][j]["info"]["busTransitCount"] +
-                response.data["result"]["path"][j]["info"][
-                  "subwayTransitCount"
-                ];
-            } else if (
-              maxTime == response.data["result"]["path"][j]["info"]["totalTime"]
+              console.log(1);
+            } else {
+              moveTime +=
+                startResponse.data["result"]["path"][0]["info"]["totalTime"];
+
+              this.callMapObjApiAJAX(
+                startResponse.data["result"]["path"][0].info.mapObj
+              );
+              console.log("start 끝?", moveTime);
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            //도착 터미널에서 목적지 까지
+            const endResponse = await axios.get(endUrl);
+            console.log("end 중간1?", endResponse.data);
+            if (
+              endResponse.data["error"] != undefined &&
+              endResponse.data["error"]["code"] == -98
             ) {
+              console.log(1);
+            } else {
+              moveTime +=
+                endResponse.data["result"]["path"][0]["info"]["totalTime"];
+              console.log("end 중간2?");
+
+              this.callMapObjApiAJAX(
+                endResponse.data["result"]["path"][0].info.mapObj
+              );
+              console.log("end 끝?", moveTime);
+            }
+            this.minTimes.push(moveTime);
+          } else {
+            console.log("도시내이동");
+
+            maxTime = 99999999;
+            maxPayment = 99999999;
+            totalChange = 99999999;
+
+            for (var j = 0; j < response.data["result"]["path"].length; j++) {
               if (
-                maxPayment >
-                response.data["result"]["path"][j]["info"]["payment"]
+                maxTime >
+                response.data["result"]["path"][j]["info"]["totalTime"]
               ) {
                 idx = j;
                 maxTime =
@@ -612,17 +690,12 @@ export default {
                     "subwayTransitCount"
                   ];
               } else if (
-                maxPayment ==
-                response.data["result"]["path"][j]["info"]["payment"]
+                maxTime ==
+                response.data["result"]["path"][j]["info"]["totalTime"]
               ) {
                 if (
-                  totalChange >
-                  response.data["result"]["path"][j]["info"][
-                    "busTransitCount"
-                  ] +
-                    response.data["result"]["path"][j]["info"][
-                      "subwayTransitCount"
-                    ]
+                  maxPayment >
+                  response.data["result"]["path"][j]["info"]["payment"]
                 ) {
                   idx = j;
                   maxTime =
@@ -636,16 +709,42 @@ export default {
                     response.data["result"]["path"][j]["info"][
                       "subwayTransitCount"
                     ];
+                } else if (
+                  maxPayment ==
+                  response.data["result"]["path"][j]["info"]["payment"]
+                ) {
+                  if (
+                    totalChange >
+                    response.data["result"]["path"][j]["info"][
+                      "busTransitCount"
+                    ] +
+                      response.data["result"]["path"][j]["info"][
+                        "subwayTransitCount"
+                      ]
+                  ) {
+                    idx = j;
+                    maxTime =
+                      response.data["result"]["path"][j]["info"]["totalTime"];
+                    maxPayment =
+                      response.data["result"]["path"][j]["info"]["payment"];
+                    totalChange =
+                      response.data["result"]["path"][j]["info"][
+                        "busTransitCount"
+                      ] +
+                      response.data["result"]["path"][j]["info"][
+                        "subwayTransitCount"
+                      ];
+                  }
                 }
               }
             }
+
+            this.minTimes.push(maxTime);
+
+            this.callMapObjApiAJAX(
+              response.data["result"]["path"][idx].info.mapObj
+            );
           }
-
-          this.minTimes.push(maxTime);
-
-          this.callMapObjApiAJAX(
-            response.data["result"]["path"][idx].info.mapObj
-          );
         } catch (error) {
           console.error(error);
         }

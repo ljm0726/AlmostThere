@@ -1,3 +1,4 @@
+import meeting from "@/router/modules/meeting";
 import { apiInstance } from "../index";
 
 const api = apiInstance();
@@ -13,6 +14,7 @@ async function meetingRegister(
   success,
   fail
 ) {
+  console.log(meeting);
   await api
     .post(`/meeting`, {
       hostId: id,
@@ -91,17 +93,27 @@ async function getMeeting(meetingId) {
 
 async function getTodayMeetings() {
   var result = null;
-  await api.get("/meeting/today").then((res) => {
-    result = res.data.data;
-  });
+  await api
+    .get("/meeting/today")
+    .then((res) => {
+      result = res.data.data;
+    })
+    .catch((err) => {
+      err;
+    });
   return await Promise.resolve(result);
 }
 
 async function getUpcomingMeetings() {
   var result = null;
-  await api.get("/meeting/upcoming").then((res) => {
-    result = res.data.data;
-  });
+  await api
+    .get("/meeting/upcoming")
+    .then((res) => {
+      result = res.data.data;
+    })
+    .catch((err) => {
+      err;
+    });
   return await Promise.resolve(result);
 }
 
@@ -118,11 +130,30 @@ function getMostRecentMeeting() {
   });
 }
 
+// [GET] 현재 시각으로부터 지난 가장 최근의 모임
+function getRecentPastMeeting() {
+  return new Promise((resolve, reject) => {
+    api
+      .get("/meeting/past-recent")
+      .then((response) => {
+        resolve(response.data.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
 async function getBestMember() {
   var result = null;
-  await api.get("/member/best-member").then((res) => {
-    result = res.data.data;
-  });
+  await api
+    .get("/member/best-member")
+    .then((res) => {
+      result = res.data.data;
+    })
+    .catch((err) => {
+      err;
+    });
   return await Promise.resolve(result);
 }
 
@@ -205,4 +236,5 @@ export {
   modifyMeeting,
   saveMemberStartPlace,
   outMeeting,
+  getRecentPastMeeting,
 };

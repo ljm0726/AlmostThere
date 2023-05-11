@@ -62,9 +62,14 @@ export default {
   mounted() {
     // i) memberId 저장
     this.memberId = this.member_id;
+
     // ii) 모임장소 좌표 저장
-    this.placeLatLng.push(this.meeting_lat);
-    this.placeLatLng.push(this.meeting_lng);
+    // this.placeLatLng.push(this.meeting_lat);
+    // this.placeLatLng.push(this.meeting_lng);
+    // !! test용으로 잠시 lat, lng 고정
+    this.placeLatLng.push(37.5004);
+    this.placeLatLng.push(127.0361);
+
     // ii-1) 채팅 저장
     this.chatting = this.chatting_map;
     // iii) Kakao Map Script import
@@ -673,12 +678,32 @@ export default {
           );
 
           // over-lay 생성
-          const customOverlay = new kakao.maps.CustomOverlay({
-            position: position,
-            content: content,
-            xAnchor: this.chatOverlay[0],
-            yAnchor: this.chatOverlay[1],
-          });
+          var customOverlay = null;
+          // i) 로그인 member의 채팅 over-lay
+          if (key == this.memberId) {
+            customOverlay = new kakao.maps.CustomOverlay({
+              position: position,
+              content: content,
+              xAnchor: this.chatOverlay[0],
+              yAnchor: this.chatOverlay[1],
+              zIndex: 9999,
+            });
+          }
+          // ii) 다른 member의 채팅 over-lay
+          else {
+            customOverlay = new kakao.maps.CustomOverlay({
+              position: position,
+              content: content,
+              xAnchor: this.chatOverlay[0],
+              yAnchor: this.chatOverlay[1],
+            });
+          }
+          // const customOverlay = new kakao.maps.CustomOverlay({
+          //   position: position,
+          //   content: content,
+          //   xAnchor: this.chatOverlay[0],
+          //   yAnchor: this.chatOverlay[1],
+          // });
 
           // 생성한 오버레이 삭제 후 업데이트 or 저장
           const index = this.memberChatOverlayList.findIndex(

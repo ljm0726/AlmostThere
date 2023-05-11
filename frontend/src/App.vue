@@ -5,6 +5,7 @@
     <!-- Main -->
     <v-main>
       <router-view />
+      <location-permission-error ref="denied" />
     </v-main>
     <!-- Footer -->
     <router-view name="footer" />
@@ -17,18 +18,25 @@
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
 import jwt_decode from "jwt-decode";
-import { getMostRecentMeeting } from "@/api/modules/meeting.js";
+import {
+  getMostRecentMeeting,
+  getRecentPastMeeting,
+} from "@/api/modules/meeting.js";
 import { mapActions, mapState } from "vuex";
+import LocationPermissionError from "@/common/component/dialog/LocationPermissionError.vue";
 
 import store from "@/store";
 
 export default {
   name: "App",
-
+  components: {
+    LocationPermissionError,
+  },
   data() {
     return {
       timeOut: null,
       // isSocketConnected: false,
+      intervalGeolocation: null,
     };
   },
 
@@ -109,13 +117,30 @@ export default {
         `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
       );
 
-      const diffTime =
+      var diffTime =
         new Date(meetingTime.getTime() - 3 * 60 * 60 * 1000) -
         formattedTime.getTime();
 
-      console.log("diffTime :", diffTime);
+      // diffTime이 양수인 경우 > 최근 지난 모임 중 3시간 이내인 모임이 있는 지 확인
+      if (diffTime > 0) {
+        getRecentPastMeeting().then((res) => {
+          if (res != null) {
+            const meetingTime = new Date(res.meetingTime);
+            const threeHoursAfterTime = new Date(
+              meetingTime.getTime() + 3 * 60 * 60 * 1000
+            );
+            if (new Date().getTime() <= threeHoursAfterTime.getTime()) {
+              diffTime = -1;
+              return diffTime;
+            }
+          }
+        });
+      } else {
+        return diffTime;
+      }
 
-      return diffTime;
+      // console.log("diffTime :", diffTime);
+      // return diffTime;
     },
 
     connectHandler() {
@@ -175,7 +200,10 @@ export default {
     },
 
     startIntervalMemberLocation() {
-      setInterval(() => {
+      // setInterval(() => {
+      //   this.getGeoLocation();
+      // }, 3000);
+      this.intervalGeolocation = setInterval(() => {
         this.getGeoLocation();
       }, 3000);
     },
@@ -188,21 +216,35 @@ export default {
       // alert("## geo", navigator.geolocation);
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-        navigator.geolocation.getCurrentPosition((position) => {
-          // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
-          const member = {
-            memberId: this.member_id,
-            memberNickname: this.member.memberNickname,
-            memberLatLng: [position.coords.latitude, position.coords.longitude],
-          };
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
+            const member = {
+              memberId: this.member_id,
+              memberNickname: this.member.memberNickname,
+              memberLatLng: [
+                position.coords.latitude,
+                position.coords.longitude,
+              ],
+            };
 
-          // 현 사용자의 위치 저장
-          // console.log("getGeoLocation :", member);
-          this.send(member);
-        });
+            // 현 사용자의 위치 저장
+            // console.log("getGeoLocation :", member);
+            this.send(member);
+          },
+          (error) => {
+            // console.log("#[GeoLocation]# GeoLocation 사용불가 error: ", error);
+            if (error.code == 1) {
+              this.$refs.denied.openDialog();
+              clearInterval(this.intervalGeolocation);
+            }
+          }
+        );
       } else {
-        console.log("# geolocation을 사용할수 없어요..");
-        alert("# geolocation을 사용할수 없어요..");
+        console.log(
+          "#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다."
+        );
+        alert("#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다.");
       }
     },
     send(member) {
@@ -233,7 +275,9 @@ export default {
 @import "@/assets/styles/override/snackbar.css";
 @import "@/assets/styles/box/box_shadow.css";
 @import "@/assets/styles/box/box_border.css";
-
+:root {
+  --swiper-theme-color: var(--main-col-1) !important;
+}
 html body {
   background: #fafafa;
   max-width: 500px;
