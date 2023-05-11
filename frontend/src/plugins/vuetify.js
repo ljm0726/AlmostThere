@@ -28,6 +28,7 @@ import CameraOutlineIcon from '@/common/component/icons/CameraOutlineIcon.vue'
 import SendOutlineIcon from '@/common/component/icons/SendOutlineIcon.vue'
 import ChattingOutlineIcon from '@/common/component/icons/ChattingOutlineIcon.vue'
 import ListIcon from '@/common/component/icons/ListIcon.vue'
+import ArrowRightWhiteIcon from '@/common/component/icons/ArrowRightWhiteIcon.vue'
 
 Vue.use(Vuetify);
 
@@ -57,6 +58,9 @@ export default new Vuetify({
       },
       arrow_left_white: {
         component: ArrowLeftWhiteIcon
+      },
+      arrow_right_white: {
+        component: ArrowRightWhiteIcon
       },
       detail_outline: {
         component: DetailOutlineIcon

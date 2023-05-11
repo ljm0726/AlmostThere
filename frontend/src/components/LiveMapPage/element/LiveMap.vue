@@ -46,9 +46,17 @@ export default {
       maxMemberDistance: 2500,
     };
   },
+  props: {
+    member_id: Number,
+    meeting_lat: Number,
+    meeting_lng: Number,
+    meeting_name: String,
+    chatting_map: Object,
+  },
   computed: {
-    ...mapState("memberStore", ["member", "member_id"]),
-    ...mapState("meetingStore", ["meeting_lat", "meeting_lng"]),
+    ...mapState("memberStore", ["member"]),
+    // ...mapState("memberStore", ["member", "member_id"]),
+    // ...mapState("meetingStore", ["meeting_lat", "meeting_lng"]),
     ...mapState("websocketStore", ["connected", "stompClient"]),
   },
   mounted() {
@@ -62,6 +70,8 @@ export default {
     this.placeLatLng.push(37.5004);
     this.placeLatLng.push(127.0361);
 
+    // ii-1) 채팅 저장
+    this.chatting = this.chatting_map;
     // iii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
       this.initMap();
@@ -383,6 +393,10 @@ export default {
       this.createDistance(member, marker);
 
       // iv) map rebound
+      // this.resizeMapLevel();
+
+      // V) 멤버별 채팅 붙이기
+      this.updateChatOverlay();
       this.resizeMapLevel();
     },
     // [@Method] member 별 닉네임 over-lay 생성
@@ -639,67 +653,77 @@ export default {
     },
     // [@Method] chatting 내용 over-lay 표시
     updateChatOverlay() {
+      //     {
+      //       member: {
+      //         memberId: 1,
+      //         content: "100m 남음~",
+      //       }
+      //     },
       for (var key of Object.keys(this.chatting)) {
         console.log("key " + key);
         // chatting 내용이 없는 경우 생성 X
         if (this.chatting[key] == null || this.chatting[key] == "") continue;
 
+        console.log("#21# memberLocation 확인: ", this.memberLocation);
         const content = `<div class="chat-overlay point-font">${this.chatting[key]}</div>`;
-        const memberMarkerLatLng = this.memberLocation.find(
+        const memberMarker = this.memberLocation.find(
           (loc) => loc.memberId == key
-        ).memberLatLng;
-        const position = new kakao.maps.LatLng(
-          memberMarkerLatLng[0],
-          memberMarkerLatLng[1]
         );
+        // console.log(memberMarker);
+        if (typeof memberMarker != "undefined" && memberMarker) {
+          const memberMarkerLatLng = memberMarker.memberLatLng;
+          const position = new kakao.maps.LatLng(
+            memberMarkerLatLng[0],
+            memberMarkerLatLng[1]
+          );
 
-        // over-lay 생성
-        var customOverlay = null;
-        // i) 로그인 member의 채팅 over-lay
-        if (key == this.memberId) {
-          customOverlay = new kakao.maps.CustomOverlay({
-            position: position,
-            content: content,
-            xAnchor: this.chatOverlay[0],
-            yAnchor: this.chatOverlay[1],
-            zIndex: 9999,
-          });
-        }
-        // ii) 다른 member의 채팅 over-lay
-        else {
-          customOverlay = new kakao.maps.CustomOverlay({
-            position: position,
-            content: content,
-            xAnchor: this.chatOverlay[0],
-            yAnchor: this.chatOverlay[1],
-            zIndex: 9999,
-          });
-        }
-        // const customOverlay = new kakao.maps.CustomOverlay({
-        //   position: position,
-        //   content: content,
-        //   xAnchor: this.chatOverlay[0],
-        //   yAnchor: this.chatOverlay[1],
-        // });
+          // over-lay 생성
+          var customOverlay = null;
+          // i) 로그인 member의 채팅 over-lay
+          if (key == this.memberId) {
+            customOverlay = new kakao.maps.CustomOverlay({
+              position: position,
+              content: content,
+              xAnchor: this.chatOverlay[0],
+              yAnchor: this.chatOverlay[1],
+              zIndex: 9999,
+            });
+          }
+          // ii) 다른 member의 채팅 over-lay
+          else {
+            customOverlay = new kakao.maps.CustomOverlay({
+              position: position,
+              content: content,
+              xAnchor: this.chatOverlay[0],
+              yAnchor: this.chatOverlay[1],
+            });
+          }
+          // const customOverlay = new kakao.maps.CustomOverlay({
+          //   position: position,
+          //   content: content,
+          //   xAnchor: this.chatOverlay[0],
+          //   yAnchor: this.chatOverlay[1],
+          // });
 
-        // 생성한 오버레이 삭제 후 업데이트 or 저장
-        const index = this.memberChatOverlayList.findIndex(
-          (obj) => Object.keys(obj)[0] == key
-        );
-        // i) 해당 member의 chatOverlay가 있는 경우 값 업데이트(삭제, 추가)
-        if (index > -1) {
-          this.memberChatOverlayList[index][key].setMap(null); // 기존 오버레이 삭제
-          this.memberChatOverlayList[index][key] = customOverlay; // 새로운 오버레이 추가
-        }
-        // ii) 없는 경우, 오버레이 추가
-        else {
-          const object = new Object();
-          object[key] = customOverlay;
-          this.memberChatOverlayList.push(object);
-        }
+          // 생성한 오버레이 삭제 후 업데이트 or 저장
+          const index = this.memberChatOverlayList.findIndex(
+            (obj) => Object.keys(obj)[0] == key
+          );
+          // i) 해당 member의 chatOverlay가 있는 경우 값 업데이트(삭제, 추가)
+          if (index > -1) {
+            this.memberChatOverlayList[index][key].setMap(null); // 기존 오버레이 삭제
+            this.memberChatOverlayList[index][key] = customOverlay; // 새로운 오버레이 추가
+          }
+          // ii) 없는 경우, 오버레이 추가
+          else {
+            const object = new Object();
+            object[key] = customOverlay;
+            this.memberChatOverlayList.push(object);
+          }
 
-        // over-lay 표시
-        customOverlay.setMap(this.map);
+          // over-lay 표시
+          customOverlay.setMap(this.map);
+        }
       }
     },
     // [@Method] TEST (!추후 삭제)

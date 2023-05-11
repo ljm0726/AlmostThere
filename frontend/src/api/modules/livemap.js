@@ -29,4 +29,18 @@ async function arriveDestination(meetingId, x, y) {
   return await Promise.resolve(result)
 }
 
-export { arriveDestination };
+async function liveMapInfo(meetingId) {
+  var result = null;
+  await api.get(`/map/${meetingId}`)
+    .then((res) => {
+      if (res.data.statusCode == 200) {
+        result = res.data.data;
+      }
+    })
+    .catch((err) => {
+      err;
+    })
+  return await Promise.resolve(result);
+}
+
+export { arriveDestination, liveMapInfo };
