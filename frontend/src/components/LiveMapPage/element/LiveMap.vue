@@ -44,6 +44,8 @@ export default {
       updateMemberInfo: [], // [index, id] 위치 업데이트 된 member의 > memberLocation index와 memberId 저장
       /* # 가장 먼 곳에 있는 memeber distance */
       maxMemberDistance: 2500,
+      /* # 다른 페이지로 떠날 때 감지하기 위함 */
+      isRefreshingMap: true,
     };
   },
   props: {
@@ -507,17 +509,30 @@ export default {
     },
     // [@Method] member의 위치 값 변경에 따른 marker, polyline, overlay 업데이트
     refreshMapOnLocationUpdate() {
+      if (!this.refreshMapOnLocationUpdate) return;
+
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
       // this.updateMemberInfo[1] = 변경된 memberId
       // console.log("#21# refresh member 확인: ", refreshMember);
-
       const newPosition = new kakao.maps.LatLng(
         refreshMember.memberLatLng[0],
         refreshMember.memberLatLng[1]
       );
 
       // i) marker
+      this.refreshMarker(newPosition);
+
+      // ii) over-lay & polyline
+      // - 닉네임 over-lay
+      this.refreshNicknameOverlay(newPosition);
+      // - 거리 polyline(선)
+      this.refreshPolyLine(newPosition);
+      // - 채팅 over-lay
+      this.refreshChatOverlay(newPosition);
+    },
+    // [@Method] 변경된 member 좌표에 따른 marker 업데이트
+    refreshMarker(newPosition) {
       const markerIndex = this.memberMarkerList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
@@ -530,9 +545,9 @@ export default {
       newMarker.setPosition(newPosition);
       marker.setMap(null);
       newMarker.setMap(this.map);
-
-      // ii) over-lay & polyline
-      // - 닉네임 over-lay
+    },
+    // [@Method] 변경된 member 좌표에 따른 nickname over-lay 업데이트
+    refreshNicknameOverlay(newPosition) {
       const nickIndex = this.memberNicknameOverlayList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
@@ -540,8 +555,9 @@ export default {
         this.memberNicknameOverlayList[nickIndex][this.updateMemberInfo[1]];
       nickOverlay.setPosition(newPosition);
       nickOverlay.setMap(this.map);
-
-      // - 거리 polyline(선)
+    },
+    // [@Method] 변경된 member 좌표에 따른 polyline 업데이트
+    refreshPolyLine(newPosition) {
       const polyIndex = this.memberPolylineList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
@@ -555,6 +571,10 @@ export default {
       polyline.setMap(this.map);
 
       // - 거리 over-lay
+      this.refreshDistanceOverlay(newPosition, polyline);
+    },
+    // [@Method] 변경된 member 좌표에 따른 모임장소까지의 distance over-lay 업데이트
+    refreshDistanceOverlay(newPosition, polyline) {
       const distanceIndex = this.memberDistanceOverlayList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
@@ -576,8 +596,9 @@ export default {
         );
       }
       distanceOverlay.setMap(this.map);
-
-      // - 채팅 over-lay
+    },
+    // [@Method] 변경된 member 좌표에 따른 chat over-lay 업데이트
+    refreshChatOverlay(newPosition) {
       if (this.memberChatOverlayList.length != 0) {
         var chatIndex = -1;
         chatIndex = this.memberChatOverlayList.findIndex(
@@ -701,12 +722,6 @@ export default {
               yAnchor: this.chatOverlay[1],
             });
           }
-          // const customOverlay = new kakao.maps.CustomOverlay({
-          //   position: position,
-          //   content: content,
-          //   xAnchor: this.chatOverlay[0],
-          //   yAnchor: this.chatOverlay[1],
-          // });
 
           // 생성한 오버레이 삭제 후 업데이트 or 저장
           const index = this.memberChatOverlayList.findIndex(
@@ -729,28 +744,13 @@ export default {
         }
       }
     },
-    // [@Method] TEST (!추후 삭제)
-    // sendChatTest() {
-    //   this.chatting = [
-    //     // {10: "100m 남음!"}
-    //     {
-    //       member: {
-    //         memberId: 1,
-    //         content: "100m 남음~",
-    //       },
-    //     },
-    //     {
-    //       member: {
-    //         memberId: 2,
-    //         content: this.testChatContent,
-    //       },
-    //     },
-    //   ];
-    // },
   },
   beforeDestroy() {
     this.stompClient.unsubscribe(`location-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
+  },
+  beforeUnmount() {
+    this.isRefreshingMap = false;
   },
 };
 </script>
