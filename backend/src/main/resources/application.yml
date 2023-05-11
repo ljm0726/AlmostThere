@@ -39,7 +39,7 @@ spring:
 
 redis:
   locationData:
-    expire-length: 5 #1분
+    expire-length: 21600 #6시간
 
 logging:
   level:
