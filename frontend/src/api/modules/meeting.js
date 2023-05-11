@@ -93,17 +93,27 @@ async function getMeeting(meetingId) {
 
 async function getTodayMeetings() {
   var result = null;
-  await api.get("/meeting/today").then((res) => {
-    result = res.data.data;
-  });
+  await api
+    .get("/meeting/today")
+    .then((res) => {
+      result = res.data.data;
+    })
+    .catch((err) => {
+      err;
+    });
   return await Promise.resolve(result);
 }
 
 async function getUpcomingMeetings() {
   var result = null;
-  await api.get("/meeting/upcoming").then((res) => {
-    result = res.data.data;
-  });
+  await api
+    .get("/meeting/upcoming")
+    .then((res) => {
+      result = res.data.data;
+    })
+    .catch((err) => {
+      err;
+    });
   return await Promise.resolve(result);
 }
 
@@ -136,9 +146,14 @@ function getRecentPastMeeting() {
 
 async function getBestMember() {
   var result = null;
-  await api.get("/member/best-member").then((res) => {
-    result = res.data.data;
-  });
+  await api
+    .get("/member/best-member")
+    .then((res) => {
+      result = res.data.data;
+    })
+    .catch((err) => {
+      err;
+    });
   return await Promise.resolve(result);
 }
 

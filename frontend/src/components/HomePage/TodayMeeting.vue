@@ -10,59 +10,75 @@
         나의 모임을 보여줍니다.
       </span>
     </v-tooltip>
-    <swiper
-      v-if="meetings.length > 0"
-      class="swiper mt-2 px-2"
-      :options="swiperOption"
-    >
-      <swiper-slide class="px-2" v-for="(meeting, idx) in meetings" :key="idx">
-        <meeting-card :meeting="meeting"></meeting-card>
-      </swiper-slide>
-    </swiper>
-    <v-card
-      v-else
-      height="175px"
-      class="mb-6 mx-4 mt-2 d-flex flex-row justify-center align-center"
-      elevation="0"
-      style="
-        border: 1px solid var(--main-col-1);
-        border-radius: 15px;
-        box-shadow: 0px 5px 20px -10px var(--main-col-1) !important;
-      "
-    >
-      <v-sheet
-        class="mx-7 empty d-flex flex-row justify-space-between align-center"
+    <v-sheet v-if="loading" height="175" class="mx-4 mb-6 mt-2">
+      <v-skeleton-loader
+        type="image"
+        class="mb-1"
         width="100%"
-        height="100%"
-        max-width="330"
+        height="175"
+      ></v-skeleton-loader>
+    </v-sheet>
+    <div v-else>
+      <swiper
+        v-if="meetings.length > 0"
+        class="swiper mt-2 px-2"
+        :options="swiperOption"
+      >
+        <swiper-slide
+          class="px-2"
+          v-for="(meeting, idx) in meetings"
+          :key="idx"
+        >
+          <meeting-card :meeting="meeting"></meeting-card>
+        </swiper-slide>
+      </swiper>
+      <v-card
+        v-else
+        height="175px"
+        class="mb-6 mx-4 mt-2 d-flex flex-row justify-center align-center"
+        elevation="0"
+        style="
+          border: 1px solid var(--main-col-1);
+          border-radius: 15px;
+          box-shadow: 0px 5px 20px -10px var(--main-col-1) !important;
+        "
       >
         <v-sheet
-          color="transparent"
-          style="
-            text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
-          "
+          class="mx-7 empty d-flex flex-row justify-space-between align-center"
+          width="100%"
+          height="100%"
+          max-width="330"
         >
-          <span class="my-2 semibold-font main-col-1 xl-font">
-            오늘 모임이 없습니다.
-          </span>
-          <div class="d-flex flex-column my-1 regular-font xxs-font main-col-1">
-            <span>남는 시간이 있다면</span>
-            <span>친구들과 번개 약속을</span>
-            <span>잡아보는 건 어떠신가요?</span>
-          </div>
-          <v-btn
-            class="mt-1"
-            small
-            color="var(--main-col-1)"
-            dark
-            rounded
-            @click="goRegister()"
+          <v-sheet
+            color="transparent"
+            style="
+              text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+            "
           >
-            <span class="px-5 regular-font xxxs-font"> 모임 방 만들기 </span>
-          </v-btn>
+            <span class="my-2 semibold-font main-col-1 xl-font">
+              오늘 모임이 없습니다.
+            </span>
+            <div
+              class="d-flex flex-column my-1 regular-font xxs-font main-col-1"
+            >
+              <span>남는 시간이 있다면</span>
+              <span>친구들과 번개 약속을</span>
+              <span>잡아보는 건 어떠신가요?</span>
+            </div>
+            <v-btn
+              class="mt-1"
+              small
+              color="var(--main-col-1)"
+              dark
+              rounded
+              @click="goRegister()"
+            >
+              <span class="px-5 regular-font xxxs-font"> 모임 방 만들기 </span>
+            </v-btn>
+          </v-sheet>
         </v-sheet>
-      </v-sheet>
-    </v-card>
+      </v-card>
+    </div>
   </v-sheet>
 </template>
 
@@ -83,11 +99,16 @@ export default {
       },
       meetings: [],
       show: false,
+      loading: true,
     };
   },
-  created() {
+  async created() {
+    this.loading = true;
     getTodayMeetings().then((res) => {
-      this.meetings = res;
+      if (res) {
+        this.meetings = res;
+        this.loading = false;
+      }
     });
   },
   methods: {
