@@ -53,6 +53,7 @@ public class MeetingService {
      *          만약 가입되어 있지 않고 모임의 가입 가능 인원(10명)이 남았다면 가입시키고 meetingId를 반환하고,
      *          가입할 수 없다면 -1을 반환한다.
      */
+    @Transactional
     public Long checkAndSaveMeetingMember(String roomCode, Long memberId){
 
         Meeting meeting = meetingRepository.findByRoomCode(roomCode)
