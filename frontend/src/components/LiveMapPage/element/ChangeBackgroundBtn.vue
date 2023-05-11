@@ -18,7 +18,7 @@
       <!-- <v-btn class="ml-1 mt-1" color="var(--main-col-1)" dark rounded>
         배경
       </v-btn> -->
-      <v-switch></v-switch>
+      <v-switch v-model="mapType" color="var(--main-col-1)"></v-switch>
     </v-sheet>
   </v-sheet>
 </template>
