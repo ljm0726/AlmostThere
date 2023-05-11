@@ -891,11 +891,12 @@ export default {
     },
 
     moveRegisterPage() {
-      const from = sessionStorage.getItem("from");
-      console.log(from);
-      if (from !== null) {
+      const retrievedObject = sessionStorage.getItem("from");
+      console.log(retrievedObject);
+      if (retrievedObject !== null) {
+        const from = JSON.parse(retrievedObject);
         // this.$router.push("/Place");
-        this.$router.replace(`/meeting/${from}`);
+        this.$router.replace(`/meeting/${from.id}`);
       } else {
         this.$router.replace("/register"); // register페이지
       }

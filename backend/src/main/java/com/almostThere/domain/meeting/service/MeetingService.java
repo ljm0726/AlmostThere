@@ -179,17 +179,14 @@ public class MeetingService {
 
     /**
      * Host가 모임을 삭제한다.
-     * @param meetingDeleteRequestDto
+     * @param
      */
     @Transactional
-    public void deleteMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto) {
-        final Meeting meeting = meetingRepository.findById(meetingDeleteRequestDto.getMeetingId())
+    public void deleteMeeting(Long meetingId) {
+        final Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new NotFoundException(
                         ErrorCode.MEETING_NOT_FOUND));
-
-        if (meeting.getHost().getId() == meetingDeleteRequestDto.getMeetingId())
-            meetingRepository.deleteById(meetingDeleteRequestDto.getMeetingId());
-        else throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
+        meetingRepository.deleteById(meetingId);
     }
 
     /**

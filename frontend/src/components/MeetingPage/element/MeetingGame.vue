@@ -16,7 +16,7 @@
           class="point-font xxxxl-font main-col-1 align-self-center"
           v-on:click="spin"
         >
-          START!
+          START !
         </span>
         <section class="section d-flex flex-column align-center justify-center">
           <div class="container" id="app">
@@ -114,7 +114,7 @@ export default {
   name: "MeetingGame",
   data() {
     return {
-      options: ["항목"],
+      options: ["꽝"],
       new_option: "",
       startAngle: 0,
       startAngleStart: 0,
@@ -134,7 +134,7 @@ export default {
   methods: {
     open() {
       this.result = "";
-      this.options = ["항목"];
+      this.options = ["꽝"];
       console.log("마운트");
       this.drawRouletteWheel();
       this.$refs.gameSheet.open();
@@ -160,11 +160,14 @@ export default {
       var red = Math.sin(frequency * item + 2 + phase) * width + center;
       var green = Math.sin(frequency * item + 0 + phase) * width + center;
       var blue = Math.sin(frequency * item + 3 + phase) * width + center;
-      console.log(red + " " + green + " " + blue);
+
       return this.RGB2Color(red, green, blue);
     },
 
     addOptions() {
+      if (this.options.length == 10) {
+        return;
+      }
       this.options.push(this.new_option);
       this.new_option = "";
       this.drawRouletteWheel();
@@ -178,7 +181,7 @@ export default {
     drawRouletteWheel() {
       var canvas = document.getElementById("canvas");
       if (canvas.getContext) {
-        var outsideRadius = 120;
+        var outsideRadius = 120.5;
         var textRadius = 96;
         var insideRadius = 50;
 
@@ -188,7 +191,7 @@ export default {
         this.ctx.strokeStyle = "#D9D9D9";
         this.ctx.lineWidth = 5;
 
-        this.ctx.font = "16px Pretendard-Thin";
+        this.ctx.font = "16px Pretendard-Regular-Retina";
 
         for (var i = 0; i < this.options.length; i++) {
           var angle = this.startAngle + i * this.arc;
@@ -196,7 +199,6 @@ export default {
 
           this.ctx.beginPath();
           this.ctx.arc(150, 150, outsideRadius, angle, angle + this.arc, false);
-          // this.ctx.arc(150, 150, insideRadius, angle + this.arc, angle, true);
           this.ctx.arc(150, 150, insideRadius, angle + this.arc, angle, true);
           this.ctx.stroke();
           this.ctx.fill();
@@ -255,14 +257,9 @@ export default {
       var arcd = (this.arc * 180) / Math.PI;
       var index = Math.floor((360 - (degrees % 360)) / arcd);
       this.ctx.save();
-      this.ctx.font = "bold 25px Helvetica, Arial";
+      // this.ctx.font = "bold 25px Helvetica, Arial";
       var text = this.options[index];
       this.result = text;
-      // this.ctx.fillText(
-      //   text,
-      //   150 - this.ctx.measureText(text).width / 2,
-      //   150 + 10
-      // );
       this.ctx.restore();
     },
 

@@ -21,6 +21,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -34,7 +35,8 @@ import org.springframework.stereotype.Service;
 public class TokenService {
 
     private final Environment env;
-    private final RedisTemplate redisTemplate;
+    @Qualifier("redisTemplateForToken")
+    private final RedisTemplate redisTemplateForToken;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private String secretKey;
@@ -108,10 +110,10 @@ public class TokenService {
             log.info("claims {}", Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token));
-            log.info("token verify {}", redisTemplate.opsForValue().get(email));
-            ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
+            log.info("token verify {}, {},", redisTemplateForToken.keys("*"), redisTemplateForToken.hasKey(email));
+            ValueOperations<String, String> logoutValueOperations = redisTemplateForToken.opsForValue();
 
-            if (logoutValueOperations.get(email) == null) {
+            if (!redisTemplateForToken.hasKey(email)) {
                 log.info("refresh token 없음. -> 재 로그인");
                 return false;
             }
@@ -214,6 +216,8 @@ public class TokenService {
             .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         String email = member.getMemberEmail();
+
+        log.info("refresh Token {}, {}", refreshToken, email);
 
         if (refreshToken.equals("") || !verifyToken(refreshToken, email, response)) {
             throw new AccessDeniedException(ErrorCode.NOT_AUTHENTICATION.getMessage());

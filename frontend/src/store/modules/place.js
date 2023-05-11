@@ -35,12 +35,12 @@ const placeStore = {
       console.log(placeMap.get("name"));
 
       // meetingStore.commit("SET_PLACE_NAME", placeMap.get("name"));
-      commit("meetingStore/SET_PLACE_NAME", placeMap.get("name"), {
-        root: true,
-      });
-      commit("meetingStore/SET_PLACE_ADDR", placeMap.get("addr"), {
-        root: true,
-      });
+      // commit("meetingStore/SET_PLACE_NAME", placeMap.get("name"), {
+      //   root: true,
+      // });
+      // commit("meetingStore/SET_PLACE_ADDR", placeMap.get("addr"), {
+      //   root: true,
+      // });
     },
     resetPlace({ commit }) {
       commit("RESET_PLACE");

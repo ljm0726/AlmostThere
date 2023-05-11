@@ -12,16 +12,19 @@
       <div class="d-flex flex-row align-self-end">
         <!-- 수정 버튼 -->
         <meeting-modify-btn
-          v-if="meetingName"
+          v-if="member_id === hostId"
           :meetingName="meetingName"
           :meetingDate="meetingDate"
           :meetingTime="meetingTime"
           :meetingPlace="meetingPlace"
           :meetingAddress="meetingAddress"
+          :meetingLat="meetingLat"
+          :meetingLng="meetingLng"
           :lateAmount="lateAmount"
         ></meeting-modify-btn>
         <!-- 초대 버튼 -->
         <meeting-invite-btn
+          v-if="member_id === hostId"
           :meetingName="meetingName"
           :meetingDate="meetingDate"
           :meetingTime="meetingTime"
@@ -29,9 +32,12 @@
           :roomCode="roomCode"
         ></meeting-invite-btn>
         <!-- 모임 삭제 버튼 -->
-        <meeting-delete-btn></meeting-delete-btn>
+        <meeting-delete-btn
+          v-if="member_id === hostId"
+          :meetingId="meetingId"
+        ></meeting-delete-btn>
         <!-- 모임 나가기 버튼 -->
-        <meeting-out-btn></meeting-out-btn>
+        <meeting-out-btn v-if="member_id !== hostId"></meeting-out-btn>
       </div>
       <div class="d-flex flex-row justify-space-between align-end">
         <div class="d-flex flex-column">
@@ -56,7 +62,7 @@ import MeetingDeleteBtn from "../button/MeetingDeleteBtn.vue";
 import MoveChattingBtn from "../button/MoveChattingBtn.vue";
 import MoveLiveMapBtn from "../button/MoveLiveMapBtn.vue";
 import MeetingOutBtn from "../button/MeetingOutBtn.vue";
-
+import { mapState } from "vuex";
 export default {
   components: {
     MeetingModifyBtn,
@@ -73,10 +79,16 @@ export default {
     meetingTime: String,
     meetingPlace: String,
     meetingAddress: String,
+    meetingLat: Number,
+    meetingLng: Number,
     lateAmount: Number,
     roomCode: String,
+    hostId: Number,
+    meetingId: Number,
+  },
+  computed: {
+    ...mapState("memberStore", ["member", "member_id"]),
   },
 };
 </script>
-
 <style></style>
