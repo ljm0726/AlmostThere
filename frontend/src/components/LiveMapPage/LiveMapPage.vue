@@ -16,12 +16,14 @@
     </v-sheet>
     <!-- kakao map -->
     <div v-else class="live-map">
+      <!-- <change-background-btn /> -->
       <!-- <div class="live-map" v-if="enterTimeCheckFlag"> -->
       <arrive-and-chat-btn
         @resizeMapLevel="resizeMapLevel"
       ></arrive-and-chat-btn>
       <live-map
         ref="livemap"
+        :background_type="backgroundType"
         :member_id="memberId"
         :meeting_lat="meetingLat"
         :meeting_lng="meetingLng"
@@ -39,13 +41,20 @@
 <script>
 import LiveMap from "./element/LiveMap.vue";
 import ArriveAndChatBtn from "./element/ArriveAndChatBtn.vue";
+// import ChangeBackgroundBtn from "./element/ChangeBackgroundBtn.vue";
 import NoEnterTimeDialog from "./element/NoEnterTimeDialog.vue";
 import InternetError from "@/common/component/dialog/InternetError.vue";
 import { liveMapInfo } from "@/api/modules/livemap.js";
 
 export default {
   name: "LiveMapPage",
-  components: { LiveMap, ArriveAndChatBtn, NoEnterTimeDialog, InternetError },
+  components: {
+    LiveMap,
+    ArriveAndChatBtn,
+    // ChangeBackgroundBtn,
+    NoEnterTimeDialog,
+    InternetError,
+  },
   data() {
     return {
       meetingTime: null,
@@ -54,6 +63,7 @@ export default {
       chattingMap: null,
       meetingLat: null,
       meetingLng: null,
+      backgroundType: "tile",
 
       // enterTimeCheckFlag: false, // 모임 시간 3시간 전/후 check flag
       loading: true,
