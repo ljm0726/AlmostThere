@@ -172,6 +172,7 @@ export default {
       "place_addr",
       "meeting_lat",
       "meeting_lng",
+      "recent_meeting",
     ]),
     ...mapState("placeStore", ["placeName", "placeAddr", "placeX", "placeY"]),
   },
@@ -270,6 +271,9 @@ export default {
       ) {
         alert("지각비를 다시 설정해주세요! (0~10000)원");
       } else {
+        const savedRecentMeeting = new Date(this.recent_meeting.meetingTime);
+        const modifiedRecentMeeting = new Date(this.meetingTime);
+
         this.modify({
           meeting_name: this.name,
           date: this.date,
@@ -286,6 +290,38 @@ export default {
               // this.$refs.modifySheet.close();
               sessionStorage.removeItem("from");
 
+              if (savedRecentMeeting > modifiedRecentMeeting) {
+                const year = modifiedRecentMeeting.getFullYear();
+                const month = String(
+                  modifiedRecentMeeting.getMonth() + 1
+                ).padStart(2, "0");
+                const day = String(modifiedRecentMeeting.getDate()).padStart(
+                  2,
+                  "0"
+                );
+                const hours = String(modifiedRecentMeeting.getHours()).padStart(
+                  2,
+                  "0"
+                );
+                const minutes = String(
+                  modifiedRecentMeeting.getMinutes()
+                ).padStart(2, "0");
+                const seconds = String(
+                  modifiedRecentMeeting.getSeconds()
+                ).padStart(2, "0");
+
+                const formattedTime = new Date(
+                  `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+                );
+
+                const id = this.$route.params.id;
+
+                const recentMeeting = {
+                  meetingId: id,
+                  meetingTime: formattedTime,
+                };
+                this.savedRecentMeeting(recentMeeting);
+              }
               window.location.reload(true); //reload를 해야 하나??
             });
           })
