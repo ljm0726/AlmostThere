@@ -26,6 +26,7 @@ export default {
       memberOverlay: [0.5, 3.2], // member nickname over-lay (x, y) 위치 좌표
       distanceOverlay: [-0.4, -0.1], // distance over-lay 좌표
       chatOverlay: [0.5, 4], // chat over-lay 좌표
+      chatMaxLength: 20, // chatting over-lay 최대 길이
       warningOverlay: [6.0, 3.5], // GPS 수신불가 over-lay 좌표
       /* # 좌표 */
       placeLatLng: [], // 모임장소 좌표
@@ -685,19 +686,17 @@ export default {
     },
     // [@Method] chatting 내용 over-lay 표시
     updateChatOverlay() {
-      //     {
-      //       member: {
-      //         memberId: 1,
-      //         content: "100m 남음~",
-      //       }
-      //     },
       for (var key of Object.keys(this.chatting)) {
-        console.log("key " + key);
+        // console.log("key " + key);
         // chatting 내용이 없는 경우 생성 X
         if (this.chatting[key] == null || this.chatting[key] == "") continue;
 
-        console.log("#21# memberLocation 확인: ", this.memberLocation);
-        const content = `<div class="chat-overlay point-font">${this.chatting[key]}</div>`;
+        let chattingContent = this.chatting[key];
+        if (chattingContent.length > this.chatMaxLength) {
+          chattingContent =
+            chattingContent.substring(0, this.chatMaxLength) + "...";
+        }
+        const content = `<div class="chat-overlay point-font">${chattingContent}</div>`;
         const memberMarker = this.memberLocation.find(
           (loc) => loc.memberId == key
         );
