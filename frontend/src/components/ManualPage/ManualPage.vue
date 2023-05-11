@@ -133,7 +133,7 @@
             </div>
             <div class="d-flex flex-column my-3">
               <v-chip color="var(--blue-col)" dark>
-                <span class="mr-2 black-font">STEP 3</span>
+                <span class="mr-2 black-font">STEP 4</span>
                 <span>정산하기</span>
               </v-chip>
               <div class="mt-2 d-flex flex-column">
@@ -158,7 +158,6 @@
     <v-bottom-navigation
       fixed
       style="margin: 0 auto; left: 0; right: 0; box-shadow: none"
-      v-model="value"
       max-width="500"
       height="50"
     >
@@ -180,10 +179,10 @@
 import NavHeader from "@/views/Header/NavHeader.vue";
 export default {
   components: { NavHeader },
-  name: "GuidePage",
+  name: "ManualPage",
   data() {
     return {
-      tab: 1,
+      tab: 0,
       items: ["소개", "모임", "중간장소", "실시간위치"],
     };
   },

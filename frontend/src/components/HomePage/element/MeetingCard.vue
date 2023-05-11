@@ -63,7 +63,6 @@
               <v-avatar color="white" size="27px">
                 <v-menu
                   v-model="stackedMenu"
-                  lazy
                   left
                   :max-height="menuMaxHeight"
                   nudge-bottom="8"

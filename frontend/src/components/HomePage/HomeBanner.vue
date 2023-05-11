@@ -1,17 +1,17 @@
 <template>
   <swiper class="swiper" :options="swiperOption">
     <swiper-slide>
-      <v-sheet width="100%" height="250px">
+      <v-sheet width="100%" height="250px" style="cursor: pointer">
         <home-banner-one></home-banner-one>
       </v-sheet>
     </swiper-slide>
     <swiper-slide>
-      <v-sheet width="100%" height="250px">
+      <v-sheet width="100%" height="250px" style="cursor: pointer">
         <home-banner-two></home-banner-two>
       </v-sheet>
     </swiper-slide>
     <swiper-slide>
-      <v-sheet width="100%" height="250px">
+      <v-sheet width="100%" height="250px" style="cursor: pointer">
         <home-banner-three></home-banner-three>
       </v-sheet>
     </swiper-slide>
