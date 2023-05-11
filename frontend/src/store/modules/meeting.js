@@ -229,6 +229,9 @@ const meetingStore = {
     setInvitedMeeting({ commit }, roomCode) {
       commit("SET_INVITED_MEETING", roomCode);
     },
+    setRecentMeeting({ commit }, recent_meeting) {
+      commit("SET_RECENT_MEETING", recent_meeting);
+    },
   },
 };
 
