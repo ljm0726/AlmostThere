@@ -20,12 +20,19 @@ const meetingStore = {
     meeting_lng: null,
     late_amount: 0, //지각비
     recent_meeting: null,
-  },
-  getters: {
-    GET_RECENT_MEETING: function (state) {
-      return state.recent_meeting;
+
+    regist: {
+      name: null,
+      date: null,
+      time: null,
+      lat: null,
+      lng: null,
+      place_name: null,
+      place_addr: null,
     },
+    invited_meeting: null,
   },
+  getters: {},
   mutations: {
     SET_MEETING_NAME(state, meeting_name) {
       state.meeting_name = meeting_name;
@@ -57,17 +64,55 @@ const meetingStore = {
       state.late_amount = meeting.lateAmount;
     },
     SET_RECENT_MEETING(state, recent_meeting) {
-      console.log(recent_meeting);
       state.recent_meeting = recent_meeting;
-      console.log("# meeting set 확인: ", recent_meeting);
+    },
+    SET_INVITED_MEETING(state, invited_meeting) {
+      state.invited_meeting = invited_meeting;
+    },
+    SET_REGIST_INFO(state, regist) {
+      state.regist.name = regist.name;
+      state.regist.date = regist.date;
+      state.regist.time = regist.time;
+      state.regist.lat = regist.lat;
+      state.regist.lng = regist.lng;
+      state.regist.place_name = regist.place_name;
+      state.regist.place_addr = regist.place_addr;
+    },
+
+    RESET_REGIST(state) {
+      state.regist = {
+        name: null,
+        date: null,
+        time: null,
+        lat: null,
+        lng: null,
+        place_name: null,
+        place_addr: null,
+      };
     },
   },
+
   actions: {
     async register(
       { commit },
-      { member_id, meeting_name, date_time, place_name, place_addr }
+      {
+        member_id,
+        meeting_name,
+        date_time,
+        place_name,
+        place_addr,
+        meeting_lat,
+        meeting_lng,
+      }
     ) {
-      // console.log(meeting_name, memberStore.state.member.id);
+      console.log(
+        meeting_name,
+        date_time,
+        place_name,
+        place_addr,
+        meeting_lat,
+        meeting_lng
+      );
       await meetingRegister(
         // this.,
         member_id,
@@ -75,8 +120,8 @@ const meetingStore = {
         date_time,
         place_name,
         place_addr,
-        placeStore.state.placeX,
-        placeStore.state.placeY,
+        meeting_lat,
+        meeting_lng,
         ({ data }) => {
           console.log(data);
           commit("SET_MEETING_NAME", null);
@@ -164,14 +209,23 @@ const meetingStore = {
     SET_MEETING_TIME({ commit }, meeting_time) {
       commit("SET_MEETING_TIME", meeting_time);
     },
-
     SET_MEETING_INFO({ commit }, meeting) {
       console.log(meeting);
       commit("SET_MEETING_INFO", meeting);
     },
-    //
     setMeeting({ commit }, meeting) {
       commit("SET_RECENT_MEETING", meeting);
+    },
+
+    setRegistMeeting({ commit }, regist) {
+      commit("SET_REGIST_INFO", regist);
+    },
+
+    resetRegist({ commit }) {
+      commit("RESET_REGIST");
+    },
+    setInvitedMeeting({ commit }, roomCode) {
+      commit("SET_INVITED_MEETING", roomCode);
     },
   },
 };

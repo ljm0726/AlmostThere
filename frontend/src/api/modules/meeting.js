@@ -1,3 +1,4 @@
+import meeting from "@/router/modules/meeting";
 import { apiInstance } from "../index";
 
 const api = apiInstance();
@@ -13,6 +14,7 @@ async function meetingRegister(
   success,
   fail
 ) {
+  console.log(meeting);
   await api
     .post(`/meeting`, {
       hostId: id,

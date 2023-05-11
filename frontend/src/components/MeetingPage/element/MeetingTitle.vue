@@ -21,7 +21,13 @@
           :lateAmount="lateAmount"
         ></meeting-modify-btn>
         <!-- 초대 버튼 -->
-        <meeting-invite-btn :meetingName="meetingName"></meeting-invite-btn>
+        <meeting-invite-btn
+          :meetingName="meetingName"
+          :meetingDate="meetingDate"
+          :meetingTime="meetingTime"
+          :meetingPlace="meetingPlace"
+          :roomCode="roomCode"
+        ></meeting-invite-btn>
         <!-- 모임 삭제 버튼 -->
         <meeting-delete-btn></meeting-delete-btn>
         <!-- 모임 나가기 버튼 -->
@@ -68,6 +74,7 @@ export default {
     meetingPlace: String,
     meetingAddress: String,
     lateAmount: Number,
+    roomCode: String,
   },
 };
 </script>

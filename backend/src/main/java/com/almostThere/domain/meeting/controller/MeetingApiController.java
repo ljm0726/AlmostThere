@@ -27,6 +27,28 @@ public class MeetingApiController {
 
     private final MeetingService meetingService;
 
+    /**
+     * 사용자가 름코드에 해당하는 모임에 가입되어 있는지 확인 후 가입시킨다.
+     * @param authentication
+     * @param roomCode
+     * @return
+     */
+    @GetMapping("/meeting-member/{roomCode}")
+    public BaseResponse checkAndSaveMeetingMember(Authentication authentication, @PathVariable String roomCode){
+
+        System.out.println("roomCode :"+ roomCode);
+        Long memberId = ((MemberAccessDto) authentication.getPrincipal()).getId();
+        Long meetingId = meetingService.checkAndSaveMeetingMember(roomCode, memberId);
+
+        return meetingId != -1 ? BaseResponse.customSuccess(200, "가입 or 멤버 확인이 성공적으로 완료됨", meetingId)
+            : BaseResponse.customSuccess(403, "가입 정원 초과", meetingId);
+    }
+
+    /**
+     * 소켓 연결 시간 설정을 위해 다가올 모임 중 가장 이른 모임을 조회한다.
+     * @param authentication for memberId
+     * @return
+     */
     @GetMapping("/most-recent")
     public BaseResponse getMostRecentMeeting(Authentication authentication){
 
