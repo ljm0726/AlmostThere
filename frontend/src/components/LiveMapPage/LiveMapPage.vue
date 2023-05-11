@@ -1,77 +1,84 @@
 <template>
   <div class="live-map">
+    <v-sheet
+      v-if="loading"
+      height="100%"
+      color="transparnet"
+      class="d-flex flex-column align-center justify-center"
+    >
+      <v-progress-circular
+        :size="60"
+        :width="6"
+        color="var(--main-col-1)"
+        indeterminate
+      ></v-progress-circular>
+      <span class="mt-2 xxxxxl-font logo-font main-col-1">Loading</span>
+    </v-sheet>
     <!-- kakao map -->
-    <div class="live-map" v-if="enterTimeCheckFlag">
+    <div v-else class="live-map">
+      <!-- <div class="live-map" v-if="enterTimeCheckFlag"> -->
       <arrive-and-chat-btn
         @resizeMapLevel="resizeMapLevel"
       ></arrive-and-chat-btn>
-      <live-map ref="livemap"></live-map>
+      <live-map
+        ref="livemap"
+        :member_id="memberId"
+        :meeting_lat="meetingLat"
+        :meeting_lng="meetingLng"
+        :meeting_name="meetingName"
+        :chatting_map="chattingMap"
+      ></live-map>
     </div>
-    <!-- 진입 불가 -->
-    <div v-else>
-      <v-dialog
-        v-model="dialog"
-        scrollable
-        max-width="300px"
-        rounded="xl"
-        persistent
-      >
-        <v-card rounded="xl">
-          <v-card-title class="d-flex flex-column">
-            <div class="align-self-end">
-              <close-button @closeDialog="closeDialog"></close-button>
-            </div>
-            <img src="@/assets/images/dialog/dont_enter.png" width="60%" />
-            <span class="point-font xxxxxxl-font main-col-1">
-              위치 공유 불가</span
-            >
-            <span class="extralight-font sm-font mt-2"
-              >멤버들과 실시간 위치 공유는
-            </span>
-            <span class="extralight-font sm-font mb-2"
-              >모임 시간 전후 3시간 동안만 지원됩니다.</span
-            >
-          </v-card-title>
-          <v-card-text>
-            <v-row>
-              <v-col class="pl-1">
-                <v-btn
-                  elevation="0"
-                  color="white"
-                  outlined
-                  dark
-                  rounded
-                  @click="closeDialog"
-                  block
-                  style="background-color: var(--main-col-1)"
-                  >뒤로가기</v-btn
-                >
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-    </div>
+    <!-- 시간 진입 불가 -->
+    <no-enter-time-dialog ref="timeout"></no-enter-time-dialog>
+    <!-- 그외 진입 불가 -->
+    <internet-error ref="error"></internet-error>
   </div>
 </template>
 
 <script>
 import LiveMap from "./element/LiveMap.vue";
 import ArriveAndChatBtn from "./element/ArriveAndChatBtn.vue";
+import NoEnterTimeDialog from "./element/NoEnterTimeDialog.vue";
+import InternetError from "@/common/component/dialog/InternetError.vue";
+import { liveMapInfo } from "@/api/modules/livemap.js";
 
 export default {
   name: "LiveMapPage",
-  components: { LiveMap, ArriveAndChatBtn },
+  components: { LiveMap, ArriveAndChatBtn, NoEnterTimeDialog, InternetError },
   data() {
     return {
       meetingTime: null,
-      enterTimeCheckFlag: false, // 모임 시간 3시간 전/후 check flag
-      dialog: true,
+      meetingName: null,
+      memberId: null,
+      chattingMap: null,
+      meetingLat: null,
+      meetingLng: null,
+
+      // enterTimeCheckFlag: false, // 모임 시간 3시간 전/후 check flag
+      loading: true,
     };
   },
-  created() {
-    this.meetingTime = this.$route.query.time;
-    this.checkMeetingTime();
+  async created() {
+    // this.meetingTime = this.$route.query.time;
+    // this.checkMeetingTime();
+    this.loading = true;
+    await liveMapInfo(this.$route.params.id).then(async (res) => {
+      if (res) {
+        console.log(">>> ", res);
+        this.memberId = await res.memberId;
+        this.meetingName = await res.meetingName;
+        this.meetingTime = await res.meetingTime;
+        console.log("1/ ", res);
+        this.meetingLat = await res.meetingLat;
+        this.meetingLng = await res.meetingLng;
+        this.chattingMap = await res.chattingDtoMap;
+        await this.checkMeetingTime();
+        // this.loading = false;
+      } else {
+        this.$refs.error.openDialog();
+      }
+    });
   },
   methods: {
     resizeMapLevel() {
@@ -79,7 +86,9 @@ export default {
     },
     // [@Method] 모임시간 3시간 전/후 check
     checkMeetingTime() {
+      console.log(this.meetingTime);
       const meetingTime = new Date(this.meetingTime);
+
       const threeHoursAgoTime = new Date(
         meetingTime.getTime() - 3 * 60 * 60 * 1000
       );
@@ -87,20 +96,22 @@ export default {
         meetingTime.getTime() + 3 * 60 * 60 * 1000
       );
       const currentTime = new Date();
-      // console.log("#21# 3시간 전: ", threeHoursAgoTime);
-      // console.log("#21# 3시간 후: ", threeHoursAfterTime);
+      console.log("#21# 3시간 전: ", threeHoursAgoTime);
+      console.log("#21# 3시간 후: ", threeHoursAfterTime);
       // i) 현재 시각이 모임 시간의 3시간 전/후 이내
       if (
         threeHoursAgoTime.getTime() <= currentTime.getTime() &&
         currentTime.getTime() <= threeHoursAfterTime.getTime()
       ) {
-        this.enterTimeCheckFlag = true;
-        this.dialog = false;
+        // this.enterTimeCheckFlag = true;
+        // this.dialog = false;
+        this.loading = false;
       }
       // ii) 그 외 시간
       else {
-        this.enterTimeCheckFlag = false;
-        this.dialog = true;
+        // this.enterTimeCheckFlag = false;
+        // this.dialog = true;
+        this.$refs.timeout.openDialog();
       }
     },
     // [@Method] 뒤로 돌아가기
