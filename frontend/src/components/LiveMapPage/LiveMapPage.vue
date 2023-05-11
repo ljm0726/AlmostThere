@@ -22,6 +22,7 @@
       ></arrive-and-chat-btn>
       <live-map
         ref="livemap"
+        :background_type="backgroundType"
         :member_id="memberId"
         :meeting_lat="meetingLat"
         :meeting_lng="meetingLng"
@@ -45,7 +46,12 @@ import { liveMapInfo } from "@/api/modules/livemap.js";
 
 export default {
   name: "LiveMapPage",
-  components: { LiveMap, ArriveAndChatBtn, NoEnterTimeDialog, InternetError },
+  components: {
+    LiveMap,
+    ArriveAndChatBtn,
+    NoEnterTimeDialog,
+    InternetError,
+  },
   data() {
     return {
       meetingTime: null,
@@ -54,6 +60,7 @@ export default {
       chattingMap: null,
       meetingLat: null,
       meetingLng: null,
+      backgroundType: "tile",
 
       // enterTimeCheckFlag: false, // 모임 시간 3시간 전/후 check flag
       loading: true,

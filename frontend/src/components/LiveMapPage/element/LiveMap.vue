@@ -47,6 +47,7 @@ export default {
     };
   },
   props: {
+    background_type: String, // "tile" = 하얀 TileSet 배경, "map" = 지도 배경
     member_id: Number,
     meeting_lat: Number,
     meeting_lng: Number,
@@ -72,11 +73,16 @@ export default {
     this.chatting = this.chatting_map;
     // iii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
-      this.initMap();
+      if (this.background_type == "map") this.initMap();
+      else this.initMapTileSet();
     } else {
       const script = document.createElement("script");
       /* global kakao */
-      script.onload = () => kakao.maps.load(this.initMap);
+      script.onload = () =>
+        kakao.maps.load(() => {
+          if (this.background_type == "map") this.initMap();
+          else this.initMapTileSet();
+        });
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
       document.head.appendChild(script);
     }
@@ -84,27 +90,26 @@ export default {
   methods: {
     ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
     // [@Method] Kakao Map 생성
-    // initMap() {
-    //   const container = document.getElementById("map");
-    //   const options = {
-    //     center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
-    //     level: 4,
-    //   };
-
-    //   // 지도 객체 등록
-    //   this.map = new kakao.maps.Map(container, options);
-
-    //   // 초기 marker 생성
-    //   // i) 모임 장소 marker
-    //   this.createPlaceMarker(options);
-    //   // ii) 멤버 별 marker 생성
-    //   if (this.memberLocation.length != 0) this.createMemberMarker();
-
-    //   // WebSocket 연결
-    //   this.connect();
-    // },
-    // [@Method] Kakao Map 생성 + 배경화면 설정
     initMap() {
+      const container = document.getElementById("map");
+      const options = {
+        center: new kakao.maps.LatLng(this.placeLatLng[0], this.placeLatLng[1]),
+        level: 4,
+      };
+      // 지도 객체 등록
+      this.map = new kakao.maps.Map(container, options);
+
+      // 모임장소로 부터 원 표시
+      // this.createCircle();
+
+      // 모임 장소 marker 생성
+      this.createPlaceMarker(options);
+
+      // WebSocket 연결
+      this.connect();
+    },
+    // [@Method] Kakao Map 생성 + 배경화면 설정
+    initMapTileSet() {
       const plan = (x, y, z) => {
         y = -y - 1;
         const limit = Math.ceil(3 / Math.pow(2, z));
