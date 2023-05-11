@@ -121,9 +121,9 @@ public class MeetingApiController {
      * @param meetingDeleteRequestDto
      * @return 모임을 삭제한다.
      */
-    @DeleteMapping
-    public BaseResponse deleteMeeting(@RequestBody MeetingDeleteRequestDto meetingDeleteRequestDto){
-        meetingService.deleteMeeting(meetingDeleteRequestDto);
+    @DeleteMapping("/{meetingId}")
+    public BaseResponse deleteMeeting(@PathVariable Long meetingId){
+        meetingService.deleteMeeting(meetingId);
         return new BaseResponse(200, "SUCCESS",null);
     }
 
