@@ -3,7 +3,6 @@ import {
   modifyMeeting,
   outMeeting,
 } from "@/api/modules/meeting";
-import placeStore from "./place";
 import router from "@/router"; // 라우터 import
 
 const meetingStore = {
@@ -138,19 +137,22 @@ const meetingStore = {
     },
 
     async modify(
-      { commit, state },
-      { meeting_name, date, time, place_name, place_addr, amount }
+      { state },
+      {
+        meeting_name,
+        date,
+        time,
+        place_name,
+        place_addr,
+        place_x,
+        place_y,
+        amount,
+      }
     ) {
       //meeting x,y 좌표를 받음.
       const date_time = date + " " + time;
-      const X =
-        placeStore.state.placeX == 0
-          ? state.meeting_lat
-          : placeStore.state.placeX;
-      const Y =
-        placeStore.state.placeY == 0
-          ? state.meeting_lng
-          : placeStore.state.placeY;
+      const X = place_x;
+      const Y = place_y;
       // console.log(date_time, place_name, place_addr, amount);
       await modifyMeeting(
         // this.,
@@ -167,11 +169,11 @@ const meetingStore = {
         amount,
         ({ data }) => {
           console.log(data);
-          commit("SET_MEETING_NAME", meeting_name);
-          commit("SET_MEETING_DATE", date);
-          commit("SET_MEETING_TIME", time);
-          commit("SET_PLACE_NAME", place_name);
-          commit("SET_PLACE_ADDR", place_addr);
+          // commit("SET_MEETING_NAME", meeting_name);
+          // commit("SET_MEETING_DATE", date);
+          // commit("SET_MEETING_TIME", time);
+          // commit("SET_PLACE_NAME", place_name);
+          // commit("SET_PLACE_ADDR", place_addr);
           // router.push({ name: "home" });
         },
         (error) => {

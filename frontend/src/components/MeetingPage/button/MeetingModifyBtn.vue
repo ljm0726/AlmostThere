@@ -173,7 +173,7 @@ export default {
       "meeting_lat",
       "meeting_lng",
     ]),
-    ...mapState("placeStore", ["placeName", "placeAddr"]),
+    ...mapState("placeStore", ["placeName", "placeAddr", "placeX", "placeY"]),
   },
   watch: {
     place_name: function (newValue, oldValue) {
@@ -193,11 +193,23 @@ export default {
       }
     },
     isOpened() {
+      console.log("M", this.name, this.placeName);
       console.log("Sheet is open.");
     },
     isClosed() {
       sessionStorage.removeItem("from");
-      console.log("Sheet is closed.");
+
+      const [date, time2] = this.meetingTime.split("T");
+      const time = time2.slice(0, -3);
+      this.name = this.meetingName;
+      this.date = date;
+      this.time = time;
+
+      this.place = this.meetingPlace;
+      this.address = this.meetingAddress;
+      this.lat = this.meetingLat;
+      this.lng = this.meetingLng;
+      this.amount = this.lateAmount == null ? 0 : parseInt(this.lateAmount);
     },
     // openDialog() {
     //   this.dialog = true;
@@ -209,6 +221,7 @@ export default {
 
     movePlacePage() {
       console.log(this.meeting_lat, this.meeting_lng);
+      //지도에 현재 위치 찍기 위해 저장
       const placeMap = new Map();
       placeMap.set("x", this.meeting_lat);
       placeMap.set("y", this.meeting_lng);
@@ -216,7 +229,16 @@ export default {
       placeMap.set("addr", this.address);
       this.UPDATE_PLACE(placeMap);
 
-      sessionStorage.setItem("from", this.$route.params.id);
+      sessionStorage.setItem(
+        "from",
+        JSON.stringify({
+          id: this.$route.params.id,
+          name: this.name,
+          date: this.date,
+          time: this.time,
+          late: this.amount,
+        })
+      );
 
       this.$router.push("/place");
     },
@@ -302,6 +324,14 @@ export default {
       const formattedDate = `${year}-${month}-${day}`;
       return val >= formattedDate;
     },
+
+    handleBeforeUnload() {
+      sessionStorage.removeItem("from");
+    },
+    handlePopstate() {
+      sessionStorage.removeItem("from");
+      history.back();
+    },
   },
   props: {
     meetingName: String,
@@ -309,6 +339,8 @@ export default {
     meetingTime: String,
     meetingPlace: String,
     meetingAddress: String,
+    meetingLat: Number,
+    meetingLng: Number,
     lateAmount: Number,
   },
   data() {
@@ -318,6 +350,8 @@ export default {
       time: null,
       place: "",
       address: "",
+      lat: 0,
+      lng: 0,
       amount: 0,
       dateDialog: false,
       timeDialog: false,
@@ -335,21 +369,46 @@ export default {
     // this.place = this.meetingPlace;
     // this.address = this.meetingAddress;
     this.amount = this.lateAmount == null ? 0 : parseInt(this.lateAmount);
+
+    window.addEventListener("beforeunload", this.handleBeforeUnload);
+    window.addEventListener("popstate", this.handlePopstate);
   },
 
   mounted() {
-    const from = sessionStorage.getItem("from");
+    const retrievedObject = sessionStorage.getItem("from");
     console.log("M", this.place_name, this.placeName);
-    if (from !== null) {
+    if (retrievedObject !== null) {
+      const from = JSON.parse(retrievedObject);
+
+      this.name = from.name;
+      this.date = from.date;
+      this.time = from.time;
+      this.amount = from.late;
+
+      if (this.placeName == null || this.placeAddr == null) {
+        this.place = this.place_name;
+        this.address = this.place_addr;
+        this.lat = this.placeX;
+        this.lng = this.placeY;
+      } else {
+        this.place = this.placeName;
+        this.address = this.placeAddr;
+        this.lat = this.placeX;
+        this.lng = this.placeY;
+      }
+
       this.open();
-    }
-    if (this.placeName == null || this.placeAddr == null) {
-      this.place = this.place_name;
-      this.address = this.place_addr;
     } else {
-      this.place = this.placeName;
-      this.address = this.placeAddr;
+      this.place = this.meetingPlace;
+      this.address = this.meetingAddress;
+      this.lat = this.meetingLat;
+      this.lng = this.meetingLng;
     }
+  },
+
+  beforeDestroy() {
+    window.removeEventListener("beforeunload", this.handleBeforeUnload);
+    window.removeEventListener("popstate", this.handlePopstate);
   },
 };
 </script>
