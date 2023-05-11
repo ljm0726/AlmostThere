@@ -1,10 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Vuex from "vuex"; //
+import Vuex from "vuex";
 
 import main from "@/router/modules/main";
 import meeting from "@/router/modules/meeting";
 import error from "@/router/modules/error";
+import banner from "@/router/modules/banner";
 
 import store from "@/store";
 import jwt_decode from "jwt-decode";
@@ -26,7 +27,7 @@ async function checkMeetingMember(roomCode) {
 Vue.use(VueRouter);
 Vue.use(Vuex); //
 
-const routes = [...main, ...meeting, ...error];
+const routes = [...main, ...meeting, ...banner, ...error];
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,

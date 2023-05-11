@@ -6,7 +6,7 @@
         class="align-end"
         height="80"
         width="80"
-        :src="this.member.memberProfileImg"
+        :src="member.memberProfileImg"
       >
       </v-img>
     </v-card>
@@ -14,7 +14,7 @@
       <span>안녕하세요!</span>
       <div>
         <span class="bold-font main-col-1">
-          {{ this.member.memberNickname }}
+          {{ member.memberNickname }}
         </span>
         <span>님</span>
       </div>

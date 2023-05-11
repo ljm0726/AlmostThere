@@ -25,6 +25,16 @@
 <script>
 export default {
   name: "TheNavigation",
+  computed: {
+    routerName() {
+      return this.$route.name;
+    },
+  },
+  watch: {
+    routerName() {
+      this.value = window.location.pathname;
+    },
+  },
   data() {
     return {
       value: null,
@@ -50,9 +60,9 @@ export default {
       ],
     };
   },
-  created() {
-    this.value = window.location.pathname;
-  },
+  // created() {
+  //   this.value = window.location.pathname;
+  // },
 };
 </script>
 
