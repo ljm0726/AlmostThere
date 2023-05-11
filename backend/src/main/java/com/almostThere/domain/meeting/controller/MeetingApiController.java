@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -89,8 +88,6 @@ public class MeetingApiController {
      */
     @PostMapping
     public BaseResponse createMeeting(@RequestBody MeetingCreateRequestDto meetingCreateRequestDto){
-        System.out.println("#[모임 생성]# 현재 시간: " + LocalDateTime.now());
-        System.out.println("#[모임 생성]# 모임 시간: " + meetingCreateRequestDto.getMeetingTime());
         meetingService.createMeeting(meetingCreateRequestDto);
         return new BaseResponse(200, "SUCCESS",null);
     }

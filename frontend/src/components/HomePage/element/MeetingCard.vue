@@ -83,7 +83,7 @@
           color="var(--main-col-1)"
           rounded
           small
-          @click="goLiveMap(meeting.id, meeting.meetingTime)"
+          @click="goLiveMap(meeting.id)"
         >
           <v-icon>$vuetify.icons.map_outline</v-icon>
         </v-btn>
@@ -118,11 +118,11 @@ export default {
       const result = `${year}년 ${
         month + 1 < 10 ? `0${month + 1}` : month + 1
       }월 ${day < 10 ? `0${day}` : day}일
-    ${
-      hour < 13
-        ? ` 오전 ${hour - 12 < 10 ? `0${hour - 12}` : hour - 12}`
-        : ` 오후 ${hour - 12 < 10 ? `0${hour - 12}` : hour - 12}`
-    }시 ${min < 10 ? `0${min}` : min}분`;
+      ${
+        hour >= 12
+          ? `오후 ${hour == 12 ? `${hour}` : hour - 12}`
+          : `오전 ${hour}`
+      }시 ${min < 10 ? `0${min}` : min}분`;
       return result;
     },
     remainTime(value) {
@@ -143,13 +143,8 @@ export default {
     },
   },
   methods: {
-    goLiveMap(id, time) {
-      this.$router.push({
-        path: `/live-map/${id}`,
-        query: {
-          time: time,
-        },
-      });
+    goLiveMap(id) {
+      this.$router.push(`/live-map/${id}`);
     },
     goDetail(id) {
       this.$router.push(`/meeting/${id}`);

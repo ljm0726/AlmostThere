@@ -78,16 +78,20 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
-  if (to.name === "landing" || to.name === "login") {
-    // alert(to.name);
-    //login page를 가거나 login이 성공 됐을 때는 다음으로 넘어감
-    next();
-  } else if (access_token) {
+  if (access_token) {
+    console.log("id ", jwt_decode(access_token.substring(7)).id);
     store.dispatch(
       "memberStore/SET_MEMBER_ID",
       jwt_decode(access_token.substring(7)).id
     );
     //router 이동할 때 로그인된 member 정보 가져오기
+  }
+
+  if (to.name === "landing" || to.name === "login") {
+    // alert(to.name);
+    //login page를 가거나 login이 성공 됐을 때는 다음으로 넘어감
+    next();
+  } else if (access_token) {
     next();
   } else {
     //그 외에 모든 경로는 login으로
