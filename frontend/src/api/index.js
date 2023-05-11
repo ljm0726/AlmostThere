@@ -1,7 +1,6 @@
 import axios from "axios";
 
 function apiInstance() {
-  // const Authorization = localStorage.getItem("Authorization");
   const instance = axios.create({
     baseURL: `${process.env.VUE_APP_API_BASE_URL}`,
     withCredentials: true,
@@ -10,28 +9,20 @@ function apiInstance() {
     },
   });
 
-  // const api = instance;
-
   instance.interceptors.request.use(
     function (config) {
-      // Do something before request is sent
       const Authorization = localStorage.getItem("Authorization");
       if (Authorization) {
-        console.log(
-          "#[interceptor_request]# Authorization 추가: ",
-          Authorization
-        );
         config.headers.Authorization = Authorization;
       }
       return config;
     },
     function (error) {
-      // Do something with request error
       return Promise.reject(error);
     }
   );
 
-  let isRefreshFlag = false;
+  // let isRefreshFlag = false;
   instance.interceptors.response.use(
     function (response) {
       console.log(response);
@@ -39,35 +30,33 @@ function apiInstance() {
     },
     async function (error) {
       const errorAPI = error.config;
+      // console.log("#[interceptor]# error 확인: ", error);
 
       // i) access_token 재발급
-      if (!isRefreshFlag) {
-        if (
-          error.response.data.status === 401 &&
-          errorAPI.retry === undefined
-        ) {
-          // console.log("#[interceptor_response]# access_token 재발급");
-          errorAPI.retry = true;
-          isRefreshFlag = true;
+      if (error.response.data.status == 401 && errorAPI.retry == undefined) {
+        errorAPI.retry = true;
 
-          await instance
-            .post(`/token/tokenReissue`)
-            .then((response) => {
-              // console.log("#[access_token 재발급]# 성공 response: ", response);
-              localStorage.setItem("Authorization", response.data);
-            })
-            .catch((error) => {
-              console.log("#[access_token 재발급]# 실패 error: ", error);
-            });
+        await instance
+          .post(`/token/tokenReissue`)
+          .then((response) => {
+            // console.log("#[access_token 재발급]# 성공 response: ", response);
+            localStorage.setItem("Authorization", response.data);
+          })
+          .catch((error) => {
+            console.log("#[access_token 재발급]# 실패 error: ", error);
+            localStorage.clear();
+            window.location.href = "/login";
+          });
 
-          return await instance(errorAPI);
-        }
-        // ii) 재로그인 권유
-        else {
-          console.log("#interceptor# 로그인 페이지로 이동");
-          // this.$router.push(name: "/login");
-        }
+        return await instance(errorAPI);
       }
+      // ii) refresh_token 만료 > 재로그인 권유
+      else {
+        // console.log("#[refresh_token]# 만료 > 재로그인 권유");
+        localStorage.clear();
+        window.location.href = "/login";
+      }
+
       return Promise.reject(error);
     }
   );
