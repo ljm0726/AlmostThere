@@ -10,14 +10,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @Slf4j
 @RestController
-@RequestMapping("/api/token")
+@RequestMapping("/token")
 public class TokenController {
     private final TokenService tokenService;
 //    private final RedisTemplate redisTemplate;
@@ -28,8 +31,8 @@ public class TokenController {
         @ApiResponse(responseCode = "404", description = "사용자 없음"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @GetMapping("/tokenReissue")
-    public String refreshAccessToken(HttpServletRequest request, HttpServletResponse response)
+    @PostMapping("/tokenReissue")
+    public ResponseEntity refreshAccessToken(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
         log.info("refresh 진입");
 
@@ -44,6 +47,6 @@ public class TokenController {
         response.addHeader("Authorization", accessToken);
         log.info(accessToken);
 
-        return accessToken;
+        return ResponseEntity.ok().body(accessToken);
     }
 }
