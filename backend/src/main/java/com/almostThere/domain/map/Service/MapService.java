@@ -1,5 +1,9 @@
 package com.almostThere.domain.map.Service;
 
+import com.almostThere.domain.chatting.dto.ChattingDto;
+import com.almostThere.domain.chatting.entity.Chatting;
+import com.almostThere.domain.chatting.repository.ChattingRepository;
+import com.almostThere.domain.map.dto.MapResponseDto;
 import com.almostThere.domain.meeting.entity.Meeting;
 import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
@@ -8,23 +12,27 @@ import com.almostThere.domain.meeting.repository.MeetingRepository;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MapService {
-
     private final MeetingMemberRepository meetingMemberRepository;
-
     private final MeetingRepository meetingRepository;
-
+    private final ChattingRepository chattingRepository;
+    private final RedisTemplate<String, ChattingDto> redisTemplateForChatting;
     private final double earthRadius = 6400;
 
     /**
@@ -102,5 +110,39 @@ public class MapService {
             Long meetingId = meeting.getId();
             meetingMemberRepository.updateMeetingMemberState(meetingId);
         }
+    }
+
+    /**
+     * LiveMap에서 필요한 정보를 조회한다
+     * **/
+    public MapResponseDto getLiveMapInfo(Long meetingId) {
+
+        Meeting meeting = isMeeting(meetingId);
+
+        LocalDateTime meetingTime = meeting.getMeetingTime();
+        LocalDateTime startTime = meetingTime.minusHours(3);
+        LocalDateTime endTime = meetingTime.plusHours(3);
+
+        // MySQL에서 채팅 정보를 가져온다.
+        List<Chatting> chattingList = chattingRepository.findRecentMessage(meetingId, startTime, endTime);
+        MapResponseDto mapResponseDto = new MapResponseDto(meeting, chattingList);
+
+        // redis에서 meetingId의 채팅 정보를 가져온다.
+        ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
+        List<ChattingDto> chattingDtoList = listOperations.range("chat:"+meetingId, 0, listOperations.size("chat:"+meetingId)).stream()
+                                                            .sorted(Comparator.comparing(ChattingDto::getChattingTime)).collect(Collectors.toList());
+        Map<Long, String> chattingDtoMap = mapResponseDto.getChattingDtoMap();
+        for (ChattingDto chattingDto : chattingDtoList) {
+            Long memberId = chattingDto.getMemberId();
+            if (chattingDtoMap.containsKey(memberId)) {
+                // 이미 배열에 존재한다면 값 변경
+                mapResponseDto.getChattingDtoMap().replace(memberId, chattingDto.getMessage());
+            } else {
+                // MySQL에서 가져온 값이 없고 Redis에는 있다면 Redis 값 저장
+                mapResponseDto.getChattingDtoMap().put(memberId, chattingDto.getMessage());
+            }
+        }
+
+        return mapResponseDto;
     }
 }

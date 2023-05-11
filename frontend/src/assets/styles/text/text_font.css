@@ -32,3 +32,12 @@
 .point-font {
   font-family: var(--point-font);
 }
+.banner-font-1 {
+  font-family: var(--banner-font-1);
+}
+.banner-font-2 {
+  font-family: var(--banner-font-2);
+}
+.banner-font-3 {
+  font-family: var(--banner-font-3);
+}

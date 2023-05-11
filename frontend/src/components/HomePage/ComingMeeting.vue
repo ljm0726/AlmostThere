@@ -10,108 +10,128 @@
         나의 모임을 보여줍니다.
       </span>
     </v-tooltip>
-    <swiper
-      v-if="meetings && meetings.length > 0"
-      class="swiper mt-2 px-3"
-      :options="swiperOption"
-    >
-      <swiper-slide class="px-1" v-for="(meeting, idx) in meetings" :key="idx">
-        <v-card
-          @click="goDetail(meeting.id)"
-          elevation="0"
-          class="mb-6 px-5 d-flex flex-column align-center justify-center"
-          :class="{
-            'upcoming-ellipse': idx % 4 === 0,
-            'upcoming-polygon': idx % 4 === 1,
-            'upcoming-rectangle': idx % 4 === 2,
-            'upcoming-star': idx % 4 === 3,
-          }"
-        >
-          <v-sheet color="transparent" width="150">
-            <v-sheet
-              class="d-flex flex-row justify-space-between align-center"
-              color="transparent"
-            >
-              <v-sheet color="transparent">
-                <span
-                  class="extralight-font md-font white-font d-flex flex-row justify-space-between"
-                >
-                  {{ meeting.meetingTime | remainDay }}
-                </span>
-                <v-divider width="40" style="border-color: white"></v-divider>
-              </v-sheet>
-              <v-sheet class="d-flex flex-row justify-end" color="transparent">
-                <div
-                  :class="{
-                    'mt-3 ellipse rounded-circle': idx % 4 === 0,
-                    'triangle-first': idx % 4 === 1,
-                    'rectangle-first': idx % 4 === 2,
-                    'star-first': idx % 4 === 3,
-                  }"
-                ></div>
-                <div
-                  :class="{
-                    'mt-6 mr-3 ellipse rounded-circle': idx % 4 === 0,
-                    'triangle-second': idx % 4 === 1,
-                    'rectangle-second': idx % 4 === 2,
-                    'mr-3 star-second': idx % 4 === 3,
-                  }"
-                ></div>
-              </v-sheet>
-            </v-sheet>
-            <v-sheet color="transparent">
-              <div class="py-3 bold-font md-font white-font">
-                {{ meeting.meetingName }}
-              </div>
-              <v-sheet class="d-flex flex-column align-end" color="transparent">
-                <span class="xxxxs-font extralight-font white-font">
-                  {{ meeting.meetingPlace }}
-                </span>
-                <span class="xxxxs-font extralight-font white-font">
-                  {{ meeting.meetingTime | formatDate }}
-                </span>
-                <span class="xxxxs-font extralight-font white-font">
-                  {{ meeting.meetingTime | formatTime }}
-                </span>
-              </v-sheet>
-            </v-sheet>
-          </v-sheet>
-        </v-card>
-      </swiper-slide>
-    </swiper>
-    <div
-      v-else
-      class="mb-6 none pa-3 mx-4 mt-2 d-flex justify-center align-center"
-    >
-      <v-sheet
+    <v-sheet v-if="loading" height="185" class="mx-4 mb-6 mt-2">
+      <v-skeleton-loader
+        type="image"
+        class="mb-1"
         width="100%"
-        height="100%"
-        class="empty white-col-1 pa-4 d-flex justify-end align-center"
-        color="transparent"
-        max-width="330"
+        height="185"
+      ></v-skeleton-loader>
+    </v-sheet>
+    <div v-else>
+      <swiper
+        v-if="meetings && meetings.length > 0"
+        class="swiper mt-2 px-3"
+        :options="swiperOption"
+      >
+        <swiper-slide
+          class="px-1"
+          v-for="(meeting, idx) in meetings"
+          :key="idx"
+        >
+          <v-card
+            @click="goDetail(meeting.id)"
+            elevation="0"
+            class="mb-6 px-5 d-flex flex-column align-center justify-center"
+            :class="{
+              'upcoming-ellipse': idx % 4 === 0,
+              'upcoming-polygon': idx % 4 === 1,
+              'upcoming-rectangle': idx % 4 === 2,
+              'upcoming-star': idx % 4 === 3,
+            }"
+          >
+            <v-sheet color="transparent" width="150">
+              <v-sheet
+                class="d-flex flex-row justify-space-between align-center"
+                color="transparent"
+              >
+                <v-sheet color="transparent">
+                  <span
+                    class="extralight-font md-font white-font d-flex flex-row justify-space-between"
+                  >
+                    {{ meeting.meetingTime | remainDay }}
+                  </span>
+                  <v-divider width="40" style="border-color: white"></v-divider>
+                </v-sheet>
+                <v-sheet
+                  class="d-flex flex-row justify-end"
+                  color="transparent"
+                >
+                  <div
+                    :class="{
+                      'mt-3 ellipse rounded-circle': idx % 4 === 0,
+                      'triangle-first': idx % 4 === 1,
+                      'rectangle-first': idx % 4 === 2,
+                      'star-first': idx % 4 === 3,
+                    }"
+                  ></div>
+                  <div
+                    :class="{
+                      'mt-6 mr-3 ellipse rounded-circle': idx % 4 === 0,
+                      'triangle-second': idx % 4 === 1,
+                      'rectangle-second': idx % 4 === 2,
+                      'mr-3 star-second': idx % 4 === 3,
+                    }"
+                  ></div>
+                </v-sheet>
+              </v-sheet>
+              <v-sheet color="transparent">
+                <div class="py-3 bold-font md-font white-font">
+                  {{ meeting.meetingName }}
+                </div>
+                <v-sheet
+                  class="d-flex flex-column align-end"
+                  color="transparent"
+                >
+                  <span class="xxxxs-font extralight-font white-font">
+                    {{ meeting.meetingPlace }}
+                  </span>
+                  <span class="xxxxs-font extralight-font white-font">
+                    {{ meeting.meetingTime | formatDate }}
+                  </span>
+                  <span class="xxxxs-font extralight-font white-font">
+                    {{ meeting.meetingTime | formatTime }}
+                  </span>
+                </v-sheet>
+              </v-sheet>
+            </v-sheet>
+          </v-card>
+        </swiper-slide>
+      </swiper>
+      <div
+        v-else
+        class="mb-6 none pa-3 mx-4 mt-2 d-flex justify-center align-center"
       >
         <v-sheet
-          class="d-flex flex-row justify-end align-center"
-          color="transparent"
+          width="100%"
           height="100%"
+          class="empty white-col-1 pa-4 d-flex justify-end align-center"
+          color="transparent"
+          max-width="330"
         >
-          <div class="d-flex flex-column align-start">
-            <span class="semibold-font xl-font white-font">
-              다가올 모임이 없습니다.
-            </span>
-            <div class="d-flex flex-column regular-font xxs-font white-font">
-              <span>지금 바로 스터디, 식사 약속 등</span>
-
-              <span>다양한 모임을 잡아보세요!</span>
-            </div>
-            <v-btn class="mt-1" small rounded @click="goRegister()">
-              <span class="px-5 regular-font xxxs-font main-col-1">
-                모임 방 만들기
+          <v-sheet
+            class="d-flex flex-row justify-end align-center"
+            color="transparent"
+            height="100%"
+          >
+            <div class="d-flex flex-column align-start">
+              <span class="semibold-font xl-font white-font">
+                다가올 모임이 없습니다.
               </span>
-            </v-btn>
-          </div>
+              <div class="d-flex flex-column regular-font xxs-font white-font">
+                <span>지금 바로 스터디, 식사 약속 등</span>
+
+                <span>다양한 모임을 잡아보세요!</span>
+              </div>
+              <v-btn class="mt-1" small rounded @click="goRegister()">
+                <span class="px-5 regular-font xxxs-font main-col-1">
+                  모임 방 만들기
+                </span>
+              </v-btn>
+            </div>
+          </v-sheet>
         </v-sheet>
-      </v-sheet>
+      </div>
     </div>
   </v-sheet>
 </template>
@@ -129,11 +149,16 @@ export default {
         spaceBetween: 0,
       },
       show: false,
+      loading: true,
     };
   },
   created() {
+    this.loading = true;
     getUpcomingMeetings().then((res) => {
-      this.meetings = res;
+      if (res) {
+        this.meetings = res;
+        this.loading = false;
+      }
     });
   },
   methods: {

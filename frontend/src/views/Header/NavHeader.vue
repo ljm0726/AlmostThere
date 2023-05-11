@@ -5,7 +5,9 @@
     color="transparent"
   >
     <back-button color="var(--main-col-1)"></back-button>
-    <span class="logo-font">Almost There</span>
+    <span class="logo-font" @click="goHome()" style="cursor: pointer">
+      Almost There
+    </span>
     <home-button color="var(--main-col-1)"></home-button>
   </v-sheet>
 </template>
@@ -19,6 +21,13 @@ export default {
   components: {
     BackButton,
     HomeButton,
+  },
+  methods: {
+    goHome() {
+      if (this.$route.name != "home") {
+        this.$router.push(`/home`);
+      }
+    },
   },
 };
 </script>

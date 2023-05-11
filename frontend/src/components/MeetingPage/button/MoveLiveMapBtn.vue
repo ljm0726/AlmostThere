@@ -12,12 +12,7 @@ export default {
   },
   methods: {
     moveLivemap() {
-      this.$router.push({
-        path: `/live-map/${this.$route.params.id}`,
-        query: {
-          time: this.meetingTime,
-        },
-      });
+      this.$router.push(`/live-map/${this.$route.params.id}`);
     },
   },
 };
