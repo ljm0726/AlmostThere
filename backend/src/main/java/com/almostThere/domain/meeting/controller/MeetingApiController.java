@@ -118,7 +118,7 @@ public class MeetingApiController {
 
     /**
      * asng
-     * @param meetingDeleteRequestDto
+     * @param
      * @return 모임을 삭제한다.
      */
     @DeleteMapping("/{meetingId}")
