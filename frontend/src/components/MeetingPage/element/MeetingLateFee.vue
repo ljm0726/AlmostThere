@@ -5,7 +5,7 @@
       class="my-1 py-3 px-4 d-flex flex-column justify-center detail-border"
       rounded="lg"
     >
-      <span class="sm-font main-col-1">{{ lateAmount | formatPrice }}</span>
+      <span class="sm-font main-col-1">{{ lateAmount | formatPrice }}원</span>
     </v-sheet>
   </v-sheet>
 </template>
