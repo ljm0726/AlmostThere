@@ -755,7 +755,46 @@ export default {
     },
   },
   // [@Method] 생성한 over-lay, polyline 제거
-  removeOnMapItems() {},
+  removeOnMapItems() {
+    // i) member marker
+    if (this.memberMarkerList.length != 0) {
+      this.memberMarkerList.forEach((marker) => {
+        marker.setMap(null);
+      });
+      this.memberMarkerList = [];
+    }
+    // ii) chat over-lay
+    if (this.memberChatOverlayList.length != 0) {
+      this.memberChatOverlayList.forEach((overlay) => {
+        overlay.setMap(null);
+      });
+      this.memberChatOverlayList = [];
+    }
+    // iii) distance over-lay
+    if (this.memberDistanceOverlayList.length != 0) {
+      this.memberDistanceOverlayList.forEach((overlay) => {
+        overlay.setMap(null);
+      });
+      this.memberDistanceOverlayList = [];
+    }
+    // iv) nickname over-lay
+    if (this.memberNicknameOverlayList.length != 0) {
+      this.memberNicknameOverlayList.forEach((overlay) => {
+        overlay.setMap(null);
+      });
+      this.memberNicknameOverlayList = [];
+    }
+    // v) polyline
+    if (this.memberPolylineList.length != 0) {
+      this.memberPolylineList.forEach((polyline) => {
+        polyline.setMap(null);
+      });
+      this.memberPolylineList = [];
+    }
+  },
+  beforeUnmount() {
+    this.removeOnMapItems();
+  },
   beforeDestroy() {
     // console.log("beforeDestroy 구독 끊기 완료", this.meetingId);
     clearInterval(this.sendInterval);
