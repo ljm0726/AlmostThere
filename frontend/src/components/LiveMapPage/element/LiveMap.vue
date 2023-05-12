@@ -45,6 +45,7 @@ export default {
       updateMemberInfo: [], // [index, id] 위치 업데이트 된 member의 > memberLocation index와 memberId 저장
       /* # 가장 먼 곳에 있는 memeber distance */
       maxMemberDistance: 2500,
+      sendInterval: null,
     };
   },
   props: {
@@ -302,12 +303,13 @@ export default {
     },
     // [@Method] 1초마다 해당 모임에 member 객체(좌표) 얻기
     startIntervalMemberLocation() {
-      setInterval(() => {
+      this.sendInterval = setInterval(() => {
         this.send();
       }, 1000);
     },
     // [@Method] client에서 server로 message 보내기(send) - 해당 모임의 member 객체 얻기
     send() {
+      // console.log(">> #1 meeting 위치 send 작업", this.meetingId);
       if (this.stompClient && this.stompClient.connected) {
         this.stompClient.send(
           `/message/locShare/meetingId/${this.meetingId}/memberId/${this.memberId}`,
@@ -758,6 +760,8 @@ export default {
     },
   },
   beforeDestroy() {
+    // console.log("beforeDestroy 구독 끊기 완료", this.meetingId);
+    clearInterval(this.sendInterval);
     this.stompClient.unsubscribe(`location-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
   },
