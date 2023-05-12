@@ -49,7 +49,7 @@ export default {
     };
   },
   props: {
-    background_type: String, // "tile" = 하얀 TileSet 배경, "map" = 지도 배경
+    background_type: Boolean, // "tile" = 하얀 TileSet 배경, "map" = 지도 배경
     member_id: Number,
     meeting_lat: Number,
     meeting_lng: Number,
@@ -75,14 +75,14 @@ export default {
     this.chatting = this.chatting_map;
     // iii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
-      if (this.background_type == "map") this.initMap();
+      if (this.background_type == true) this.initMap();
       else this.initMapTileSet();
     } else {
       const script = document.createElement("script");
       /* global kakao */
       script.onload = () =>
         kakao.maps.load(() => {
-          if (this.background_type == "map") this.initMap();
+          if (this.background_type == true) this.initMap();
           else this.initMapTileSet();
         });
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
