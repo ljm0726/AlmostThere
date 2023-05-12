@@ -27,8 +27,8 @@
           dark
           rounded
           block
-          @click="goBack"
-          >뒤로가기</v-btn
+          @click="goHome"
+          >홈으로 돌아가기</v-btn
         >
       </v-card-text>
     </v-card>
@@ -54,6 +54,9 @@ export default {
     },
     goBack() {
       this.$router.go(-1);
+    },
+    goHome() {
+      this.$router.replace(`/home`);
     },
   },
 };

@@ -51,7 +51,6 @@ export default {
     member_id: Number,
     meeting_lat: Number,
     meeting_lng: Number,
-    meeting_name: String,
     chatting_map: Object,
   },
   computed: {
@@ -664,11 +663,11 @@ export default {
       //       }
       //     },
       for (var key of Object.keys(this.chatting)) {
-        console.log("key " + key);
+        // console.log("key " + key);
         // chatting 내용이 없는 경우 생성 X
         if (this.chatting[key] == null || this.chatting[key] == "") continue;
 
-        console.log("#21# memberLocation 확인: ", this.memberLocation);
+        // console.log("#21# memberLocation 확인: ", this.memberLocation);
         const content = `<div class="chat-overlay point-font">${this.chatting[key]}</div>`;
         const memberMarker = this.memberLocation.find(
           (loc) => loc.memberId == key
