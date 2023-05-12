@@ -18,7 +18,6 @@
     <!-- kakao map -->
     <div v-else class="live-map">
       <change-background-switch @map-type-change="handleMapTypeChange" />
-      <!-- <change-background-btn /> -->
       <!-- <div class="live-map" v-if="enterTimeCheckFlag"> -->
       <arrive-and-chat-btn
         @resizeMapLevel="resizeMapLevel"
@@ -43,7 +42,6 @@
 <script>
 import LiveMap from "./element/LiveMap.vue";
 import ArriveAndChatBtn from "./element/ArriveAndChatBtn.vue";
-// import ChangeBackgroundBtn from "./element/ChangeBackgroundBtn.vue";
 import ChangeBackgroundSwitch from "./element/ChangeBackgroundSwitch.vue";
 import NoEnterTimeDialog from "./element/NoEnterTimeDialog.vue";
 import InternetError from "@/common/component/dialog/InternetError.vue";
@@ -55,7 +53,6 @@ export default {
   components: {
     LiveMap,
     ArriveAndChatBtn,
-    // ChangeBackgroundBtn,
     ChangeBackgroundSwitch,
     NoEnterTimeDialog,
     InternetError,
