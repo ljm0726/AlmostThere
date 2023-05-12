@@ -139,43 +139,41 @@ label[for="tile"] {
 }
 </style> -->
 <template>
-  <v-sheet color="transparent">
-    <v-sheet
-      max-width="500"
-      color="transparent"
-      width="100%"
-      class="d-flex flex-column justify-end align-end"
-      style="
-        position: fixed;
-        margin: 0 auto;
-        left: 0;
-        right: 0;
-        bottom: 90%;
-        padding: 0 15px 15px 0;
-        z-index: 2;
-      "
-    >
-      <input
-        type="radio"
-        name="rdo"
-        id="map"
-        v-model="mapType"
-        @change="changeMapType"
-      />
-      <input
-        type="radio"
-        name="rdo"
-        id="tile"
-        v-model="mapType"
-        @change="changeMapType"
-      />
-      <div class="switch" :class="{ active: mapType }">
-        <label for="map">MAP</label>
-        <label for="tile">TILE</label>
-        <span></span>
-      </div>
-    </v-sheet>
-  </v-sheet>
+  <div
+    max-width="500"
+    color="transparent"
+    width="100%"
+    class="d-flex flex-column justify-end align-end"
+    style="
+      position: fixed;
+      margin: 0 auto;
+      left: 0;
+      right: 0;
+      bottom: 90%;
+      padding: 0 15px 15px 0;
+      z-index: 2;
+    "
+  >
+    <input
+      type="radio"
+      name="rdo"
+      id="map"
+      v-model="mapType"
+      @change="changeMapType"
+    />
+    <input
+      type="radio"
+      name="rdo"
+      id="tile"
+      v-model="mapType"
+      @change="changeMapType"
+    />
+    <div class="switch" :class="{ active: mapType }">
+      <label for="map">MAP</label>
+      <label for="tile">TILE</label>
+      <span></span>
+    </div>
+  </div>
 </template>
 
 <script>
