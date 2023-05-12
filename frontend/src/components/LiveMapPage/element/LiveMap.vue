@@ -43,8 +43,7 @@ export default {
       geoWarningOverlayList: [], // GeoLocation 경고 over-lay
       /* # 위치 변경된 member[index, id] */
       updateMemberInfo: [], // [index, id] 위치 업데이트 된 member의 > memberLocation index와 memberId 저장
-      /* # 가장 먼 곳에 있는 memeber distance */
-      maxMemberDistance: 2500,
+      /* 구독 interval */
       sendInterval: null,
     };
   },
@@ -190,10 +189,6 @@ export default {
         // circle 표시
         circle.setMap(this.map);
       }
-    },
-    // [@Method] 초기값 설정
-    setInitValue() {
-      this.maxMemberDistance = 2500; // circle를 생성하기 위한 maxMemberDistance 기본값
     },
     // [@Method] 모임장소 marker 생성
     createPlaceMarker() {
@@ -759,6 +754,8 @@ export default {
       }
     },
   },
+  // [@Method] 생성한 over-lay, polyline 제거
+  removeOnMapItems() {},
   beforeDestroy() {
     // console.log("beforeDestroy 구독 끊기 완료", this.meetingId);
     clearInterval(this.sendInterval);
