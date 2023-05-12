@@ -221,9 +221,14 @@ export default {
         .query({ name: "geolocation" })
         .then((permissionStatus) => {
           console.log("#[GeoLocation]# permisstion 확인: ", permissionStatus);
+
           // i) 위치 권한 허용
           if (permissionStatus.state == "granted") {
             navigator.geolocation.getCurrentPosition((position) => {
+              console.log(
+                "#[GeoLocation]# permisstion_position 확인: ",
+                position.coords
+              );
               // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
               const member = {
                 memberId: this.member_id,
