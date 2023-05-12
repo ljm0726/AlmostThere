@@ -1,5 +1,6 @@
 <template>
   <div class="live-map">
+    <live-map-header :meetingName="meetingName"></live-map-header>
     <v-sheet
       v-if="loading"
       height="100%"
@@ -27,7 +28,6 @@
         :member_id="memberId"
         :meeting_lat="meetingLat"
         :meeting_lng="meetingLng"
-        :meeting_name="meetingName"
         :chatting_map="chattingMap"
       ></live-map>
     </div>
@@ -45,6 +45,7 @@ import ArriveAndChatBtn from "./element/ArriveAndChatBtn.vue";
 import NoEnterTimeDialog from "./element/NoEnterTimeDialog.vue";
 import InternetError from "@/common/component/dialog/InternetError.vue";
 import { liveMapInfo } from "@/api/modules/livemap.js";
+import LiveMapHeader from "@/views/Header/LiveMapHeader.vue";
 
 export default {
   name: "LiveMapPage",
@@ -54,6 +55,7 @@ export default {
     // ChangeBackgroundBtn,
     NoEnterTimeDialog,
     InternetError,
+    LiveMapHeader,
   },
   data() {
     return {

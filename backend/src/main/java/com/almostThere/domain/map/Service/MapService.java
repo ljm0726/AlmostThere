@@ -45,7 +45,7 @@ public class MapService {
         // memberId가 meetingMember에 속해 있는지 확인
         Optional<MeetingMember> meetingMemberOptional = meetingMemberRepository.findByMeeting_IdAndMember_Id(meetingId, memberId);
         if (meetingMemberOptional.isPresent()) return meetingMemberOptional.get();
-        else throw new AccessDeniedException(ErrorCode.NOT_AUTHENTICATION);
+        else throw new AccessDeniedException(ErrorCode.NOT_AUTHORIZATION);
     }
 
     /**
