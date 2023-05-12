@@ -12,7 +12,13 @@
       <v-card-text>
         <v-row>
           <v-col class="pr-1">
-            <v-btn elevation="0" color="var(--main-col-1)" dark rounded block
+            <v-btn
+              elevation="0"
+              color="var(--main-col-1)"
+              dark
+              rounded
+              block
+              @click="logout"
               >로그아웃</v-btn
             >
           </v-col>
@@ -36,6 +42,8 @@
 
 <script>
 import CloseButton from "@/common/component/button/CloseButton.vue";
+import { mapActions, mapState } from "vuex";
+
 export default {
   name: "LogoutDialog",
   components: { CloseButton },
@@ -44,12 +52,21 @@ export default {
       dialog: false,
     };
   },
+  computed: {
+    ...mapState("memberStore", ["member_id"]),
+  },
   methods: {
+    ...mapActions("memberStore", ["memberLogout"]),
+
     openDialog() {
       this.dialog = true;
     },
     closeDialog() {
       this.dialog = false;
+    },
+
+    logout() {
+      this.memberLogout(this.member_id);
     },
   },
 };
