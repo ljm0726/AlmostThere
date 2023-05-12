@@ -1,6 +1,22 @@
 <template>
   <v-sheet class="mx-3 my-2 d-flex flex-column main-col-1" color="transparent">
-    <span class="point-font xxxxl-font">정산</span>
+    <div class="d-flex flex-row justify-space-between">
+      <span class="point-font xxxxl-font">정산</span>
+      <v-btn
+        class="ml-2 justify-space-between"
+        depressed
+        small
+        color="var(--main-col-1)"
+        dark
+        rounded
+        @click="sendkakao"
+      >
+        <v-icon class="mr-2" color="white" small
+          >mdi-share-variant-outline</v-icon
+        >
+        <span class="xxxs-font">카카오톡 공유하기</span>
+      </v-btn>
+    </div>
     <v-simple-table dense>
       <template v-slot:default>
         <tbody>
@@ -172,6 +188,7 @@ export default {
   name: "MeetingCost",
   props: {
     meetingId: Number,
+    meetingName: String,
     calculateDetails: Array,
     lateTotal: Number,
     spentMoney: Number,
@@ -204,6 +221,79 @@ export default {
       ).then((res) => {
         if (res) this.$router.go(this.$router.currentRoute);
       });
+    },
+    sendkakao() {
+      // const filterMeetingDate = this.formatDate(this.meetingTime);
+      // const filterMeetingTime = this.formatTime(this.meetingTime);
+      // const roomCode = this.roomCode;
+
+      window.Kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: "모임 이름: " + this.meetingName,
+          description:
+            "모임의 정산 내역입니다.\n" + "정산 내역을 확인하여 정산해주세요! ",
+          imageUrl: "https://k8a401.p.ssafy.io/img/home.5daad672.png",
+          link: {
+            // mobileWebUrl: "http://localhost:8080",
+            // webUrl: "http://localhost:8080",
+          },
+        },
+        itemContent: {
+          items: [
+            {
+              item: "합계:",
+              itemOp: String(this.total),
+            },
+            {
+              item: "잔액:",
+              itemOp: String(this.remain),
+            },
+            {
+              item: "지각비:",
+              itemOp: String(this.lateTotal),
+            },
+            {
+              item: "내가 내야하는 금액:",
+              itemOp: String(this.spentMoney),
+            },
+          ],
+        },
+        buttons: [
+          {
+            title: "정산내역 확인하러 가기",
+            link: {
+              // 룸코드 props? store로 받아와서 url에 추가하기
+              mobileWebUrl: `https://k8a401.p.ssafy.io/meeting/${this.meetingId}`,
+              webUrl: `https://k8a401.p.ssafy.io/meeting/${this.meetingId}`,
+              // mobileWebUrl: `http://localhost:3000/entrance/${roomCode}`,
+              // webUrl: `http://localhost:3000/entrance/${roomCode}`,
+            },
+          },
+        ],
+      });
+    },
+    formatDate(value) {
+      const date = new Date(value);
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const day = date.getDate();
+
+      const result = `${year}년 ${
+        month + 1 < 10 ? `0${month + 1}` : month + 1
+      }월 ${day < 10 ? `0${day}` : day}일`;
+      return result;
+    },
+    formatTime(value) {
+      const date = new Date(value);
+      const hour = date.getHours();
+      const min = date.getMinutes();
+      const result = `${
+        hour >= 12
+          ? `오후 ${hour == 12 ? `${hour}` : hour - 12}`
+          : `오전 ${hour}`
+      }시 ${min < 10 ? `0${min}` : min}분`;
+      return result;
     },
   },
   components: {
