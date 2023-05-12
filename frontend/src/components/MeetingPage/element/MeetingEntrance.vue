@@ -16,7 +16,7 @@
         <span
           class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
         >
-          <div>모임 정원을 초과했습니다.</div>
+          <!-- <div>모임 정원을 초과했습니다.</div> -->
           <div>호스트에게 문의해보세요.</div>
         </span>
       </v-card-title>
