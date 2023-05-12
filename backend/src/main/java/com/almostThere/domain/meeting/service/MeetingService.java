@@ -73,7 +73,7 @@ public class MeetingService {
         Optional<MeetingMember> meetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(meeting.getId(), member.getId());
 
         if(meetingMember.isPresent()){
-            return -1L;
+            return meeting.getId();
         }
 
         if(meetingMembers.size()>=10){
