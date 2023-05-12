@@ -1,6 +1,6 @@
 <template>
-  <div style="margin-bottom: 76px" class="main-form">
-    <v-sheet class="mx-3 point-font xxxxxxl-font main-col-1">
+  <div style="margin-bottom: 76px" class="mx-3 main-form">
+    <v-sheet class="point-font xxxxxxl-font main-col-1">
       <!-- <div
       class="point-font xxxxxxl-font main-col-1"
       style="margin: 15% 0 13% 5%"
@@ -50,7 +50,7 @@
         <v-text-field
           v-model="meetingname"
           @keyup="setMeetingName"
-          maxlength="10"
+          maxlength="9"
           hide-details
           placeholder="모임 제목을 입력해 주세요."
           dense
