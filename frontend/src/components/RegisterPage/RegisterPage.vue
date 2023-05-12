@@ -1,40 +1,97 @@
 <template>
-  <div style="margin: 0px 16px; margin-bottom: 76px" class="main-form">
-    <div
+  <div style="margin-bottom: 76px" class="mx-3 main-form">
+    <v-sheet class="point-font xxxxxxl-font main-col-1">
+      <!-- <div
       class="point-font xxxxxxl-font main-col-1"
       style="margin: 15% 0 13% 5%"
-    >
-      <p>많은 사람들과</p>
+    > -->
+      <div class="d-flex flex-column semi2narrow-font">
+        <span>많은 사람들과</span>
+        <span>모임을 잡아보세요!</span>
+        <span></span>
+      </div>
+      <!-- <p>많은 사람들과</p>
       <p>모임을</p>
-      <p>잡아보세요!</p>
-      <img
+      <p>잡아보세요!</p> -->
+      <!-- <img
         src="@/assets/images/page/register.png"
         height="450"
         style="text-aling: center"
         alt=""
-      />
-    </div>
+      /> -->
+    </v-sheet>
     <!-- nav 자리 -->
-    <v-card rounded="xl" elevation="5" height="100%">
-      <v-card-title>
-        <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
-        <!-- <span class="point-font xxxxl-font main-col-1 text-left">제목</span>
-        <v-text-field dense></v-text-field>
-        <span class="point-font xxxxl-font main-col-1 text-left">일시</span>
-        <span class="point-font xxxxl-font main-col-1 text-left">장소</span>
-        <v-text-field dense></v-text-field> -->
-      </v-card-title>
-      <v-card-text style="padding: 38px 24px 0 24px">
-        <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
-        <span class="point-font xxxxl-font main-col-1 text-left">제목</span>
+    <v-sheet>
+      <!-- <v-card rounded="xl" elevation="0" height="100%"> -->
+      <!-- <v-card-title> -->
+      <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
+      <!-- <span class="point-font xxxxl-font main-col-1 text-left">제목</span>
+          <v-text-field dense></v-text-field>
+          <span class="point-font xxxxl-font main-col-1 text-left">일시</span>
+          <span class="point-font xxxxl-font main-col-1 text-left">장소</span>
+          <v-text-field dense></v-text-field> -->
+      <!-- </v-card-title> -->
+      <!-- <v-card-text style="padding: 38px 24px 0 24px"> -->
+      <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
+
+      <!-- 제목 -->
+      <v-sheet
+        width="100%"
+        class="mt-3 d-flex flex-column align-center"
+        elevation="1"
+      >
+        <v-sheet
+          width="100%"
+          color="var(--red-col)"
+          class="point-font white-font xl-font main-col-1 px-4 py-2"
+        >
+          모임 제목
+        </v-sheet>
         <v-text-field
-          dense
           v-model="meetingname"
           @keyup="setMeetingName"
+          maxlength="9"
+          hide-details
+          placeholder="모임 제목을 입력해 주세요."
+          dense
+          solo
+          flat
+          full-width
+          style="width: 100%"
         ></v-text-field>
-        <span class="point-font xxxxl-font main-col-1 text-left">일시</span>
-        <!-- <v-text-field dense></v-text-field> -->
-        <v-menu
+      </v-sheet>
+
+      <!-- 날짜 -->
+      <v-sheet
+        width="100%"
+        class="mt-3 d-flex flex-column align-center"
+        elevation="1"
+      >
+        <!-- <v-sheet
+        width="100%"
+        class="mt-3 d-flex flex-column align-center"
+        elevation="2"
+        rounded="lg"
+      > -->
+        <!-- <v-sheet
+          width="100%"
+          color="var(--yellow-col)"
+          class="point-font white-font xl-font main-col-1 px-4 py-2 rounded-t-lg"
+        > -->
+        <v-sheet
+          width="100%"
+          color="var(--yellow-col)"
+          class="point-font white-font xl-font main-col-1 px-4 py-2"
+        >
+          만나는 날짜
+        </v-sheet>
+        <v-dialog
+          ref="menu"
+          v-model="menu"
+          :return-value.sync="date"
+          width="290px"
+        >
+          <!-- <v-menu
           ref="menu"
           v-model="menu"
           :close-on-content-click="false"
@@ -43,15 +100,19 @@
           offset-y
           min-width="280px"
           :nudge-right="40"
-        >
+        > -->
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
               v-model="date"
-              label="날짜"
-              prepend-icon="mdi-calendar"
               readonly
               v-bind="attrs"
               v-on="on"
+              hide-details
+              dense
+              solo
+              flat
+              full-width
+              style="width: 100%"
             ></v-text-field>
           </template>
           <v-date-picker
@@ -67,22 +128,45 @@
             <v-spacer></v-spacer>
             <v-btn
               text
-              class="bold-font xl-font main-col-1"
+              class="bold-font main-col-1"
               @click="menu = false"
+              rounded
             >
-              Cancel
+              닫기
             </v-btn>
             <v-btn
               text
-              class="bold-font xl-font main-col-1"
+              class="bold-font main-col-1"
               @click="$refs.menu.save(date)"
+              rounded
             >
-              OK
+              확인
             </v-btn>
           </v-date-picker>
-        </v-menu>
+          <!-- </v-menu> -->
+        </v-dialog>
+      </v-sheet>
 
-        <v-menu
+      <!-- 시간 -->
+      <v-sheet
+        width="100%"
+        class="mt-3 d-flex flex-column align-center"
+        elevation="1"
+      >
+        <v-sheet
+          width="100%"
+          color="var(--green-col)"
+          class="point-font white-font xl-font main-col-1 px-4 py-2"
+        >
+          만나는 시간
+        </v-sheet>
+        <v-dialog
+          ref="menu2"
+          v-model="menu2"
+          :return-value.sync="time"
+          width="290px"
+        >
+          <!-- <v-menu
           ref="menu2"
           v-model="menu2"
           :close-on-content-click="false"
@@ -92,15 +176,19 @@
           offset-y
           max-width="280px"
           min-width="280px"
-        >
+        > -->
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
               v-model="time"
-              label="시간"
-              prepend-icon="mdi-clock-time-four-outline"
               readonly
               v-bind="attrs"
               v-on="on"
+              hide-details
+              solo
+              flat
+              full-width
+              dense
+              style="width: 100%"
             ></v-text-field>
           </template>
           <v-time-picker
@@ -111,30 +199,56 @@
             @click:minute="$refs.menu2.save(time)"
             format="24hr"
           ></v-time-picker>
-        </v-menu>
+          <!-- </v-menu> -->
+        </v-dialog>
+      </v-sheet>
 
-        <span class="point-font xxxxl-font main-col-1 text-left">장소</span>
+      <!-- 장소 -->
+      <v-sheet
+        width="100%"
+        class="mt-3 d-flex flex-column align-center"
+        elevation="1"
+      >
+        <v-sheet
+          width="100%"
+          color="var(--blue-col)"
+          class="point-font white-font xl-font main-col-1 px-4 py-2"
+        >
+          모일 장소
+        </v-sheet>
         <v-text-field
-          dense
           v-model="meeting_place"
           @click="movePlacePage"
+          placeholder="장소를 선택해 주세요."
+          solo
+          readonly
+          flat
+          full-width
+          style="width: 100%"
+          hide-details
+          dense
         ></v-text-field>
+      </v-sheet>
 
-        <v-row>
-          <v-col class="pr-1">
-            <v-btn
-              elevation="0"
-              color="var(--main-col-1)"
-              dark
-              rounded
-              block
-              @click="regist_meeting"
-              >등록</v-btn
-            >
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+      <!-- <v-row>
+        <v-col class="pr-1"> -->
+      <v-btn
+        elevation="3"
+        color="var(--main-col-1)"
+        dark
+        tile
+        large
+        block
+        class="mt-3 lg-font"
+        @click="regist_meeting"
+      >
+        모임 등록하기
+      </v-btn>
+      <!-- </v-col>
+      </v-row> -->
+      <!-- </v-card-text> -->
+      <!-- </v-card> -->
+    </v-sheet>
   </div>
 </template>
 
@@ -330,7 +444,7 @@ img {
 
 .v-input {
   /* width: 95%; */
-  text-align: left;
+  /* text-align: left; */
 }
 .pr-1 {
   padding: 12px;
