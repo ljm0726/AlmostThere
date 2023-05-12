@@ -39,6 +39,7 @@ function apiInstance() {
             withCredentials: true,
             headers: {
               "Content-Type": "application/json; charset=utf-8",
+              "Authorization": localStorage.getItem("Authorization")
             },
           })
           .post(`/token/tokenReissue`)
