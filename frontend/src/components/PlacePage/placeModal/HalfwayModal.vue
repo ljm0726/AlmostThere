@@ -95,30 +95,7 @@ export default {
     ...mapState("meetingStore", ["meeting_members"]),
   },
   mounted() {
-    console.log(this.startPlaces, this.meeting_members);
-    // if (sessionStorage.getItem("from") !== null) {
-    //업데이트 startPlaces에 추가
-    //   const startMembersInfo = [];
-    //   const startInfo = this.meeting_members;
-
-    //   console.log("halfway", startInfo, startInfo.length);
-
-    //   for (let i = 0; i < startInfo.length; i++) {
-    //     if (startInfo[i].startLng == null || startInfo[i].startLat == null)
-    //       continue;
-
-    //     const placeMap = new Map();
-    //     placeMap.set("x", startInfo[i].startLng);
-    //     placeMap.set("y", startInfo[i].startLat);
-    //     placeMap.set("name", startInfo[i].startPlace);
-    //     placeMap.set("addr", startInfo[i].startAddress);
-
-    //     console.log("for", placeMap);
-    //     startMembersInfo.push(placeMap);
-    //   }
-
-    //   this.setStartPlace(startMembersInfo);
-    // }
+    // console.log(this.startPlaces, this.meeting_members);
     this.starts = this.startPlaces;
     if (this.starts.length < 2) {
       this.starts.push(null);
@@ -152,7 +129,7 @@ export default {
 
     goToSearchPage(index) {
       // this.$router.push(url);
-      console.log(index);
+      // console.log(index);
       localStorage.setItem("listIndex", index);
       // this.isSearchPage = true; // dialog를 닫고 SearchPlacePage2로 이동
       this.$router.push("/search2");
@@ -164,7 +141,7 @@ export default {
     },
 
     plusStart() {
-      console.log("@@@", this.starts.length);
+      // console.log("@@@", this.starts.length);
       if (this.starts.length > 9) {
         alert("최대 10명 까지 가능 합니다! ");
       } else {
@@ -219,7 +196,7 @@ export default {
 
       const combinations = [];
       for (let i = 1; i <= this.size; i++) {
-        console.log("출발정보", this.startPlaces);
+        // console.log("출발정보", this.startPlaces);
         const result = this.combine(this.startPlaces, i);
         combinations.push(...result);
       }
@@ -239,7 +216,7 @@ export default {
         console.log("Sum: ", xSum, ySum);
         middlePlace.push({ middleX, middleY });
       });
-      console.log("middle: ", middlePlace);
+      // console.log("middle: ", middlePlace);
       let middleAvergeX = 0;
       let middleAvergeY = 0;
       middlePlace.forEach((place) => {
@@ -249,7 +226,7 @@ export default {
       middleAvergeX /= middlePlace.length;
       middleAvergeY /= middlePlace.length;
 
-      console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
+      // console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
       this.addMiddlePlace({ middleAvergeX, middleAvergeY });
       this.dialog = false;
     },

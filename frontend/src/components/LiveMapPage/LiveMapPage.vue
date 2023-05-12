@@ -77,7 +77,7 @@ export default {
     this.loading = true;
     await liveMapInfo(this.$route.params.id).then(async (res) => {
       if (res) {
-        console.log(">>> ", res);
+        // console.log(">>> ", res);
         this.memberId = await res.memberId;
         this.meetingName = await res.meetingName;
         this.meetingTime = await res.meetingTime;

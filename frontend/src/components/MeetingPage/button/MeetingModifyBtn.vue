@@ -179,8 +179,8 @@ export default {
     ...mapState("halfwayStore", ["meeting_start_places"]),
   },
   watch: {
-    place_name: function (newValue, oldValue) {
-      console.log("WW", newValue, oldValue);
+    place_name: function (newValue) {
+      // console.log("WW", newValue, oldValue);
       this.place = newValue;
     },
   },
@@ -195,15 +195,10 @@ export default {
         this.$refs.modifySheet.open();
       }
     },
+    //[@method] sheet 상태 감지 후 멤버 출발지 등록
     isOpened() {
-      console.log("M", this.name, this.placeName);
-      console.log("Sheet is open.");
-
       const startMembersInfo = [];
       const startInfo = this.meeting_members;
-
-      console.log("halfway", startInfo, startInfo.length);
-
       for (let i = 0; i < startInfo.length; i++) {
         if (startInfo[i].startLng == null || startInfo[i].startLat == null)
           continue;
@@ -214,12 +209,14 @@ export default {
         placeMap.set("name", startInfo[i].startPlace);
         placeMap.set("addr", startInfo[i].startAddress);
 
-        console.log("for", placeMap);
+        // console.log("for", placeMap);
         startMembersInfo.push(placeMap);
       }
 
       this.setStartPlace(startMembersInfo);
     },
+
+    //[@method] sheet 닫으면 초기 데이터로 초기화
     isClosed() {
       sessionStorage.removeItem("from");
       this.resetStartPlace();
@@ -244,12 +241,13 @@ export default {
     //   console.log(this.dialog);
     // },
 
+    //[@method] 장소 검색페이지로 이동
     movePlacePage() {
-      console.log(this.meeting_lat, this.meeting_lng);
+      // console.log("Move", this.meeting_lat, this.meeting_lng);
       //지도에 현재 위치 찍기 위해 저장
       const placeMap = new Map();
-      placeMap.set("x", this.meeting_lat);
-      placeMap.set("y", this.meeting_lng);
+      placeMap.set("x", this.meeting_lng);
+      placeMap.set("y", this.meeting_lat);
       placeMap.set("name", this.place);
       placeMap.set("addr", this.address);
       this.UPDATE_PLACE(placeMap);
@@ -268,15 +266,16 @@ export default {
       this.$router.push("/place");
     },
 
+    //[@method] PlacePage.vue에서 보내온 데이터를 받아서 처리함
     handlePlaceDataSubmitted(placeData) {
-      // Place.vue에서 보내온 데이터를 받아서 처리함
-      console.log("pD ", this.placeData);
+      // console.log("pD ", this.placeData);
       this.place = placeData.name;
       this.address = placeData.address;
       this.showPlaceForm = false; // 다이얼로그를 닫음
       // ...
     },
 
+    //[@method] 모임 수정
     modifyMetting() {
       this.getCurTime();
 
@@ -357,7 +356,7 @@ export default {
           });
       }
     },
-
+    //[@method] 현재 시간 구하기
     getCurTime() {
       const currentDate = new Date();
       const options = {
@@ -378,6 +377,7 @@ export default {
       });
     },
 
+    //[@method] 날짜 포맷 변경
     disablePastDates(val) {
       const date = new Date();
       const year = date.getFullYear();
@@ -387,10 +387,13 @@ export default {
       return val >= formattedDate;
     },
 
+    //새로고침 시 데이터 초기화
     handleBeforeUnload() {
       sessionStorage.removeItem("from");
       this.resetStartPlace();
     },
+
+    //뒤로가기 시 데이터 초기화
     handlePopstate() {
       sessionStorage.removeItem("from");
       this.resetStartPlace();
@@ -452,13 +455,13 @@ export default {
       if (this.placeName == null || this.placeAddr == null) {
         this.place = this.place_name;
         this.address = this.place_addr;
-        this.lat = this.placeX;
-        this.lng = this.placeY;
+        this.lat = this.placeY;
+        this.lng = this.placeX;
       } else {
         this.place = this.placeName;
         this.address = this.placeAddr;
-        this.lat = this.placeX;
-        this.lng = this.placeY;
+        this.lat = this.placeY;
+        this.lng = this.placeX;
       }
 
       this.open();
