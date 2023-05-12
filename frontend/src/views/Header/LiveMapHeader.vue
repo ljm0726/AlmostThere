@@ -15,7 +15,12 @@
     "
   >
     <back-button color="var(--main-col-1)"></back-button>
-    <span class="logo-font">Almost There</span>
+    <span
+      class="point-font"
+      style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white"
+    >
+      {{ meetingName }}
+    </span>
     <detail-button :isIcon="true"></detail-button>
   </v-sheet>
 </template>
@@ -29,6 +34,9 @@ export default {
   components: {
     BackButton,
     DetailButton,
+  },
+  props: {
+    meetingName: String,
   },
 };
 </script>

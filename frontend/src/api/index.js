@@ -22,42 +22,46 @@ function apiInstance() {
     }
   );
 
-  // let isRefreshFlag = false;
   instance.interceptors.response.use(
     function (response) {
-      console.log(response);
+      // console.log(response);
       return response;
     },
     async function (error) {
-      const errorAPI = error.config;
-      // console.log("#[interceptor]# error 확인: ", error);
-
-      // i) access_token 재발급
-      if (error.response.data.status == 401 && errorAPI.retry == undefined) {
-        errorAPI.retry = true;
-
-        await instance
-          .post(`/token/tokenReissue`)
-          .then((response) => {
-            // console.log("#[access_token 재발급]# 성공 response: ", response);
-            localStorage.setItem("Authorization", response.data);
+      console.log(error)
+      var result = null;
+      // 권한 오류인 경우, access_token 재발급 시도
+      if (error.response.data.status == 401) {
+        // access token 발급 시도
+        await axios
+          .create({
+            baseURL: `${process.env.VUE_APP_API_BASE_URL}`,
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
           })
-          .catch((error) => {
-            console.log("#[access_token 재발급]# 실패 error: ", error);
-            localStorage.clear();
-            window.location.href = "/login";
+          .post(`/token/tokenReissue`)
+          .then(async (response) => {
+            // access token 재발급 성공
+            localStorage.setItem("Authorization", response.data);
+            result = await instance(error.config);
+          })
+          .catch(async (error) => {
+            const data = error.response.data;
+            // access token 재발급 불가 또는 존재하지 않는 회원인 경우
+            if (data.status == 500 || (data.status == 404 && data.message == "member not found.")) {
+              localStorage.clear();
+              window.location.href = "/login";
+            } else {
+              result = await Promise.reject(error);
+            }
           });
-
-        return await instance(errorAPI);
+      } else {
+        // 그 외의 경우는 오류 그대로 전달
+        result = await Promise.reject(error);
       }
-      // ii) refresh_token 만료 > 재로그인 권유
-      else {
-        // console.log("#[refresh_token]# 만료 > 재로그인 권유");
-        localStorage.clear();
-        window.location.href = "/login";
-      }
-
-      return Promise.reject(error);
+      return result;
     }
   );
 

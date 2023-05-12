@@ -17,7 +17,6 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
-import jwt_decode from "jwt-decode";
 import {
   getMostRecentMeeting,
   getRecentPastMeeting,
@@ -35,41 +34,18 @@ export default {
   data() {
     return {
       timeOut: null,
-      // isSocketConnected: false,
       intervalGeolocation: null,
     };
   },
-
   beforeCreate() {
-    // login 여부 & 만료시간 check
-    if (
-      localStorage.getItem("Authorization") != null &&
-      jwt_decode(localStorage.getItem("Authorization").substring(7)).exp >=
-        Math.floor(Date.now() / 1000)
-    ) {
+    // path가 login 또는 landing일 경우 요청하지 않는다.
+    const path = this.$route.fullPath;
+    if (path != "/login" && path != "/landing") {
       getMostRecentMeeting().then((res) => {
-        // console.log("getMostRecentMeeting response", res);
-        if (res != null) {
-          this.setMeeting(res);
-        }
+        if (res != null) this.setMeeting(res);
       });
     }
   },
-  created() {
-    // window.onload = function() {
-    //   setTimeout(function() {
-    //     window.scrollTo(0, 1);}, 100);
-    // };
-    // window.addEventListener("load", function() {
-    //   setTimeout(scrollTo, 0, 0, 1);
-    // }, false);
-    // let vh = window.innerHeight * 0.01;
-    // document.documentElement.style.setProperty("--vh", `${vh}px`);
-    // this.setScreenSize();
-    // window.addEventListener("resize", this.setScreenSize);
-    // window.addEventListener("touched", this.setScreenSize);
-  },
-
   computed: {
     ...mapState("meetingStore", ["recent_meeting"]),
     ...mapState("memberStore", ["member", "member_id"]),
@@ -82,7 +58,6 @@ export default {
         clearTimeout(this.timeOut);
         const now = new Date();
         const meetingTime = new Date(newVal.meetingTime);
-
         if (now < meetingTime) {
           this.timeOut = setTimeout(
             this.connectHandler,
@@ -92,16 +67,9 @@ export default {
       }
     },
   },
-
   methods: {
     ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
     ...mapActions("meetingStore", ["setMeeting"]),
-    // setScreenSize() {
-    //   //먼저 뷰포트 높이를 얻고 1%를 곱하여 vh 단위 값을 얻습니다.
-    //   let vh = window.innerHeight * 0.01;
-    //   //그런 다음 --vh 사용자 정의 속성의 값을 문서의 루트로 설정합니다.
-    //   document.documentElement.style.setProperty("--vh", `${vh}px`);
-    // },
     calculateRemainTimeForTimeOut(newDate) {
       const now = new Date();
       const meetingTime = new Date(newDate);
@@ -138,14 +106,9 @@ export default {
       } else {
         return diffTime;
       }
-
-      // console.log("diffTime :", diffTime);
-      // return diffTime;
     },
-
     connectHandler() {
       const access_token = localStorage.getItem("Authorization");
-
       if (access_token) {
         // console.log("connect");
         this.connect();
@@ -183,6 +146,7 @@ export default {
             // 소켓 연결 실패
             console.log("소켓 연결 실패", error);
             this.updateConnected(false);
+            this.connect();
           }
         );
       }
@@ -198,7 +162,6 @@ export default {
         }
       }, 1);
     },
-
     startIntervalMemberLocation() {
       // setInterval(() => {
       //   this.getGeoLocation();
@@ -207,7 +170,6 @@ export default {
         this.getGeoLocation();
       }, 3000);
     },
-
     async getGeoLocation() {
       // console.log("#[getGeoLocation]# 현 위치 얻기 동작");
       if (this.member == null) {
