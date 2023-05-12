@@ -1,4 +1,4 @@
-import { getLoginMember } from "@/api/modules/member";
+import { getLoginMember, logout } from "@/api/modules/member";
 // import router from "@/router";
 
 const memberStore = {
@@ -46,6 +46,17 @@ const memberStore = {
     async SET_MEMBER_ID({ commit }, id) {
       console.log("SET_MEMBER_ID", id);
       await commit("SET_MEMBER_ID", id);
+    },
+
+    async memberLogout({ commit }, id) {
+      commit,
+        await logout(id, () => {
+          localStorage.clear();
+          window.location.href = "/";
+        }),
+        (error) => {
+          console.log("로그인 실패", error);
+        };
     },
   },
 };
