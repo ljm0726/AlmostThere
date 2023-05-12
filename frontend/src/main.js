@@ -12,7 +12,7 @@ Vue.use(VueAwesomeSwiper);
 Vue.use(VueBottomSheet);
 
 function kakaoInitHandler() {
-  const KAKAO_API_KEY = ${process.env.VUE_APP_KAKAO_API_KEY};
+  const KAKAO_API_KEY = `${process.env.VUE_APP_KAKAO_API_KEY}`;
   if (!window.Kakao.isInitialized()) {
     window.Kakao.init(KAKAO_API_KEY);
     kakaoInitHandler();
