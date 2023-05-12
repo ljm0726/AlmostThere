@@ -164,8 +164,20 @@
         모임 등록하기
       </v-btn>
     </v-sheet>
-    <time-error ref="time"></time-error>
-    <input-error ref="input"></input-error>
+    <no-image-default
+      ref="time"
+      title="<span>시간을</span>
+          <span>다시 설정해주세요</span>"
+      message="<div>현재 일시 이후의</div>
+          <div>날짜와 시간만 설정 가능합니다.</div>"
+    ></no-image-default>
+    <no-image-default
+      ref="input"
+      title="<span>모든 정보를</span>
+          <span>입력해주세요</span>"
+      message="<div>제목, 날짜, 시간, 장소를</div>
+          <div>모두 입력해야 등록이 가능합니다.</div>"
+    ></no-image-default>
   </div>
 </template>
 
@@ -173,13 +185,11 @@
 // 추가해야할 부분 -> 현재 시간 이전을 설정하면 불가능하게
 import { mapActions, mapState } from "vuex";
 import { getMostRecentMeeting } from "@/api/modules/meeting.js";
-import InputError from "./dialog/InputError.vue";
-import TimeError from "./dialog/TimeError.vue";
-
+import NoImageDefault from "@/common/component/dialog/NoImageDefault.vue";
 // const meetingStore = "meetingStore";
 
 export default {
-  components: { InputError, TimeError },
+  components: { NoImageDefault },
   name: "RegisterPage",
   data() {
     return {
@@ -246,7 +256,11 @@ export default {
       if (this.curDate >= this.date && this.curTime >= this.time) {
         // alert("시간을 다시 설정해주세요!");
         this.$refs.time.openDialog();
-      } else if (this.meetingname == null || this.meeting_place == null) {
+      } else if (
+        this.meetingname == null ||
+        this.meeting_place == null ||
+        this.meetingname.replace(/\s/g, "") == ""
+      ) {
         // alert("모든 정보를 입력해주세요!");
         this.$refs.input.openDialog();
       } else {
