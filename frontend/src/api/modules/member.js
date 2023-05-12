@@ -11,4 +11,8 @@ async function getLoginMember(id, success, fail) {
   await api.get(`/member/${id}`).then(success).catch(fail);
 }
 
-export { getMemberInfo, getLoginMember };
+async function logout(id, success, fail) {
+  await api.post(`/member/logout/${id}`).then(success).catch(fail);
+}
+
+export { getMemberInfo, getLoginMember, logout };
