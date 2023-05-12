@@ -6,6 +6,7 @@
     <v-main>
       <router-view />
       <location-permission-error ref="denied" />
+      <location-error ref="error" />
     </v-main>
     <!-- Footer -->
     <router-view name="footer" />
@@ -23,6 +24,7 @@ import {
 } from "@/api/modules/meeting.js";
 import { mapActions, mapState } from "vuex";
 import LocationPermissionError from "@/common/component/dialog/LocationPermissionError.vue";
+import LocationError from "@/common/component/dialog/LocationError.vue";
 
 import store from "@/store";
 
@@ -30,6 +32,7 @@ export default {
   name: "App",
   components: {
     LocationPermissionError,
+    LocationError,
   },
   data() {
     return {
@@ -171,45 +174,6 @@ export default {
       }, 3000);
     },
     // [@Method] GeoLocation 동작
-    // async getGeoLocation() {
-    //   // console.log("#[getGeoLocation]# 현 위치 얻기 동작");
-    //   if (this.member == null) {
-    //     await store.dispatch("memberStore/isLogin");
-    //   }
-    //   // alert("## geo", navigator.geolocation);
-    //   if (navigator.geolocation) {
-    //     // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-    //     navigator.geolocation.getCurrentPosition(
-    //       (position) => {
-    //         // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
-    //         const member = {
-    //           memberId: this.member_id,
-    //           memberNickname: this.member.memberNickname,
-    //           memberLatLng: [
-    //             position.coords.latitude,
-    //             position.coords.longitude,
-    //           ],
-    //         };
-
-    //         // 현 사용자의 위치 저장
-    //         // console.log("getGeoLocation :", member);
-    //         this.send(member);
-    //       },
-    //       (error) => {
-    //         // console.log("#[GeoLocation]# GeoLocation 사용불가 error: ", error);
-    //         if (error.code == 1) {
-    //           this.$refs.denied.openDialog();
-    //           clearInterval(this.intervalGeolocation);
-    //         }
-    //       }
-    //     );
-    //   } else {
-    //     console.log(
-    //       "#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다."
-    //     );
-    //     alert("#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다.");
-    //   }
-    // },
     async getGeoLocation() {
       // console.log("#[GeoLocation]# 동작");
       // 로그인한 member 객체 얻어오기
@@ -264,34 +228,15 @@ export default {
           }
           // iii) 위치 권한 거부
           else if (permissionStatus.state == "denied") {
-            console.log("#[GeoLocation]# denied 상태");
-
-            // 권한 요청 및 status 속성 prompt로 변경
-            // 1차 시도)
-            // const newPermissionStatus = await permissionStatus.request();
-            // const newPermissionStatus = navigator.permissions.query({
-            //   name: "geolocation",
-            // });
-            // console.log(
-            //   "#[GeoLocation]# newPermissionStatus 상태 확인: ",
-            //   newPermissionStatus
-            // );
-            // 2차 시도)
-            const changeHandler = async () => {
-              const updatePermissionStatus = await navigator.permissions.query({
-                name: "geolocation",
-              });
-              console.log(
-                "#[GeoLocation]# updatePermissionStatus 상태 확인: ",
-                updatePermissionStatus
-              );
-            };
-            permissionStatus.addEventListener("change", changeHandler);
+            // console.log("#[GeoLocation]# denied 상태");
+            this.$refs.denied.openDialog();
             clearInterval(this.intervalGeolocation);
           }
         })
         .catch((error) => {
           console.log("#[GeoLocation]# error 확인: ", error);
+          this.$refs.error.openDialog();
+          clearInterval(this.intervalGeolocation);
         });
     },
     send(member) {
