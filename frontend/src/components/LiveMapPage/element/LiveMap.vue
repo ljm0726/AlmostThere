@@ -66,6 +66,7 @@ export default {
     // ii) 모임장소 좌표 저장
     this.placeLatLng.push(this.meeting_lat);
     this.placeLatLng.push(this.meeting_lng);
+    // console.log("#[모임장소 좌표]# 확인: ", this.placeLatLng);
     // !! test용으로 잠시 lat, lng 고정 (역삼역)
     // this.placeLatLng.push(37.5004);
     // this.placeLatLng.push(127.0361);
@@ -104,7 +105,7 @@ export default {
       // this.createCircle();
 
       // 모임 장소 marker 생성
-      this.createPlaceMarker(options);
+      this.createPlaceMarker();
 
       // WebSocket 연결
       this.connect();
@@ -140,7 +141,7 @@ export default {
       this.createCircle();
 
       // 모임 장소 marker 생성
-      this.createPlaceMarker(options);
+      this.createPlaceMarker();
 
       // WebSocket 연결
       this.connect();
@@ -195,7 +196,7 @@ export default {
       this.maxMemberDistance = 2500; // circle를 생성하기 위한 maxMemberDistance 기본값
     },
     // [@Method] 모임장소 marker 생성
-    createPlaceMarker(options) {
+    createPlaceMarker() {
       const imageSrc = require("@/assets/images/page/pointer.png");
       const imageSize = new kakao.maps.Size(
         this.placeMarkerSize[0],
@@ -213,7 +214,11 @@ export default {
         imageOption
       );
       const marker = new kakao.maps.Marker({
-        position: options.center,
+        // position: options.center,
+        position: new kakao.maps.LatLng(
+          this.placeLatLng[0],
+          this.placeLatLng[1]
+        ),
         image: markerImage,
       });
 
