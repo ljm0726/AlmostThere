@@ -4,7 +4,6 @@ import com.almostThere.domain.user.entity.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
@@ -29,9 +28,8 @@ public class MeetingCnt {
     @JoinColumn(name = "friend_id", foreignKey = @ForeignKey(name = "fk_meeting_cnt_member_idx2"), nullable = false)
     private Member friend;
 
-    @ColumnDefault("1")
-    @Column(nullable = false)
-    private int cnt;
+    @Column(columnDefinition = "int default 1")
+    private Integer cnt;
 
     public MeetingCnt(Member myMember, Member friend) {
         this.myMember = myMember;
