@@ -1,164 +1,198 @@
 <template>
-  <div>
-    <v-btn
-      class="mr-1"
-      id="square-big-btn"
-      outlined
-      color="var(--main-col-1)"
-      rounded
-      @click="open()"
-    >
-      <v-icon>$vuetify.icons.edit_outline</v-icon>
-    </v-btn>
-    <vue-bottom-sheet
-      ref="modifySheet"
-      max-width="500px"
-      @opened="isOpened"
-      @closed="isClosed"
-    >
-      <v-sheet class="d-flex flex-column pb-10">
-        <span class="point-font xxxxl-font main-col-1 align-self-center"
-          >모임 내용 수정하기</span
-        >
-        <v-sheet class="mx-5 my-2">
-          <span class="point-font xxxl-font main-col-1">제목</span>
-          <v-text-field
-            v-model="name"
-            outlined
-            dense
-            hide-details
-          ></v-text-field>
-        </v-sheet>
-        <v-sheet class="mx-5 my-2">
-          <span class="point-font xxxl-font main-col-1">일시</span>
-          <div class="d-flex flex-row">
-            <v-dialog
-              ref="dateDialog"
-              v-model="dateDialog"
-              :return-value.sync="date"
-              width="290px"
-              style="z-index: 1000000"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  class="mr-1"
-                  v-model="date"
-                  readonly
-                  v-bind="attrs"
-                  dense
-                  outlined
-                  v-on="on"
-                  hide-details
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                locale="ko"
-                v-model="date"
-                scrollable
-                color="var(--main-col-1)"
-                :day-format="(date) => new Date(date).getDate()"
-                :allowed-dates="disablePastDates"
-              >
-                <v-spacer></v-spacer>
-                <v-btn
-                  text
-                  color="var(--main-col-1)"
-                  @click="dateDialog = false"
-                >
-                  닫기
-                </v-btn>
-                <v-btn
-                  text
-                  color="var(--main-col-1)"
-                  @click="$refs.dateDialog.save(date)"
-                >
-                  확인
-                </v-btn>
-              </v-date-picker>
-            </v-dialog>
-            <v-dialog
-              ref="timeDialog"
-              v-model="timeDialog"
-              :return-value.sync="time"
-              width="290px"
-              style="z-index: 1000000"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  class="ml-1"
-                  v-model="time"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                  dense
-                  outlined
-                  hide-details
-                ></v-text-field>
-              </template>
-              <v-time-picker
-                v-model="time"
-                full-width
-                color="var(--main-col-1)"
-              >
-                <v-spacer></v-spacer>
-                <v-btn
-                  text
-                  color="var(--main-col-1)"
-                  @click="timeDialog = false"
-                >
-                  닫기
-                </v-btn>
-                <v-btn
-                  text
-                  color="var(--main-col-1)"
-                  @click="$refs.timeDialog.save(time)"
-                >
-                  확인
-                </v-btn>
-              </v-time-picker>
-            </v-dialog>
-          </div>
-        </v-sheet>
-        <v-sheet class="mx-5 my-2 d-flex flex-column">
-          <span class="point-font xxxl-font main-col-1">장소</span>
-          <v-btn
-            outlined
-            block
-            color="var(--main-col-1)"
-            @click="movePlacePage"
+  <div class="parent">
+    <div class="modify">
+      <v-btn
+        class="mr-1"
+        id="square-big-btn"
+        outlined
+        color="var(--main-col-1)"
+        rounded
+        @click="open()"
+      >
+        <v-icon>$vuetify.icons.edit_outline</v-icon>
+      </v-btn>
+      <vue-bottom-sheet
+        ref="modifySheet"
+        max-width="500px"
+        @opened="isOpened"
+        @closed="isClosed"
+      >
+        <v-sheet class="d-flex flex-column pb-10">
+          <span class="point-font xxxxl-font main-col-1 align-self-center"
+            >모임 내용 수정하기</span
           >
-            <span>{{ this.place }}</span>
-            <span>({{ this.address }})</span>
-          </v-btn>
-        </v-sheet>
-        <v-sheet class="mx-5 my-2">
-          <span class="point-font xxxl-font main-col-1">지각비</span>
-          <v-sheet class="d-flex flex-row">
+          <v-sheet class="mx-5 my-2">
+            <span class="point-font xxxl-font main-col-1">제목</span>
             <v-text-field
-              v-model="amount"
-              hide-details
+              v-model="name"
               outlined
               dense
-              type="number"
+              hide-details
             ></v-text-field>
-            <v-sheet
-              class="ml-2 px-2 detail-border d-flex flex-row align-center justify-center"
-              rounded="lg"
-              >원</v-sheet
-            >
           </v-sheet>
+          <v-sheet class="mx-5 my-2">
+            <span class="point-font xxxl-font main-col-1">일시</span>
+            <div class="d-flex flex-row">
+              <v-dialog
+                ref="dateDialog"
+                v-model="dateDialog"
+                :return-value.sync="date"
+                width="290px"
+                style="z-index: 1000000"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    class="mr-1"
+                    v-model="date"
+                    readonly
+                    v-bind="attrs"
+                    dense
+                    outlined
+                    v-on="on"
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  locale="ko"
+                  v-model="date"
+                  scrollable
+                  color="var(--main-col-1)"
+                  :day-format="(date) => new Date(date).getDate()"
+                  :allowed-dates="disablePastDates"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="var(--main-col-1)"
+                    @click="dateDialog = false"
+                  >
+                    닫기
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="var(--main-col-1)"
+                    @click="$refs.dateDialog.save(date)"
+                  >
+                    확인
+                  </v-btn>
+                </v-date-picker>
+              </v-dialog>
+              <v-dialog
+                ref="timeDialog"
+                v-model="timeDialog"
+                :return-value.sync="time"
+                width="290px"
+                style="z-index: 1000000"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    class="ml-1"
+                    v-model="time"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    dense
+                    outlined
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-model="time"
+                  full-width
+                  color="var(--main-col-1)"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="var(--main-col-1)"
+                    @click="timeDialog = false"
+                  >
+                    닫기
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="var(--main-col-1)"
+                    @click="$refs.timeDialog.save(time)"
+                  >
+                    확인
+                  </v-btn>
+                </v-time-picker>
+              </v-dialog>
+            </div>
+          </v-sheet>
+          <v-sheet class="mx-5 my-2 d-flex flex-column">
+            <span class="point-font xxxl-font main-col-1">장소</span>
+            <v-btn
+              outlined
+              block
+              color="var(--main-col-1)"
+              @click="movePlacePage"
+            >
+              <span>{{ this.place }}</span>
+              <span>({{ this.address }})</span>
+            </v-btn>
+          </v-sheet>
+          <v-sheet class="mx-5 my-2">
+            <span class="point-font xxxl-font main-col-1">지각비</span>
+            <v-sheet class="d-flex flex-row">
+              <v-text-field
+                v-model="amount"
+                hide-details
+                outlined
+                dense
+                type="number"
+              ></v-text-field>
+              <v-sheet
+                class="ml-2 px-2 detail-border d-flex flex-row align-center justify-center"
+                rounded="lg"
+                >원</v-sheet
+              >
+            </v-sheet>
+          </v-sheet>
+          <v-btn
+            class="mx-5 my-2"
+            elevation="0"
+            color="var(--main-col-1)"
+            dark
+            rounded
+            @click="modifyMetting()"
+            >수정 완료</v-btn
+          >
         </v-sheet>
-        <v-btn
-          class="mx-5 my-2"
-          elevation="0"
-          color="var(--main-col-1)"
-          dark
-          rounded
-          @click="modifyMetting()"
-          >수정 완료</v-btn
-        >
-      </v-sheet>
-    </vue-bottom-sheet>
+      </vue-bottom-sheet>
+    </div>
+    <div class="error">
+      <v-dialog
+        v-model="dialog"
+        scrollable
+        max-width="300px"
+        rounded="xl"
+        persistent
+      >
+        <v-card rounded="xl">
+          <v-card-title class="d-flex flex-column">
+            <img src="@/assets/images/dialog/logout.png" width="60%" />
+            <span class="logo-font xxxxxxl-font main-col-1">Server Error</span>
+            <span
+              class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
+            >
+              <div>{{ errorMsg }}</div>
+            </span>
+          </v-card-title>
+          <v-card-text>
+            <v-btn
+              elevation="0"
+              color="var(--main-col-1)"
+              dark
+              rounded
+              block
+              @click="closeDialog"
+              >닫기</v-btn
+            >
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </div>
   </div>
 </template>
 
@@ -192,6 +226,14 @@ export default {
       if (this.$refs.modifySheet) {
         this.$refs.modifySheet.open();
       }
+    },
+    openDialog() {
+      this.dialog = true;
+    },
+    closeDialog() {
+      console.log(this.dialog);
+      this.dialog = false;
+      console.log(this.dialog);
     },
     isOpened() {
       console.log("M", this.name, this.placeName);
@@ -257,19 +299,29 @@ export default {
       this.getCurTime();
 
       if (this.curDate >= this.date && this.curTime >= this.time) {
-        alert("시간을 다시 설정해주세요!");
+        this.errorMsg = "시간을 다시 설정해주세요!";
+        this.dialog = true;
       } else if (
         this.name == null ||
+        this.name == "" ||
+        this.name.replace(/\s/g, "") == "" ||
         this.place == null ||
         this.address == null
       ) {
-        alert("모든 정보를 입력해주세요!");
+        this.errorMsg = "모든 정보를 입력해주세요!";
+        this.dialog = true;
+      } else if (this.name.length > 10) {
+        this.errorMsg = "모임 이름을 최대 10자 입니다!";
+        this.dialog = true;
       } else if (
         isNaN(parseInt(this.amount)) ||
         this.amount < 0 ||
         this.amount > 10000
       ) {
-        alert("지각비를 다시 설정해주세요! (0~10000)원");
+        this.errorMsg = "지각비는 최대 10,000원 입니다!";
+        console.log(this.dialog);
+        this.dialog = true;
+        console.log(this.dialog);
       } else {
         const savedRecentMeeting = new Date(this.recent_meeting.meetingTime);
         const modifiedRecentMeeting = new Date(this.meetingTime);
@@ -381,7 +433,7 @@ export default {
   },
   data() {
     return {
-      name: "",
+      name: null,
       date: null,
       time: null,
       place: "",
@@ -392,6 +444,8 @@ export default {
       dateDialog: false,
       timeDialog: false,
       showPlaceForm: false,
+      errorMsg: "",
+      dialog: false,
     };
   },
 
@@ -449,4 +503,18 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.parent {
+  position: relative;
+}
+
+.modify {
+  position: relative;
+  z-index: 2;
+}
+
+.error {
+  position: relative;
+  z-index: 1;
+}
+</style>
