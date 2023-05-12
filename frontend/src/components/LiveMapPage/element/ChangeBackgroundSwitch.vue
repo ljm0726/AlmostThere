@@ -10,7 +10,7 @@
         margin: 0 auto;
         left: 0;
         right: 0;
-        bottom: 82%;
+        top: 45px;
         padding: 0 15px 15px 0;
         z-index: 2;
       "
