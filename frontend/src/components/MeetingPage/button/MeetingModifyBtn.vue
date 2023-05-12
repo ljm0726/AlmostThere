@@ -232,6 +232,7 @@ export default {
       this.lat = this.meetingLat;
       this.lng = this.meetingLng;
       this.amount = this.lateAmount == null ? 0 : parseInt(this.lateAmount);
+      this.resetPlace();
     },
     // openDialog() {
     //   this.dialog = true;
