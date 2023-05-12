@@ -22,7 +22,7 @@
     <div class="parent">
       <div v-for="(time, index) in minTimes" :key="index" class="child">
         <img :src="startMarkerImage[index]" class="marker-image" /><span
-          v-if="time != 2"
+          v-if="time > 2"
           class="time"
           >{{ time }}분</span
         ><span class="time2" v-else>700m 이내</span>
@@ -113,8 +113,8 @@ export default {
 
         this.$router.replace(`/meeting/${from.id}`);
       } else {
-        this.regist.lat = this.placeX;
-        this.regist.lng = this.placeY;
+        this.regist.lat = this.placey;
+        this.regist.lng = this.placex;
         this.regist.place_name = this.placeName;
         this.regist.place_addr = this.addressName;
 

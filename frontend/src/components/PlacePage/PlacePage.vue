@@ -463,11 +463,15 @@ export default {
               },
             })
             .then((response) => {
+              console.log("#@#@#", response.data.routes[0]);
+
+              if (response.data.routes[0].result_code !== 0) {
+                this.minTimes.push(0);
+                console.log(response.data.routes[0].result_code);
+                return [];
+              }
+
               const guides = response.data.routes[0].sections[0].guides;
-              console.log(
-                response.data.routes[0],
-                response.data.routes[0].summary.duration
-              );
 
               this.minTimes.push(
                 Math.round(response.data.routes[0].summary.duration / 60)
@@ -922,8 +926,8 @@ export default {
 
         var bounds = new window.kakao.maps.LatLngBounds();
         bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
-        this.current.lat = this.placeY;
         this.current.lng = this.placeX;
+        this.current.lat = this.placeY;
         this.displayMarker(this.placeY, this.placeX);
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         this.map.setBounds(bounds);
