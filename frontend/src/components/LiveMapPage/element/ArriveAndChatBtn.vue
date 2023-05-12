@@ -9,10 +9,12 @@
         right: 0;
         bottom: 15px;
         z-index: 2;
+        border: 1px solid var(--main-col-1);
+        border-radius: 10px;
       "
       max-width="480"
       width="90%"
-      height="45"
+      height="48"
     >
       <v-btn @click="goChatting()">
         <span class="main-col-1">채팅</span>
