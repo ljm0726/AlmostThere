@@ -27,8 +27,8 @@
           dark
           rounded
           block
-          @click="goHome"
-          >홈으로 돌아가기</v-btn
+          @click="goBack"
+          >뒤로가기</v-btn
         >
       </v-card-text>
     </v-card>
@@ -36,29 +36,8 @@
 </template>
 
 <script>
-import CloseButton from "@/common/component/button/CloseButton.vue";
 export default {
-  name: "InternetError",
-  components: { CloseButton },
-  data() {
-    return {
-      dialog: false,
-    };
-  },
-  methods: {
-    openDialog() {
-      this.dialog = true;
-    },
-    closeDialog() {
-      this.dialog = false;
-    },
-    goBack() {
-      this.$router.go(-1);
-    },
-    goHome() {
-      this.$router.replace(`/home`);
-    },
-  },
+  name: "WebsocketConnet",
 };
 </script>
 

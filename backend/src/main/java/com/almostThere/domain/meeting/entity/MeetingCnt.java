@@ -1,20 +1,13 @@
 package com.almostThere.domain.meeting.entity;
 
 import com.almostThere.domain.user.entity.Member;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -40,4 +33,12 @@ public class MeetingCnt {
     @Column(nullable = false)
     private int cnt;
 
+    public MeetingCnt(Member myMember, Member friend) {
+        this.myMember = myMember;
+        this.friend = friend;
+    }
+
+    public void updateCnt(){
+        this.cnt += 1;
+    }
 }

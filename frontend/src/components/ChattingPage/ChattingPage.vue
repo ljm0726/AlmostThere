@@ -420,6 +420,10 @@ export default {
     },
     // 메세지 구독
     chatSubscribe() {
+      // 일단 끊고
+      this.stompClient.unsubscribe(
+        `chatting-subscribe-${this.$route.params.id}`
+      );
       this.stompClient.subscribe(
         `/send/${this.$route.params.id}`,
         async (res) => {
@@ -506,8 +510,10 @@ export default {
           },
           (error) => {
             console.log("소켓 연결 실패", error);
-            this.$refs.error.openDialog();
+            // this.$refs.error.openDialog();
             this.updateConnected(false);
+            this.connect();
+            // this.connect();
           }
         );
       }
