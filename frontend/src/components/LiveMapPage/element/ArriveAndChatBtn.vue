@@ -1,48 +1,64 @@
 <template>
   <v-sheet color="transparent">
-    <v-sheet
-      max-width="500"
-      color="transparent"
-      width="100%"
-      class="d-flex flex-column justify-end align-end"
+    <v-bottom-navigation
+      color="primary"
       style="
         position: fixed;
         margin: 0 auto;
         left: 0;
         right: 0;
-        bottom: 0;
-        padding: 0 15px 15px 0;
+        bottom: 15px;
+        z-index: 2;
+      "
+      max-width="480"
+      width="90%"
+      height="45"
+    >
+      <v-btn @click="goChatting()">
+        <span class="main-col-1">채팅</span>
+        <v-icon color="var(--main-col-1)">mdi-forum</v-icon>
+      </v-btn>
+      <v-btn @click="checkLocation()">
+        <span class="main-col-1" @click="checkLocation()">도착 완료</span>
+        <v-icon color="var(--main-col-1)">mdi-map-marker-check</v-icon>
+      </v-btn>
+      <v-btn @click="resizeMapLevel()">
+        <span class="main-col-1">범위 재조정</span>
+        <v-icon color="var(--main-col-1)">mdi-arrow-expand-all</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
+    <!-- <v-sheet
+      max-width="490"
+      color="white"
+      elevation="3"
+      width="80%"
+      class="d-flex flex-row justify-center align-center"
+      style="
+        position: fixed;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        bottom: 15px;
+
         z-index: 2;
       "
     >
       <v-btn
-        class="ml-1 mt-1"
+        class="d-flex flex-column align-center justify-center"
         @click="goChatting()"
-        color="var(--main-col-1)"
-        dark
-        rounded
+        color="white"
+        flat
       >
-        채팅
+        <v-icon>$vuetify.icons.chatting_outline</v-icon>
+        <span>채팅</span>
       </v-btn>
-      <v-btn
-        class="ml-1 mt-1"
-        @click="checkLocation()"
-        color="var(--main-col-1)"
-        dark
-        rounded
-      >
+      <v-btn @click="checkLocation()" color="var(--main-col-1)" dark rounded>
         도착 완료
       </v-btn>
-      <v-btn
-        class="mt-1"
-        @click="resizeMapLevel()"
-        color="var(--main-col-1)"
-        dark
-        rounded
-      >
+      <v-btn @click="resizeMapLevel()" color="var(--main-col-1)" dark rounded>
         범위 재조정
       </v-btn>
-    </v-sheet>
+    </v-sheet> -->
     <v-dialog v-model="success" max-width="300px" rounded="xl">
       <v-card rounded="xl">
         <v-card-title class="d-flex flex-column">
