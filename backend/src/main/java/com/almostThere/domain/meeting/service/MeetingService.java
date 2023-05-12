@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -69,15 +70,13 @@ public class MeetingService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         //이미 입장한 멤버인지 조회
-        MeetingMember meetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(meeting.getId(),memberId).orElseThrow();
+        Optional<MeetingMember> meetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(meeting.getId(), member.getId());
 
-        if(meetingMember!=null){
-            System.out.println("이미 참여한 모임입니다. 가입할 수 없습니다.");
+        if(meetingMember.isPresent()){
             return -1L;
         }
 
         if(meetingMembers.size()>=10){
-            System.out.println("모임 인원이 초과하였습니다. 가입할 수 없습니다.");
             return -1L;
         }
 
@@ -90,29 +89,26 @@ public class MeetingService {
         //모임 멤버를 한 명씩 조회하면서 만남 횟수를 업데이트한다.
         for(MeetingMember m:meetingMembers){
             Member friend = m.getMember();
-            MeetingCnt present = myFriends.stream().filter(f -> f.getFriend().getId() == friend.getId()).findAny().get();
+            Optional<MeetingCnt> present = myFriends.stream().filter(f -> f.getFriend().getId() == friend.getId()).findAny();
+
             //친구와 만난 적이 있으면 cnt+1
-            if(present!=null){
+            if(present.isPresent()){
                 //나를 기준으로 업데이트
-                present.updateCnt();
-                meetingCntRepository.save(present);
+                present.get().updateCnt();
+                meetingCntRepository.save(present.get());
                 //상대방 기준 조회 후 업데이트
                 MeetingCnt friendCnt = meetingCntRepository.findByMyMemberAndFriend(friend, member);
                 if(friendCnt!=null) {
-                    System.out.println("2. 상대가 나를 만난 적이 있음");
-                    System.out.println("만난 횟수: "+ friendCnt.getCnt());
                     friendCnt.updateCnt();
                     meetingCntRepository.save(friendCnt);
                 }
                 else{
-                    System.out.println("2. 상대가 나를 만난 적이 없음");
                     MeetingCnt friendMeetingCnt = new MeetingCnt(friend,member);
                     meetingCntRepository.save(friendMeetingCnt);
                 }
             }
             else{   //만난적이 없으면 save
                 //내 기준으로 insert
-                System.out.println("내가 만난 적이 없음");
                 MeetingCnt myMeetingCnt = new MeetingCnt(member,friend);
                 meetingCntRepository.save(myMeetingCnt);
                 //상대방 기준으로 insert
@@ -124,7 +120,8 @@ public class MeetingService {
         //방에 입장
         Long meetingId = meeting.getId();
         MeetingMember m = new MeetingMember(member, meeting, StateType.GOING);
-        meetingMemberRepository.save(m);
+        meeting.getMeetingMembers().add(m);
+        meetingRepository.save(meeting);
         calculateDetailService.updateSpentMoney(meeting);
         return meetingId;
     }
