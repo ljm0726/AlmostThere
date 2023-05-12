@@ -113,6 +113,7 @@ export default {
   computed: {
     ...mapState("placeStore", ["placeX", "placeY", "placeName", "placeAddr"]),
     ...mapState("halfwayStore", ["startPlaces", "middlePlace"]),
+    ...mapState("meetingStore", ["meeting_members"]),
   },
 
   watch: {
@@ -190,34 +191,15 @@ export default {
 
     if (window.kakao && window.kakao.maps) {
       // 카카오 객체가 있고, 카카오 맵 그릴 준비가 되어 있다면 맵 실행
+      console.log("열림");
       this.loadMap();
     } else {
       // 없다면 카카오 스크립트 추가 후 맵 실행
+      console.log("닫힘");
       this.loadScript();
     }
 
-    if (this.placeX !== null) {
-      this.isSelect = true;
-      this.isRecommend = false;
-    } else this.isSelect = false;
-    if (this.placeX !== null) {
-      // map의 marker를 다 지운다, 아래 displayMarker에서 뺴옴
-      if (this.startMarker) this.startMarker.setMap(null);
-      if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
-
-      var bounds = new window.kakao.maps.LatLngBounds();
-      bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
-      this.current.lng = this.placeX;
-      this.current.lat = this.placeY;
-      this.displayMarker(this.placeY, this.placeX);
-      // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-      this.map.setBounds(bounds);
-      this.map.relayout();
-      this.map.setCenter(
-        new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
-      );
-    }
-
+    console.log("마운티드", this.meeting_members);
     if (sessionStorage.getItem("findHalfwayModal") !== null) {
       this.$refs.halfway.openDialog();
     }
@@ -315,11 +297,7 @@ export default {
 
       var self = this;
       this.contentNode.innerHTML = content;
-      this.contentNode
-        .querySelector(".click")
-        .addEventListener("click", function () {
-          self.recommendData(place);
-        });
+
       this.contentNode
         .querySelector("#bus-icon")
         .addEventListener("click", function () {
@@ -440,6 +418,7 @@ export default {
       });
     },
 
+    //[@method] 이동시간 및 경로 저장
     findCarWay(place) {
       this.stateTraffic = "car";
       this.resetPolylines();
@@ -485,49 +464,52 @@ export default {
               },
             })
             .then((response) => {
+              console.log("#@#@#", response.data.routes[0]);
+              if (response.data.routes[0].result_code !== 0) {
+                return { car_route: [], minTime: 0 };
+              }
               const guides = response.data.routes[0].sections[0].guides;
-              console.log(
-                response.data.routes[0],
-                response.data.routes[0].summary.duration
-              );
-
-              this.minTimes.push(
-                Math.round(response.data.routes[0].summary.duration / 60)
-              );
-
               const car_route = guides.map((element) => {
                 return new window.kakao.maps.LatLng(
                   Number(element.y),
                   Number(element.x)
                 );
               });
-              car_route.color = element.get("color"); // 색상 저장
-              return car_route;
+              const item = {
+                car_route,
+                minTime: Math.round(
+                  response.data.routes[0].summary.duration / 60
+                ),
+                color: element.get("color"),
+              };
+              return item;
             })
             .catch((error) => {
               console.log(error);
-              return []; // 에러 발생시 빈 배열 반환
+              return { car_route: [], minTime: 0 };
             });
         })
-      ).then((car_routes) => {
+      ).then((results) => {
         const path_color = [
           "#32CD32",
           "#7B68EE",
           "#FFD700",
-          "#4B0082", //
+          "#4B0082",
           "#00CED1",
           "#FF00FF",
           "#87CEFA",
-          "#6B8E23", //
+          "#6B8E23",
           "#9400D3",
           "#8B0000",
         ];
-        for (var i = 0; i < car_routes.length; i++) {
-          //
-          //
-          var item = car_routes[i];
-          var polyline = new window.kakao.maps.Polyline({
-            path: item,
+        const car_routes = [];
+        const minTimes = [];
+        for (let i = 0; i < results.length; i++) {
+          const result = results[i];
+          car_routes.push(result.car_route);
+          minTimes.push(result.minTime);
+          const polyline = new window.kakao.maps.Polyline({
+            path: result.car_route,
             strokeWeight: 5,
             strokeColor: path_color[i],
             strokeOpacity: 1,
@@ -536,6 +518,7 @@ export default {
           this.polylines.push(polyline);
           polyline.setMap(this.map);
         }
+        this.minTimes = minTimes;
       });
 
       this.closeOveray();
@@ -912,11 +895,13 @@ export default {
       const script = document.createElement("script");
       script.src =
         "//dapi.kakao.com/v2/maps/sdk.js?appkey=4a440970d2ed6adb820352f0223f931f&autoload=false&libraries=services"; // &autoload=false api를 로드한 후 맵을 그리는 함수가 실행되도록 구현
+
       script.onload = () => window.kakao.maps.load(this.loadMap); // 스크립트 로드가 끝나면 지도를 실행될 준비가 되어 있다면 지도가 실행되도록 구현
 
       document.head.appendChild(script); // html>head 안에 스크립트 소스를 추가
     },
     loadMap() {
+      console.log("!@#!@#!@#!@", this.loadMap);
       const container = document.getElementById("map"); // 지도를 담을 DOM 영역
       const options = {
         // 지도를 생성할 때 필요한 기본 옵션
@@ -930,6 +915,28 @@ export default {
       this.map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
       this.ps = new window.kakao.maps.services.Places();
       this.geocoder = new window.kakao.maps.services.Geocoder();
+
+      if (this.placeX !== null) {
+        this.isSelect = true;
+        this.isRecommend = false;
+      } else this.isSelect = false;
+      if (this.placeX !== null) {
+        // map의 marker를 다 지운다, 아래 displayMarker에서 뺴옴
+        if (this.startMarker) this.startMarker.setMap(null);
+        if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
+
+        var bounds = new window.kakao.maps.LatLngBounds();
+        bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
+        this.current.lng = this.placeX;
+        this.current.lat = this.placeY;
+        this.displayMarker(this.placeY, this.placeX);
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        this.map.setBounds(bounds);
+        this.map.relayout();
+        this.map.setCenter(
+          new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
+        );
+      }
     },
     displayMarker(y, x) {
       console.log("마커찌그러오나?");

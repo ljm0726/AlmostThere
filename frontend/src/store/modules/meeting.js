@@ -19,6 +19,7 @@ const meetingStore = {
     meeting_lng: null,
     late_amount: 0, //지각비
     recent_meeting: null,
+    meeting_members: null,
 
     regist: {
       name: null,
@@ -61,6 +62,7 @@ const meetingStore = {
       state.meeting_lat = meeting.meetingLat;
       state.meeting_lng = meeting.meetingLng;
       state.late_amount = meeting.lateAmount;
+      state.meeting_members = meeting.meetingMembers;
     },
     SET_RECENT_MEETING(state, recent_meeting) {
       state.recent_meeting = recent_meeting;
