@@ -418,6 +418,7 @@ export default {
       });
     },
 
+    //[@method] 이동시간 및 경로 저장
     findCarWay(place) {
       this.stateTraffic = "car";
       this.resetPolylines();
@@ -464,52 +465,51 @@ export default {
             })
             .then((response) => {
               console.log("#@#@#", response.data.routes[0]);
-
               if (response.data.routes[0].result_code !== 0) {
-                this.minTimes.push(0);
-                console.log(response.data.routes[0].result_code);
-                return [];
+                return { car_route: [], minTime: 0 };
               }
-
               const guides = response.data.routes[0].sections[0].guides;
-
-              this.minTimes.push(
-                Math.round(response.data.routes[0].summary.duration / 60)
-              );
-
               const car_route = guides.map((element) => {
                 return new window.kakao.maps.LatLng(
                   Number(element.y),
                   Number(element.x)
                 );
               });
-              car_route.color = element.get("color"); // 색상 저장
-              return car_route;
+              const item = {
+                car_route,
+                minTime: Math.round(
+                  response.data.routes[0].summary.duration / 60
+                ),
+                color: element.get("color"),
+              };
+              return item;
             })
             .catch((error) => {
               console.log(error);
-              return []; // 에러 발생시 빈 배열 반환
+              return { car_route: [], minTime: 0 };
             });
         })
-      ).then((car_routes) => {
+      ).then((results) => {
         const path_color = [
           "#32CD32",
           "#7B68EE",
           "#FFD700",
-          "#4B0082", //
+          "#4B0082",
           "#00CED1",
           "#FF00FF",
           "#87CEFA",
-          "#6B8E23", //
+          "#6B8E23",
           "#9400D3",
           "#8B0000",
         ];
-        for (var i = 0; i < car_routes.length; i++) {
-          //
-          //
-          var item = car_routes[i];
-          var polyline = new window.kakao.maps.Polyline({
-            path: item,
+        const car_routes = [];
+        const minTimes = [];
+        for (let i = 0; i < results.length; i++) {
+          const result = results[i];
+          car_routes.push(result.car_route);
+          minTimes.push(result.minTime);
+          const polyline = new window.kakao.maps.Polyline({
+            path: result.car_route,
             strokeWeight: 5,
             strokeColor: path_color[i],
             strokeOpacity: 1,
@@ -518,6 +518,7 @@ export default {
           this.polylines.push(polyline);
           polyline.setMap(this.map);
         }
+        this.minTimes = minTimes;
       });
 
       this.closeOveray();
