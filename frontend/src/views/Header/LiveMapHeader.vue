@@ -29,7 +29,11 @@
       color="var(--main-col-1)"
       elevation="3"
       outlined
-      style="background-color: white !important; border-radius: 10px"
+      style="
+        background-color: white !important;
+        border-radius: 10px;
+        width: 70%;
+      "
       @click="goDetail()"
     >
       <div class="pt-1">{{ meetingName }}</div>
