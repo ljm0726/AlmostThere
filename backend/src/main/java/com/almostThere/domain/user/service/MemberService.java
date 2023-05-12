@@ -8,9 +8,6 @@ import com.almostThere.domain.user.entity.Member;
 import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.global.error.ErrorCode;
 import com.almostThere.global.error.exception.NotFoundException;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.Cookie;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,7 +35,6 @@ public class MemberService {
 
     public List<MeetingCntDto> findBestMember(Long memberId) {
         Member member = memberRepository.findByid(memberId);
-        System.out.println(member.getId() + " " + member.getMemberNickname());
         Page<MeetingCnt> bestMember = meetingCntRepository.findBymyMemberOrderByCntDesc(member,
             PageRequest.of(0, 9));
         List<MeetingCntDto> result = bestMember.stream().map(m -> new MeetingCntDto(m))
