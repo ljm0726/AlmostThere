@@ -239,7 +239,26 @@ export default {
           }
           // ii) 위치 권한 요청 prompt가 뜬 경우
           else if (permissionStatus.state == "prompt") {
-            this.geolocation();
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
+                const member = {
+                  memberId: this.member_id,
+                  memberNickname: this.member.memberNickname,
+                  memberLatLng: [
+                    position.coords.latitude,
+                    position.coords.longitude,
+                  ],
+                };
+                // 현 사용자의 위치 저장
+                this.send(member);
+              },
+              (error) => {
+                console.log("#[GeoLocation]# permisstion 거부: ", error);
+                this.$refs.denied.openDialog();
+                clearInterval(this.intervalGeolocation);
+              }
+            );
           }
           // iii) 위치 권한 거부
           else {
