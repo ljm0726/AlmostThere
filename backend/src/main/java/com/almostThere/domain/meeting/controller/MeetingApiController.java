@@ -28,6 +28,7 @@ public class MeetingApiController {
 
     /**
      * 사용자가 름코드에 해당하는 모임에 가입되어 있는지 확인 후 가입시킨다.
+     * 모임멤버들의 친구만남 횟수를 업데이트한다.
      * @param authentication
      * @param roomCode
      * @return

@@ -11,9 +11,11 @@ import com.almostThere.domain.meeting.dto.detail.MeetingMemberResponseDto;
 import com.almostThere.domain.meeting.dto.update.MeetingStartPlaceRequestDto;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.meeting.entity.Meeting;
+import com.almostThere.domain.meeting.entity.MeetingCnt;
 import com.almostThere.domain.meeting.entity.MeetingMember;
 import com.almostThere.domain.meeting.entity.StateType;
 import com.almostThere.domain.meeting.repository.CalculateDetailRepository;
+import com.almostThere.domain.meeting.repository.MeetingCntRepository;
 import com.almostThere.domain.meeting.repository.MeetingMemberRepository;
 import com.almostThere.domain.meeting.repository.MeetingRepository;
 import com.almostThere.domain.user.entity.Member;
@@ -42,6 +44,7 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
     private final MemberRepository memberRepository;
     private final MeetingMemberRepository meetingMemberRepository;
+    private final MeetingCntRepository meetingCntRepository;
     private final CalculateDetailRepository calculateDetailRepository;
     private final CalculateDetailService calculateDetailService;
 
@@ -55,29 +58,74 @@ public class MeetingService {
      */
     @Transactional
     public Long checkAndSaveMeetingMember(String roomCode, Long memberId){
-
+        //가입할 모임 정보
         Meeting meeting = meetingRepository.findByRoomCode(roomCode)
             .orElseThrow(() -> new NotFoundException(ErrorCode.MEETING_NOT_FOUND));
+        //모임 멤버 조회
         List<MeetingMember> meetingMembers = meeting.getMeetingMembers();
-
-        boolean isJoined = false;
-        for(MeetingMember meetingMember : meetingMembers){
-            if(meetingMember.getMember().getId() == memberId){
-                isJoined = true;
-                break;
-            };
-        }
-
-        Long meetingId = meeting.getId();
-        if(!isJoined && meetingMembers.size() < 10){
-            Member member = memberRepository.findById(memberId)
+        
+        //나의 멤버 인스턴스 조회
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-            MeetingMember meetingMember = new MeetingMember(member, meeting, StateType.GOING);
-            meetingMemberRepository.save(meetingMember);
-            calculateDetailService.updateSpentMoney(meeting);
-        }else if(meetingMembers.size() > 10){
-            meetingId = -1L;
+
+        //이미 입장한 멤버인지 조회
+        MeetingMember meetingMember = meetingMemberRepository.findByMeeting_IdAndMember_Id(meeting.getId(),memberId).orElseThrow();
+
+        if(meetingMember!=null){
+            System.out.println("이미 참여한 모임입니다. 가입할 수 없습니다.");
+            return -1L;
         }
+
+        if(meetingMembers.size()>=10){
+            System.out.println("모임 인원이 초과하였습니다. 가입할 수 없습니다.");
+            return -1L;
+        }
+
+        /**
+         * 친구 만나는 횟수 저장(meeting_cnt)
+         */
+        //내가 만난 친구들 조회
+        List<MeetingCnt> myFriends = meetingCntRepository.findByMyMember(member);
+
+        //모임 멤버를 한 명씩 조회하면서 만남 횟수를 업데이트한다.
+        for(MeetingMember m:meetingMembers){
+            Member friend = m.getMember();
+            MeetingCnt present = myFriends.stream().filter(f -> f.getFriend().getId() == friend.getId()).findAny().get();
+            //친구와 만난 적이 있으면 cnt+1
+            if(present!=null){
+                //나를 기준으로 업데이트
+                present.updateCnt();
+                meetingCntRepository.save(present);
+                //상대방 기준 조회 후 업데이트
+                MeetingCnt friendCnt = meetingCntRepository.findByMyMemberAndFriend(friend, member);
+                if(friendCnt!=null) {
+                    System.out.println("2. 상대가 나를 만난 적이 있음");
+                    System.out.println("만난 횟수: "+ friendCnt.getCnt());
+                    friendCnt.updateCnt();
+                    meetingCntRepository.save(friendCnt);
+                }
+                else{
+                    System.out.println("2. 상대가 나를 만난 적이 없음");
+                    MeetingCnt friendMeetingCnt = new MeetingCnt(friend,member);
+                    meetingCntRepository.save(friendMeetingCnt);
+                }
+            }
+            else{   //만난적이 없으면 save
+                //내 기준으로 insert
+                System.out.println("내가 만난 적이 없음");
+                MeetingCnt myMeetingCnt = new MeetingCnt(member,friend);
+                meetingCntRepository.save(myMeetingCnt);
+                //상대방 기준으로 insert
+                MeetingCnt friendMeetingCnt = new MeetingCnt(friend,member);
+                meetingCntRepository.save(friendMeetingCnt);
+            }
+        }
+
+        //방에 입장
+        Long meetingId = meeting.getId();
+        MeetingMember m = new MeetingMember(member, meeting, StateType.GOING);
+        meetingMemberRepository.save(m);
+        calculateDetailService.updateSpentMoney(meeting);
         return meetingId;
     }
     /**
