@@ -33,6 +33,13 @@ import ArrowRightWhiteIcon from '@/common/component/icons/ArrowRightWhiteIcon.vu
 Vue.use(Vuetify);
 
 export default new Vuetify({
+  theme: {
+    themes: {
+      light: {
+        primary: '#092a49'
+      }
+    }
+  },
   icons: {
     values: {
       home: {

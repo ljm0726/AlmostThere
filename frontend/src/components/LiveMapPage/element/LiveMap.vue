@@ -26,6 +26,7 @@ export default {
       memberOverlay: [0.5, 3.2], // member nickname over-lay (x, y) 위치 좌표
       distanceOverlay: [-0.4, -0.1], // distance over-lay 좌표
       chatOverlay: [0.5, 4], // chat over-lay 좌표
+      chatMaxLength: 20, // chatting over-lay 최대 길이
       warningOverlay: [6.0, 3.5], // GPS 수신불가 over-lay 좌표
       /* # 좌표 */
       placeLatLng: [], // 모임장소 좌표
@@ -42,16 +43,15 @@ export default {
       geoWarningOverlayList: [], // GeoLocation 경고 over-lay
       /* # 위치 변경된 member[index, id] */
       updateMemberInfo: [], // [index, id] 위치 업데이트 된 member의 > memberLocation index와 memberId 저장
-      /* # 가장 먼 곳에 있는 memeber distance */
-      maxMemberDistance: 2500,
+      /* 구독 interval */
+      sendInterval: null,
     };
   },
   props: {
-    background_type: String, // "tile" = 하얀 TileSet 배경, "map" = 지도 배경
+    background_type: Boolean, // "tile" = 하얀 TileSet 배경, "map" = 지도 배경
     member_id: Number,
     meeting_lat: Number,
     meeting_lng: Number,
-    meeting_name: String,
     chatting_map: Object,
   },
   computed: {
@@ -63,24 +63,25 @@ export default {
     this.memberId = this.member_id;
 
     // ii) 모임장소 좌표 저장
-    // this.placeLatLng.push(this.meeting_lat);
-    // this.placeLatLng.push(this.meeting_lng);
+    this.placeLatLng.push(this.meeting_lat);
+    this.placeLatLng.push(this.meeting_lng);
+    // console.log("#[모임장소 좌표]# 확인: ", this.placeLatLng);
     // !! test용으로 잠시 lat, lng 고정 (역삼역)
-    this.placeLatLng.push(37.5004);
-    this.placeLatLng.push(127.0361);
+    // this.placeLatLng.push(37.5004);
+    // this.placeLatLng.push(127.0361);
 
     // ii-1) 채팅 저장
     this.chatting = this.chatting_map;
     // iii) Kakao Map Script import
     if (window.kakao && window.kakao.maps) {
-      if (this.background_type == "map") this.initMap();
+      if (this.background_type == true) this.initMap();
       else this.initMapTileSet();
     } else {
       const script = document.createElement("script");
       /* global kakao */
       script.onload = () =>
         kakao.maps.load(() => {
-          if (this.background_type == "map") this.initMap();
+          if (this.background_type == true) this.initMap();
           else this.initMapTileSet();
         });
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
@@ -103,7 +104,7 @@ export default {
       // this.createCircle();
 
       // 모임 장소 marker 생성
-      this.createPlaceMarker(options);
+      this.createPlaceMarker();
 
       // WebSocket 연결
       this.connect();
@@ -139,7 +140,7 @@ export default {
       this.createCircle();
 
       // 모임 장소 marker 생성
-      this.createPlaceMarker(options);
+      this.createPlaceMarker();
 
       // WebSocket 연결
       this.connect();
@@ -165,7 +166,6 @@ export default {
         });
 
         // circle 표시
-        if (window.location.pathname.split("/")[1] != "live-map") return;
         circle.setMap(this.map);
       }
 
@@ -187,16 +187,11 @@ export default {
           strokeStyle: "solid",
         });
         // circle 표시
-        if (window.location.pathname.split("/")[1] != "live-map") return;
         circle.setMap(this.map);
       }
     },
-    // [@Method] 초기값 설정
-    setInitValue() {
-      this.maxMemberDistance = 2500; // circle를 생성하기 위한 maxMemberDistance 기본값
-    },
     // [@Method] 모임장소 marker 생성
-    createPlaceMarker(options) {
+    createPlaceMarker() {
       const imageSrc = require("@/assets/images/page/pointer.png");
       const imageSize = new kakao.maps.Size(
         this.placeMarkerSize[0],
@@ -214,7 +209,11 @@ export default {
         imageOption
       );
       const marker = new kakao.maps.Marker({
-        position: options.center,
+        // position: options.center,
+        position: new kakao.maps.LatLng(
+          this.placeLatLng[0],
+          this.placeLatLng[1]
+        ),
         image: markerImage,
       });
 
@@ -263,6 +262,7 @@ export default {
           (error) => {
             console.log("소켓 연결 실패", error);
             this.updateConnected(false);
+            this.connect();
           }
         );
       }
@@ -298,12 +298,13 @@ export default {
     },
     // [@Method] 1초마다 해당 모임에 member 객체(좌표) 얻기
     startIntervalMemberLocation() {
-      setInterval(() => {
+      this.sendInterval = setInterval(() => {
         this.send();
       }, 1000);
     },
     // [@Method] client에서 server로 message 보내기(send) - 해당 모임의 member 객체 얻기
     send() {
+      // console.log(">> #1 meeting 위치 send 작업", this.meetingId);
       if (this.stompClient && this.stompClient.connected) {
         this.stompClient.send(
           `/message/locShare/meetingId/${this.meetingId}/memberId/${this.memberId}`,
@@ -462,6 +463,7 @@ export default {
       this.memberPolylineList.push(object);
 
       // polyline 표시
+      if (window.location.pathname.split("/")[1] != "live-map") return;
       polyline.setMap(this.map);
 
       // * 두 좌표의 거리 over-lay 표시
@@ -507,20 +509,35 @@ export default {
     },
     // [@Method] member의 위치 값 변경에 따른 marker, polyline, overlay 업데이트
     refreshMapOnLocationUpdate() {
+      if (!this.refreshMapOnLocationUpdate) return;
+
       const refreshMember = this.memberLocation[this.updateMemberInfo[0]];
       // this.updateMemberInfo[0] = 변경된 memberLocation 배열의 index 값
       // this.updateMemberInfo[1] = 변경된 memberId
       // console.log("#21# refresh member 확인: ", refreshMember);
-
       const newPosition = new kakao.maps.LatLng(
         refreshMember.memberLatLng[0],
         refreshMember.memberLatLng[1]
       );
 
       // i) marker
+      this.refreshMarker(newPosition);
+
+      // ii) over-lay & polyline
+      // - 닉네임 over-lay
+      this.refreshNicknameOverlay(newPosition);
+      // - 거리 polyline(선)
+      this.refreshPolyLine(newPosition);
+      // - 채팅 over-lay
+      this.refreshChatOverlay(newPosition);
+    },
+    // [@Method] 변경된 member 좌표에 따른 marker 업데이트
+    refreshMarker(newPosition) {
       const markerIndex = this.memberMarkerList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
+      if (markerIndex == -1 || this.memberMarkerList.length == 0) return;
+
       // 기존 marker
       const marker =
         this.memberMarkerList[markerIndex][this.updateMemberInfo[1]];
@@ -530,21 +547,27 @@ export default {
       newMarker.setPosition(newPosition);
       marker.setMap(null);
       newMarker.setMap(this.map);
-
-      // ii) over-lay & polyline
-      // - 닉네임 over-lay
+    },
+    // [@Method] 변경된 member 좌표에 따른 nickname over-lay 업데이트
+    refreshNicknameOverlay(newPosition) {
       const nickIndex = this.memberNicknameOverlayList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
+
+      if (nickIndex == -1 || this.memberNicknameOverlayList.length == 0) return;
       const nickOverlay =
         this.memberNicknameOverlayList[nickIndex][this.updateMemberInfo[1]];
+
       nickOverlay.setPosition(newPosition);
       nickOverlay.setMap(this.map);
-
-      // - 거리 polyline(선)
+    },
+    // [@Method] 변경된 member 좌표에 따른 polyline 업데이트
+    refreshPolyLine(newPosition) {
       const polyIndex = this.memberPolylineList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
+
+      if (polyIndex == -1 || this.memberPolylineList.length == 0) return;
       const polyline =
         this.memberPolylineList[polyIndex][this.updateMemberInfo[1]];
       const newPath = [
@@ -552,12 +575,20 @@ export default {
         newPosition,
       ];
       polyline.setPath(newPath);
+      if (window.location.pathname.split("/")[1] != "live-map") return;
       polyline.setMap(this.map);
 
       // - 거리 over-lay
+      this.refreshDistanceOverlay(newPosition, polyline);
+    },
+    // [@Method] 변경된 member 좌표에 따른 모임장소까지의 distance over-lay 업데이트
+    refreshDistanceOverlay(newPosition, polyline) {
       const distanceIndex = this.memberDistanceOverlayList.findIndex(
         (obj) => Object.keys(obj)[0] == this.updateMemberInfo[1]
       );
+
+      if (distanceIndex == -1 || this.memberDistanceOverlayList.length == 0)
+        return;
       const distance = Math.round(polyline.getLength());
       const distanceOverlay =
         this.memberDistanceOverlayList[distanceIndex][this.updateMemberInfo[1]];
@@ -576,8 +607,9 @@ export default {
         );
       }
       distanceOverlay.setMap(this.map);
-
-      // - 채팅 over-lay
+    },
+    // [@Method] 변경된 member 좌표에 따른 chat over-lay 업데이트
+    refreshChatOverlay(newPosition) {
       if (this.memberChatOverlayList.length != 0) {
         var chatIndex = -1;
         chatIndex = this.memberChatOverlayList.findIndex(
@@ -656,19 +688,17 @@ export default {
     },
     // [@Method] chatting 내용 over-lay 표시
     updateChatOverlay() {
-      //     {
-      //       member: {
-      //         memberId: 1,
-      //         content: "100m 남음~",
-      //       }
-      //     },
       for (var key of Object.keys(this.chatting)) {
-        console.log("key " + key);
+        // console.log("key " + key);
         // chatting 내용이 없는 경우 생성 X
         if (this.chatting[key] == null || this.chatting[key] == "") continue;
 
-        console.log("#21# memberLocation 확인: ", this.memberLocation);
-        const content = `<div class="chat-overlay point-font">${this.chatting[key]}</div>`;
+        let chattingContent = this.chatting[key];
+        if (chattingContent.length > this.chatMaxLength) {
+          chattingContent =
+            chattingContent.substring(0, this.chatMaxLength) + "...";
+        }
+        const content = `<div class="chat-overlay point-font">${chattingContent}</div>`;
         const memberMarker = this.memberLocation.find(
           (loc) => loc.memberId == key
         );
@@ -701,12 +731,6 @@ export default {
               yAnchor: this.chatOverlay[1],
             });
           }
-          // const customOverlay = new kakao.maps.CustomOverlay({
-          //   position: position,
-          //   content: content,
-          //   xAnchor: this.chatOverlay[0],
-          //   yAnchor: this.chatOverlay[1],
-          // });
 
           // 생성한 오버레이 삭제 후 업데이트 or 저장
           const index = this.memberChatOverlayList.findIndex(
@@ -729,26 +753,51 @@ export default {
         }
       }
     },
-    // [@Method] TEST (!추후 삭제)
-    // sendChatTest() {
-    //   this.chatting = [
-    //     // {10: "100m 남음!"}
-    //     {
-    //       member: {
-    //         memberId: 1,
-    //         content: "100m 남음~",
-    //       },
-    //     },
-    //     {
-    //       member: {
-    //         memberId: 2,
-    //         content: this.testChatContent,
-    //       },
-    //     },
-    //   ];
-    // },
+  },
+  // [@Method] 생성한 over-lay, polyline 제거
+  removeOnMapItems() {
+    // i) member marker
+    if (this.memberMarkerList.length != 0) {
+      this.memberMarkerList.forEach((marker) => {
+        marker.setMap(null);
+      });
+      this.memberMarkerList = [];
+    }
+    // ii) chat over-lay
+    if (this.memberChatOverlayList.length != 0) {
+      this.memberChatOverlayList.forEach((overlay) => {
+        overlay.setMap(null);
+      });
+      this.memberChatOverlayList = [];
+    }
+    // iii) distance over-lay
+    if (this.memberDistanceOverlayList.length != 0) {
+      this.memberDistanceOverlayList.forEach((overlay) => {
+        overlay.setMap(null);
+      });
+      this.memberDistanceOverlayList = [];
+    }
+    // iv) nickname over-lay
+    if (this.memberNicknameOverlayList.length != 0) {
+      this.memberNicknameOverlayList.forEach((overlay) => {
+        overlay.setMap(null);
+      });
+      this.memberNicknameOverlayList = [];
+    }
+    // v) polyline
+    if (this.memberPolylineList.length != 0) {
+      this.memberPolylineList.forEach((polyline) => {
+        polyline.setMap(null);
+      });
+      this.memberPolylineList = [];
+    }
+  },
+  beforeUnmount() {
+    this.removeOnMapItems();
   },
   beforeDestroy() {
+    // console.log("beforeDestroy 구독 끊기 완료", this.meetingId);
+    clearInterval(this.sendInterval);
     this.stompClient.unsubscribe(`location-subscribe-${this.$route.params.id}`);
     this.stompClient.unsubscribe(`chatting-subscribe-${this.$route.params.id}`);
   },

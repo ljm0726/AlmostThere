@@ -127,8 +127,8 @@ export default {
 
               const from = sessionStorage.getItem("from");
               if (from === null) {
-                this.regist.lat = x;
-                this.regist.lng = y;
+                this.regist.lat = y;
+                this.regist.lng = x;
                 this.regist.place_name = this.place;
                 this.regist.place_addr = this.address;
                 this.setRegistMeeting(this.regist);

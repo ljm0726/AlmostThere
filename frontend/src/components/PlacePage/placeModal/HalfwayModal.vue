@@ -1,76 +1,119 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    scrollable
-    max-width="300px"
-    rounded="xl"
-    v-if="!isSearchPage"
-  >
-    <v-card rounded="xl">
-      <v-card-title class="d-flex flex-column" style="margin-bottom: 2%">
-        <div class="align-self-end">
-          <close-button @closeDialog="closeDialog"></close-button>
-        </div>
-        <img
-          src="@/assets/images/dialog/earth.png"
-          width="60%"
-          style="margin-bottom: 7%; height: 82px; width: 102px"
-          alt=""
-        />
-        <span class="regular-font md-font">출발지를 입력해</span>
-        <span class="regular-font md-font">중간 위치를 추천 받아보세요!</span>
-      </v-card-title>
-
-      <div class="input-container" ref="inputContainer">
-        <div v-for="(start, index) in starts" :key="index" class="input-list">
-          <input
-            class="search-box2"
-            :value="
-              start
-                ? `${index + 1}. ` + start.get('name')
-                : `${index + 1}. 출발지를 입력하세요!`
-            "
-            @click="goToSearchPage(`${index + 1}`)"
-            readonly
-          />
-          <div class="img-container">
+  <div class="parent">
+    <div class="input">
+      <v-dialog
+        v-model="dialog"
+        scrollable
+        max-width="300px"
+        rounded="xl"
+        v-if="!isSearchPage"
+      >
+        <v-card rounded="xl">
+          <v-card-title class="d-flex flex-column" style="margin-bottom: 2%">
+            <div class="align-self-end">
+              <close-button @closeDialog="closeDialog"></close-button>
+            </div>
             <img
-              v-if="index > 1"
-              src="@/assets/images/dialog/close_btn_small.png"
-              class="close-btn-small"
+              src="@/assets/images/dialog/earth.png"
+              width="60%"
+              style="margin-bottom: 7%; height: 82px; width: 102px"
               alt=""
-              @click="cancelStart(index)"
             />
+            <span class="regular-font md-font">출발지를 입력해</span>
+            <span class="regular-font md-font"
+              >중간 위치를 추천 받아보세요!</span
+            >
+          </v-card-title>
+
+          <div class="input-container" ref="inputContainer">
+            <div
+              v-for="(start, index) in starts"
+              :key="index"
+              class="input-list"
+            >
+              <input
+                class="search-box2"
+                :value="
+                  start
+                    ? `${index + 1}. ` + start.get('name')
+                    : `${index + 1}. 출발지를 입력하세요!`
+                "
+                @click="goToSearchPage(`${index + 1}`)"
+                readonly
+              />
+              <div class="img-container">
+                <img
+                  v-if="index > 1"
+                  src="@/assets/images/dialog/close_btn_small.png"
+                  class="close-btn-small"
+                  alt=""
+                  @click="cancelStart(index)"
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div style="align-self: center; margin: 4% 0" @click="plusStart">
-        <img
-          src="@/assets/images/dialog/Plus.png"
-          style="margin-bottom: 8%; float: left"
-          alt=""
-        />
-        출발지 추가하기
-      </div>
+          <div style="align-self: center; margin: 4% 0" @click="plusStart">
+            <img
+              src="@/assets/images/dialog/Plus.png"
+              style="margin-bottom: 8%; float: left"
+              alt=""
+            />
+            출발지 추가하기
+          </div>
 
-      <v-card-text style="overflow: visible">
-        <v-row>
-          <v-col class="search_halfway">
+          <v-card-text style="overflow: visible">
+            <v-row>
+              <v-col class="search_halfway">
+                <v-btn
+                  elevation="0"
+                  color="var(--main-col-1)"
+                  dark
+                  rounded
+                  block
+                  @click="findHalfway"
+                  >중간 위치 찾기</v-btn
+                >
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </div>
+
+    <div class="error">
+      <v-dialog
+        v-model="dialogError"
+        scrollable
+        max-width="300px"
+        rounded="xl"
+        persistent
+      >
+        <v-card rounded="xl">
+          <v-card-title class="d-flex flex-column">
+            <img src="@/assets/images/dialog/logout.png" width="60%" />
+            <span class="logo-font xxxxxxl-font main-col-1">Error</span>
+            <span
+              class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
+            >
+              <div>{{ errorMsg }}</div>
+            </span>
+          </v-card-title>
+          <v-card-text>
             <v-btn
               elevation="0"
               color="var(--main-col-1)"
               dark
               rounded
               block
-              @click="findHalfway"
-              >중간 위치 찾기</v-btn
+              @click="closeErrorDialog"
+              >닫기</v-btn
             >
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -84,18 +127,24 @@ export default {
   data() {
     return {
       dialog: false,
-      starts: [null, null],
+      dialogError: false,
+      errorMsg: "",
+      starts: [null, null], //모달에서 보여줄 정보
       isSearchPage: false,
       selectedPlace: {},
       size: 0,
     };
   },
   computed: {
-    ...mapState("halfwayStore", ["startPlaces"]),
+    ...mapState("halfwayStore", ["startPlaces", "meeting_start_places"]),
+    ...mapState("meetingStore", ["meeting_members"]),
   },
   mounted() {
-    console.log(this.startPlaces);
+    // console.log(this.startPlaces, this.meeting_members);
     this.starts = this.startPlaces;
+    if (this.starts.length < 2) {
+      this.starts.push(null);
+    }
   },
   watch: {
     dialog() {
@@ -110,7 +159,11 @@ export default {
       "addPlaceList",
       "removePlaceList",
     ]),
-    ...mapActions("halfwayStore", ["removePlaceList", "addMiddlePlace"]),
+    ...mapActions("halfwayStore", [
+      "removePlaceList",
+      "addMiddlePlace",
+      "setStartPlace",
+    ]),
     openDialog() {
       this.dialog = true;
     },
@@ -119,9 +172,16 @@ export default {
       this.dialog = false;
     },
 
+    openErrorDialog() {
+      this.dialogError = true;
+    },
+    closeErrorDialog() {
+      this.dialogError = false;
+    },
+
     goToSearchPage(index) {
       // this.$router.push(url);
-      console.log(index);
+      // console.log(index);
       localStorage.setItem("listIndex", index);
       // this.isSearchPage = true; // dialog를 닫고 SearchPlacePage2로 이동
       this.$router.push("/search2");
@@ -133,9 +193,10 @@ export default {
     },
 
     plusStart() {
-      console.log("@@@", this.starts.length);
+      // console.log("@@@", this.starts.length);
       if (this.starts.length > 9) {
-        alert("최대 10명 까지 가능 합니다! ");
+        this.errorMsg = "최대 10명까지 가능합니다";
+        this.dialogError = true;
       } else {
         this.starts.push(null);
         setTimeout(() => {
@@ -180,7 +241,8 @@ export default {
     findHalfway() {
       for (let i = 0; i < this.starts.length; i++) {
         if (this.starts[i] == null) {
-          alert("출발지를 입력하세요!");
+          this.dialogError = true;
+          this.errorMsg = "출발지를 입력하세요!";
           return;
         }
       }
@@ -188,6 +250,7 @@ export default {
 
       const combinations = [];
       for (let i = 1; i <= this.size; i++) {
+        // console.log("출발정보", this.startPlaces);
         const result = this.combine(this.startPlaces, i);
         combinations.push(...result);
       }
@@ -207,7 +270,7 @@ export default {
         console.log("Sum: ", xSum, ySum);
         middlePlace.push({ middleX, middleY });
       });
-      console.log("middle: ", middlePlace);
+      // console.log("middle: ", middlePlace);
       let middleAvergeX = 0;
       let middleAvergeY = 0;
       middlePlace.forEach((place) => {
@@ -217,7 +280,7 @@ export default {
       middleAvergeX /= middlePlace.length;
       middleAvergeY /= middlePlace.length;
 
-      console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
+      // console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
       this.addMiddlePlace({ middleAvergeX, middleAvergeY });
       this.dialog = false;
     },
@@ -267,5 +330,19 @@ span {
   transform: translateY(-50%);
   width: 30px;
   height: 30px;
+}
+
+.parent {
+  position: relative;
+}
+
+.input {
+  position: relative;
+  z-index: 2;
+}
+
+.error {
+  position: relative;
+  z-index: 1;
 }
 </style>

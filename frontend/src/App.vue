@@ -17,7 +17,6 @@
 <script>
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
-import jwt_decode from "jwt-decode";
 import {
   getMostRecentMeeting,
   getRecentPastMeeting,
@@ -35,41 +34,18 @@ export default {
   data() {
     return {
       timeOut: null,
-      // isSocketConnected: false,
       intervalGeolocation: null,
     };
   },
-
   beforeCreate() {
-    // login 여부 & 만료시간 check
-    if (
-      localStorage.getItem("Authorization") != null &&
-      jwt_decode(localStorage.getItem("Authorization").substring(7)).exp >=
-        Math.floor(Date.now() / 1000)
-    ) {
+    // path가 login 또는 landing일 경우 요청하지 않는다.
+    const path = this.$route.fullPath;
+    if (path != "/login" && path != "/landing") {
       getMostRecentMeeting().then((res) => {
-        // console.log("getMostRecentMeeting response", res);
-        if (res != null) {
-          this.setMeeting(res);
-        }
+        if (res != null) this.setMeeting(res);
       });
     }
   },
-  created() {
-    // window.onload = function() {
-    //   setTimeout(function() {
-    //     window.scrollTo(0, 1);}, 100);
-    // };
-    // window.addEventListener("load", function() {
-    //   setTimeout(scrollTo, 0, 0, 1);
-    // }, false);
-    // let vh = window.innerHeight * 0.01;
-    // document.documentElement.style.setProperty("--vh", `${vh}px`);
-    // this.setScreenSize();
-    // window.addEventListener("resize", this.setScreenSize);
-    // window.addEventListener("touched", this.setScreenSize);
-  },
-
   computed: {
     ...mapState("meetingStore", ["recent_meeting"]),
     ...mapState("memberStore", ["member", "member_id"]),
@@ -82,7 +58,6 @@ export default {
         clearTimeout(this.timeOut);
         const now = new Date();
         const meetingTime = new Date(newVal.meetingTime);
-
         if (now < meetingTime) {
           this.timeOut = setTimeout(
             this.connectHandler,
@@ -92,16 +67,9 @@ export default {
       }
     },
   },
-
   methods: {
     ...mapActions("websocketStore", ["updateStompClient", "updateConnected"]),
     ...mapActions("meetingStore", ["setMeeting"]),
-    // setScreenSize() {
-    //   //먼저 뷰포트 높이를 얻고 1%를 곱하여 vh 단위 값을 얻습니다.
-    //   let vh = window.innerHeight * 0.01;
-    //   //그런 다음 --vh 사용자 정의 속성의 값을 문서의 루트로 설정합니다.
-    //   document.documentElement.style.setProperty("--vh", `${vh}px`);
-    // },
     calculateRemainTimeForTimeOut(newDate) {
       const now = new Date();
       const meetingTime = new Date(newDate);
@@ -138,14 +106,9 @@ export default {
       } else {
         return diffTime;
       }
-
-      // console.log("diffTime :", diffTime);
-      // return diffTime;
     },
-
     connectHandler() {
       const access_token = localStorage.getItem("Authorization");
-
       if (access_token) {
         // console.log("connect");
         this.connect();
@@ -183,6 +146,7 @@ export default {
             // 소켓 연결 실패
             console.log("소켓 연결 실패", error);
             this.updateConnected(false);
+            this.connect();
           }
         );
       }
@@ -198,7 +162,6 @@ export default {
         }
       }, 1);
     },
-
     startIntervalMemberLocation() {
       // setInterval(() => {
       //   this.getGeoLocation();
@@ -207,45 +170,110 @@ export default {
         this.getGeoLocation();
       }, 3000);
     },
+    // [@Method] GeoLocation 동작
+    // async getGeoLocation() {
+    //   // console.log("#[getGeoLocation]# 현 위치 얻기 동작");
+    //   if (this.member == null) {
+    //     await store.dispatch("memberStore/isLogin");
+    //   }
+    //   // alert("## geo", navigator.geolocation);
+    //   if (navigator.geolocation) {
+    //     // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+    //     navigator.geolocation.getCurrentPosition(
+    //       (position) => {
+    //         // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
+    //         const member = {
+    //           memberId: this.member_id,
+    //           memberNickname: this.member.memberNickname,
+    //           memberLatLng: [
+    //             position.coords.latitude,
+    //             position.coords.longitude,
+    //           ],
+    //         };
 
+    //         // 현 사용자의 위치 저장
+    //         // console.log("getGeoLocation :", member);
+    //         this.send(member);
+    //       },
+    //       (error) => {
+    //         // console.log("#[GeoLocation]# GeoLocation 사용불가 error: ", error);
+    //         if (error.code == 1) {
+    //           this.$refs.denied.openDialog();
+    //           clearInterval(this.intervalGeolocation);
+    //         }
+    //       }
+    //     );
+    //   } else {
+    //     console.log(
+    //       "#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다."
+    //     );
+    //     alert("#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다.");
+    //   }
+    // },
     async getGeoLocation() {
-      // console.log("#[getGeoLocation]# 현 위치 얻기 동작");
+      console.log("#[GeoLocation]# 동작");
+      // 로그인한 member 객체 얻어오기
       if (this.member == null) {
         await store.dispatch("memberStore/isLogin");
       }
-      // alert("## geo", navigator.geolocation);
-      if (navigator.geolocation) {
-        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
-            const member = {
-              memberId: this.member_id,
-              memberNickname: this.member.memberNickname,
-              memberLatLng: [
-                position.coords.latitude,
-                position.coords.longitude,
-              ],
-            };
 
-            // 현 사용자의 위치 저장
-            // console.log("getGeoLocation :", member);
-            this.send(member);
-          },
-          (error) => {
-            // console.log("#[GeoLocation]# GeoLocation 사용불가 error: ", error);
-            if (error.code == 1) {
-              this.$refs.denied.openDialog();
-              clearInterval(this.intervalGeolocation);
-            }
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then((permissionStatus) => {
+          console.log("#[GeoLocation]# permisstion 확인: ", permissionStatus);
+
+          // i) 위치 권한 허용
+          if (permissionStatus.state == "granted") {
+            navigator.geolocation.getCurrentPosition((position) => {
+              console.log(
+                "#[GeoLocation]# permisstion_position 확인: ",
+                position.coords
+              );
+              // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
+              const member = {
+                memberId: this.member_id,
+                memberNickname: this.member.memberNickname,
+                memberLatLng: [
+                  position.coords.latitude,
+                  position.coords.longitude,
+                ],
+              };
+              // 현 사용자의 위치 저장
+              this.send(member);
+            });
           }
-        );
-      } else {
-        console.log(
-          "#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다."
-        );
-        alert("#[GeoLocation]# 해당 브라우저에서는 GPS를 사용할 수 없습니다.");
-      }
+          // ii) 위치 권한 요청 prompt가 뜬 경우
+          else if (permissionStatus.state == "prompt") {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                // 현 로그인한 사용자의 정보(id, nickname, latlng) 객체 생성
+                const member = {
+                  memberId: this.member_id,
+                  memberNickname: this.member.memberNickname,
+                  memberLatLng: [
+                    position.coords.latitude,
+                    position.coords.longitude,
+                  ],
+                };
+                // 현 사용자의 위치 저장
+                this.send(member);
+              },
+              (error) => {
+                console.log("#[GeoLocation]# permisstion 거부: ", error);
+                this.$refs.denied.openDialog();
+                clearInterval(this.intervalGeolocation);
+              }
+            );
+          }
+          // iii) 위치 권한 거부
+          else {
+            this.$refs.denied.openDialog();
+            clearInterval(this.intervalGeolocation);
+          }
+        })
+        .catch((error) => {
+          console.log("#[GeoLocation]# error 확인: ", error);
+        });
     },
     send(member) {
       // console.log("# send message: ", member);
