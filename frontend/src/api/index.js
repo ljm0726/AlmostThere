@@ -28,7 +28,7 @@ function apiInstance() {
       return response;
     },
     async function (error) {
-      console.log(error)
+      console.log(error);
       var result = null;
       // 권한 오류인 경우, access_token 재발급 시도
       if (error.response.data.status == 401) {
@@ -39,7 +39,7 @@ function apiInstance() {
             withCredentials: true,
             headers: {
               "Content-Type": "application/json; charset=utf-8",
-              "Authorization": localStorage.getItem("Authorization")
+              Authorization: localStorage.getItem("Authorization"),
             },
           })
           .post(`/token/tokenReissue`)
@@ -49,11 +49,15 @@ function apiInstance() {
             result = await instance(error.config);
           })
           .catch(async (error) => {
+            console.log(error);
             const data = error.response.data;
             // access token 재발급 불가 또는 존재하지 않는 회원인 경우
-            if (data.status == 500 || (data.status == 404 && data.message == "member not found.")) {
+            if (
+              data.status == 500 ||
+              (data.status == 404 && data.message == "member not found.")
+            ) {
               localStorage.clear();
-              window.location.href = "/login";
+              // window.location.href = "/login";
             } else {
               result = await Promise.reject(error);
             }
