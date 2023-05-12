@@ -1,51 +1,21 @@
 <template>
-  <div style="margin-bottom: 76px" class="mx-3 main-form">
+  <div style="margin-bottom: 76px" class="mx-5 main-form">
     <v-sheet class="point-font xxxxxxl-font main-col-1">
-      <!-- <div
-      class="point-font xxxxxxl-font main-col-1"
-      style="margin: 15% 0 13% 5%"
-    > -->
       <div class="d-flex flex-column semi2narrow-font">
         <span>많은 사람들과</span>
         <span>모임을 잡아보세요!</span>
         <span></span>
       </div>
-      <!-- <p>많은 사람들과</p>
-      <p>모임을</p>
-      <p>잡아보세요!</p> -->
-      <!-- <img
-        src="@/assets/images/page/register.png"
-        height="450"
-        style="text-aling: center"
-        alt=""
-      /> -->
     </v-sheet>
-    <!-- nav 자리 -->
-    <v-sheet>
-      <!-- <v-card rounded="xl" elevation="0" height="100%"> -->
-      <!-- <v-card-title> -->
-      <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
-      <!-- <span class="point-font xxxxl-font main-col-1 text-left">제목</span>
-          <v-text-field dense></v-text-field>
-          <span class="point-font xxxxl-font main-col-1 text-left">일시</span>
-          <span class="point-font xxxxl-font main-col-1 text-left">장소</span>
-          <v-text-field dense></v-text-field> -->
-      <!-- </v-card-title> -->
-      <!-- <v-card-text style="padding: 38px 24px 0 24px"> -->
-      <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
-
+    <v-sheet elevation="0" class="mt-3">
       <!-- 제목 -->
-      <v-sheet
-        width="100%"
-        class="mt-3 d-flex flex-column align-center"
-        elevation="1"
-      >
+      <v-sheet width="100%" class="d-flex flex-row" elevation="1" rounded>
         <v-sheet
-          width="100%"
+          width="80"
           color="var(--red-col)"
-          class="point-font white-font xl-font main-col-1 px-4 py-2"
+          class="rounded-l pt-1 d-flex flex-row align-center justify-center point-font white-font xl-font main-col-1"
         >
-          모임 제목
+          <span>제목</span>
         </v-sheet>
         <v-text-field
           v-model="meetingname"
@@ -62,28 +32,13 @@
       </v-sheet>
 
       <!-- 날짜 -->
-      <v-sheet
-        width="100%"
-        class="mt-3 d-flex flex-column align-center"
-        elevation="1"
-      >
-        <!-- <v-sheet
-        width="100%"
-        class="mt-3 d-flex flex-column align-center"
-        elevation="2"
-        rounded="lg"
-      > -->
-        <!-- <v-sheet
-          width="100%"
-          color="var(--yellow-col)"
-          class="point-font white-font xl-font main-col-1 px-4 py-2 rounded-t-lg"
-        > -->
+      <v-sheet width="100%" class="mt-3 d-flex flex-row" elevation="1" rounded>
         <v-sheet
-          width="100%"
+          width="80"
           color="var(--yellow-col)"
-          class="point-font white-font xl-font main-col-1 px-4 py-2"
+          class="rounded-l pt-1 d-flex flex-row align-center justify-center point-font white-font xl-font main-col-1"
         >
-          만나는 날짜
+          <span>날짜</span>
         </v-sheet>
         <v-dialog
           ref="menu"
@@ -91,16 +46,6 @@
           :return-value.sync="date"
           width="290px"
         >
-          <!-- <v-menu
-          ref="menu"
-          v-model="menu"
-          :close-on-content-click="false"
-          :return-value.sync="date"
-          transition="scale-transition"
-          offset-y
-          min-width="280px"
-          :nudge-right="40"
-        > -->
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
               v-model="date"
@@ -143,22 +88,17 @@
               확인
             </v-btn>
           </v-date-picker>
-          <!-- </v-menu> -->
         </v-dialog>
       </v-sheet>
 
       <!-- 시간 -->
-      <v-sheet
-        width="100%"
-        class="mt-3 d-flex flex-column align-center"
-        elevation="1"
-      >
+      <v-sheet width="100%" class="mt-3 d-flex flex-row" elevation="1" rounded>
         <v-sheet
-          width="100%"
+          width="80"
           color="var(--green-col)"
-          class="point-font white-font xl-font main-col-1 px-4 py-2"
+          class="rounded-l pt-1 d-flex flex-row align-center justify-center point-font white-font xl-font main-col-1"
         >
-          만나는 시간
+          시간
         </v-sheet>
         <v-dialog
           ref="menu2"
@@ -166,17 +106,6 @@
           :return-value.sync="time"
           width="290px"
         >
-          <!-- <v-menu
-          ref="menu2"
-          v-model="menu2"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          :return-value.sync="time"
-          transition="scale-transition"
-          offset-y
-          max-width="280px"
-          min-width="280px"
-        > -->
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
               v-model="time"
@@ -199,22 +128,17 @@
             @click:minute="$refs.menu2.save(time)"
             format="24hr"
           ></v-time-picker>
-          <!-- </v-menu> -->
         </v-dialog>
       </v-sheet>
 
       <!-- 장소 -->
-      <v-sheet
-        width="100%"
-        class="mt-3 d-flex flex-column align-center"
-        elevation="1"
-      >
+      <v-sheet width="100%" class="mt-3 d-flex flex-row" elevation="1" rounded>
         <v-sheet
-          width="100%"
+          width="80"
           color="var(--blue-col)"
-          class="point-font white-font xl-font main-col-1 px-4 py-2"
+          class="rounded-l pt-1 d-flex flex-row align-center justify-center point-font white-font xl-font main-col-1"
         >
-          모일 장소
+          장소
         </v-sheet>
         <v-text-field
           v-model="meeting_place"
@@ -229,26 +153,19 @@
           dense
         ></v-text-field>
       </v-sheet>
-
-      <!-- <v-row>
-        <v-col class="pr-1"> -->
       <v-btn
         elevation="3"
         color="var(--main-col-1)"
         dark
-        tile
-        large
         block
-        class="mt-3 lg-font"
+        class="mt-3 md-font"
         @click="regist_meeting"
       >
         모임 등록하기
       </v-btn>
-      <!-- </v-col>
-      </v-row> -->
-      <!-- </v-card-text> -->
-      <!-- </v-card> -->
     </v-sheet>
+    <time-error ref="time"></time-error>
+    <input-error ref="input"></input-error>
   </div>
 </template>
 
@@ -256,10 +173,13 @@
 // 추가해야할 부분 -> 현재 시간 이전을 설정하면 불가능하게
 import { mapActions, mapState } from "vuex";
 import { getMostRecentMeeting } from "@/api/modules/meeting.js";
+import InputError from "./dialog/InputError.vue";
+import TimeError from "./dialog/TimeError.vue";
 
 // const meetingStore = "meetingStore";
 
 export default {
+  components: { InputError, TimeError },
   name: "RegisterPage",
   data() {
     return {
@@ -324,9 +244,11 @@ export default {
       this.getCurTime();
 
       if (this.curDate >= this.date && this.curTime >= this.time) {
-        alert("시간을 다시 설정해주세요!");
+        // alert("시간을 다시 설정해주세요!");
+        this.$refs.time.openDialog();
       } else if (this.meetingname == null || this.meeting_place == null) {
-        alert("모든 정보를 입력해주세요!");
+        // alert("모든 정보를 입력해주세요!");
+        this.$refs.input.openDialog();
       } else {
         console.log(this.date, " ", this.time);
         const date_time = this.date + " " + this.time; //LocalDate 타입에 맞게 변환
