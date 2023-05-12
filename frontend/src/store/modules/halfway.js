@@ -24,6 +24,9 @@ const halfwayStore = {
     RESET_START_PLACE(state) {
       state.startPlaces = [null, null];
     },
+    SET_START_PLACE(state, startMeetingPlaces) {
+      state.startPlaces = startMeetingPlaces;
+    },
   },
 
   actions: {
@@ -42,6 +45,9 @@ const halfwayStore = {
     },
     removePlaceList({ commit }, index) {
       commit("REMOVE_START_PLACE", index);
+    },
+    setStartPlace({ commit }, startMeetingPlaces) {
+      commit("SET_START_PLACE", startMeetingPlaces);
     },
   },
 };

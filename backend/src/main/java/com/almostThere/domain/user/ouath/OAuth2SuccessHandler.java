@@ -3,6 +3,13 @@ package com.almostThere.domain.user.ouath;
 import com.almostThere.domain.user.entity.Member;
 import com.almostThere.domain.user.repository.MemberRepository;
 import com.almostThere.domain.user.service.TokenService;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,14 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -62,29 +61,36 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 //            return;
 //        }
 
-        Token token = tokenService.generateToken(member, "USER");
-        log.info("JwT : {}", token);
-        Cookie cookie = new Cookie("refresh-token", token.getRefreshToken());
-        // expires in 7 days
-        cookie.setMaxAge(60 * 60 * 24 * 14);
-        // optional properties
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/api/token/tokenReissue");
+        try {
+            Token token = tokenService.generateToken(member, "USER");
+            log.info("JwT : {}", token);
+            Cookie cookie = new Cookie("refresh-token", token.getRefreshToken());
+            // expires in 7 days
+            cookie.setMaxAge(60 * 60 * 24 * 14);
+            // optional properties
+            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/api/token/tokenReissue");
 
-        // add cookie to response
-        response.addCookie(cookie);
+            // add cookie to response
+            response.addCookie(cookie);
+            redisTemplateForToken.opsForValue() //redis에 refreshToken 저장
+                .set(member.getMemberEmail(),
+                    token.getRefreshToken(),
+                    refreshTokenExpiretime, //만료 기간
+                    TimeUnit.MILLISECONDS);
 
-        redisTemplateForToken.opsForValue() //redis에 refreshToken 저장
-            .set(member.getMemberEmail(),
-                token.getRefreshToken(),
-                refreshTokenExpiretime, //만료 기간
-                TimeUnit.MILLISECONDS);
+            log.info((String) redisTemplateForToken.opsForValue().get(member.getMemberEmail()));
+            response.sendRedirect(loginSuccessUrl + "Bearer " + token.getToken());
+        } catch (Exception e) {
+
+            log.error("redis error");
+            response.sendRedirect(loginSuccessUrl + "/error");
+        }
 
 //        HttpHeaders httpHeaders = new HttpHeaders();
 //        httpHeaders.add("Authorization", "Bearer " + token.getToken());
 
-        response.sendRedirect(loginSuccessUrl + "Bearer " + token.getToken());
     }
 
 }

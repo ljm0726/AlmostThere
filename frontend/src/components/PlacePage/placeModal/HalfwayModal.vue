@@ -84,18 +84,22 @@ export default {
   data() {
     return {
       dialog: false,
-      starts: [null, null],
+      starts: [null, null], //모달에서 보여줄 정보
       isSearchPage: false,
       selectedPlace: {},
       size: 0,
     };
   },
   computed: {
-    ...mapState("halfwayStore", ["startPlaces"]),
+    ...mapState("halfwayStore", ["startPlaces", "meeting_start_places"]),
+    ...mapState("meetingStore", ["meeting_members"]),
   },
   mounted() {
-    console.log(this.startPlaces);
+    // console.log(this.startPlaces, this.meeting_members);
     this.starts = this.startPlaces;
+    if (this.starts.length < 2) {
+      this.starts.push(null);
+    }
   },
   watch: {
     dialog() {
@@ -110,7 +114,11 @@ export default {
       "addPlaceList",
       "removePlaceList",
     ]),
-    ...mapActions("halfwayStore", ["removePlaceList", "addMiddlePlace"]),
+    ...mapActions("halfwayStore", [
+      "removePlaceList",
+      "addMiddlePlace",
+      "setStartPlace",
+    ]),
     openDialog() {
       this.dialog = true;
     },
@@ -121,7 +129,7 @@ export default {
 
     goToSearchPage(index) {
       // this.$router.push(url);
-      console.log(index);
+      // console.log(index);
       localStorage.setItem("listIndex", index);
       // this.isSearchPage = true; // dialog를 닫고 SearchPlacePage2로 이동
       this.$router.push("/search2");
@@ -133,7 +141,7 @@ export default {
     },
 
     plusStart() {
-      console.log("@@@", this.starts.length);
+      // console.log("@@@", this.starts.length);
       if (this.starts.length > 9) {
         alert("최대 10명 까지 가능 합니다! ");
       } else {
@@ -188,6 +196,7 @@ export default {
 
       const combinations = [];
       for (let i = 1; i <= this.size; i++) {
+        // console.log("출발정보", this.startPlaces);
         const result = this.combine(this.startPlaces, i);
         combinations.push(...result);
       }
@@ -207,7 +216,7 @@ export default {
         console.log("Sum: ", xSum, ySum);
         middlePlace.push({ middleX, middleY });
       });
-      console.log("middle: ", middlePlace);
+      // console.log("middle: ", middlePlace);
       let middleAvergeX = 0;
       let middleAvergeY = 0;
       middlePlace.forEach((place) => {
@@ -217,7 +226,7 @@ export default {
       middleAvergeX /= middlePlace.length;
       middleAvergeY /= middlePlace.length;
 
-      console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
+      // console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
       this.addMiddlePlace({ middleAvergeX, middleAvergeY });
       this.dialog = false;
     },

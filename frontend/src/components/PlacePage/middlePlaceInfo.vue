@@ -22,7 +22,7 @@
     <div class="parent">
       <div v-for="(time, index) in minTimes" :key="index" class="child">
         <img :src="startMarkerImage[index]" class="marker-image" /><span
-          v-if="time != 2"
+          v-if="time > 2"
           class="time"
           >{{ time }}분</span
         ><span class="time2" v-else>700m 이내</span>
@@ -94,8 +94,6 @@ export default {
     ...mapActions("placeStore", ["updatePlace"]),
 
     regist_meeting() {
-      const from = sessionStorage.getItem("from");
-
       console.log(
         "m p",
         this.placeX,
@@ -103,9 +101,9 @@ export default {
         this.placeName,
         this.addressName
       );
-
-      console.log(from);
-      if (from !== null) {
+      const retrievedObject = sessionStorage.getItem("from");
+      if (retrievedObject !== null) {
+        const from = JSON.parse(retrievedObject);
         const placeMap = new Map();
         placeMap.set("x", this.placeX);
         placeMap.set("y", this.placeY);
@@ -113,10 +111,10 @@ export default {
         placeMap.set("addr", this.addressName);
         this.updatePlace(placeMap);
 
-        this.$router.replace(`/meeting/${from}`);
+        this.$router.replace(`/meeting/${from.id}`);
       } else {
-        this.regist.lat = this.placeX;
-        this.regist.lng = this.placeY;
+        this.regist.lat = this.placey;
+        this.regist.lng = this.placex;
         this.regist.place_name = this.placeName;
         this.regist.place_addr = this.addressName;
 
