@@ -24,7 +24,7 @@ public interface MeetingMemberRepository extends JpaRepository<MeetingMember, Lo
     @Query("update MeetingMember mm set mm.state = 'LATE' where mm.state = 'GOING' and mm.meeting.id = :meetingId")
     void updateMeetingMemberState(@Param("meetingId") Long meetingId);
 
-    @Query("select m from MeetingMember m where m.member.id = :memberId")
+    @Query("select m from MeetingMember m where m.member.id = :memberId order by m.meeting.meetingTime")
     List<MeetingMember> findByMemberId(@Param("memberId") Long memberId);
 
     List<MeetingMember> findByMeetingIdAndState(@Param("meetingId") Long meetingId, @Param("state")StateType state);
