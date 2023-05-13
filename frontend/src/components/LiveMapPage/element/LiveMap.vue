@@ -396,11 +396,10 @@ export default {
       this.createMemberOverlay(member, marker);
       this.createDistance(member, marker);
 
-      // iv) map rebound
-      // this.resizeMapLevel();
-
-      // V) 멤버별 채팅 붙이기
+      // iv) 멤버별 채팅 붙이기
       this.updateChatOverlay();
+
+      // v) 모든 marker가 보이도록 map rebound
       this.resizeMapLevel();
     },
     // [@Method] member 별 닉네임 over-lay 생성
