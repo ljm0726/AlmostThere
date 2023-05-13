@@ -88,7 +88,6 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.name === "landing" || to.name === "login") {
-    // alert(to.name);
     //login page를 가거나 login이 성공 됐을 때는 다음으로 넘어감
     next();
   } else if (access_token) {
