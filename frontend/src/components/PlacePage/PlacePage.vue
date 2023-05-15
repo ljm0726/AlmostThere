@@ -5,6 +5,7 @@
       class="back-btn find-middle-place-btn"
       outlined
       @click="goBack()"
+      elevation="3"
       rounded
     >
       <v-icon class="find-middle-place-btn">$vuetify.icons.arrow_left</v-icon>
