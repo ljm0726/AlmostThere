@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="full-search-color">
     <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
       <v-icon>$vuetify.icons.arrow_left</v-icon>
     </v-btn>
@@ -201,6 +201,9 @@ export default {
 </script>
 
 <style lang="scss">
+.full-search-color {
+  color: #092a49;
+}
 .lists {
   overflow: scroll;
   margin-top: 13%;
@@ -210,14 +213,16 @@ export default {
   margin-inline: 6%;
 }
 .resident_items .place-name {
-  font-size: 20px;
+  font-size: 21px;
   font-family: var(--extrabold-font);
-  padding-block: 7px;
+  padding-top: 13px;
 }
 .resident_items .address-name {
-  font-family: var(--medium-font);
+  font-family: var(--reqular-font);
   border-bottom: 2px solid #000;
-  padding-block: 5px;
+  font-size: 14px;
+  padding-bottom: 13px;
+  padding-top: 3px;
 }
 
 input {
@@ -239,6 +244,7 @@ input {
 .back-btn {
   display: flex;
   position: absolute;
+  color: #092a49;
   z-index: 2;
   background: #ffffff;
   left: 2.2%;

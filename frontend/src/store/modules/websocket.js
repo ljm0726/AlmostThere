@@ -4,7 +4,11 @@ const websocketStore = {
     connected: false,
     stompClient: null,
   },
-  getters: {},
+  getters: {
+    getStompClient(state) {
+      return state.stompClient
+    }
+  },
   mutations: {
     UPDATE_STOMP_CLIENT(state, payload) {
       state.stompClient = payload;
