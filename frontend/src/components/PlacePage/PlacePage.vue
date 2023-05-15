@@ -910,39 +910,41 @@ export default {
     loadMap() {
       console.log("!@#!@#!@#!@", this.loadMap);
       const container = document.getElementById("map"); // 지도를 담을 DOM 영역
-      const options = {
-        // 지도를 생성할 때 필요한 기본 옵션
-        center: new window.kakao.maps.LatLng(
-          this.current.lat,
-          this.current.lng
-        ), // 지도의 중심좌표
-        level: 4, // 지도의 레벨(확대, 축소 정도)
-      };
+      if (container) {
+        const options = {
+          // 지도를 생성할 때 필요한 기본 옵션
+          center: new window.kakao.maps.LatLng(
+            this.current.lat,
+            this.current.lng
+          ), // 지도의 중심좌표
+          level: 4, // 지도의 레벨(확대, 축소 정도)
+        };
 
-      this.map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
-      this.ps = new window.kakao.maps.services.Places();
-      this.geocoder = new window.kakao.maps.services.Geocoder();
+        this.map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
+        this.ps = new window.kakao.maps.services.Places();
+        this.geocoder = new window.kakao.maps.services.Geocoder();
 
-      if (this.placeX !== null) {
-        this.isSelect = true;
-        this.isRecommend = false;
-      } else this.isSelect = false;
-      if (this.placeX !== null) {
-        // map의 marker를 다 지운다, 아래 displayMarker에서 뺴옴
-        if (this.startMarker) this.startMarker.setMap(null);
-        if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
+        if (this.placeX !== null) {
+          this.isSelect = true;
+          this.isRecommend = false;
+        } else this.isSelect = false;
+        if (this.placeX !== null) {
+          // map의 marker를 다 지운다, 아래 displayMarker에서 뺴옴
+          if (this.startMarker) this.startMarker.setMap(null);
+          if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
 
-        var bounds = new window.kakao.maps.LatLngBounds();
-        bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
-        this.current.lng = this.placeX;
-        this.current.lat = this.placeY;
-        this.displayMarker(this.placeY, this.placeX);
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        this.map.setBounds(bounds);
-        this.map.relayout();
-        this.map.setCenter(
-          new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
-        );
+          var bounds = new window.kakao.maps.LatLngBounds();
+          bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
+          this.current.lng = this.placeX;
+          this.current.lat = this.placeY;
+          this.displayMarker(this.placeY, this.placeX);
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+          this.map.setBounds(bounds);
+          this.map.relayout();
+          this.map.setCenter(
+            new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
+          );
+        }
       }
     },
     displayMarker(y, x) {

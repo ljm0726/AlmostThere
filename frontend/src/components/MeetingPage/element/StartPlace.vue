@@ -70,17 +70,19 @@ export default {
     // [@Method] Kakao Map 생성
     initMap() {
       const container = document.getElementById("map");
-      const options = {
-        center: new window.kakao.maps.LatLng(37.5296, 127.0698),
-        level: 4,
-      };
-      // 지도 객체 등록
-      this.map = new window.kakao.maps.Map(container, options);
+      if (container) {
+        const options = {
+          center: new window.kakao.maps.LatLng(37.5296, 127.0698),
+          level: 4,
+        };
+        // 지도 객체 등록
+        this.map = new window.kakao.maps.Map(container, options);
 
-      // i) 기존 출발지 marker 표시
-      if (this.startPlace != null) {
-        this.createMarker();
-        this.resizeMapBound();
+        // i) 기존 출발지 marker 표시
+        if (this.startPlace != null) {
+          this.createMarker();
+          this.resizeMapBound();
+        }
       }
     },
     // [@Method] 출발지 marker 생성
