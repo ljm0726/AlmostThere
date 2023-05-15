@@ -687,7 +687,7 @@
             </v-btn>
             <span> 를 클릭해 중간 위치를 찾아보세요.</span>
             <v-sheet class="d-flex justify-center mt-4" rounded>
-              <v-sheet width="70%" elevation="2" rounded>
+              <v-sheet width="90%" max-width="300" elevation="2" rounded>
                 <img
                   width="100%"
                   height="100%"
@@ -847,12 +847,40 @@
               src="@/assets/images/icons/car-icon.png"
             />
             <span>는 자동차로 이동 시 경로입니다. </span>
-            <br />
-            <span>
-              마커 상단의 남색 부분을 클릭하면 해당 위치를 상세 정보를
-              카카오맵을 통해 볼 수 있습니다. 마커 하단의 흰색 부분을 선택하면
-              해당 장소가 모임 장소로 선택됩니다.
-            </span>
+            <v-sheet>
+              <v-sheet elevation="1">
+                <v-sheet
+                  class="pa-2 white-font rounded-t d-flex flex-row justify-space-between align-center"
+                  color="var(--main-col-1)"
+                >
+                  <span class="bold-font">학천장가든</span>
+                  <v-icon color="white">mdi-chevron-right</v-icon>
+                </v-sheet>
+                <v-sheet class="pa-2 d-flex flex-column" rounded>
+                  <span class="xxs-font">경북 문경시 가은읍 학천정길 20</span>
+                  <span class="xxxxs-font main-col-2">
+                    (지번 : 경북 문경시 가은읍 완장리 405-2)
+                  </span>
+                  <span class="xxs-font">054-571-0120</span>
+                </v-sheet>
+              </v-sheet>
+            </v-sheet>
+            <v-sheet elevation="1">
+              <v-sheet
+                class="pa-2 white-font rounded-t d-flex flex-row justify-space-between align-center"
+                color="var(--main-col-1)"
+              >
+                <span class="bold-font">학천장가든</span>
+                <v-icon color="white">mdi-chevron-right</v-icon>
+              </v-sheet>
+              <v-sheet class="pa-2 d-flex flex-column" rounded>
+                <span class="xxs-font">경북 문경시 가은읍 학천정길 20</span>
+                <span class="xxxxs-font main-col-2">
+                  (지번 : 경북 문경시 가은읍 완장리 405-2)
+                </span>
+                <span class="xxs-font">054-571-0120</span>
+              </v-sheet>
+            </v-sheet>
           </div>
         </v-sheet>
       </v-tab-item>
@@ -942,7 +970,7 @@ export default {
   name: "ManualPage",
   data() {
     return {
-      tab: 3,
+      tab: 0,
       items: ["소개", "모임", "중간장소", "실시간위치"],
     };
   },
