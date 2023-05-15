@@ -576,10 +576,34 @@
         </v-sheet>
       </v-tab-item>
       <v-tab-item>
-        <v-sheet style="padding: 115px 30px 70px 30px" height="1500">3</v-sheet>
+        <v-sheet style="padding: 115px 30px 70px 30px">
+          <div
+            class="mb-2 d-flex flex-column point-font main-col-1 xxxxl-font semi2narrow-font"
+          >
+            <span>멤버 간 중간 위치를 찾아</span>
+            <span>모임 장소로 등록하세요!</span>
+            <v-divider
+              class="mt-2"
+              width="300"
+              style="border-color: var(--main-col-1)"
+            ></v-divider>
+          </div>
+        </v-sheet>
       </v-tab-item>
       <v-tab-item>
-        <v-sheet style="padding: 115px 30px 70px 30px" height="1500">4</v-sheet>
+        <v-sheet style="padding: 115px 30px 70px 30px">
+          <div
+            class="mb-2 d-flex flex-column point-font main-col-1 xxxxl-font semi2narrow-font"
+          >
+            <span>모임 내에서 실시간으로</span>
+            <span>위치를 공유하고 채팅을 해보세요!</span>
+            <v-divider
+              class="mt-2"
+              width="320"
+              style="border-color: var(--main-col-1)"
+            ></v-divider>
+          </div>
+        </v-sheet>
       </v-tab-item>
     </v-tabs-items>
 
@@ -610,7 +634,7 @@ export default {
   name: "ManualPage",
   data() {
     return {
-      tab: 1,
+      tab: 2,
       items: ["소개", "모임", "중간장소", "실시간위치"],
     };
   },

@@ -44,9 +44,12 @@
 .xxxxxxl-font {
   font-size: 24px;
 }
+.huge-font {
+  font-size: 30px;
+}
 .hugelarge-font {
   font-size: 35px;
 }
 .hugexlarge-font {
-  font-size: 50px;
+  font-size: 45px;
 }
