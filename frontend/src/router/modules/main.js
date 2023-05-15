@@ -9,6 +9,7 @@ import PlacePage from "@/components/PlacePage/PlacePage.vue";
 import SearchPlacePage from "@/components/PlacePage/SearchPlacePage.vue";
 import SearchPlacePage2 from "@/components/PlacePage/SearchPlace/SearchPlacePage2";
 
+//[@ 로그인 체크]
 const isLogin = async (to, from, next) => {
   // console.log(to, " ", to.query);
   const access_token = localStorage.getItem("Authorization");

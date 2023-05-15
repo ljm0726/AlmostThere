@@ -11,8 +11,17 @@ Vue.config.productionTip = false;
 Vue.use(VueAwesomeSwiper);
 Vue.use(VueBottomSheet);
 
-const KAKAKO_API_KEY = `${process.env.VUE_APP_KAKAO_API_KEY}`;
-window.Kakao.init(KAKAKO_API_KEY);
+function kakaoInitHandler() {
+  const KAKAO_API_KEY = `${process.env.VUE_APP_KAKAO_API_KEY}`;
+  if (window.kakao === undefined) {
+    setTimeout(kakaoInitHandler, 30);
+  } else if (!window.Kakao.isInitialized()) {
+    window.Kakao.init(KAKAO_API_KEY);
+    kakaoInitHandler();
+  }
+}
+
+kakaoInitHandler();
 
 new Vue({
   store,

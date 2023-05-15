@@ -113,8 +113,8 @@ export default {
 
         this.$router.replace(`/meeting/${from.id}`);
       } else {
-        this.regist.lat = this.placey;
-        this.regist.lng = this.placex;
+        this.regist.lat = this.placeY;
+        this.regist.lng = this.placeX;
         this.regist.place_name = this.placeName;
         this.regist.place_addr = this.addressName;
 

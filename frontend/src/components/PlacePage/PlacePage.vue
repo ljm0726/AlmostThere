@@ -1,7 +1,13 @@
 <template>
   <div class="map-area">
-    <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
-      <v-icon>$vuetify.icons.arrow_left</v-icon>
+    <v-btn
+      id="square-btn"
+      class="back-btn find-middle-place-btn"
+      outlined
+      @click="goBack()"
+      rounded
+    >
+      <v-icon class="find-middle-place-btn">$vuetify.icons.arrow_left</v-icon>
     </v-btn>
     <input
       class="search-box"
@@ -30,11 +36,13 @@
         >
       </li>
     </ul>
-    <v-btn class="find-place-btn" @click="findHalfway()"
-      ><i class="fa-light fa-location-dot"></i>
-      <v-icon class="marker-icon">mdi mdi-map-marker-outline</v-icon>중간 위치
-      찾기</v-btn
-    >
+    <div class="find-middle-place-btn">
+      <v-btn class="find-place-btn" @click="findHalfway()"
+        ><i class="fa-light fa-location-dot"></i>
+        <v-icon class="marker-icon">$vuetify.icons.location_outline</v-icon>
+        <span class="find-middle-place-title">중간 위치 찾기</span></v-btn
+      >
+    </div>
     <halfway-modal ref="halfway"></halfway-modal>
 
     <div id="map" class="maps"></div>
@@ -779,7 +787,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#0D347F",
             });
@@ -787,7 +795,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#379206",
             });
@@ -795,7 +803,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#EC6C27",
             });
@@ -803,7 +811,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#3165A8",
             });
@@ -811,7 +819,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#703E8C",
             });
@@ -819,7 +827,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#904D23",
             });
@@ -827,7 +835,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#5B692E",
             });
@@ -835,7 +843,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#C82363",
             });
@@ -843,7 +851,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#B39627",
             });
@@ -851,7 +859,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
             });
           }
@@ -954,6 +962,7 @@ export default {
 <style>
 #category {
   position: absolute;
+
   top: 7.3%;
   left: 2%;
   border-radius: 20px;
@@ -1071,6 +1080,7 @@ export default {
   font-size: 25px;
   margin-right: 4%;
   margin-left: -8%;
+  color: #092a49;
 }
 .category_icon {
   z-index: 100;
@@ -1099,13 +1109,14 @@ input {
   top: 7.5%;
   font-family: var(--extrabold-font);
   background: #ffffff;
-  border: 1px solid #092a49;
+  border: 1.6px solid #092a49;
   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
   border-radius: 18px;
 }
 .back-btn {
   display: flex;
   position: absolute;
+
   z-index: 2;
   background: #ffffff;
   left: 2.2%;
@@ -1138,8 +1149,15 @@ input {
   bottom: unset; /* 추가 */
 
   background: #ffffff;
-  border: 1px solid #092a49;
+  border: 1.6px solid #092a49;
   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
   border-radius: 10px;
+}
+.find-middle-place-btn {
+  color: #092a49;
+}
+.find-middle-place-title {
+  color: #092a49;
+  font-family: var(--bold-font);
 }
 </style>

@@ -1,23 +1,22 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    scrollable
-    max-width="300px"
-    rounded="xl"
-    persistent
-  >
+  <v-dialog v-model="dialog" scrollable max-width="300px" rounded="xl">
     <v-card rounded="xl">
       <v-card-title class="d-flex flex-column">
         <div class="align-self-end">
-          <close-button @closeDialog="closeDialog"></close-button>
+          <close-button @closeDialog="dialog = false"></close-button>
         </div>
-        <img src="@/assets/images/dialog/logout.png" width="60%" />
-        <span class="logo-font xxxxxxl-font main-col-1">Permission Error</span>
+        <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
+        <div
+          class="point-font xxxxxxl-font main-col-1 d-flex flex-column align-center"
+        >
+          <span>시간을</span>
+          <span>다시 설정해주세요</span>
+        </div>
         <span
           class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
         >
-          <!-- <div>모임 정원을 초과했습니다.</div> -->
-          <div>호스트에게 문의해보세요.</div>
+          <div>현재 일시 이후의</div>
+          <div>날짜와 시간만 설정 가능합니다.</div>
         </span>
       </v-card-title>
       <v-card-text>
@@ -27,8 +26,8 @@
           dark
           rounded
           block
-          @click="closeDialog"
-          >확인</v-btn
+          @click="dialog = false"
+          >닫기</v-btn
         >
       </v-card-text>
     </v-card>
@@ -39,20 +38,16 @@
 import CloseButton from "@/common/component/button/CloseButton.vue";
 
 export default {
-  name: "LocationPermissionError",
+  name: "TimeError",
   components: { CloseButton },
   data() {
     return {
-      dialog: true,
+      dialog: false,
     };
   },
   methods: {
     openDialog() {
       this.dialog = true;
-    },
-    closeDialog() {
-      this.dialog = false;
-      this.$router.push(`/home`);
     },
   },
 };

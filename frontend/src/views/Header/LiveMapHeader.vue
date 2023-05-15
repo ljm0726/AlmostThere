@@ -15,12 +15,29 @@
     "
   >
     <back-button color="var(--main-col-1)"></back-button>
-    <span
+    <!-- <span
       class="point-font"
-      style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white"
+      style="text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white"
     >
       {{ meetingName }}
     </span>
+    <span class="point-font white-font" style="text-shadow: 0px 0px 1px #000">
+      {{ meetingName }}
+    </span> -->
+    <v-btn
+      class="point-font main-col-1 xxl-font px-3"
+      color="var(--main-col-1)"
+      elevation="3"
+      outlined
+      style="
+        background-color: white !important;
+        border-radius: 10px;
+        width: 70%;
+      "
+      @click="goDetail()"
+    >
+      <div class="pt-1">{{ meetingName }}</div>
+    </v-btn>
     <detail-button :isIcon="true"></detail-button>
   </v-sheet>
 </template>
@@ -38,7 +55,17 @@ export default {
   props: {
     meetingName: String,
   },
+  methods: {
+    goDetail() {
+      this.$router.push(`/meeting/${this.$route.params.id}`);
+    },
+  },
 };
 </script>
 
-<style></style>
+<style scoped>
+.title {
+  text-shadow: -2px 0 var(--main-col-1), 0 2px var(--main-col-1),
+    2px 0 var(--main-col-1), 0 -2px var(--main-col-1);
+}
+</style>
