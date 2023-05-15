@@ -20,8 +20,8 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int port;
 
-//    @Value("${spring.redis.password}")
-//    private String password;
+    @Value("${spring.redis.password}")
+    private String password;
 
 //    @Bean
 //    public LettuceConnectionFactory redisConnectionFactory() {
@@ -34,7 +34,7 @@ public class RedisConfig {
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
-//        redisConfiguration.setPassword(password); // 비밀번호 설정
+        redisConfiguration.setPassword(password); // 비밀번호 설정
         redisConfiguration.setPort(port); // 포트 번호 설정
         redisConfiguration.setHostName(host); // 호스트 설정
 
