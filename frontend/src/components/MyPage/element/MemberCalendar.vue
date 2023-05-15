@@ -28,7 +28,11 @@ export default {
   name: "MemberCalendar",
   data() {
     return {
-      selectedDate: new Date().toISOString().substring(0, 10), // calendar로 선택한 date
+      selectedDate: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10), // date-picker로 선택한 date
       highlightedDates: null, // highlight 처리할 날짜 배열
     };
   },
