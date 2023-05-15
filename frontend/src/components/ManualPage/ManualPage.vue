@@ -130,7 +130,7 @@
         </v-sheet>
       </v-tab-item>
       <v-tab-item>
-        <v-sheet style="padding: 115px 30px 70px 30px">
+        <v-sheet style="padding: 110px 25px 65px 25px">
           <div
             class="mb-2 d-flex flex-column point-font main-col-1 xxxxl-font semi2narrow-font"
           >
@@ -156,7 +156,7 @@
                 <span>버튼을 클릭하면 </span>
                 <span>등록 페이지로 이동합니다.</span>
                 <br />
-                <v-sheet elevation="2" class="mx-2 px-6 mt-4 py-5" rounded>
+                <v-sheet elevation="2" class="mx-2 px-4 mt-4 py-4" rounded>
                   <!-- 제목 -->
                   <v-sheet
                     width="100%"
@@ -345,7 +345,10 @@
                   링크를 복사하거나 카카오톡 공유하기 버튼으로 초대 링크를 다른
                   사람에게 보내보세요.
                 </span>
-                <span>초대 링크는 모임을 등록한 방장만 볼 수 있습니다.</span>
+                <span>
+                  초대 링크는 모임을 등록한 방장만 볼 수 있습니다. 뿐만 아니라
+                  모임 삭제 및 수정, 정산 내역 삭제도 방장만 가능합니다.
+                </span>
               </div>
             </div>
             <div class="d-flex flex-column mt-3">
@@ -360,7 +363,7 @@
                 <span class="green-line">자신의 출발 위치</span>
                 <span>를 지정할 수 있습니다.</span>
                 <br />
-                <v-sheet class="mx-2 px-6 mt-4 py-5" elevation="2" rounded>
+                <v-sheet class="mx-2 pa-4 mt-4" elevation="2" rounded>
                   <v-sheet
                     class="d-flex flex-row justify-space-between align-end"
                   >
@@ -423,7 +426,7 @@
                     *도착완료에 대한 내용은 실시간 위치 탭에서 확인해 주세요.
                   </v-chip>
                 </div>
-                <v-sheet class="mx-2 px-6 mt-4 py-5" elevation="2" rounded>
+                <v-sheet class="mx-2 pa-4 mt-4" elevation="2" rounded>
                   <v-sheet
                     class="d-flex flex-row justify-space-between align-end"
                   >
@@ -472,7 +475,7 @@
                   등록된 영수증의 총액과 설정된 지각비를 바탕으로 개인별 내야
                   하는 금액을 보여줍니다.
                 </span>
-                <v-sheet class="mx-2 px-6 mt-4 py-5" elevation="2" rounded>
+                <v-sheet class="mx-2 pa-4 mt-4" elevation="2" rounded>
                   <v-sheet
                     class="d-flex flex-row justify-space-between align-center"
                   >
@@ -564,9 +567,9 @@
                   dark
                   rounded
                 >
-                  <v-icon class="mr-2" color="white" small
-                    >mdi-share-variant-outline</v-icon
-                  >
+                  <v-icon class="mr-2" color="white" small>
+                    mdi-share-variant-outline
+                  </v-icon>
                   <span class="xxxs-font">카카오톡 공유하기</span>
                 </v-btn>
                 <span> 버튼을 눌러보세요.</span>
@@ -576,7 +579,7 @@
         </v-sheet>
       </v-tab-item>
       <v-tab-item>
-        <v-sheet style="padding: 115px 30px 70px 30px">
+        <v-sheet style="padding: 110px 25px 65px 25px">
           <div
             class="mb-2 d-flex flex-column point-font main-col-1 xxxxl-font semi2narrow-font"
           >
@@ -588,16 +591,273 @@
               style="border-color: var(--main-col-1)"
             ></v-divider>
           </div>
-          <div class="light-font xs-font mb-5 d-flex flex-column main-col-1">
+          <div class="light-font xs-font mt-4 main-col-1">
             <span>
               모임 장소를 정할 때 중간 위치를 찾아주는 기능을 사용하실 수
               있습니다.
+            </span>
+            <span class="orange-line">모임 등록</span>
+            <span> 또는 </span>
+            <span class="yellow-line">모임 수정 창</span>
+            <span>에서 </span>
+            <span>장소 입력창을 클릭해 </span>
+            <span class="green-line">장소 선택 페이지</span>
+            <span>로 이동해 주세요.</span>
+            <br />
+            <span>우측 상단의 </span>
+            <v-btn color="var(--main-col-1)" outlined rounded x-small>
+              <v-icon class="mr-1" x-small>
+                $vuetify.icons.location_outline
+              </v-icon>
+              <span>중간 위치 찾기</span>
+            </v-btn>
+            <span> 버튼을 클릭해 주세요. </span>
+            <v-sheet class="d-flex justify-center">
+              <v-sheet
+                class="mx-2 px-4 mt-4 py-4 d-flex flex-column align-center"
+                elevation="2"
+                max-width="300"
+                rounded
+              >
+                <img
+                  class="mb-2"
+                  src="@/assets/images/dialog/earth.png"
+                  width="20%"
+                  alt=""
+                />
+                <span class="regular-font xxs-font semi2narrow-font">
+                  출발지를 입력해
+                </span>
+                <span class="regular-font xxs-font">
+                  중간 위치를 추천 받아보세요!
+                </span>
+                <v-sheet
+                  class="mt-2 py-1 px-3 detail-border xxs-font d-flex flex-row justify-start align-center"
+                  width="100%"
+                  rounded="lg"
+                >
+                  <span class="main-col-1 medium-font">
+                    1. 출발지를 입력하세요!
+                  </span>
+                </v-sheet>
+                <v-sheet
+                  class="mt-2 py-1 px-3 detail-border xxs-font d-flex flex-row justify-start align-center"
+                  width="100%"
+                  rounded="lg"
+                >
+                  <span class="main-col-1 medium-font">
+                    2. 출발지를 입력하세요!
+                  </span>
+                </v-sheet>
+                <v-btn class="mt-2 main-col-1" text small block rounded>
+                  <v-icon class="mr-1" small>$vuetify.icons.point</v-icon>
+                  <span>출발지 추가하기</span>
+                </v-btn>
+                <v-btn
+                  class="mt-2"
+                  color="var(--main-col-1)"
+                  elevation="0"
+                  block
+                  small
+                  dark
+                  rounded
+                >
+                  중간 위치 찾기
+                </v-btn>
+              </v-sheet>
+            </v-sheet>
+            <br />
+            <v-btn elevation="0" color="var(--main-col-1)" outlined x-small>
+              1. 출발지를 입력하세요!
+            </v-btn>
+            <span> 를 클릭하시면 출발지를 설정할 수 있습니다. </span>
+            <span>만약 2개 이상의 출발지를 입력하고 싶으시다면 </span>
+            <v-btn class="main-col-1" text x-small rounded>
+              <v-icon class="mr-1" small>$vuetify.icons.point</v-icon>
+              <span>출발지 추가하기</span>
+            </v-btn>
+            <span>
+              버튼을 클릭해 출발지를 추가하세요. 만약 팀원들의 출발지가 설정돼
+              있다면 자동으로 추가됩니다.
+            </span>
+            <br />
+            <span>출발지를 모두 입력했다면 </span>
+            <v-btn color="var(--main-col-1)" elevation="0" x-small dark rounded>
+              중간 위치 찾기
+            </v-btn>
+            <span> 를 클릭해 중간 위치를 찾아보세요.</span>
+            <v-sheet class="d-flex justify-center mt-4" rounded>
+              <v-sheet width="70%" elevation="2" rounded>
+                <img
+                  width="100%"
+                  height="100%"
+                  src="@/assets/images/page/halfway.jpg"
+                  style="border-radius: 6px"
+                />
+              </v-sheet>
+            </v-sheet>
+            <br />
+            <span>왼쪽 위의 버튼 </span>
+            <v-btn-toggle
+              rounded
+              background-color="white"
+              color="var(--main-col-1)"
+            >
+              <v-btn
+                color="var(--main-col-1)"
+                x-small
+                outlined
+                style="
+                  width: 8px;
+                  min-width: 8px;
+                  border-color: var(--main-col-1) !important;
+                "
+              >
+                <v-icon color="var(--main-col-1)" small
+                  >mdi-subway-variant</v-icon
+                >
+              </v-btn>
+              <v-btn
+                color="var(--main-col-1)"
+                x-small
+                outlined
+                style="
+                  width: 8px;
+                  min-width: 8px;
+                  border-color: var(--main-col-1) !important;
+                "
+              >
+                <v-icon color="var(--main-col-1)" small
+                  >mdi-silverware-fork-knife</v-icon
+                >
+              </v-btn>
+              <v-btn
+                color="var(--main-col-1)"
+                x-small
+                outlined
+                style="
+                  width: 8px;
+                  min-width: 8px;
+                  border-color: var(--main-col-1) !important;
+                "
+              >
+                <v-icon color="var(--main-col-1)" small>mdi-coffee</v-icon>
+              </v-btn>
+              <v-btn
+                color="var(--main-col-1)"
+                x-small
+                outlined
+                style="
+                  width: 8px;
+                  min-width: 8px;
+                  border-color: var(--main-col-1) !important;
+                "
+              >
+                <v-icon color="var(--main-col-1)" small>mdi-movie-play</v-icon>
+              </v-btn>
+            </v-btn-toggle>
+            <span>
+              중 하나를 선택해 클릭해 주세요. 왼쪽부터 지하철역, 음식점, 카페,
+              영화관을 추천해 드립니다.
+            </span>
+            <br />
+            <span>지도의 </span>
+            <v-icon color="var(--yellow-col)">mdi-map-marker-star</v-icon>
+            <span>는 중간 위치를, </span>
+            <img
+              style="vertical-align: bottom"
+              width="18"
+              class="mb-1"
+              src="@/assets/images/icons/marker_sample.png"
+            />
+            <span> 는 출발지를 가리킵니다. </span>
+            <v-icon color="var(--yellow-col)">mdi-map-marker-star</v-icon>
+            <span> 를 클릭하면 아래와 같은 마커를 보실 수 있습니다. </span>
+            <v-sheet
+              width="100%"
+              class="pa-1 mt-4 d-flex justify-center"
+              rounded
+            >
+              <v-sheet
+                class="pa-3 d-flex flex-column"
+                elevation="2"
+                width="100%"
+                max-width="350"
+                rounded
+              >
+                <v-sheet class="align-self-end">
+                  <img
+                    class="mx-1"
+                    width="30"
+                    src="@/assets/images/icons/bus-icon.png"
+                  />
+                  <img
+                    class="mx-1"
+                    width="30"
+                    src="@/assets/images/icons/car-icon.png"
+                  />
+                </v-sheet>
+                <v-sheet elevation="1">
+                  <v-sheet
+                    class="pa-2 white-font rounded-t d-flex flex-row justify-space-between align-center"
+                    color="var(--main-col-1)"
+                  >
+                    <span class="bold-font">학천장가든</span>
+                    <v-icon color="white">mdi-chevron-right</v-icon>
+                  </v-sheet>
+                  <v-sheet class="pa-2 d-flex flex-column" rounded>
+                    <span class="xxs-font">경북 문경시 가은읍 학천정길 20</span>
+                    <span class="xxxxs-font main-col-2">
+                      (지번 : 경북 문경시 가은읍 완장리 405-2)
+                    </span>
+                    <span class="xxs-font">054-571-0120</span>
+                  </v-sheet>
+                </v-sheet>
+              </v-sheet>
+            </v-sheet>
+            <br />
+            <span>아래 마커에서 우측 상단의 </span>
+            <img
+              class="mr-1"
+              width="20"
+              style="vertical-align: bottom"
+              src="@/assets/images/icons/bus-icon.png"
+            />
+            <img
+              class="mr-1"
+              width="20"
+              style="vertical-align: bottom"
+              src="@/assets/images/icons/car-icon.png"
+            />
+            <span
+              >를 클릭하면 각 출발지로부터 선택한 위치까지의 경로를 볼 수
+              있습니다.
+            </span>
+            <img
+              class="mr-1"
+              width="20"
+              style="vertical-align: bottom"
+              src="@/assets/images/icons/bus-icon.png"
+            />
+            <span>는 대중교통으로 이동 시, </span>
+            <img
+              class="mr-1"
+              width="20"
+              style="vertical-align: bottom"
+              src="@/assets/images/icons/car-icon.png"
+            />
+            <span>는 자동차로 이동 시 경로입니다. </span>
+            <br />
+            <span>
+              마커 상단의 남색 부분을 클릭하면 해당 위치를 상세 정보를
+              카카오맵을 통해 볼 수 있습니다. 마커 하단의 흰색 부분을 선택하면
+              해당 장소가 모임 장소로 선택됩니다.
             </span>
           </div>
         </v-sheet>
       </v-tab-item>
       <v-tab-item>
-        <v-sheet style="padding: 115px 30px 70px 30px">
+        <v-sheet style="padding: 110px 25px 65px 25px">
           <div
             class="mb-2 d-flex flex-column point-font main-col-1 xxxxl-font semi2narrow-font"
           >
@@ -609,10 +869,52 @@
               style="border-color: var(--main-col-1)"
             ></v-divider>
           </div>
+          <div class="light-font xs-font mt-4 main-col-1">
+            <span>모임 멤버들과 모임 생성 직후부터 </span>
+            <span class="orange-line">실시간 채팅</span>
+            <span>을 할 수 있습니다. 모임 3시간 전후로는 </span>
+            <span class="yellow-line">실시간 위치 공유</span>
+            <span>를 통해 서로의 위치를 확인할 수 있습니다.</span>
+            <br />
+          </div>
+          <v-chip class="mt-3 px-10" color="var(--red-col)" dark>
+            <span class="mr-1 bold-font">1st.</span>
+            <span>실시간 위치 공유</span>
+          </v-chip>
+          <div class="light-font xs-font pa-1 main-col-1">
+            <span>모임 상세페이지에서 모임 제목 옆에 위치한 </span>
+            <v-icon small>$vuetify.icons.location_outline</v-icon>
+            <span>
+              아이콘을 클릭하면 실시간 위치 공유로 이동할 수 있습니다.
+            </span>
+            <span>홈페이지의 오늘의 모임에서는 </span>
+            <v-icon small>$vuetify.icons.map_outline</v-icon>
+            <span> 아이콘을 선택하시면 됩니다. </span>
+            <span>다만, 실시간 위치 공유는 </span>
+            <span class="orange-line">모임 시간 3시간 전후로만</span>
+            <span> 가능합니다.</span>
+            <br />
+            <span>도착 장소 100m 이내에 도달하면 </span>
+            <v-icon color="var(--main-col-1)">mdi-map-marker-check</v-icon>
+            <span class="green-line">도착완료 버튼을 클릭해 도착 처리</span>
+            <span>를 할 수 있습니다. </span>
+            <span>모임 시간 내 </span>
+            <span>도착완료 버튼을 클릭하지 않으면 </span>
+            <span class="blue-line">지각 처리</span>
+            <span>가 되고 지각비가 부과되니 유의해 주세요!</span>
+          </div>
+          <v-chip class="mt-3 px-10" color="var(--yellow-col)" dark>
+            <span class="mr-1 bold-font">2nd.</span>
+            <span>실시간 채팅</span>
+          </v-chip>
+          <div class="light-font xs-font pa-1 main-col-1">
+            <span>모임 상세페이지에서 모임 제목 옆에 위치한 </span>
+            <v-icon small>$vuetify.icons.chatting_outline</v-icon>
+            <span> 아이콘을 클릭하면 실시간 채팅으로 이동할 수 있습니다.</span>
+          </div>
         </v-sheet>
       </v-tab-item>
     </v-tabs-items>
-
     <v-bottom-navigation
       fixed
       style="margin: 0 auto; left: 0; right: 0; box-shadow: none"
@@ -640,7 +942,7 @@ export default {
   name: "ManualPage",
   data() {
     return {
-      tab: 2,
+      tab: 3,
       items: ["소개", "모임", "중간장소", "실시간위치"],
     };
   },
