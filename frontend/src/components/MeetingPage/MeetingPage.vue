@@ -33,6 +33,7 @@
       <meeting-late-fee :lateAmount="meeting.lateAmount"></meeting-late-fee>
       <meeting-cost
         :meetingId="meeting.meetingId"
+        :meetingName="meeting.meetingName"
         :calculateDetails="meeting.calculateDetails"
         :spentMoney="spentMoney"
         :lateTotal="lateTotal"
