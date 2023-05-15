@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay">
+  <div class="overlay full-search-color">
     <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
       <v-icon>$vuetify.icons.arrow_left</v-icon>
     </v-btn>
