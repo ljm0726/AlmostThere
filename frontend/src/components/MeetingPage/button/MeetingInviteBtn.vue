@@ -59,7 +59,11 @@
     </v-snackbar>
   </v-dialog>
 </template>
-
+<script
+  src="https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js"
+  integrity="sha384-dpu02ieKC6NUeKFoGMOKz6102CLEWi9+5RQjWSV0ikYSFFd8M3Wp2reIcquJOemx"
+  crossorigin="anonymous"
+></script>
 <script>
 import CloseButton from "@/common/component/button/CloseButton.vue";
 
@@ -102,6 +106,7 @@ export default {
       const filterMeetingTime = this.formatTime(this.meetingTime);
       const roomCode = this.roomCode;
 
+      Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
       window.Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
