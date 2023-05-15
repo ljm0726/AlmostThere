@@ -41,8 +41,9 @@ export default {
   mounted() {
     this.loadScript();
     this.$refs.myInput.focus();
-    window.Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
-
+    if (!window.Kakao.isInitialized()) {
+      window.Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
+    }
     console.log(1);
   },
 
