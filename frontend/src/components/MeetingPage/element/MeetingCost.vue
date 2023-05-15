@@ -218,17 +218,21 @@ export default {
       this.$refs.detail.openDialog();
     },
     addCalculateDetail() {
-      saveCalculateDetail(
-        this.meetingId,
-        this.receipt,
-        this.storeName,
-        this.totalPrice
-      ).then((res) => {
-        if (res) this.$router.go(this.$router.currentRoute);
-      });
+      if (this.ocrSuccess && this.receipt) {
+        saveCalculateDetail(
+          this.meetingId,
+          this.receipt,
+          this.storeName,
+          this.totalPrice
+        ).then((res) => {
+          if (res) this.$router.go(this.$router.currentRoute);
+        });
+      }
     },
     sendkakao() {
-      Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
+      if (!Kakao.isInitialized()) {
+        Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
+      }
       Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
