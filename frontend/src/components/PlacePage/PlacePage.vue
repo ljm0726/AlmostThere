@@ -39,7 +39,7 @@
     </div>
     <halfway-modal ref="halfway"></halfway-modal>
 
-    <div id="map" class="maps"></div>
+    <div id="map" class="maps" @click="closeOveray"></div>
     <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
@@ -85,6 +85,7 @@ export default {
       currCategory: "",
       markers: [],
       placeOverlay: null,
+      isOveray: false,
       contentNode: null,
       isRecommend: false,
       currentMarker: null,
@@ -379,7 +380,10 @@ export default {
           window.kakao.maps.event.addListener(marker, "click", function () {
             if (marker == self.currentMarker) {
               self.closeOveray();
+              console.log("과녕", self.isOveray);
             } else {
+              self.isOveray = true;
+              console.log("과녕2", self.isOveray);
               self.currentMarker = marker;
               self.displayPlaceInfo(p);
             }
@@ -390,7 +394,10 @@ export default {
 
     closeOveray() {
       this.currentMarker = null;
-      this.placeOverlay.setMap(null);
+      if (this.isOveray === true) {
+        this.placeOverlay.setMap(null);
+        this.isOveray = false;
+      }
     },
 
     placesSearchCB(data, status) {
