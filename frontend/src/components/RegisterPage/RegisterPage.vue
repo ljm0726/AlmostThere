@@ -240,13 +240,11 @@ export default {
 
     setMeetingName() {
       this.regist.name = this.meetingname;
-      console.log(this.regist);
+      // console.log(this.regist);
       this.setRegistMeeting(this.regist);
     },
     setMeetingDate() {
       this.getCurTime();
-
-      console.log(this.date + " " + this.time);
       this.regist.date = this.date;
       this.regist.time = this.time;
       this.setRegistMeeting(this.regist);
@@ -270,7 +268,6 @@ export default {
         // alert("모든 정보를 입력해주세요!");
         this.$refs.input.openDialog();
       } else {
-        console.log(this.date, " ", this.time);
         const date_time = this.date + " " + this.time; //LocalDate 타입에 맞게 변환
         const meeting_name = this.meetingname;
         const place_name = this.regist.place_name;
@@ -280,14 +277,14 @@ export default {
 
         const member_id = this.member_id;
 
-        console.log(
-          meeting_name,
-          date_time,
-          place_name,
-          place_addr,
-          meeting_lat,
-          meeting_lng
-        );
+        // console.log(
+        //   meeting_name,
+        //   date_time,
+        //   place_name,
+        //   place_addr,
+        //   meeting_lat,
+        //   meeting_lng
+        // );
 
         this.register({
           member_id,
@@ -347,8 +344,6 @@ export default {
 
   mounted() {
     // this.date = new Date().toLocaleDateString();
-
-    console.log("@#@#", this.regist);
     if (this.regist.place_name !== null && this.regist.place_addr !== null) {
       this.meeting_place =
         this.regist.place_name + "(" + this.regist.place_addr + ")";
