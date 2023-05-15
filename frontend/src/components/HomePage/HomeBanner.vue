@@ -15,46 +15,6 @@
         <home-banner-three></home-banner-three>
       </v-sheet>
     </swiper-slide>
-    <!-- <swiper-slide v-for="(banner, index) in banners" :key="index"></swiper-slide> -->
-    <!-- <v-sheet
-        class="d-flex flex-row justify-space-between align-center"
-        width="100%"
-        height="250px"
-        :style="{
-          backgroundImage: 'url(' + banner.image + ')',
-        }"
-        style="
-          background-size: 250px !important;
-          background-position: 10% 50% !important;
-        "
-      >
-        <v-sheet
-          width="100%"
-          color="transparent"
-          class="mx-10 d-flex flex-column align-end justify-center"
-          style="
-            text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
-          "
-        >
-          <div class="d-flex flex-column align-end mb-1">
-            <span
-              class="point-font xxl-font main-col-1"
-              v-for="(t, i) in banner.title"
-              :key="i"
-            >
-              {{ t }}
-            </span>
-          </div>
-
-          <span
-            v-for="(content, idx) in banner.contents"
-            :key="idx"
-            class="light-font xxs-font main-col-1"
-          >
-            {{ content }}
-          </span>
-        </v-sheet>
-      </v-sheet> -->
     <div class="swiper-pagination" slot="pagination"></div>
   </swiper>
 </template>
