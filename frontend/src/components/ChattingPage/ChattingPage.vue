@@ -39,7 +39,7 @@
           </v-list-item>
         </div>
         <!-- 미팅 방 페이지로 가는 버튼 -->
-        <detail-button :isIcon="false"></detail-button>
+        <detail-button :elevation="false" :isIcon="false"></detail-button>
       </v-sheet>
     </v-navigation-drawer>
     <!-- 새로 들어온 채팅 -->

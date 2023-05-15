@@ -10,13 +10,13 @@
       <img class="mr-1" height="25" src="@/assets/images/icons/roulette.png" />
       <span class="medium-font">돌려돌려 돌림판</span>
     </v-btn>
-    <vue-bottom-sheet ref="gameSheet" max-width="500px">
+    <vue-bottom-sheet ref="gameSheet" max-width="500px" :is-full-screen="true">
       <v-sheet class="px-5 d-flex flex-column pb-10">
         <span
           class="point-font xxxxl-font main-col-1 align-self-center"
           v-on:click="spin"
         >
-          START !
+          Click Here !
         </span>
         <section class="section d-flex flex-column align-center justify-center">
           <div class="container" id="app">
@@ -31,8 +31,9 @@
                 <v-sheet
                   class="d-flex flex-column justify-center detail-border main-col-1"
                   height="50"
-                  width="300"
+                  width="100%"
                   rounded="lg"
+                  elevation="3"
                 >
                   <div class="d-flex flex-row justify-space-between">
                     <img
@@ -52,22 +53,37 @@
                 </v-sheet>
               </div>
               <div class="mt-4">
-                <v-sheet class="px-2">
-                  <div class="columns is-multiline">
-                    <div class="d-flex flex-row justify-space-between">
-                      <v-responsive max-width="200">
-                        <v-text-field
-                          v-model="new_option"
-                          v-on:keyup.enter="addOptions"
-                          type="text"
-                          placeholder="항목"
-                          outlined
-                          hide-details
-                          dense
-                          maxlength="7"
-                        ></v-text-field>
-                      </v-responsive>
-                      <v-btn
+                <!-- <v-sheet class="px-2"> -->
+                <!-- <div class="columns is-multiline"> -->
+                <!-- <div class="d-flex flex-row justify-space-between"> -->
+                <!-- <v-responsive max-width="200"> -->
+                <v-text-field
+                  v-model="new_option"
+                  v-on:keyup.enter="addOptions"
+                  type="text"
+                  append-outer-icon="$vuetify.icons.add_circle"
+                  @click:append-outer="addOptions"
+                  placeholder="항목"
+                  outlined
+                  hide-details
+                  dense
+                  maxlength="7"
+                  block
+                ></v-text-field>
+                <v-btn
+                  class="mt-1 ml-auto"
+                  rounded
+                  color="var(--main-col-1)"
+                  small
+                  dark
+                  block
+                  elevation="0"
+                  @click="pushMember()"
+                >
+                  모임 멤버를 항목으로 넣기
+                </v-btn>
+                <!-- </v-responsive> -->
+                <!-- <v-btn
                         id="round-btn"
                         outlined
                         color="var(--main-col-1)"
@@ -77,29 +93,31 @@
                         <v-icon color="var(--main-col-1)"
                           >$vuetify.icons.add</v-icon
                         >
-                      </v-btn>
-                    </div>
-                    <div class="mt-4 d-flex flex-wrap justify-flex-start">
-                      <div
-                        class="pa-1 d-flex flex-row justify-space-between"
-                        v-for="option in options"
-                        :key="option"
-                        style="width: 50%"
-                      >
-                        <v-btn
-                          class="d-flex flex-row justify-space-between"
-                          small
-                          color="white"
-                          v-on:click="removeOptions(option)"
-                          width="100%"
-                        >
-                          <v-icon>mdi-minus-circle</v-icon>
-                          <span> {{ option }} </span>
-                        </v-btn>
-                      </div>
-                    </div>
+                      </v-btn> -->
+                <!-- </div> -->
+                <div class="mt-2 d-flex flex-wrap justify-space-between">
+                  <div
+                    class="mt-2"
+                    v-for="option in options"
+                    :key="option"
+                    style="width: 48%"
+                  >
+                    <v-btn
+                      class="px-3 py-4 d-flex flex-row justify-space-between"
+                      small
+                      color="white"
+                      v-on:click="removeOptions(option)"
+                      width="100%"
+                    >
+                      <v-icon color="var(--main-col-1)">
+                        mdi-minus-circle
+                      </v-icon>
+                      <span class="main-col-1"> {{ option }} </span>
+                    </v-btn>
                   </div>
-                </v-sheet>
+                </div>
+                <!-- </div> -->
+                <!-- </v-sheet> -->
               </div>
             </div>
           </div>
@@ -125,6 +143,9 @@ export default {
       result: "",
       ctx: "",
     };
+  },
+  props: {
+    memberList: Array,
   },
   computed: {
     arc() {
@@ -177,7 +198,12 @@ export default {
       this.options.splice(idx, 1);
       this.drawRouletteWheel();
     },
-
+    pushMember() {
+      for (var member of this.memberList) {
+        this.options.push(member.memberNickname);
+      }
+      this.drawRouletteWheel();
+    },
     drawRouletteWheel() {
       var canvas = document.getElementById("canvas");
       if (canvas.getContext) {

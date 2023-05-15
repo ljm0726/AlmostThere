@@ -2,7 +2,14 @@
   <v-sheet class="mx-5 d-flex flex-row align-center">
     <!-- 회원 프로필 -->
     <v-card rounded="xl" elevation="0">
+      <v-skeleton-loader
+        v-if="!member.memberProfileImg"
+        type="image"
+        height="80"
+        width="80"
+      ></v-skeleton-loader>
       <v-img
+        v-else
         class="align-end"
         height="80"
         width="80"

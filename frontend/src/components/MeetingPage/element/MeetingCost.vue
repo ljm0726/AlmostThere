@@ -77,12 +77,9 @@
     <v-btn class="my-3" color="var(--main-col-1)" dark rounded @click="open()">
       영수증 추가
     </v-btn>
-    <vue-bottom-sheet
-      ref="costSheet"
-      max-width="500px"
-      max-height="90% !important"
-      height="fit-content !important"
-    >
+    <!-- max-height="90% !important"
+      height="fit-content !important" -->
+    <vue-bottom-sheet ref="costSheet" max-width="500px" :is-full-screen="true">
       <v-sheet class="px-5 d-flex flex-column pb-10">
         <span class="point-font xxxxl-font main-col-1 align-self-center">
           영수증 등록

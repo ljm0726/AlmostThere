@@ -1,6 +1,11 @@
 <template>
-  <v-btn color="var(--main-col-1)" icon large @click="moveLivemap">
-    <v-icon large>$vuetify.icons.location_outline</v-icon>
+  <v-btn color="var(--main-col-1)" @click="moveLivemap" text rounded icon>
+    <div class="d-flex flex-column align-center">
+      <v-icon large style="font-size: 30px; height: 30px; width: 30px">
+        $vuetify.icons.location_outline
+      </v-icon>
+      <span class="mt-1 xxxxs-font">위치공유</span>
+    </div>
   </v-btn>
 </template>
 

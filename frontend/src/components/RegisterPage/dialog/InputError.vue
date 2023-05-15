@@ -5,7 +5,6 @@
         <div class="align-self-end">
           <close-button @closeDialog="dialog = false"></close-button>
         </div>
-        <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
         <div
           class="point-font xxxxxxl-font main-col-1 d-flex flex-column align-center"
         >

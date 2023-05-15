@@ -171,7 +171,7 @@
       >
         <v-card rounded="xl">
           <v-card-title class="d-flex flex-column">
-            <img src="@/assets/images/dialog/logout.png" width="60%" />
+            <img src="@/assets/images/dialog/internet_error.png" width="60%" />
             <span class="logo-font xxxxxxl-font main-col-1">Server Error</span>
             <span
               class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"

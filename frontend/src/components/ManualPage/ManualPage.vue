@@ -768,7 +768,7 @@
               style="vertical-align: bottom"
               width="18"
               class="mb-1"
-              src="@/assets/images/icons/marker_sample.png"
+              src="@/assets/images/icons/marker1.png"
             />
             <span> 는 출발지를 가리킵니다. </span>
             <v-icon color="var(--yellow-col)">mdi-map-marker-star</v-icon>
@@ -884,7 +884,7 @@
                       style="vertical-align: bottom"
                       width="25"
                       class="mb-1"
-                      src="@/assets/images/icons/marker_sample.png"
+                      src="@/assets/images/icons/marker1.png"
                     />
                     <span class="medium-font">11분</span>
                   </v-sheet>
@@ -936,7 +936,7 @@
             <img
               style="vertical-align: bottom; margin-top: 2px"
               width="18"
-              src="@/assets/images/icons/marker_sample.png"
+              src="@/assets/images/icons/marker1.png"
             />
             <span>
               옆의 시간은 선택된 장소인 '학동역 7호선'으로부터 첫 번째 입력했던
@@ -1193,7 +1193,7 @@ export default {
   name: "ManualPage",
   data() {
     return {
-      tab: 3,
+      tab: 0,
       items: ["소개", "모임", "중간장소", "실시간위치"],
     };
   },
