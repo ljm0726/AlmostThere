@@ -16,24 +16,18 @@
     />
     <ul v-show="isRecommend" id="category">
       <li id="SW8" @click="onClickCategory">
-        <v-icon class="category_icon" id="SW8" @click="onClickCategory"
-          >mdi mdi-subway-variant</v-icon
-        >
+        <v-icon class="category_icon" id="SW8">mdi mdi-subway-variant</v-icon>
       </li>
       <li id="FD6" @click="onClickCategory">
-        <v-icon class="category_icon" id="FD6" @click="onClickCategory"
+        <v-icon class="category_icon" id="FD6"
           >mdi mdi-silverware-fork-knife</v-icon
         >
       </li>
       <li id="CE7" @click="onClickCategory">
-        <v-icon class="category_icon" id="CE7" @click="onClickCategory"
-          >mdi mdi-coffee</v-icon
-        >
+        <v-icon class="category_icon" id="CE7">mdi mdi-coffee</v-icon>
       </li>
       <li id="CT1" @click="onClickCategory">
-        <v-icon class="category_icon" id="CT1" @click="onClickCategory"
-          >mdi mdi-movie-play</v-icon
-        >
+        <v-icon class="category_icon" id="CT1">mdi mdi-movie-play</v-icon>
       </li>
     </ul>
     <div class="find-middle-place-btn">
@@ -258,7 +252,6 @@ export default {
         this.placeOverlay.setMap(null);
         this.resetPolylines();
         this.currCategory = id;
-        // this.changeCategoryClass(e);
         this.searchPlaces();
       }
     },
@@ -312,12 +305,14 @@ export default {
 
       this.contentNode
         .querySelector("#bus-icon")
-        .addEventListener("click", function () {
+        .addEventListener("click", function (e) {
+          e.preventDefault();
           self.findBusWay(place);
         });
       this.contentNode
         .querySelector("#car-icon")
-        .addEventListener("click", function () {
+        .addEventListener("click", function (e) {
+          e.preventDefault();
           self.findCarWay(place);
         });
       this.placeOverlay.setContent(this.contentNode);
@@ -991,7 +986,7 @@ export default {
 }
 
 #category li:hover {
-  background: #ffe6e6;
+  background: #2eccfa;
   border-left: 1px solid #092a49;
   margin-left: -1px;
 }
