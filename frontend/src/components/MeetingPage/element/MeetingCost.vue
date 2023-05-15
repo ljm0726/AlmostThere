@@ -1,6 +1,22 @@
 <template>
   <v-sheet class="mx-3 my-2 d-flex flex-column main-col-1" color="transparent">
-    <span class="point-font xxxxl-font">정산</span>
+    <div class="d-flex flex-row justify-space-between">
+      <span class="point-font xxxxl-font">정산</span>
+      <v-btn
+        class="ml-2 justify-space-between"
+        depressed
+        small
+        color="var(--main-col-1)"
+        dark
+        rounded
+        @click="sendkakao"
+      >
+        <v-icon class="mr-2" color="white" small
+          >mdi-share-variant-outline</v-icon
+        >
+        <span class="xxxs-font">카카오톡 공유하기</span>
+      </v-btn>
+    </div>
     <v-simple-table dense>
       <template v-slot:default>
         <tbody>
@@ -172,6 +188,7 @@ export default {
   name: "MeetingCost",
   props: {
     meetingId: Number,
+    meetingName: String,
     calculateDetails: Array,
     lateTotal: Number,
     spentMoney: Number,
@@ -203,6 +220,58 @@ export default {
         this.totalPrice
       ).then((res) => {
         if (res) this.$router.go(this.$router.currentRoute);
+      });
+    },
+    sendkakao() {
+      window.Kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: "정산 내역을 확인하여 정산을 완료해주세요!",
+          description:
+            "지각 여부에 따라 금액이 달라질 수 있습니다.\n자세한 정산 내역은 링크를 통해 확인해주세요.",
+          imageUrl:
+            "https://k8a401.p.ssafy.io/almostthere/images/calculate.jpg",
+          link: {},
+        },
+        itemContent: {
+          profileText: "모임 정산 내역을 안내드립니다.",
+          items: [
+            {
+              item: "모임 이름",
+              itemOp: this.meetingName,
+            },
+            {
+              item: "합계",
+              itemOp:
+                String(this.total).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원",
+            },
+            {
+              item: "잔액",
+              itemOp:
+                String(this.remain).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                "원",
+            },
+            {
+              item: "지각비",
+              itemOp:
+                String(this.lateTotal).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                "원",
+            },
+          ],
+          sum: "나의 정산 금액",
+          sumOp:
+            String(this.spentMoney).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+            "원",
+        },
+        buttons: [
+          {
+            title: "정산내역 확인하러 가기",
+            link: {
+              mobileWebUrl: `https://k8a401.p.ssafy.io/meeting/${this.meetingId}`,
+              webUrl: `https://k8a401.p.ssafy.io/meeting/${this.meetingId}`,
+            },
+          },
+        ],
       });
     },
   },

@@ -109,7 +109,7 @@ export default {
           description:
             "호스트가 모임에 초대합니다.\n" +
             "아래 버튼을 통해 초대를 수락하세요! ",
-          imageUrl: "https://k8a401.p.ssafy.io/img/home.5daad672.png",
+          imageUrl: "https://k8a401.p.ssafy.io/almostthere/images/home.png",
           link: {
             // mobileWebUrl: "http://localhost:8080",
             // webUrl: "http://localhost:8080",
