@@ -16,24 +16,18 @@
     />
     <ul v-show="isRecommend" id="category">
       <li id="SW8" @click="onClickCategory">
-        <v-icon class="category_icon" id="SW8" @click="onClickCategory"
-          >mdi mdi-subway-variant</v-icon
-        >
+        <v-icon class="category_icon" id="SW8">mdi mdi-subway-variant</v-icon>
       </li>
       <li id="FD6" @click="onClickCategory">
-        <v-icon class="category_icon" id="FD6" @click="onClickCategory"
+        <v-icon class="category_icon" id="FD6"
           >mdi mdi-silverware-fork-knife</v-icon
         >
       </li>
       <li id="CE7" @click="onClickCategory">
-        <v-icon class="category_icon" id="CE7" @click="onClickCategory"
-          >mdi mdi-coffee</v-icon
-        >
+        <v-icon class="category_icon" id="CE7">mdi mdi-coffee</v-icon>
       </li>
       <li id="CT1" @click="onClickCategory">
-        <v-icon class="category_icon" id="CT1" @click="onClickCategory"
-          >mdi mdi-movie-play</v-icon
-        >
+        <v-icon class="category_icon" id="CT1">mdi mdi-movie-play</v-icon>
       </li>
     </ul>
     <div class="find-middle-place-btn">
@@ -258,7 +252,6 @@ export default {
         this.placeOverlay.setMap(null);
         this.resetPolylines();
         this.currCategory = id;
-        // this.changeCategoryClass(e);
         this.searchPlaces();
       }
     },
@@ -312,12 +305,14 @@ export default {
 
       this.contentNode
         .querySelector("#bus-icon")
-        .addEventListener("click", function () {
+        .addEventListener("click", function (e) {
+          e.preventDefault();
           self.findBusWay(place);
         });
       this.contentNode
         .querySelector("#car-icon")
-        .addEventListener("click", function () {
+        .addEventListener("click", function (e) {
+          e.preventDefault();
           self.findCarWay(place);
         });
       this.placeOverlay.setContent(this.contentNode);
@@ -968,9 +963,9 @@ export default {
   position: absolute;
 
   top: 7.3%;
-  left: 2%;
+  left: 3%;
   border-radius: 20px;
-  border: 1px solid #909090;
+  border: 1.6px solid #092a49;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
   background: #fff;
   overflow: hidden;
@@ -983,15 +978,16 @@ export default {
   float: left;
   list-style: none;
   width: 40px;
-  border-right: 1px solid #acacac;
-  padding: 2.9%;
+  border-left: 1.6px solid #092a49;
+  padding: 3.1%;
   text-align: center;
+  margin-left: -1px;
   cursor: pointer;
 }
 
 #category li:hover {
-  background: #ffe6e6;
-  border-left: 1px solid #acacac;
+  background: #2eccfa;
+  border-left: 1px solid #092a49;
   margin-left: -1px;
 }
 
@@ -1088,6 +1084,7 @@ export default {
 }
 .category_icon {
   z-index: 100;
+  color: #092a49;
 }
 .place-info {
   z-index: 2;
