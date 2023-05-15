@@ -46,6 +46,12 @@ function apiInstance() {
           .then(async (response) => {
             // access token 재발급 성공
             localStorage.setItem("Authorization", response.data);
+
+            console.log("401 error ", error.config);
+            if (error.config.url === "/meeting-calculate/receipt") {
+              console.log("영수증 error");
+              error.config.headers["Content-Type"] = "multipart/form-data";
+            }
             result = await instance(error.config);
           })
           .catch(async (error) => {
