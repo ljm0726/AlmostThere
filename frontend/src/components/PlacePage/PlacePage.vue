@@ -189,6 +189,10 @@ export default {
 
         this.ps = new window.kakao.maps.services.Places();
 
+        this.placeOverlay.setMap(null);
+        this.resetPolylines();
+        this.currCategory = "SW8";
+        // this.changeCategoryClass(e);
         this.searchPlaces();
       }
     },

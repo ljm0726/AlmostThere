@@ -61,32 +61,34 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 //            return;
 //        }
 
-        try {
-            Token token = tokenService.generateToken(member, "USER");
-            log.info("JwT : {}", token);
-            Cookie cookie = new Cookie("refresh-token", token.getRefreshToken());
-            // expires in 7 days
-            cookie.setMaxAge(60 * 60 * 24 * 14);
-            // optional properties
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/api/token/tokenReissue");
+        Token token = tokenService.generateToken(member, "USER");
+        log.info("JwT : {}", token);
+        Cookie cookie = new Cookie("refresh-token", token.getRefreshToken());
+        // expires in 7 days
+        cookie.setMaxAge(60 * 60 * 24 * 14);
+        // optional properties
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/api/token/tokenReissue");
 
-            // add cookie to response
-            response.addCookie(cookie);
-            redisTemplateForToken.opsForValue() //redis에 refreshToken 저장
-                .set(member.getMemberEmail(),
-                    token.getRefreshToken(),
-                    refreshTokenExpiretime, //만료 기간
-                    TimeUnit.MILLISECONDS);
+        // add cookie to response
+        response.addCookie(cookie);
+        redisTemplateForToken.opsForValue() //redis에 refreshToken 저장
+            .set(member.getMemberEmail(),
+                token.getRefreshToken(),
+                refreshTokenExpiretime, //만료 기간
+                TimeUnit.MILLISECONDS);
 
-            log.info((String) redisTemplateForToken.opsForValue().get(member.getMemberEmail()));
-            response.sendRedirect(loginSuccessUrl + "Bearer " + token.getToken());
-        } catch (Exception e) {
+        log.info((String) redisTemplateForToken.opsForValue().get(member.getMemberEmail()));
+        response.sendRedirect(loginSuccessUrl + "Bearer " + token.getToken());
 
-            log.error("redis error");
-            response.sendRedirect(loginSuccessUrl + "/error");
-        }
+//        try {
+//
+//        } catch (Exception e) {
+//
+//            log.error("redis error");
+//            response.sendRedirect(loginSuccessUrl + "/error");
+//        }
 
 //        HttpHeaders httpHeaders = new HttpHeaders();
 //        httpHeaders.add("Authorization", "Bearer " + token.getToken());
