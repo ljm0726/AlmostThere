@@ -38,12 +38,14 @@ export default {
   computed: {
     ...mapState("meetingStore", ["regist"]),
   },
+  created() {
+    if (!window.kakao.isInitialized()) {
+      window.kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
+    }
+  },
   mounted() {
     this.loadScript();
     this.$refs.myInput.focus();
-    if (!window.Kakao.isInitialized()) {
-      window.Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
-    }
     console.log(1);
   },
 
