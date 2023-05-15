@@ -40,16 +40,8 @@ export default {
       },
     };
   },
-  created() {
-    if (!window.kakao.isInitialized()) {
-      window.kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
-    }
-  },
   mounted() {
     this.loadScript();
-    if (!window.Kakao.isInitialized()) {
-      window.Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
-    }
     this.$refs.myInput.focus();
   },
 
