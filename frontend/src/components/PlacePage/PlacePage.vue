@@ -1,7 +1,13 @@
 <template>
   <div class="map-area">
-    <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
-      <v-icon>$vuetify.icons.arrow_left</v-icon>
+    <v-btn
+      id="square-btn"
+      class="back-btn find-middle-place-btn"
+      outlined
+      @click="goBack()"
+      rounded
+    >
+      <v-icon class="find-middle-place-btn">$vuetify.icons.arrow_left</v-icon>
     </v-btn>
     <input
       class="search-box"
@@ -10,31 +16,27 @@
     />
     <ul v-show="isRecommend" id="category">
       <li id="SW8" @click="onClickCategory">
-        <v-icon class="category_icon" id="SW8" @click="onClickCategory"
-          >mdi mdi-subway-variant</v-icon
-        >
+        <v-icon class="category_icon" id="SW8">mdi mdi-subway-variant</v-icon>
       </li>
       <li id="FD6" @click="onClickCategory">
-        <v-icon class="category_icon" id="FD6" @click="onClickCategory"
+        <v-icon class="category_icon" id="FD6"
           >mdi mdi-silverware-fork-knife</v-icon
         >
       </li>
       <li id="CE7" @click="onClickCategory">
-        <v-icon class="category_icon" id="CE7" @click="onClickCategory"
-          >mdi mdi-coffee</v-icon
-        >
+        <v-icon class="category_icon" id="CE7">mdi mdi-coffee</v-icon>
       </li>
       <li id="CT1" @click="onClickCategory">
-        <v-icon class="category_icon" id="CT1" @click="onClickCategory"
-          >mdi mdi-movie-play</v-icon
-        >
+        <v-icon class="category_icon" id="CT1">mdi mdi-movie-play</v-icon>
       </li>
     </ul>
-    <v-btn class="find-place-btn" @click="findHalfway()"
-      ><i class="fa-light fa-location-dot"></i>
-      <v-icon class="marker-icon">mdi mdi-map-marker-outline</v-icon>중간 위치
-      찾기</v-btn
-    >
+    <div class="find-middle-place-btn">
+      <v-btn class="find-place-btn" @click="findHalfway()"
+        ><i class="fa-light fa-location-dot"></i>
+        <v-icon class="marker-icon">$vuetify.icons.location_outline</v-icon>
+        <span class="find-middle-place-title">중간 위치 찾기</span></v-btn
+      >
+    </div>
     <halfway-modal ref="halfway"></halfway-modal>
 
     <div id="map" class="maps"></div>
@@ -181,6 +183,10 @@ export default {
 
         this.ps = new window.kakao.maps.services.Places();
 
+        this.placeOverlay.setMap(null);
+        this.resetPolylines();
+        this.currCategory = "SW8";
+        // this.changeCategoryClass(e);
         this.searchPlaces();
       }
     },
@@ -246,7 +252,6 @@ export default {
         this.placeOverlay.setMap(null);
         this.resetPolylines();
         this.currCategory = id;
-        // this.changeCategoryClass(e);
         this.searchPlaces();
       }
     },
@@ -300,12 +305,14 @@ export default {
 
       this.contentNode
         .querySelector("#bus-icon")
-        .addEventListener("click", function () {
+        .addEventListener("click", function (e) {
+          e.preventDefault();
           self.findBusWay(place);
         });
       this.contentNode
         .querySelector("#car-icon")
-        .addEventListener("click", function () {
+        .addEventListener("click", function (e) {
+          e.preventDefault();
           self.findCarWay(place);
         });
       this.placeOverlay.setContent(this.contentNode);
@@ -779,7 +786,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#0D347F",
             });
@@ -787,7 +794,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#379206",
             });
@@ -795,7 +802,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#EC6C27",
             });
@@ -803,7 +810,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#3165A8",
             });
@@ -811,7 +818,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#703E8C",
             });
@@ -819,7 +826,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#904D23",
             });
@@ -827,7 +834,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#5B692E",
             });
@@ -835,7 +842,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#C82363",
             });
@@ -843,7 +850,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
               strokeColor: "#B39627",
             });
@@ -851,7 +858,7 @@ export default {
             polyline = new window.kakao.maps.Polyline({
               map: this.map,
               path: lineArray,
-              strokeWeight: 5,
+              strokeWeight: 8,
               storkeOpacity: 1,
             });
           }
@@ -903,39 +910,41 @@ export default {
     loadMap() {
       console.log("!@#!@#!@#!@", this.loadMap);
       const container = document.getElementById("map"); // 지도를 담을 DOM 영역
-      const options = {
-        // 지도를 생성할 때 필요한 기본 옵션
-        center: new window.kakao.maps.LatLng(
-          this.current.lat,
-          this.current.lng
-        ), // 지도의 중심좌표
-        level: 4, // 지도의 레벨(확대, 축소 정도)
-      };
+      if (container) {
+        const options = {
+          // 지도를 생성할 때 필요한 기본 옵션
+          center: new window.kakao.maps.LatLng(
+            this.current.lat,
+            this.current.lng
+          ), // 지도의 중심좌표
+          level: 4, // 지도의 레벨(확대, 축소 정도)
+        };
 
-      this.map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
-      this.ps = new window.kakao.maps.services.Places();
-      this.geocoder = new window.kakao.maps.services.Geocoder();
+        this.map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
+        this.ps = new window.kakao.maps.services.Places();
+        this.geocoder = new window.kakao.maps.services.Geocoder();
 
-      if (this.placeX !== null) {
-        this.isSelect = true;
-        this.isRecommend = false;
-      } else this.isSelect = false;
-      if (this.placeX !== null) {
-        // map의 marker를 다 지운다, 아래 displayMarker에서 뺴옴
-        if (this.startMarker) this.startMarker.setMap(null);
-        if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
+        if (this.placeX !== null) {
+          this.isSelect = true;
+          this.isRecommend = false;
+        } else this.isSelect = false;
+        if (this.placeX !== null) {
+          // map의 marker를 다 지운다, 아래 displayMarker에서 뺴옴
+          if (this.startMarker) this.startMarker.setMap(null);
+          if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
 
-        var bounds = new window.kakao.maps.LatLngBounds();
-        bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
-        this.current.lng = this.placeX;
-        this.current.lat = this.placeY;
-        this.displayMarker(this.placeY, this.placeX);
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        this.map.setBounds(bounds);
-        this.map.relayout();
-        this.map.setCenter(
-          new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
-        );
+          var bounds = new window.kakao.maps.LatLngBounds();
+          bounds.extend(new window.kakao.maps.LatLng(this.placeY, this.placeX));
+          this.current.lng = this.placeX;
+          this.current.lat = this.placeY;
+          this.displayMarker(this.placeY, this.placeX);
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+          this.map.setBounds(bounds);
+          this.map.relayout();
+          this.map.setCenter(
+            new window.kakao.maps.LatLng(this.current.lat, this.current.lng)
+          );
+        }
       }
     },
     displayMarker(y, x) {
@@ -954,10 +963,11 @@ export default {
 <style>
 #category {
   position: absolute;
+
   top: 7.3%;
-  left: 2%;
+  left: 3%;
   border-radius: 20px;
-  border: 1px solid #909090;
+  border: 1.6px solid #092a49;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
   background: #fff;
   overflow: hidden;
@@ -970,15 +980,16 @@ export default {
   float: left;
   list-style: none;
   width: 40px;
-  border-right: 1px solid #acacac;
-  padding: 2.9%;
+  border-left: 1.6px solid #092a49;
+  padding: 3.1%;
   text-align: center;
+  margin-left: -1px;
   cursor: pointer;
 }
 
 #category li:hover {
-  background: #ffe6e6;
-  border-left: 1px solid #acacac;
+  background: #2eccfa;
+  border-left: 1px solid #092a49;
   margin-left: -1px;
 }
 
@@ -1071,9 +1082,11 @@ export default {
   font-size: 25px;
   margin-right: 4%;
   margin-left: -8%;
+  color: #092a49;
 }
 .category_icon {
   z-index: 100;
+  color: #092a49;
 }
 .place-info {
   z-index: 2;
@@ -1099,13 +1112,14 @@ input {
   top: 7.5%;
   font-family: var(--extrabold-font);
   background: #ffffff;
-  border: 1px solid #092a49;
+  border: 1.6px solid #092a49;
   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
   border-radius: 18px;
 }
 .back-btn {
   display: flex;
   position: absolute;
+
   z-index: 2;
   background: #ffffff;
   left: 2.2%;
@@ -1138,8 +1152,15 @@ input {
   bottom: unset; /* 추가 */
 
   background: #ffffff;
-  border: 1px solid #092a49;
+  border: 1.6px solid #092a49;
   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
   border-radius: 10px;
+}
+.find-middle-place-btn {
+  color: #092a49;
+}
+.find-middle-place-title {
+  color: #092a49;
+  font-family: var(--bold-font);
 }
 </style>

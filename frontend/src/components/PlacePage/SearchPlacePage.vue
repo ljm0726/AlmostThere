@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="full-search-color">
     <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
       <v-icon>$vuetify.icons.arrow_left</v-icon>
     </v-btn>
@@ -38,6 +38,7 @@ export default {
   computed: {
     ...mapState("meetingStore", ["regist"]),
   },
+  created() {},
   mounted() {
     this.loadScript();
     this.$refs.myInput.focus();
@@ -55,13 +56,17 @@ export default {
       const script = document.createElement("script");
       script.src =
         "//dapi.kakao.com/v2/maps/sdk.js?appkey=4a440970d2ed6adb820352f0223f931f&autoload=false&libraries=services"; // &autoload=false api를 로드한 후 맵을 그리는 함수가 실행되도록 구현
-      script.onload = () => window.kakao.maps.load(this.loadMap); // 스크립트 로드가 끝나면 지도를 실행될 준비가 되어 있다면 지도가 실행되도록 구현
+      script.onload = () => {
+        window.kakao.maps.load(() => {
+          this.loadMap;
+          this.ps = new window.kakao.maps.services.Places();
+        });
+      }; // 스크립트 로드가 끝나면 지도를 실행될 준비가 되어 있다면 지도가 실행되도록 구현
 
       document.head.appendChild(script); // html>head 안에 스크립트 소스를 추가
     },
     getSearchResult() {
       // 검색 결과
-      this.ps = new window.kakao.maps.services.Places();
       this.geocoder = new window.kakao.maps.services.Geocoder();
       console.log("search", this.searchValue);
       if (this.marker) this.marker.setMap(null);
@@ -201,6 +206,9 @@ export default {
 </script>
 
 <style lang="scss">
+.full-search-color {
+  color: #092a49;
+}
 .lists {
   overflow: scroll;
   margin-top: 13%;
@@ -210,14 +218,16 @@ export default {
   margin-inline: 6%;
 }
 .resident_items .place-name {
-  font-size: 20px;
+  font-size: 21px;
   font-family: var(--extrabold-font);
-  padding-block: 7px;
+  padding-top: 13px;
 }
 .resident_items .address-name {
-  font-family: var(--medium-font);
+  font-family: var(--reqular-font);
   border-bottom: 2px solid #000;
-  padding-block: 5px;
+  font-size: 14px;
+  padding-bottom: 13px;
+  padding-top: 3px;
 }
 
 input {
@@ -239,6 +249,7 @@ input {
 .back-btn {
   display: flex;
   position: absolute;
+  color: #092a49;
   z-index: 2;
   background: #ffffff;
   left: 2.2%;

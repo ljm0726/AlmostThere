@@ -36,6 +36,7 @@ spring:
   redis:
     host: localhost # 서버 host
     port: 6379 # redis 서버 포트
+    password: ${REDIS_PASSWORD} # for. redis 인증
 
 redis:
   locationData:
@@ -85,6 +86,7 @@ spring:
   redis:
     host: ${REDIS_URL} # 서버 host
     port: 6379 # redis 서버 포트
+    password: ${REDIS_PASSWORD}
 
   security:
     oauth2:
@@ -137,6 +139,6 @@ jwt:
   token:
     secret-key: ${JWT_TOKEN_SECRET_KEY}
   access-token:
-    expire-length: 36000000 # 300000 5분,  36000000 10시간(임시)
+    expire-length: 3600000 # 300000 5분,  36000000 10시간(임시)
   refresh-token:
     expire-length: 1209600000 #14일

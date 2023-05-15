@@ -75,13 +75,13 @@
         class="my-1"
         type="image"
         width="100%"
-        height="50"
+        height="67"
       ></v-skeleton-loader>
     </div>
     <div class="mx-3 my-2">
       <v-skeleton-loader
         type="image"
-        width="60"
+        width="100"
         height="30"
       ></v-skeleton-loader>
       <v-skeleton-loader
@@ -89,26 +89,6 @@
         type="image"
         width="100%"
         height="80"
-      ></v-skeleton-loader>
-      <v-skeleton-loader
-        class="my-1"
-        type="image"
-        width="100%"
-        height="30"
-        style="border-radius: 15px"
-      ></v-skeleton-loader>
-    </div>
-    <div class="mx-3 my-2">
-      <v-skeleton-loader
-        type="image"
-        width="60"
-        height="30"
-      ></v-skeleton-loader>
-      <v-skeleton-loader
-        class="my-1"
-        type="image"
-        width="100%"
-        height="50"
       ></v-skeleton-loader>
     </div>
   </v-sheet>
