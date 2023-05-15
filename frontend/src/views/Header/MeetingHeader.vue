@@ -4,7 +4,7 @@
     height="55"
     color="var(--main-col-1)"
   >
-    <back-button color="white"></back-button>
+    <back-button :elevation="false" color="white"></back-button>
     <span
       class="logo-font white-font"
       @click="goHome()"
