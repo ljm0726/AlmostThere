@@ -33,7 +33,7 @@
       class="detail"
       style="display: flex; justify-content: space-between; width: 88%"
     >
-      <a :href="placeUrl" class="xs-font">상세보기</a>
+      <a :href="placeUrl" target="_blank" class="xs-font">상세보기</a>
       <v-btn
         class="px-5"
         color="var(--main-col-1)"
