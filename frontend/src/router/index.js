@@ -40,7 +40,7 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   const access_token = localStorage.getItem("Authorization");
 
-  console.log("Before", from, to);
+  // console.log("Before", from, to);
   if (access_token && to.name === "entrance") {
     store.dispatch(
       "memberStore/SET_MEMBER_ID",
@@ -79,7 +79,6 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (access_token) {
-    console.log("id ", jwt_decode(access_token.substring(7)).id);
     store.dispatch(
       "memberStore/SET_MEMBER_ID",
       jwt_decode(access_token.substring(7)).id

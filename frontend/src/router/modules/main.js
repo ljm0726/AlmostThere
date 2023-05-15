@@ -24,7 +24,7 @@ const isLogin = async (to, from, next) => {
   }
 
   if (to.query.login || access_token) {
-    console.log("login 성공 ");
+    // console.log("login 성공 ");
     if (Object.keys(to.query).length !== 0) {
       localStorage.setItem("Authorization", to.query.login);
     }
@@ -42,7 +42,7 @@ const isLogin = async (to, from, next) => {
       });
     }
   } else if (to.name !== "landing") {
-    console.log("로그인33333333333333");
+    // console.log("로그인33333333333333");
     next({ name: "login" });
   }
 };

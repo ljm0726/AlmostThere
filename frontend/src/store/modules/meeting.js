@@ -44,14 +44,10 @@ const meetingStore = {
       state.meeting_time = meeting_time;
     },
     SET_PLACE_NAME(state, place_name) {
-      console.log(place_name);
       state.place_name = place_name;
-      console.log(state.place_name);
     },
     SET_PLACE_ADDR(state, place_addr) {
-      console.log(place_addr);
       state.place_addr = place_addr;
-      console.log(state.place_addr);
     },
     SET_MEETING_INFO(state, meeting) {
       state.meeitng_id = meeting.meetingId;
@@ -106,14 +102,6 @@ const meetingStore = {
         meeting_lng,
       }
     ) {
-      console.log(
-        meeting_name,
-        date_time,
-        place_name,
-        place_addr,
-        meeting_lat,
-        meeting_lng
-      );
       await meetingRegister(
         // this.,
         member_id,
@@ -124,7 +112,7 @@ const meetingStore = {
         meeting_lat,
         meeting_lng,
         ({ data }) => {
-          console.log(data);
+          data;
           commit("SET_MEETING_NAME", null);
           commit("SET_MEETING_DATE", null);
           commit("SET_MEETING_TIME", null);
@@ -133,7 +121,7 @@ const meetingStore = {
           router.push({ name: "home" });
         },
         (error) => {
-          console.log(error);
+          console.error(error);
         }
       );
     },
@@ -170,7 +158,8 @@ const meetingStore = {
         Y,
         amount,
         ({ data }) => {
-          console.log(data);
+          data;
+          // console.log(data);
           // commit("SET_MEETING_NAME", meeting_name);
           // commit("SET_MEETING_DATE", date);
           // commit("SET_MEETING_TIME", time);
@@ -187,7 +176,7 @@ const meetingStore = {
 
     async outMeeting({ state }, member_id) {
       // console.log(date_time, place_name, place_addr, amount);
-      console.log(member_id);
+      // console.log(member_id);
       await outMeeting(
         // this.,
         // 장소 버튼을 누를 때 place store에있는 update actions 실행 해주기
@@ -195,10 +184,10 @@ const meetingStore = {
         member_id,
         state.meeitng_id,
         ({ data }) => {
-          console.log(data);
+          data;
         },
         (error) => {
-          console.log(error);
+          console.error(error);
           throw error;
         }
       );

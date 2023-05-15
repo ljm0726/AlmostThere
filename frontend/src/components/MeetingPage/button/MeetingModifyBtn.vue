@@ -233,9 +233,7 @@ export default {
       this.dialog = true;
     },
     closeDialog() {
-      console.log(this.dialog);
       this.dialog = false;
-      console.log(this.dialog);
     },
     //[@method] sheet 상태 감지 후 멤버 출발지 등록
     isOpened() {
@@ -482,7 +480,7 @@ export default {
   },
 
   created() {
-    console.log("C", this.place_name, this.placeName, this.meetingPlace);
+    // console.log("C", this.place_name, this.placeName, this.meetingPlace);
     const [date, time2] = this.meetingTime.split("T");
     const time = time2.slice(0, -3);
     this.name = this.meetingName;
@@ -498,7 +496,7 @@ export default {
 
   mounted() {
     const retrievedObject = sessionStorage.getItem("from");
-    console.log("M", this.place_name, this.placeName);
+    // console.log("M", this.place_name, this.placeName);
     if (retrievedObject !== null) {
       const from = JSON.parse(retrievedObject);
 

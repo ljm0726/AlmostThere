@@ -254,10 +254,6 @@ export default {
     },
     displayPlaceInfo(place) {
       var content =
-        `<div class="howto">
-          <img id="bus-icon" src="${require("@/assets/images/icons/bus-icon.png")}"/>
-          <img id="car-icon" src="${require("@/assets/images/icons/car-icon.png")}"/>
-        </div> ` +
         '<div class="placeinfo">' +
         '   <a class="title" href="' +
         place.place_url +
@@ -267,7 +263,6 @@ export default {
         place.place_name +
         "</a>" +
         `<div class="click">`;
-
       if (place.road_address_name) {
         content +=
           '    <span title="' +
@@ -294,6 +289,10 @@ export default {
         place.phone +
         "</span>" +
         "</div>" +
+        `<div class="howto">
+          <img id="bus-icon" src="${require("@/assets/images/icons/bus-icon.png")}"/>
+          <img id="car-icon" src="${require("@/assets/images/icons/car-icon.png")}"/>
+        </div> ` +
         "</div>" +
         '<div class="after"></div>';
 
@@ -1038,20 +1037,26 @@ export default {
 }
 .howto {
   position: relative;
-  left: 70%;
+  left: 71%;
 }
 .howto #car-icon {
   width: 35px;
-  margin-inline: 3%;
+  margin-left: 15%;
+  bottom: 0%;
+  /* margin-top: 8%; */
   /* border: 4px solid var(--main-col-1); */
   border-radius: 50%;
-  box-shadow: 0px 0px 5px 0px var(--main-col-1);
+  /* box-shadow: 0px 0px 5px 0px var(--main-col-1); */
+  position: absolute;
 }
 .howto #bus-icon {
   width: 35px;
+  /* margin-top: 8%; */
+  bottom: 0%;
   /* border: 2px solid var(--main-col-1); */
   border-radius: 50%;
-  box-shadow: 0px 0px 5px 0px var(--main-col-1);
+  /* box-shadow: 0px 0px 5px 0px var(--main-col-1); */
+  position: absolute;
 }
 </style>
 <style scoped>

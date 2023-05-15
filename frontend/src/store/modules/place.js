@@ -32,7 +32,6 @@ const placeStore = {
   actions: {
     updatePlace({ commit }, placeMap) {
       commit("UPDATE_PLACE", placeMap);
-      console.log(placeMap.get("name"));
 
       // meetingStore.commit("SET_PLACE_NAME", placeMap.get("name"));
       // commit("meetingStore/SET_PLACE_NAME", placeMap.get("name"), {
