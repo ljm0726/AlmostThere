@@ -10,7 +10,6 @@ const halfwayStore = {
   mutations: {
     ADD_MIDDLE_PLACE(state, middlePlace) {
       state.middlePlace = middlePlace;
-      console.log("저장완료: ", state.middlePlace);
     },
     UPDATE_START_PLACE(state, startPlace) {
       state.startPlaces[localStorage.getItem("listIndex") - 1] = startPlace;
@@ -38,7 +37,6 @@ const halfwayStore = {
     },
     updateHalfway({ commit }, startPlace) {
       commit("UPDATE_START_PLACE", startPlace);
-      console.log(startPlace.get("name"));
     },
     addPlaceList({ commit }) {
       commit("ADD_LIST");

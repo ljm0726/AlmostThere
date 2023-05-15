@@ -71,10 +71,10 @@ export default {
   methods: {
     ...mapActions("meetingStore", ["outMeeting"]),
     clickOutMeeting() {
-      console.log("모임 탈출 ~");
+      // console.log("모임 탈출 ~");
       this.outMeeting(this.member_id)
         .then(() => {
-          console.log("정상실행");
+          // console.log("정상실행");
           this.$nextTick(() => {
             // this.$refs.modifySheet.close();
             this.$router.replace("/home");

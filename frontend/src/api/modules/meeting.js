@@ -1,4 +1,3 @@
-import meeting from "@/router/modules/meeting";
 import { apiInstance } from "../index";
 
 const api = apiInstance();
@@ -14,7 +13,6 @@ async function meetingRegister(
   success,
   fail
 ) {
-  console.log(meeting);
   await api
     .post(`/meeting`, {
       hostId: id,
@@ -42,18 +40,6 @@ async function modifyMeeting(
   success,
   fail
 ) {
-  console.log(
-    "modi ",
-    meeitng_id,
-    host_id,
-    name,
-    date_time,
-    place,
-    address,
-    lat,
-    lng,
-    amount
-  );
   await api
     .put(`/meeting`, {
       meetingId: meeitng_id,
@@ -71,14 +57,13 @@ async function modifyMeeting(
 }
 
 async function outMeeting(member_id, meeting_id, success, fail) {
-  console.log(member_id, meeting_id);
   await api
     .put("/meeting/exit", {
       memberId: member_id,
       meetingId: meeting_id,
     })
-    .then(success, console.log(success))
-    .catch(fail, console.log(fail));
+    .then(success)
+    .catch(fail);
 }
 
 async function deleteMeeting(meetingId) {

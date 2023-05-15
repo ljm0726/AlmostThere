@@ -39,7 +39,7 @@
     </div>
     <halfway-modal ref="halfway"></halfway-modal>
 
-    <div id="map" class="maps"></div>
+    <div id="map" class="maps" @click="closeOveray"></div>
     <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
@@ -85,6 +85,7 @@ export default {
       currCategory: "",
       markers: [],
       placeOverlay: null,
+      isOveray: false,
       contentNode: null,
       isRecommend: false,
       currentMarker: null,
@@ -120,7 +121,6 @@ export default {
 
   watch: {
     minTimes() {
-      console.log("watch minTImes");
       if (this.minTimes.length == this.startPlaces.length) {
         this.loading = false;
       }
@@ -197,15 +197,12 @@ export default {
 
     if (window.kakao && window.kakao.maps) {
       // 카카오 객체가 있고, 카카오 맵 그릴 준비가 되어 있다면 맵 실행
-      console.log("열림");
       this.loadMap();
     } else {
       // 없다면 카카오 스크립트 추가 후 맵 실행
-      console.log("닫힘");
       this.loadScript();
     }
 
-    console.log("마운티드", this.meeting_members);
     if (sessionStorage.getItem("findHalfwayModal") !== null) {
       this.$refs.halfway.openDialog();
     }
@@ -257,10 +254,6 @@ export default {
     },
     displayPlaceInfo(place) {
       var content =
-        `<div class="howto">
-          <img id="bus-icon" src="${require("@/assets/images/icons/bus-icon.png")}"/>
-          <img id="car-icon" src="${require("@/assets/images/icons/car-icon.png")}"/>
-        </div> ` +
         '<div class="placeinfo">' +
         '   <a class="title" href="' +
         place.place_url +
@@ -270,7 +263,6 @@ export default {
         place.place_name +
         "</a>" +
         `<div class="click">`;
-
       if (place.road_address_name) {
         content +=
           '    <span title="' +
@@ -297,6 +289,10 @@ export default {
         place.phone +
         "</span>" +
         "</div>" +
+        `<div class="howto">
+          <img id="bus-icon" src="${require("@/assets/images/icons/bus-icon.png")}"/>
+          <img id="car-icon" src="${require("@/assets/images/icons/car-icon.png")}"/>
+        </div> ` +
         "</div>" +
         '<div class="after"></div>';
 
@@ -324,7 +320,6 @@ export default {
     },
 
     recommendData(place) {
-      console.log("뭐가찍힘?", place);
       const placeMap = new Map();
       placeMap.set("x", place.x);
       placeMap.set("y", place.y);
@@ -380,6 +375,7 @@ export default {
             if (marker == self.currentMarker) {
               self.closeOveray();
             } else {
+              self.isOveray = true;
               self.currentMarker = marker;
               self.displayPlaceInfo(p);
             }
@@ -390,7 +386,10 @@ export default {
 
     closeOveray() {
       this.currentMarker = null;
-      this.placeOverlay.setMap(null);
+      if (this.isOveray === true) {
+        this.placeOverlay.setMap(null);
+        this.isOveray = false;
+      }
     },
 
     placesSearchCB(data, status) {
@@ -429,7 +428,6 @@ export default {
     findCarWay(place) {
       this.stateTraffic = "car";
       this.resetPolylines();
-      console.log("이거야 이거!!", place);
       this.currentRecommendPlaceName = place.place_name;
       this.currentRecommendPlaceAddress = place.road_address_name;
       this.curRecommendX = place.x;
@@ -471,7 +469,6 @@ export default {
               },
             })
             .then((response) => {
-              console.log("#@#@#", response.data.routes[0]);
               if (response.data.routes[0].result_code !== 0) {
                 return { car_route: [], minTime: 0 };
               }
@@ -492,7 +489,7 @@ export default {
               return item;
             })
             .catch((error) => {
-              console.log(error);
+              console.error(error);
               return { car_route: [], minTime: 0 };
             });
         })
@@ -537,7 +534,6 @@ export default {
       this.resetPolylines();
       this.stateTraffic = "bus";
       this.loading = true;
-      console.log("이거야 이거!!", place);
 
       this.currentRecommendPlaceName = place.place_name;
       this.currentRecommendPlaceAddress = place.road_address_name;
@@ -550,7 +546,6 @@ export default {
       let maxPayment = 99999999;
       let totalChange = 99999999;
       let idx = 0;
-      console.log("startPlaces는 이렇게", this.startPlaces);
 
       for (var i = 0; i < this.startPlaces.length; i++) {
         const x = this.startPlaces[i].get("x");
@@ -563,8 +558,6 @@ export default {
         try {
           const response = await axios.get(url);
 
-          console.log("과연", response.data);
-
           if (
             response.data["error"] != undefined &&
             response.data["error"]["code"] == -98
@@ -574,7 +567,6 @@ export default {
           }
 
           if (response.data["result"]["searchType"] != 0) {
-            console.log("도시간이동");
             let moveTime =
               response.data["result"]["path"][0]["info"]["totalTime"];
             let pathLen = response.data["result"]["path"][0]["subPath"].length;
@@ -604,7 +596,6 @@ export default {
                 )
               );
             }
-            console.log("linePath는 이거야!", linePath);
             // 지도에 도시간 이동 경로 생성
             let polyline = new window.kakao.maps.Polyline({
               map: this.map,
@@ -621,43 +612,33 @@ export default {
             //출발지에서 출발 터미널 까지
             const startResponse = await axios.get(startUrl);
             if (
-              startResponse.data["error"] != undefined &&
-              startResponse.data["error"]["code"] == -98
+              startResponse.data["error"] == undefined ||
+              startResponse.data["error"]["code"] != -98
             ) {
-              console.log(1);
-            } else {
               moveTime +=
                 startResponse.data["result"]["path"][0]["info"]["totalTime"];
 
               this.callMapObjApiAJAX(
                 startResponse.data["result"]["path"][0].info.mapObj
               );
-              console.log("start 끝?", moveTime);
             }
 
             await new Promise((resolve) => setTimeout(resolve, 500));
             //도착 터미널에서 목적지 까지
             const endResponse = await axios.get(endUrl);
-            console.log("end 중간1?", endResponse.data);
             if (
-              endResponse.data["error"] != undefined &&
-              endResponse.data["error"]["code"] == -98
+              endResponse.data["error"] == undefined ||
+              endResponse.data["error"]["code"] != -98
             ) {
-              console.log(1);
-            } else {
               moveTime +=
                 endResponse.data["result"]["path"][0]["info"]["totalTime"];
-              console.log("end 중간2?");
 
               this.callMapObjApiAJAX(
                 endResponse.data["result"]["path"][0].info.mapObj
               );
-              console.log("end 끝?", moveTime);
             }
             this.minTimes.push(moveTime);
           } else {
-            console.log("도시내이동");
-
             maxTime = 99999999;
             maxPayment = 99999999;
             totalChange = 99999999;
@@ -739,8 +720,6 @@ export default {
           console.error(error);
         }
       }
-
-      console.log("maxTime!!!!!", this.minTimes);
 
       this.mapReload();
       this.placeSelect = true;
@@ -882,7 +861,6 @@ export default {
 
     moveRegisterPage() {
       const retrievedObject = sessionStorage.getItem("from");
-      console.log(retrievedObject);
       if (retrievedObject !== null) {
         const from = JSON.parse(retrievedObject);
         // this.$router.push("/Place");
@@ -908,7 +886,6 @@ export default {
       document.head.appendChild(script); // html>head 안에 스크립트 소스를 추가
     },
     loadMap() {
-      console.log("!@#!@#!@#!@", this.loadMap);
       const container = document.getElementById("map"); // 지도를 담을 DOM 영역
       if (container) {
         const options = {
@@ -948,7 +925,6 @@ export default {
       }
     },
     displayMarker(y, x) {
-      console.log("마커찌그러오나?");
       if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
       // 마커를 생성하고 지도에 표시합니다
       this.curIntroduceMarker = new window.kakao.maps.Marker({
@@ -1061,20 +1037,26 @@ export default {
 }
 .howto {
   position: relative;
-  left: 70%;
+  left: 71%;
 }
 .howto #car-icon {
   width: 35px;
-  margin-inline: 3%;
+  margin-left: 15%;
+  bottom: 0%;
+  /* margin-top: 8%; */
   /* border: 4px solid var(--main-col-1); */
   border-radius: 50%;
-  box-shadow: 0px 0px 5px 0px var(--main-col-1);
+  /* box-shadow: 0px 0px 5px 0px var(--main-col-1); */
+  position: absolute;
 }
 .howto #bus-icon {
   width: 35px;
+  /* margin-top: 8%; */
+  bottom: 0%;
   /* border: 2px solid var(--main-col-1); */
   border-radius: 50%;
-  box-shadow: 0px 0px 5px 0px var(--main-col-1);
+  /* box-shadow: 0px 0px 5px 0px var(--main-col-1); */
+  position: absolute;
 }
 </style>
 <style scoped>

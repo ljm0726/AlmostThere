@@ -42,7 +42,6 @@ export default {
   mounted() {
     this.loadScript();
     this.$refs.myInput.focus();
-    console.log(1);
   },
 
   methods: {
@@ -68,7 +67,6 @@ export default {
     getSearchResult() {
       // 검색 결과
       this.geocoder = new window.kakao.maps.services.Geocoder();
-      console.log("search", this.searchValue);
       if (this.marker) this.marker.setMap(null);
       this.ps.keywordSearch(this.searchValue, this.placesSearchCB);
     },
@@ -76,7 +74,6 @@ export default {
       if (status === window.kakao.maps.services.Status.OK) {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
-        console.log("s", data);
         this.isResident = false;
         this.residentResults = [];
 
@@ -85,9 +82,6 @@ export default {
             cur,
             { place_url, place_name, category_name, y, x, address_name }
           ) => {
-            console.log("카테고리 : ", category_name);
-            const temp = address_name.split(" ");
-            console.log("주소", temp);
             this.residentResults.push({
               place_url,
               place_name,
@@ -110,7 +104,6 @@ export default {
         );
         const list = document.querySelector("#list");
         list.innerHTML = listDiv;
-        console.log(list.childNodes);
         this.isListOpen = true;
         // #21#
         list.childNodes.forEach((child) => {
@@ -153,19 +146,6 @@ export default {
                 },
               });
             }
-
-            // console.log(
-            //   "x,y좌표는 ",
-            //   child.attributes["data-x"].value,
-            //   child.attributes["data-y"].value
-            // );
-            // console.log("address는 ", child.attributes["data-address"].value);
-            // console.log("place는 ", child.attributes["data-place"].value);
-            // console.log("이건뭐지? ", this.address);
-            // this.introduceValue = this.address;
-            // var bounds = new window.kakao.maps.LatLngBounds();
-            // bounds.extend(new window.kakao.maps.LatLng(y, x));
-            // console.log("bound는 뭐지? ", bounds);
           });
         });
       } else {
@@ -173,29 +153,23 @@ export default {
       }
     },
     searchAddrFromCoords(coords, callback) {
-      console.log("뭐가넘어오냐?", coords);
       // 좌표로 행정동 주소 정보를 요청합니다
       this.geocoder.coord2RegionCode(coords.lng, coords.lat, callback);
-      console.log("어케바뀜??", this.geocoder);
     },
     getAddressFromRes(result, status) {
       // 주소 정보 파싱
-      console.log(this.map);
       if (status === window.kakao.maps.services.Status.OK) {
         for (var i = 0; i < result.length; i++) {
           // 법정동 region_type 값은 'B' 이므로
-          console.log("result address", result);
           if (result[i].region_type === "B") {
             this.currentAddress = result[i].address_name;
             const temp = this.currentAddress.split(" ");
             this.currentPrevAddress = `${temp[0]} ${temp[1]}`;
             this.dong = temp[2];
-            console.log(result[i].code);
             this.regCode = result[i].code;
             break;
           }
         }
-        console.log("sc", this.regCode);
         // this.getRecentPrice(); => 가장 최근 가격
       } else {
         this.currentAddress = "실패";
