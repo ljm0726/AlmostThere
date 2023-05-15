@@ -856,6 +856,7 @@ export default {
 
     findHalfway() {
       sessionStorage.setItem("findHalfwayModal", true);
+      this.closeOveray();
       this.$refs.halfway.openDialog();
     },
 
