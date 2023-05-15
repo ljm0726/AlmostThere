@@ -179,6 +179,11 @@
     </vue-bottom-sheet>
   </v-sheet>
 </template>
+<script
+  src="https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js"
+  integrity="sha384-dpu02ieKC6NUeKFoGMOKz6102CLEWi9+5RQjWSV0ikYSFFd8M3Wp2reIcquJOemx"
+  crossorigin="anonymous"
+></script>
 
 <script>
 import MeetingCostDetail from "./MeetingCostDetail.vue";
@@ -223,7 +228,8 @@ export default {
       });
     },
     sendkakao() {
-      window.Kakao.Share.sendDefault({
+      Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
+      Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
           title: "정산 내역을 확인하여 정산을 완료해주세요!",
