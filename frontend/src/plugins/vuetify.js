@@ -29,6 +29,7 @@ import SendOutlineIcon from '@/common/component/icons/SendOutlineIcon.vue'
 import ChattingOutlineIcon from '@/common/component/icons/ChattingOutlineIcon.vue'
 import ListIcon from '@/common/component/icons/ListIcon.vue'
 import ArrowRightWhiteIcon from '@/common/component/icons/ArrowRightWhiteIcon.vue'
+import PointIcon from '@/common/component/icons/PointIcon.vue'
 
 Vue.use(Vuetify);
 
@@ -126,6 +127,9 @@ export default new Vuetify({
       list: {
         component: ListIcon
       },
+      point: {
+        component: PointIcon
+      }
     }
   }
 });
