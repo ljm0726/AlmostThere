@@ -94,13 +94,6 @@ export default {
     ...mapActions("placeStore", ["updatePlace"]),
 
     regist_meeting() {
-      console.log(
-        "m p",
-        this.placeX,
-        this.placeY,
-        this.placeName,
-        this.addressName
-      );
       const retrievedObject = sessionStorage.getItem("from");
       if (retrievedObject !== null) {
         const from = JSON.parse(retrievedObject);

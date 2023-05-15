@@ -140,7 +140,6 @@ export default {
     ...mapState("meetingStore", ["meeting_members"]),
   },
   mounted() {
-    // console.log(this.startPlaces, this.meeting_members);
     this.starts = this.startPlaces;
     if (this.starts.length < 2) {
       this.starts.push(null);
@@ -180,10 +179,7 @@ export default {
     },
 
     goToSearchPage(index) {
-      // this.$router.push(url);
-      // console.log(index);
       localStorage.setItem("listIndex", index);
-      // this.isSearchPage = true; // dialog를 닫고 SearchPlacePage2로 이동
       this.$router.push("/search2");
     },
 
@@ -193,7 +189,6 @@ export default {
     },
 
     plusStart() {
-      // console.log("@@@", this.starts.length);
       if (this.starts.length > 9) {
         this.errorMsg = "최대 10명까지 가능합니다";
         this.dialogError = true;
@@ -250,12 +245,9 @@ export default {
 
       const combinations = [];
       for (let i = 1; i <= this.size; i++) {
-        // console.log("출발정보", this.startPlaces);
         const result = this.combine(this.startPlaces, i);
         combinations.push(...result);
       }
-
-      // console.log("combi: ", combinations);
 
       const middlePlace = [];
       combinations.forEach((combination) => {
@@ -267,10 +259,8 @@ export default {
         });
         const middleX = xSum / (combination.length * 1.0);
         const middleY = ySum / (combination.length * 1.0);
-        console.log("Sum: ", xSum, ySum);
         middlePlace.push({ middleX, middleY });
       });
-      // console.log("middle: ", middlePlace);
       let middleAvergeX = 0;
       let middleAvergeY = 0;
       middlePlace.forEach((place) => {
@@ -280,7 +270,6 @@ export default {
       middleAvergeX /= middlePlace.length;
       middleAvergeY /= middlePlace.length;
 
-      // console.log("중간좌표: ", middleAvergeX, " ", middleAvergeY);
       this.addMiddlePlace({ middleAvergeX, middleAvergeY });
       this.dialog = false;
     },
