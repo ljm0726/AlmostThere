@@ -8,14 +8,14 @@
   >
     <path
       d="M10.0551 14L15.0837 7.50002L10.0551 1"
-      stroke="white"
+      stroke="var(--main-col-1)"
       stroke-miterlimit="10"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
       d="M1.00011 7.5L14.9429 7.5"
-      stroke="white"
+      stroke="var(--main-col-1)"
       stroke-miterlimit="10"
       stroke-linecap="round"
       stroke-linejoin="round"

@@ -1,5 +1,6 @@
 <template>
   <v-sheet
+    id="banner-two"
     @click="goRegister()"
     width="100%"
     height="100%"
@@ -13,9 +14,9 @@
       color="var(--main-col-1)"
       rounded
       dark
+      @click="goRegister()"
     >
-      <span class="light-font mr-2">모임 등록하러 가기</span>
-      <v-icon small>$vuetify.icons.arrow_right_white</v-icon>
+      <span class="light-font">모임 등록하러 가기</span>
     </v-btn>
   </v-sheet>
 </template>
@@ -31,4 +32,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+#banner-two {
+  background-image: url("@/assets/images/banner/banner2.jpg");
+  background-size: cover;
+  background-position: center center;
+}
+</style>

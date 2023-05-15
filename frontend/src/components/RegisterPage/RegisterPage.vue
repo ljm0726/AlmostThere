@@ -1,10 +1,16 @@
 <template>
   <div style="margin-bottom: 76px" class="mx-5 main-form">
-    <v-sheet class="point-font xxxxxxl-font main-col-1">
-      <div class="d-flex flex-column semi2narrow-font">
-        <span>많은 사람들과</span>
-        <span>모임을 잡아보세요!</span>
-        <span></span>
+    <v-sheet elevation="1" class="px-5 pt-4 pb-3" rounded>
+      <div
+        class="d-flex flex-column semi2narrow-font point-font xxxxxxl-font main-col-1"
+      >
+        <span>지금 바로</span>
+        <span>모임을 등록해 보세요!</span>
+      </div>
+      <div class="d-flex flex-column light-font xxs-font main-col-1">
+        <span>함께하고 싶은 멤버들에게 초대 링크를 보낼 수 있고</span>
+        <span>멤버들과 실시간 채팅 및 위치 공유가 가능합니다.</span>
+        <span>정산 기능으로 멤버들과 1/N 계산도 해드립니다!</span>
       </div>
     </v-sheet>
     <v-sheet elevation="0" class="mt-3">
