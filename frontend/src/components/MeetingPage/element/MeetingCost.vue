@@ -223,77 +223,56 @@ export default {
       });
     },
     sendkakao() {
-      // const filterMeetingDate = this.formatDate(this.meetingTime);
-      // const filterMeetingTime = this.formatTime(this.meetingTime);
-      // const roomCode = this.roomCode;
-
       window.Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
-          title: "모임 이름: " + this.meetingName,
+          title: "정산 내역을 확인하여 정산을 완료해주세요!",
           description:
-            "모임의 정산 내역입니다.\n" + "정산 내역을 확인하여 정산해주세요! ",
-          imageUrl: "https://k8a401.p.ssafy.io/img/home.5daad672.png",
-          link: {
-            // mobileWebUrl: "http://localhost:8080",
-            // webUrl: "http://localhost:8080",
-          },
+            "지각 여부에 따라 금액이 달라질 수 있습니다.\n자세한 정산 내역은 링크를 통해 확인해주세요.",
+          imageUrl:
+            "https://k8a401.p.ssafy.io/almostthere/images/calculate.jpg",
+          link: {},
         },
         itemContent: {
+          profileText: "모임 정산 내역을 안내드립니다.",
           items: [
             {
-              item: "합계:",
-              itemOp: String(this.total),
+              item: "모임 이름",
+              itemOp: this.meetingName,
             },
             {
-              item: "잔액:",
-              itemOp: String(this.remain),
+              item: "합계",
+              itemOp:
+                String(this.total).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원",
             },
             {
-              item: "지각비:",
-              itemOp: String(this.lateTotal),
+              item: "잔액",
+              itemOp:
+                String(this.remain).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                "원",
             },
             {
-              item: "내가 내야하는 금액:",
-              itemOp: String(this.spentMoney),
+              item: "지각비",
+              itemOp:
+                String(this.lateTotal).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                "원",
             },
           ],
+          sum: "나의 정산 금액",
+          sumOp:
+            String(this.spentMoney).replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+            "원",
         },
         buttons: [
           {
             title: "정산내역 확인하러 가기",
             link: {
-              // 룸코드 props? store로 받아와서 url에 추가하기
               mobileWebUrl: `https://k8a401.p.ssafy.io/meeting/${this.meetingId}`,
               webUrl: `https://k8a401.p.ssafy.io/meeting/${this.meetingId}`,
-              // mobileWebUrl: `http://localhost:3000/entrance/${roomCode}`,
-              // webUrl: `http://localhost:3000/entrance/${roomCode}`,
             },
           },
         ],
       });
-    },
-    formatDate(value) {
-      const date = new Date(value);
-      const year = date.getFullYear();
-      const month = date.getMonth();
-      const day = date.getDate();
-
-      const result = `${year}년 ${
-        month + 1 < 10 ? `0${month + 1}` : month + 1
-      }월 ${day < 10 ? `0${day}` : day}일`;
-      return result;
-    },
-    formatTime(value) {
-      const date = new Date(value);
-      const hour = date.getHours();
-      const min = date.getMinutes();
-      const result = `${
-        hour >= 12
-          ? `오후 ${hour == 12 ? `${hour}` : hour - 12}`
-          : `오전 ${hour}`
-      }시 ${min < 10 ? `0${min}` : min}분`;
-      return result;
     },
   },
   components: {
