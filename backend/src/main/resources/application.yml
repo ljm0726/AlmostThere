@@ -85,6 +85,7 @@ spring:
   redis:
     host: ${REDIS_URL} # 서버 host
     port: 6379 # redis 서버 포트
+    password: ${REDIS_PASSWORD}
 
   security:
     oauth2:
