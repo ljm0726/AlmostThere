@@ -13,6 +13,7 @@
       color="var(--main-col-1)"
       rounded
       dark
+      @click="goRegister()"
     >
       <span class="light-font mr-2">모임 등록하러 가기</span>
       <v-icon small>$vuetify.icons.arrow_right_white</v-icon>

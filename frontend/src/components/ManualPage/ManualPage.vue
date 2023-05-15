@@ -24,10 +24,9 @@
         </v-tab>
       </v-tabs>
     </v-sheet>
-    <!-- <div> -->
     <v-tabs-items v-model="tab">
       <v-tab-item>
-        <v-sheet style="padding: 115px 30px 70px 30px">
+        <v-sheet style="padding: 110px 25px 65px 25px">
           <div class="mb-5 d-flex flex-column main-col-1">
             <span class="logo-font xxxxxxl-font">Almost There?</span>
             <v-divider
@@ -35,8 +34,23 @@
               width="250"
               style="border-color: var(--main-col-1)"
             ></v-divider>
-            <div class="mb-2 xxs-font d-flex flex-column thin-font">
-              Almost There은
+            <div class="mb-2 xs-font light-font">
+              <span>Almost There은 모임 관리를 </span>
+              <span class="orange-line">편하고, 재밌게</span>
+              <span> 할 수 있는 서비스입니다.</span>
+              <br />
+              <span>
+                최근 모임에서 지각하거나, 모임 장소와 시간에 대해 여러 번 묻는
+                친구가 있어 불편함을 겪은 적이 있으신가요?
+              </span>
+              <br />
+              <span> 저희는 이러한 분들을 위해 </span>
+              <span class="yellow-line">Almost There</span>
+              <span>를 기획했습니다. </span>
+              <span class="green-line">모임을 잡는 순간부터</span>
+              &nbsp;
+              <span class="blue-line">모임이 끝난 후 정산까지</span>
+              <span> Almost There에서 모임을 편리하게 관리해 보세요!</span>
             </div>
           </div>
           <div class="mb-5 d-flex flex-column main-col-1">
@@ -46,8 +60,23 @@
               width="250"
               style="border-color: var(--main-col-1)"
             ></v-divider>
-            <div class="mb-2 xxs-font d-flex flex-column thin-font">
-              해당 프로젝트는 오픈소스 프로젝트로 진행
+            <div class="mb-2 xs-font light-font main-col-1">
+              <span>Almost There 프로젝트는 </span>
+              <span class="orange-line">오픈소스 프로젝트</span>
+              <span>로 진행됐습니다.</span>
+              <span>
+                해당 프로젝트에 기여하고 싶으시다면 아래 주소에 접속해 코드를
+                확인하고
+              </span>
+              <span>
+                Fork, branch 생성 및 개발, merge request 요청 순으로 진행하시면
+                됩니다.
+              </span>
+              <br />
+              <a href="https://lab.ssafy.com/s08-final/S08P31A401"
+                >S08P31A401 Repository</a
+              >
+              <span>에서 오픈소스 관련 문서를 확인해 주세요.</span>
             </div>
           </div>
           <div class="d-flex flex-column main-col-1">
@@ -57,21 +86,23 @@
               width="250"
               style="border-color: var(--main-col-1)"
             ></v-divider>
-            <div class="mb-2 xxs-font d-flex flex-column thin-font">
+            <div class="mb-2 xxs-font d-flex flex-column light-font">
               <div>
-                <span class="mr-1 bold-font">진행</span>
+                <span class="mr-1 extrabold-font">진행</span>
                 <span>삼성청년SW아카데미, SSAFY 8기 자율 프로젝트</span>
               </div>
               <div>
-                <span class="mr-1 bold-font">팀명</span>
+                <span class="mr-1 extrabold-font">팀명</span>
                 <span>A401 어디야?</span>
               </div>
               <div>
-                <span class="mr-1 bold-font">팀장</span>
+                <span class="mr-1 extrabold-font">팀장</span>
                 <span>엄희정</span>
+                <span class="mx-1 extrabold-font">발표자</span>
+                <span>지강훈</span>
               </div>
               <div>
-                <span class="mr-1 bold-font">문의</span>
+                <span class="mr-1 extrabold-font">문의</span>
                 <span>hihejyop@gmail.com</span>
               </div>
             </div>
@@ -112,36 +143,434 @@
             ></v-divider>
           </div>
           <div class="d-flex flex-column flex-no-strech">
-            <div class="d-flex flex-column my-3">
+            <div class="d-flex flex-column mt-3">
               <v-chip color="var(--red-col)" dark>
                 <span class="mr-2 black-font">STEP 1</span>
                 <span>모임 등록하기</span>
               </v-chip>
-              <!-- <div>dd</div> -->
+              <div class="pa-2 light-font xs-font main-col-1">
+                <span>홈페이지 하단 좌측에</span>
+                <v-icon class="mx-1" style="padding-bottom: 2px" small>
+                  $vuetify.icons.register_outline
+                </v-icon>
+                <span>버튼을 클릭하면 </span>
+                <span>등록 페이지로 이동합니다.</span>
+                <br />
+                <v-sheet elevation="2" class="mx-2 px-6 mt-4 py-5" rounded>
+                  <!-- 제목 -->
+                  <v-sheet
+                    width="100%"
+                    class="d-flex flex-row align-center"
+                    elevation="1"
+                    height="30"
+                    rounded
+                  >
+                    <v-sheet
+                      width="50"
+                      height="100%"
+                      color="var(--red-col)"
+                      class="rounded-l pt-1 d-flex flex-row align-center justify-center point-font white-font sm-font main-col-1"
+                    >
+                      <span>제목</span>
+                    </v-sheet>
+                    <div class="px-2 main-col-2 xxxs-font">
+                      제목을 입력해 주세요.
+                    </div>
+                  </v-sheet>
+
+                  <!-- 날짜 -->
+                  <v-sheet
+                    width="100%"
+                    class="mt-2 d-flex flex-row align-center"
+                    elevation="1"
+                    rounded
+                    height="30"
+                  >
+                    <v-sheet
+                      height="100%"
+                      width="50"
+                      color="var(--yellow-col)"
+                      class="rounded-l pt-1 d-flex flex-row align-center justify-center point-font white-font sm-font main-col-1"
+                    >
+                      <span>날짜</span>
+                    </v-sheet>
+                    <div class="px-2 main-col-2 xxxs-font">
+                      날짜를 선택해 주세요.
+                    </div>
+                  </v-sheet>
+
+                  <!-- 시간 -->
+                  <v-sheet
+                    width="100%"
+                    class="mt-2 d-flex flex-row align-center"
+                    elevation="1"
+                    rounded
+                    height="30"
+                  >
+                    <v-sheet
+                      height="100%"
+                      width="50"
+                      color="var(--green-col)"
+                      class="rounded-l pt-1 d-flex flex-row align-center justify-center point-font white-font sm-font main-col-1"
+                    >
+                      시간
+                    </v-sheet>
+                    <div class="px-2 main-col-2 xxxs-font">
+                      시간을 선택해 주세요.
+                    </div>
+                  </v-sheet>
+
+                  <!-- 장소 -->
+                  <v-sheet
+                    width="100%"
+                    class="mt-2 d-flex flex-row align-center"
+                    elevation="1"
+                    rounded
+                    height="30"
+                  >
+                    <v-sheet
+                      height="100%"
+                      width="50"
+                      color="var(--blue-col)"
+                      class="rounded-l pt-1 d-flex flex-row align-center justify-center point-font white-font sm-font main-col-1"
+                    >
+                      장소
+                    </v-sheet>
+                    <div class="px-2 main-col-2 xxxs-font">
+                      장소를 선택해 주세요.
+                    </div>
+                  </v-sheet>
+                  <v-btn
+                    elevation="3"
+                    color="var(--main-col-1)"
+                    dark
+                    block
+                    small
+                    class="mt-2"
+                  >
+                    모임 등록하기
+                  </v-btn>
+                </v-sheet>
+                <br />
+                <span>등록 페이지에서 제목, 날짜, 시간, 장소를 입력하고</span>
+                <v-btn
+                  class="mx-1"
+                  color="var(--main-col-1)"
+                  elevation="0"
+                  x-small
+                  dark
+                  >모임 등록하기</v-btn
+                >
+                <span>버튼을 클릭해 주세요. </span>
+                <span
+                  >시간은 현재 시간 이후로 설정해야 하며, 모든 정보를 입력해야
+                  등록이 가능합니다.</span
+                >
+              </div>
             </div>
-            <div class="d-flex flex-column my-3">
+            <div class="d-flex flex-column mt-3">
               <v-chip color="var(--yellow-col)" dark>
                 <span class="mr-2 black-font">STEP 2</span>
                 <span>친구 초대하기</span>
               </v-chip>
+              <div class="pa-2 light-font xs-font main-col-1">
+                <span>
+                  모임 등록을 완료했으면 초대 링크를 통해 모임에 친구를 초대할
+                  수 있습니다.
+                </span>
+                <br />
+                <span>홈페이지 하단 우측의 </span>
+                <span class="orange-line">마이페이지</span>
+                <v-icon class="mx-1" style="padding-bottom: 2px" small>
+                  $vuetify.icons.mypage_outline
+                </v-icon>
+                <span>에서 날짜별 등록된 모임을 확인하고, </span>
+                <v-icon style="padding-bottom: 2px" small>
+                  mdi-dots-vertical
+                </v-icon>
+                <span>를 클릭하면 </span>
+                <span class="yellow-line">모임 상세페이지</span>
+                <span>로 이동합니다.</span>
+                <br />
+                <span>모임 상세페이지에서 우측 상단에</span>
+                <v-icon class="mx-1" style="padding-bottom: 2px" small>
+                  $vuetify.icons.user_invite_outline
+                </v-icon>
+                <span
+                  >를 클릭해 보세요. 아래와 같은 창을 보실 수 있습니다.</span
+                >
+                <v-sheet class="d-flex flex-row justify-center align-center">
+                  <v-sheet
+                    rounded
+                    class="mx-2 px-5 mt-4"
+                    max-width="280"
+                    elevation="2"
+                  >
+                    <v-card-title class="d-flex flex-column">
+                      <span
+                        class="point-font md-font main-col-1 seminarrow-font"
+                        >모임 제목</span
+                      >
+                      <span class="point-font xxxl-ont main-col-1"
+                        >초대 링크</span
+                      >
+                      <img
+                        src="@/assets/images/dialog/invite_link.png"
+                        width="50%"
+                      />
+                      <v-sheet
+                        class="pr-1 px-4 detail-border d-flex flex-row justify-space-between align-center"
+                        rounded="lg"
+                        width="100%"
+                        height="30"
+                      >
+                        <span class="xxxs-font light-font">초대 링크 URL</span>
+                        <div>
+                          <v-btn icon>
+                            <v-icon small>$vuetify.icons.copy_outline</v-icon>
+                          </v-btn>
+                          <v-btn icon>
+                            <v-icon small>$vuetify.icons.share_outline</v-icon>
+                          </v-btn>
+                        </div>
+                      </v-sheet>
+                      <span class="extralight-font xxxxs-font main-col-1">
+                        초대 링크를 공유해 멤버를 추가해 보세요.
+                      </span>
+                    </v-card-title>
+                  </v-sheet>
+                </v-sheet>
+                <br />
+                <span>
+                  링크를 복사하거나 카카오톡 공유하기 버튼으로 초대 링크를 다른
+                  사람에게 보내보세요.
+                </span>
+                <span>초대 링크는 모임을 등록한 방장만 볼 수 있습니다.</span>
+              </div>
             </div>
-            <div class="d-flex flex-column my-3">
+            <div class="d-flex flex-column mt-3">
               <v-chip color="var(--green-col)" dark>
                 <span class="mr-2 black-font">STEP 3</span>
                 <span>나의 출발지 정하기</span>
               </v-chip>
+              <div class="pa-2 light-font xs-font main-col-1">
+                <span>모임에 입장하면 모든 멤버는 </span>
+                <span class="green-line">모임 상세페이지</span>
+                <span>에서 </span>
+                <span class="green-line">자신의 출발 위치</span>
+                <span>를 지정할 수 있습니다.</span>
+                <br />
+                <v-sheet class="mx-2 px-6 mt-4 py-5" elevation="2" rounded>
+                  <v-sheet
+                    class="d-flex flex-row justify-space-between align-end"
+                  >
+                    <span class="point-font xxl-font main-col-1">
+                      나의 출발지
+                    </span>
+                    <v-btn
+                      class="d-flex justify-center align-center"
+                      id="square-btn"
+                      outlined
+                      color="var(--main-col-1)"
+                      rounded
+                      small
+                    >
+                      <v-icon>$vuetify.icons.edit_outline</v-icon>
+                    </v-btn>
+                  </v-sheet>
+                  <v-sheet
+                    class="my-1 py-2 px-4 d-flex flex-column justify-center detail-border main-col-1"
+                    rounded="lg"
+                  >
+                    <span class="xxs-font">출발지를 설정하지 않았습니다.</span>
+                  </v-sheet>
+                </v-sheet>
+                <br />
+                <span>우측 상단의 </span>
+                <v-icon small>$vuetify.icons.edit_outline</v-icon>
+                <span>를 눌러 나의 출발지를 설정해 보세요.</span>
+                <span>
+                  다른 멤버들이 내가 어디서 출발하는지 알 수 있을 뿐만 아니라
+                  중간 위치를 찾을 때 내가 설정한 출발지가 자동으로 세팅됩니다.
+                </span>
+              </div>
             </div>
-            <div class="d-flex flex-column my-3">
+            <div class="d-flex flex-column mt-3">
               <v-chip color="var(--blue-col)" dark>
                 <span class="mr-2 black-font">STEP 4</span>
                 <span>정산하기</span>
               </v-chip>
-              <!-- <div class="mt-2 d-flex flex-column">
-                <span>1. 지각비 설정</span>
-                <span>2. 영수증 등록</span>
-                <span>3. 정산 내역 확인</span>
-                <span>TIP. 돌려돌려 돌림판</span>
-              </div> -->
+              <div class="pa-2 light-font xs-font main-col-1">
+                <span>
+                  저희 서비스는 모임에서 쓰인 비용을 1/N 하는 것을 도와주는
+                  기능도 지원합니다. 모임 정산을 보다 편리하게 진행해 보세요!
+                </span>
+                <v-sheet class="my-2">
+                  <v-chip class="mr-2" color="var(--main-col-1)" dark small>
+                    1
+                  </v-chip>
+                  <span class="bold-font main-col-1">지각비 설정하기</span>
+                </v-sheet>
+                <span>모임 상세페이지에서 지각비를 설정해 보세요. </span>
+                <span>
+                  실시간 위치 공유에서 모임 시간 내 도착완료를 누르지 않은
+                  사람은 지각이 됩니다. 지각한 사람에게는 지각비가 자동으로
+                  부과됩니다.
+                </span>
+                <br />
+                <div class="d-flex flex-row justify-end">
+                  <v-chip color="var(--main-col-2)" x-small dark>
+                    *도착완료에 대한 내용은 실시간 위치 탭에서 확인해 주세요.
+                  </v-chip>
+                </div>
+                <v-sheet class="mx-2 px-6 mt-4 py-5" elevation="2" rounded>
+                  <v-sheet
+                    class="d-flex flex-row justify-space-between align-end"
+                  >
+                    <span class="point-font xxl-font main-col-1"> 지각비 </span>
+                  </v-sheet>
+                  <v-sheet
+                    class="my-1 py-2 px-4 d-flex flex-column justify-center detail-border main-col-1"
+                    rounded="lg"
+                  >
+                    <span class="xxs-font">지각비를 설정하지 않았습니다.</span>
+                  </v-sheet>
+                </v-sheet>
+                <br />
+                <span>
+                  지각비는 방장만 바꿀 수 있으며 모임 상세페이지 우측 상단의
+                </span>
+                <v-icon small>$vuetify.icons.edit_outline</v-icon>
+                <span>를 클릭해 모임 정보를 수정 시 바꿀 수 있습니다.</span>
+                <v-sheet class="my-2">
+                  <v-chip class="mr-2" color="var(--main-col-1)" dark small>
+                    2
+                  </v-chip>
+                  <span class="bold-font main-col-1">영수증 등록하기</span>
+                </v-sheet>
+                <span>모임 상세페이지 맨 아래 정산에서 </span>
+                <v-btn
+                  color="var(--main-col-1)"
+                  elevation="0"
+                  rounded
+                  x-small
+                  dark
+                >
+                  영수증 추가
+                </v-btn>
+                <span> 버튼을 눌러 영수증을 등록해 보세요. </span>
+                <span>영수증의 상호명과 총액을 인식해 보여줍니다.</span>
+                <v-sheet class="my-2">
+                  <v-chip class="mr-2" color="var(--main-col-1)" dark small>
+                    3
+                  </v-chip>
+                  <span class="bold-font main-col-1">
+                    정산 내역 확인 및 공유하기
+                  </span>
+                </v-sheet>
+                <span>
+                  등록된 영수증의 총액과 설정된 지각비를 바탕으로 개인별 내야
+                  하는 금액을 보여줍니다.
+                </span>
+                <v-sheet class="mx-2 px-6 mt-4 py-5" elevation="2" rounded>
+                  <v-sheet
+                    class="d-flex flex-row justify-space-between align-center"
+                  >
+                    <span class="point-font xxl-font main-col-1"> 정산 </span>
+                    <v-btn
+                      class="ml-2 justify-space-between"
+                      depressed
+                      small
+                      color="var(--main-col-1)"
+                      dark
+                      rounded
+                    >
+                      <v-icon class="mr-2" color="white" small
+                        >mdi-share-variant-outline</v-icon
+                      >
+                      <span class="xxxs-font">카카오톡 공유하기</span>
+                    </v-btn>
+                  </v-sheet>
+                  <v-simple-table dense>
+                    <template v-slot:default>
+                      <tbody>
+                        <tr
+                          class="d-flex flex-row justify-space-between align-center"
+                          style="cursor: pointer"
+                        >
+                          <td
+                            class="px-1 d-flex align-center light-font main-col-1 xxs-font"
+                            style="border-bottom: none"
+                          >
+                            메머드 익스프레스
+                          </td>
+                          <td
+                            class="px-1 d-flex align-center light-font main-col-1 xxs-font"
+                            style="border-bottom: none"
+                          >
+                            10000원
+                          </td>
+                        </tr>
+                        <tr
+                          class="d-flex flex-row justify-space-between align-center xxs-font"
+                          style="cursor: pointer"
+                        >
+                          <td
+                            class="px-1 d-flex align-center light-font main-col-1 xxs-font"
+                            style="border-bottom: none"
+                          >
+                            스타벅스 역삼점
+                          </td>
+                          <td
+                            class="px-1 d-flex align-center light-font main-col-1 xxs-font"
+                            style="border-bottom: none"
+                          >
+                            20000원
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                  <v-divider class="mb-1"></v-divider>
+                  <div class="d-flex flex-row justify-space-between">
+                    <span class="px-1 pb-1 medium-font xxs-font">합계</span>
+                    <span class="px-1 pb-1 medium-font xxs-font">30000원</span>
+                  </div>
+                  <div class="d-flex flex-row justify-space-between">
+                    <span class="px-1 pb-1 medium-font xxs-font">잔액</span>
+                    <span class="px-1 pb-1 medium-font xxs-font">100원</span>
+                  </div>
+                  <div class="d-flex flex-row justify-space-between">
+                    <span class="px-1 light-font xxs-font">지각비</span>
+                    <span class="px-1 light-font xxs-font">1000원</span>
+                  </div>
+                  <v-divider class="my-1"></v-divider>
+                  <div class="d-flex flex-row justify-space-between">
+                    <span class="px-1 bold-font xxs-font">
+                      내가 내야 하는 금액
+                    </span>
+                    <span class="px-1 bold-font xxs-font">11000원</span>
+                  </div>
+                </v-sheet>
+                <br />
+                <span>
+                  정산 내용을 다른 사람에게 공유하고 싶다면 우측 상단의
+                </span>
+                <v-btn
+                  class="justify-space-between"
+                  depressed
+                  x-small
+                  color="var(--main-col-1)"
+                  dark
+                  rounded
+                >
+                  <v-icon class="mr-2" color="white" small
+                    >mdi-share-variant-outline</v-icon
+                  >
+                  <span class="xxxs-font">카카오톡 공유하기</span>
+                </v-btn>
+                <span> 버튼을 눌러보세요.</span>
+              </div>
             </div>
           </div>
         </v-sheet>
@@ -153,7 +582,6 @@
         <v-sheet style="padding: 115px 30px 70px 30px" height="1500">4</v-sheet>
       </v-tab-item>
     </v-tabs-items>
-    <!-- </div> -->
 
     <v-bottom-navigation
       fixed
@@ -182,7 +610,7 @@ export default {
   name: "ManualPage",
   data() {
     return {
-      tab: 0,
+      tab: 1,
       items: ["소개", "모임", "중간장소", "실시간위치"],
     };
   },
@@ -201,5 +629,20 @@ export default {
   )
   .v-slide-group__prev {
   display: none !important;
+}
+.red-line {
+  box-shadow: inset 0 -16px 0 var(--roulette-col-6);
+}
+.orange-line {
+  box-shadow: inset 0 -16px 0 var(--roulette-col-7);
+}
+.yellow-line {
+  box-shadow: inset 0 -16px 0 var(--roulette-col-8);
+}
+.green-line {
+  box-shadow: inset 0 -16px 0 var(--roulette-col-9);
+}
+.blue-line {
+  box-shadow: inset 0 -16px 0 var(--roulette-col-10);
 }
 </style>

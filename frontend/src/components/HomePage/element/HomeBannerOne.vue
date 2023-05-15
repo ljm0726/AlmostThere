@@ -14,6 +14,7 @@
       color="var(--main-col-1)"
       rounded
       dark
+      @click="goManual()"
     >
       <span class="light-font mr-2">사용설명서 보러가기</span>
       <v-icon small>$vuetify.icons.arrow_right_white</v-icon>

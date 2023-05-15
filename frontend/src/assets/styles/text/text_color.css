@@ -2,6 +2,9 @@
 .main-col-1 {
   color: var(--main-col-1) !important;
 }
+.main-col-2 {
+  color: var(--main-col-2) !important;
+}
 .white-font {
   color: white !important;
 }
