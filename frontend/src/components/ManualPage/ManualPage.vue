@@ -480,7 +480,7 @@
                     <v-btn
                       class="ml-2 justify-space-between"
                       depressed
-                      small
+                      x-small
                       color="var(--main-col-1)"
                       dark
                       rounded
@@ -587,6 +587,12 @@
               width="300"
               style="border-color: var(--main-col-1)"
             ></v-divider>
+          </div>
+          <div class="light-font xs-font mb-5 d-flex flex-column main-col-1">
+            <span>
+              모임 장소를 정할 때 중간 위치를 찾아주는 기능을 사용하실 수
+              있습니다.
+            </span>
           </div>
         </v-sheet>
       </v-tab-item>
