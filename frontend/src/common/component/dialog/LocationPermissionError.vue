@@ -11,10 +11,10 @@
         <div class="align-self-end">
           <close-button @closeDialog="closeDialog"></close-button>
         </div>
-        <img src="@/assets/images/dialog/logout.png" width="60%" />
+        <img src="@/assets/images/dialog/permission_error.jpg" width="60%" />
         <span class="logo-font xxxxxxl-font main-col-1">Permission Error</span>
         <span
-          class="mt-2 extralight-font xs-font d-flex flex-column align-center seminarrow-font"
+          class="mt-2 main-col-1 extralight-font xxs-font d-flex flex-column align-center semi2narrow-font"
         >
           <div>위치 권한이 허용되어 있지 않아</div>
           <div>위치 공유 서비스를 이용할 수 없습니다.</div>
@@ -28,6 +28,7 @@
           dark
           rounded
           block
+          small
           @click="closeDialog"
           >닫기</v-btn
         >

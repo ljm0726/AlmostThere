@@ -11,10 +11,14 @@
         <div class="align-self-end">
           <close-button @closeDialog="closeDialog"></close-button>
         </div>
-        <img src="@/assets/images/dialog/logout.png" width="60%" />
+        <img
+          class="mb-1"
+          src="@/assets/images/dialog/location_error.png"
+          width="40%"
+        />
         <span class="logo-font xxxxxxl-font main-col-1">Location Error</span>
         <span
-          class="mt-2 extralight-font xs-font d-flex flex-column align-center seminarrow-font"
+          class="mt-1 extralight-font xxs-font d-flex flex-column align-center semi2narrow-font main-col-1"
         >
           <div>현재 위치를 가져올 수 없어</div>
           <div>위치 공유 서비스를 이용할 수 없습니다.</div>
@@ -27,6 +31,7 @@
           color="var(--main-col-1)"
           dark
           rounded
+          small
           block
           @click="closeDialog"
           >닫기</v-btn
