@@ -1,5 +1,5 @@
 <template>
-  <swiper class="swiper" :options="swiperOption">
+  <swiper class="pb-3 swiper" :options="swiperOption">
     <swiper-slide>
       <v-sheet width="100%" height="250px" style="cursor: pointer">
         <home-banner-one></home-banner-one>
