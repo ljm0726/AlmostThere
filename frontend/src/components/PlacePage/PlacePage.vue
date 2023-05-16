@@ -429,6 +429,7 @@ export default {
     findCarWay(place) {
       this.stateTraffic = "car";
       this.resetPolylines();
+      this.loading = true;
       this.currentRecommendPlaceName = place.place_name;
       this.currentRecommendPlaceAddress = place.road_address_name;
       this.curRecommendX = place.x;
@@ -985,6 +986,7 @@ export default {
   border-bottom: 2px solid #ddd;
   padding-bottom: 10px;
   background: #fff;
+  min-height: 120px;
 }
 .placeinfo:nth-of-type(n) {
   border: 0;
@@ -1038,27 +1040,24 @@ export default {
   margin-top: 0;
 }
 .howto {
-  position: relative;
+  position: absolute;
   left: 71%;
+  bottom: 0;
 }
 .howto #car-icon {
   width: 35px;
-  margin-left: 15%;
-  bottom: 0%;
+  margin-left: 10%;
   /* margin-top: 8%; */
   /* border: 4px solid var(--main-col-1); */
   border-radius: 50%;
   /* box-shadow: 0px 0px 5px 0px var(--main-col-1); */
-  position: absolute;
 }
 .howto #bus-icon {
   width: 35px;
   /* margin-top: 8%; */
-  bottom: 0%;
   /* border: 2px solid var(--main-col-1); */
   border-radius: 50%;
   /* box-shadow: 0px 0px 5px 0px var(--main-col-1); */
-  position: absolute;
 }
 </style>
 <style scoped>
