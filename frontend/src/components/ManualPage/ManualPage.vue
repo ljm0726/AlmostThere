@@ -1205,7 +1205,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)
   > .v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(
     .v-slide-group--has-affixes
