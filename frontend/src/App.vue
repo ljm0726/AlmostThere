@@ -221,7 +221,7 @@ export default {
             clearInterval(this.intervalGeolocation);
           }
         })
-        .catch((error) => {
+        .catch(() => {
           this.$refs.error.openDialog();
           clearInterval(this.intervalGeolocation);
         });
