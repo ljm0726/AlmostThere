@@ -178,7 +178,7 @@ export default {
     open() {
       this.result = "";
       this.options = ["꽝"];
-      console.log("마운트");
+      // console.log("마운트");
       this.drawRouletteWheel();
       this.$refs.gameSheet.open();
     },
@@ -227,7 +227,9 @@ export default {
     pushMember() {
       for (var member of this.memberList) {
         if (this.options.length == 10) break;
-        this.options.push(member.memberNickname);
+        if (!this.options.includes(member.memberNickname)) {
+          this.options.push(member.memberNickname);
+        }
       }
       this.drawRouletteWheel();
     },
