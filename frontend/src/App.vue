@@ -113,7 +113,6 @@ export default {
     connectHandler() {
       const access_token = localStorage.getItem("Authorization");
       if (access_token) {
-        // console.log("connect");
         this.connect();
       }
     },
@@ -128,19 +127,15 @@ export default {
         this.updateConnected(true);
         const serverURL = `${process.env.VUE_APP_API_BASE_URL}/websocket`;
         let socket = new SockJS(serverURL);
-        // this.stompClient = Stomp.over(socket);
         this.updateStompClient(Stomp.over(socket));
 
-        console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
         this.stompClient.connect(
           {},
-          (frame) => {
+          () => {
             // 소켓 연결 성공
-            // this.isSocketConnected = true;
-            // this.isConnect = true;
-            console.log("소켓 연결 성공", frame);
-            this.updateConnected(false);
 
+            this.updateConnected(false);
+            this.stompClient.debug = () => {};
             // GeoLocation - 1초마다 현 위치 얻기
             this.getGeoLocation();
             this.startIntervalMemberLocation();
@@ -166,16 +161,12 @@ export default {
       }, 1);
     },
     startIntervalMemberLocation() {
-      // setInterval(() => {
-      //   this.getGeoLocation();
-      // }, 3000);
       this.intervalGeolocation = setInterval(() => {
         this.getGeoLocation();
       }, 3000);
     },
     // [@Method] GeoLocation 동작
     async getGeoLocation() {
-      // console.log("#[GeoLocation]# 동작");
       // 로그인한 member 객체 얻어오기
       if (this.member == null) {
         await store.dispatch("memberStore/isLogin");
@@ -184,8 +175,6 @@ export default {
       navigator.permissions
         .query({ name: "geolocation" })
         .then(async (permissionStatus) => {
-          // console.log("#[GeoLocation]# permission 확인: ", permissionStatus);
-
           // i) 위치 권한 허용
           if (permissionStatus.state == "granted") {
             navigator.geolocation.getCurrentPosition((position) => {
@@ -228,24 +217,19 @@ export default {
           }
           // iii) 위치 권한 거부
           else if (permissionStatus.state == "denied") {
-            // console.log("#[GeoLocation]# denied 상태");
             this.$refs.denied.openDialog();
             clearInterval(this.intervalGeolocation);
           }
         })
-        .catch((error) => {
-          console.log("#[GeoLocation]# error 확인: ", error);
+        .catch(() => {
           this.$refs.error.openDialog();
           clearInterval(this.intervalGeolocation);
         });
     },
     send(member) {
-      // console.log("# send message: ", member);
-
       if (this.stompClient && this.stompClient.connected) {
         const msg = member;
         this.stompClient.send("/message/locShare", JSON.stringify(msg), {});
-        // console.log("#21# message 전송: ", msg);
       }
     },
   },

@@ -13,7 +13,6 @@ Vue.use(VueBottomSheet);
 
 function kakaoInitHandler() {
   const KAKAO_API_KEY = `${process.env.VUE_APP_KAKAO_API_KEY}`;
-  // console.log(window.Kakao);
   if (window.Kakao === undefined) {
     setTimeout(kakaoInitHandler, 500);
   } else if (!window.Kakao.isInitialized()) {

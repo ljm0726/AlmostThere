@@ -4,11 +4,10 @@ const api = apiInstance();
 
 async function arriveDestination(meetingId, x, y) {
   var result = 0;
-  await api.post(`/map/arrive/${meetingId}`, {}, { params: { x: x, y: y } })
+  await api
+    .post(`/map/arrive/${meetingId}`, {}, { params: { x: x, y: y } })
     .then((res) => {
-      // console.log(res);
       if (res.data.statusCode == 200) {
-        // console.log("성공");
         result = 1;
       } else {
         // 실패 현재 위치가 도착 지점이 아니다
@@ -16,7 +15,6 @@ async function arriveDestination(meetingId, x, y) {
       }
     })
     .catch((err) => {
-      // console.log(err.response.data.message);
       const message = err.response.data.message;
       if (message == "meeting timeover.") {
         // 시간 지나서 지각 처리
@@ -26,12 +24,13 @@ async function arriveDestination(meetingId, x, y) {
         result = 4;
       }
     });
-  return await Promise.resolve(result)
+  return await Promise.resolve(result);
 }
 
 async function liveMapInfo(meetingId) {
   var result = null;
-  await api.get(`/map/${meetingId}`)
+  await api
+    .get(`/map/${meetingId}`)
     .then((res) => {
       if (res.data.statusCode == 200) {
         result = res.data.data;
@@ -39,7 +38,7 @@ async function liveMapInfo(meetingId) {
     })
     .catch((err) => {
       err;
-    })
+    });
   return await Promise.resolve(result);
 }
 

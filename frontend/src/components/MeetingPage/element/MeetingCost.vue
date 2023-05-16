@@ -320,8 +320,6 @@ export default {
   watch: {
     async receipt() {
       await this.$refs.forms.validate();
-      // const { valid } = await this.$refs.forms.validate();
-      // console.log(">> valid", this.valid);
       if (this.valid && this.receipt != null) {
         this.imageLoading = true;
         this.ocrSuccess = await true;

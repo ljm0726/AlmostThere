@@ -13,14 +13,20 @@ import jwt_decode from "jwt-decode";
 import { apiInstance } from "@/api/index";
 const api = apiInstance();
 
-async function checkMeetingMember(roomCode) {
+async function checkMeetingMember(roomCode, router) {
   var result = null;
-  await api.get(`/meeting/meeting-member/${roomCode}`).then((res) => {
-    console.log(res.data);
-    if (res.data.statusCode == "200") {
-      result = res.data.data;
-    }
-  });
+  await api
+    .get(`/meeting/meeting-member/${roomCode}`)
+    .then((res) => {
+      console.log(res.data);
+      if (res.data.statusCode == "200") {
+        result = res.data.data;
+      }
+    })
+    .catch(() => {
+      router.push("/entrance-permission-error");
+      throw error;
+    });
   return await Promise.resolve(result); // meetingId return
 }
 
@@ -53,11 +59,17 @@ router.beforeEach(async (to, from, next) => {
 
     // 가입되어 있는지, 아닌지 체크하고 가입시킨 다음 meetingId 받기
 
-    const meetingId = await checkMeetingMember(roomCode);
+    const meetingId = await checkMeetingMember(roomCode, router);
 
+    // if (meetingId == "NotFound") {
+    //   next({
+    //     name: "entrance-entrance-permission-error",
+    //   });
+    // } else
     if (meetingId) {
       next({ name: "meeting", params: { id: meetingId } });
     } else {
+      console.log("entrance-denied?");
       next({
         name: "entrance-denied",
       });
