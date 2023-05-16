@@ -1,6 +1,48 @@
 <template>
   <div class="overlay full-search-color">
-    <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
+    <v-sheet
+      class="px-3 main-col-1"
+      max-width="500"
+      style="
+        position: fixed;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 2;
+      "
+      color="transparent"
+    >
+      <v-sheet
+        height="55"
+        color="transparent"
+        class="d-flex flex-row justify-space-between align-center"
+      >
+        <v-btn
+          id="square-btn"
+          class="mr-2"
+          outlined
+          color="var(--main-col-1)"
+          @click="goBack()"
+          elevation="3"
+          rounded
+          style="background-color: white; border: 1.6px solid var(--main-col-1)"
+        >
+          <v-icon>$vuetify.icons.arrow_left</v-icon>
+        </v-btn>
+        <form action="" style="width: 100%">
+          <input
+            class="search-box"
+            v-model="searchValue"
+            placeholder="모임 장소를 검색하세요"
+            ref="myInput"
+            autocomplete="off"
+          />
+          <button id="submit_btn" @click.prevent="getSearchResult"></button>
+        </form>
+      </v-sheet>
+    </v-sheet>
+    <!-- <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
       <v-icon>$vuetify.icons.arrow_left</v-icon>
     </v-btn>
     <form action="">
@@ -12,7 +54,7 @@
         autocomplete="off"
       />
       <button id="submit_btn" @click.prevent="getSearchResult"></button>
-    </form>
+    </form> -->
     <div id="list" class="lists" v-show="isListOpen"></div>
   </div>
 </template>
@@ -204,20 +246,20 @@ input {
   bottom: unset; /* 추가 */
 }
 .search-box {
-  box-sizing: border-box;
-  z-index: 2;
-  display: flex;
-  position: absolute;
-  margin-left: 5%;
-  width: 80%;
-  height: 37px;
-  left: 10%; /* 수정 */
-  right: 10%; /* 추가 */
-  top: 1.7%;
-  bottom: unset; /* 추가 */
+  // box-sizing: border-box;
+  // z-index: 2;
+  // display: flex;
+  // position: absolute;
+  // margin-left: 5%;
+  // width: 80%;
+  // height: 37px;
+  // left: 10%; /* 수정 */
+  // right: 10%; /* 추가 */
+  // top: 1.7%;
+  // bottom: unset; /* 추가 */
 
-  background: #ffffff;
-  border: 1px solid #092a49;
+  background: white;
+  border: 1px solid var(--main-col-1);
   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
   border-radius: 10px;
 }

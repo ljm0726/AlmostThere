@@ -1,6 +1,107 @@
 <template>
   <div class="map-area">
-    <v-btn
+    <v-sheet
+      class="px-3 main-col-1"
+      max-width="500"
+      style="
+        position: fixed;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 2;
+      "
+      color="transparent"
+    >
+      <v-sheet
+        height="55"
+        color="transparent"
+        class="d-flex flex-row justify-space-between align-center"
+      >
+        <v-btn
+          id="square-btn"
+          class="mr-2"
+          outlined
+          color="var(--main-col-1)"
+          @click="goBack()"
+          elevation="3"
+          rounded
+          style="background-color: white; border: 1.6px solid var(--main-col-1)"
+        >
+          <v-icon>$vuetify.icons.arrow_left</v-icon>
+        </v-btn>
+        <input
+          class="search-box"
+          placeholder="모임 장소를 검색하세요"
+          v-on:click="goToPage('/search')"
+        />
+      </v-sheet>
+      <v-sheet
+        class="d-flex flex-row justify-space-between"
+        color="transparent"
+      >
+        <div>
+          <v-btn-toggle
+            elevation="3"
+            dense
+            v-show="isRecommend"
+            rounded
+            mandatory
+            color="var(--main-col-1)"
+            id="category"
+          >
+            <v-btn id="SW8" @click="onClickCategory">
+              <v-icon color="var(--main-col-1)" id="SW8"
+                >mdi mdi-subway-variant</v-icon
+              >
+            </v-btn>
+            <v-btn id="FD6" @click="onClickCategory">
+              <v-icon id="FD6" color="var(--main-col-1)"
+                >mdi mdi-silverware-fork-knife</v-icon
+              >
+            </v-btn>
+            <v-btn id="CE7" @click="onClickCategory">
+              <v-icon color="var(--main-col-1)" id="CE7">mdi mdi-coffee</v-icon>
+            </v-btn>
+            <v-btn id="CT1" @click="onClickCategory">
+              <v-icon color="var(--main-col-1)" id="CT1"
+                >mdi mdi-movie-play</v-icon
+              >
+            </v-btn>
+          </v-btn-toggle>
+        </div>
+
+        <!-- <div>
+          <ul v-show="isRecommend" id="category">
+            <li id="SW8" @click="onClickCategory">
+              <v-icon id="SW8">mdi mdi-subway-variant</v-icon>
+            </li>
+            <li id="FD6" @click="onClickCategory">
+              <v-icon id="FD6">mdi mdi-silverware-fork-knife</v-icon>
+            </li>
+            <li id="CE7" @click="onClickCategory">
+              <v-icon id="CE7">mdi mdi-coffee</v-icon>
+            </li>
+            <li id="CT1" @click="onClickCategory">
+              <v-icon id="CT1">mdi mdi-movie-play</v-icon>
+            </li>
+          </ul>
+        </div> -->
+        <v-btn
+          color="var(--main-col-1)"
+          outlined
+          @click="findHalfway()"
+          rounded
+          elevation="3"
+          style="background-color: white; border: 1.6px solid var(--main-col-1)"
+        >
+          <v-icon class="mr-1">$vuetify.icons.location_outline</v-icon>
+          <span class="bold-font xs-font">중간 위치 찾기</span>
+        </v-btn>
+      </v-sheet>
+    </v-sheet>
+
+    <!-- <v-btn
       id="square-btn"
       class="back-btn find-middle-place-btn"
       outlined
@@ -9,35 +110,8 @@
       rounded
     >
       <v-icon class="find-middle-place-btn">$vuetify.icons.arrow_left</v-icon>
-    </v-btn>
-    <input
-      class="search-box"
-      placeholder=" 모임장소를 검색하세요"
-      v-on:click="goToPage('/search')"
-    />
-    <ul v-show="isRecommend" id="category">
-      <li id="SW8" @click="onClickCategory">
-        <v-icon class="category_icon" id="SW8">mdi mdi-subway-variant</v-icon>
-      </li>
-      <li id="FD6" @click="onClickCategory">
-        <v-icon class="category_icon" id="FD6"
-          >mdi mdi-silverware-fork-knife</v-icon
-        >
-      </li>
-      <li id="CE7" @click="onClickCategory">
-        <v-icon class="category_icon" id="CE7">mdi mdi-coffee</v-icon>
-      </li>
-      <li id="CT1" @click="onClickCategory">
-        <v-icon class="category_icon" id="CT1">mdi mdi-movie-play</v-icon>
-      </li>
-    </ul>
-    <div class="find-middle-place-btn">
-      <v-btn class="find-place-btn" @click="findHalfway()"
-        ><i class="fa-light fa-location-dot"></i>
-        <v-icon class="marker-icon">$vuetify.icons.location_outline</v-icon>
-        <span class="find-middle-place-title">중간 위치 찾기</span></v-btn
-      >
-    </div>
+    </v-btn> -->
+
     <halfway-modal ref="halfway"></halfway-modal>
 
     <div id="map" class="maps"></div>
@@ -70,7 +144,12 @@ import axios from "axios";
 import LoadingModal from "./placeModal/LoadingModal.vue";
 
 export default {
-  components: { placeInfo, HalfwayModal, middlePlaceInfo, LoadingModal },
+  components: {
+    placeInfo,
+    HalfwayModal,
+    middlePlaceInfo,
+    LoadingModal,
+  },
   name: "PlacePage",
   data() {
     return {
@@ -161,7 +240,7 @@ export default {
         if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
         for (var i = 0; i < positions.length; i++) {
           const imageSrc = this.startMarkerImage[i], // 마커이미지의 주소입니다
-            imageSize = new window.kakao.maps.Size(54, 57); // 마커이미지의 크기입니다
+            imageSize = new window.kakao.maps.Size(43, 45); // 마커이미지의 크기입니다
 
           const markerImage = new window.kakao.maps.MarkerImage(
             imageSrc,
@@ -944,19 +1023,27 @@ export default {
 
 <style>
 #category {
-  position: absolute;
+  border: 0.8px solid var(--main-col-1);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  /* position: absolute;
 
   top: 7.3%;
   left: 3%;
   border-radius: 20px;
   border: 1.6px solid #092a49;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  
   background: #fff;
   overflow: hidden;
   z-index: 2;
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0; */
+}
+#category.theme--light.v-btn-toggle:not(.v-btn-toggle--group) .v-btn.v-btn {
+  border-left: 0.8px solid var(--main-col-1) !important;
+}
+#category .theme--light.v-btn.v-btn--has-bg {
+  background-color: white;
 }
 #category li {
   float: left;
@@ -1087,8 +1174,10 @@ export default {
   left: 8.5%;
 }
 input {
-  padding-left: 10px; /* 여백 크기 조절 */
+  /* padding-left: 10px; */
+  /* 여백 크기 조절 */
   font-family: var(--medium-font);
+  font-size: 16px;
 }
 .find-place-btn {
   box-sizing: border-box;
@@ -1125,26 +1214,26 @@ input {
   height: 100%;
 }
 .search-box {
-  box-sizing: border-box;
+  /* box-sizing: border-box;
   z-index: 2;
-  display: flex;
-  position: absolute;
-  margin-left: 5%;
+  display: flex; */
+  /* position: absolute; */
+  /* margin-left: 5%;
   width: 80%;
-  height: 37px;
-  left: 10%; /* 수정 */
-  right: 10%; /* 추가 */
+  height: 37px; */
+  /* left: 10%;
+  right: 10%;
   top: 1.7%;
-  bottom: unset; /* 추가 */
+  bottom: unset; */
 
-  background: #ffffff;
-  border: 1.6px solid #092a49;
+  /* background: #ffffff;
+  border: 1.6px solid var(--main-col-1);
   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
-  border-radius: 10px;
+  border-radius: 10px; */
 }
-.find-middle-place-btn {
+/* .find-middle-place-btn {
   color: #092a49;
-}
+} */
 .find-middle-place-title {
   color: #092a49;
   font-family: var(--bold-font);

@@ -19,69 +19,120 @@
               style="margin-bottom: 7%; height: 82px; width: 102px"
               alt=""
             />
-            <span class="regular-font md-font">출발지를 입력해</span>
-            <span class="regular-font md-font"
-              >중간 위치를 추천 받아보세요!</span
-            >
+            <span class="regular-font sm-font">출발지를 입력해</span>
+            <span class="regular-font sm-font">
+              중간 위치를 추천 받아보세요!
+            </span>
           </v-card-title>
-
-          <div class="input-container" ref="inputContainer">
+          <v-card-text class="pa-0 px-5" style="max-height: 200px">
             <div
-              v-for="(start, index) in starts"
-              :key="index"
-              class="input-list"
+              class="d-flex flex-column justify-center align-center"
+              ref="inputContainer"
             >
-              <input
+              <v-btn
+                class="mb-2 px-3 py-1 d-flex flex-row justify-space-between align-center"
+                v-for="(start, index) in starts"
+                block
+                :key="index"
+                outlined
+                small
+                color="var(--main-col-1)"
+                style="border-radius: 10px"
+              >
+                <div
+                  class="xs-font medium-font"
+                  @click="goToSearchPage(`${index + 1}`)"
+                >
+                  {{
+                    start
+                      ? `${index + 1}. ` + start.get("name")
+                      : `${index + 1}. 출발지를 입력하세요!`
+                  }}
+                </div>
+                <!-- <input
                 class="search-box2"
                 :value="
-                  start
-                    ? `${index + 1}. ` + start.get('name')
-                    : `${index + 1}. 출발지를 입력하세요!`
+                  
                 "
                 @click="goToSearchPage(`${index + 1}`)"
                 readonly
-              />
-              <div class="img-container">
-                <img
+              /> -->
+                <!-- <div> -->
+                <!-- <img
                   v-if="index > 1"
                   src="@/assets/images/dialog/close_btn_small.png"
                   class="close-btn-small"
                   alt=""
                   @click="cancelStart(index)"
-                />
-              </div>
+                /> -->
+                <v-btn
+                  v-if="index > 1"
+                  @click="cancelStart(index)"
+                  icon
+                  x-small
+                  outlined
+                  style="border: 1.6px solid var(--main-col-1)"
+                >
+                  <v-icon
+                    x-small
+                    style="font-size: 8px; height: 8px; width: 8px"
+                  >
+                    $vuetify.icons.close
+                  </v-icon>
+                </v-btn>
+                <!-- </div> -->
+              </v-btn>
             </div>
-          </div>
+          </v-card-text>
 
-          <div style="align-self: center; margin: 4% 0" @click="plusStart">
-            <img
+          <!-- <div style="align-self: center; margin: 4% 0" @click="plusStart"> -->
+          <!-- <img
               src="@/assets/images/dialog/Plus.png"
               style="margin-bottom: 8%; float: left"
               alt=""
-            />
-            출발지 추가하기
+            /> -->
+          <!-- <v-icon>$vuetify.icons.flag_plus</v-icon>
+            출발지 추가하기 -->
+          <!-- </div> -->
+          <div class="ma-0 pa-0 mx-4 mt-2 mb-4 d-flex flex-column">
+            <v-btn
+              class="mb-2"
+              color="var(--main-col-1)"
+              text
+              @click="plusStart"
+              rounded
+              block
+            >
+              <v-icon>$vuetify.icons.flag_plus</v-icon>
+              <span>출발지 추가하기</span>
+            </v-btn>
+            <!-- </v-card-actions>
+          <v-card-actions> -->
+            <v-btn
+              elevation="0"
+              color="var(--main-col-1)"
+              dark
+              rounded
+              block
+              @click="findHalfway"
+              >중간 위치 찾기</v-btn
+            >
           </div>
-
-          <v-card-text style="overflow: visible">
-            <v-row>
-              <v-col class="search_halfway">
-                <v-btn
-                  elevation="0"
-                  color="var(--main-col-1)"
-                  dark
-                  rounded
-                  block
-                  @click="findHalfway"
-                  >중간 위치 찾기</v-btn
-                >
-              </v-col>
-            </v-row>
-          </v-card-text>
+          <!-- <v-card-text style="overflow: visible"> -->
+          <!-- <v-row>
+            <v-col class="search_halfway"> -->
+          <!-- </v-col>
+          </v-row> -->
+          <!-- </v-card-text> -->
         </v-card>
       </v-dialog>
     </div>
-
-    <div class="error">
+    <no-image-default
+      ref="error"
+      :title="errorTitle"
+      :message="errorMsg"
+    ></no-image-default>
+    <!-- <div class="error">
       <v-dialog
         v-model="dialogError"
         scrollable
@@ -112,23 +163,25 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import CloseButton from "@/common/component/button/CloseButton.vue";
 import { mapActions, mapState } from "vuex";
+import NoImageDefault from "@/common/component/dialog/NoImageDefault.vue";
 // import  from "../SearchPlace/SearchPlacePage2.vue";
 
 export default {
   name: "HalfwayModal",
-  components: { CloseButton },
+  components: { CloseButton, NoImageDefault },
   data() {
     return {
       dialog: false,
-      dialogError: false,
+      // dialogError: false,
       errorMsg: "",
+      errorTitle: "",
       starts: [null, null], //모달에서 보여줄 정보
       isSearchPage: false,
       selectedPlace: {},
@@ -171,12 +224,12 @@ export default {
       this.dialog = false;
     },
 
-    openErrorDialog() {
-      this.dialogError = true;
-    },
-    closeErrorDialog() {
-      this.dialogError = false;
-    },
+    // openErrorDialog() {
+    //   this.dialogError = true;
+    // },
+    // closeErrorDialog() {
+    //   this.dialogError = false;
+    // },
 
     goToSearchPage(index) {
       localStorage.setItem("listIndex", index);
@@ -190,8 +243,10 @@ export default {
 
     plusStart() {
       if (this.starts.length > 9) {
-        this.errorMsg = "최대 10명까지 가능합니다";
-        this.dialogError = true;
+        this.errorTitle = "<span>최대 10개까지만</span><span>가능합니다</span>";
+        // this.errorMsg = "최대 10개까지 가능합니다";
+        this.$refs.error.openDialog();
+        // this.dialogError = true;
       } else {
         this.starts.push(null);
         setTimeout(() => {
@@ -236,8 +291,9 @@ export default {
     findHalfway() {
       for (let i = 0; i < this.starts.length; i++) {
         if (this.starts[i] == null) {
-          this.dialogError = true;
-          this.errorMsg = "출발지를 입력하세요!";
+          // this.dialogError = true;
+          this.errorTitle = "출발지를 입력하세요!";
+          this.$refs.error.openDialog();
           return;
         }
       }
