@@ -384,9 +384,6 @@ export default {
           });
         })(marker, place[i]);
       }
-      window.kakao.maps.event.addListener(this.map, "click", function () {
-        self.closeOveray(); // 지도 클릭 시 실행되는 코드 작성
-      });
     },
 
     closeOveray() {
