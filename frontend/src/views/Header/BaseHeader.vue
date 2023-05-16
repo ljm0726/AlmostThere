@@ -16,8 +16,8 @@
     >
       Almost There
     </div>
-    <v-btn @click="goManual()" large icon>
-      <v-icon color="var(--main-col-2)">mdi-help-circle-outline</v-icon>
+    <v-btn @click="goManual()" id="square-btn" outlined rounded>
+      <span class="light-font main-col-1 xxxxxxl-font">?</span>
     </v-btn>
   </v-sheet>
 </template>

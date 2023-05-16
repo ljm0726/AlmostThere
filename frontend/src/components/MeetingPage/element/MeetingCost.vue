@@ -77,23 +77,33 @@
     <v-btn class="my-3" color="var(--main-col-1)" dark rounded @click="open()">
       영수증 추가
     </v-btn>
-    <vue-bottom-sheet
-      ref="costSheet"
-      max-width="500px"
-      max-height="90% !important"
-      height="fit-content !important"
-    >
+
+    <!-- max-height="90% !important"
+      height="fit-content !important" -->
+    <vue-bottom-sheet ref="costSheet" max-width="500px" :is-full-screen="true">
       <v-sheet class="px-5 d-flex flex-column pb-10">
         <span class="point-font xxxxl-font main-col-1 align-self-center">
           영수증 등록
         </span>
-        <v-file-input
-          v-model="receipt"
-          class="pt-5"
-          accept="image/png, image/jpeg, image/jpg"
-          placeholder="영수증 사진을 첨부해 주세요."
-          prepend-icon="mdi-camera"
-        ></v-file-input>
+        <v-form ref="forms">
+          <v-file-input
+            v-model="receipt"
+            class="pt-5"
+            accept="image/png, image/jpeg, image/jpg"
+            placeholder="영수증 사진을 첨부해 주세요."
+            prepend-icon="mdi-camera"
+            :rules="[
+              (v) =>
+                (!!v && v.size <= 10000000) ||
+                '첨부 파일 크기는 최대 10MB까지만 가능합니다.',
+              (v) =>
+                (!!v &&
+                  ['image/png', 'image/jpeg', 'image/jpeg'].includes(v.type)) ||
+                'png, jpg, jpeg 파일만 첨부 가능합니다.',
+            ]"
+          ></v-file-input>
+        </v-form>
+
         <v-sheet
           v-if="imageLoading"
           class="mt-5 mb-5 d-flex flex-column justify-center align-center"
@@ -107,12 +117,30 @@
           ></v-progress-circular>
           <span class="point-font main-col-1 lg-font">영수증 정보 읽는 중</span>
         </v-sheet>
-        <div class="mt-5 mb-5" v-else style="height: 300px">
-          <div class="d-flex justify-center align-center">
-            <img :src="imageUrl" width="90%" />
+        <div v-else>
+          <div
+            v-if="
+              !!receipt &&
+              receipt.size <= 10000000 &&
+              ['image/png', 'image/jpeg', 'image/jpeg'].includes(receipt.type)
+            "
+            class="d-flex justify-center align-center"
+          >
+            <img :src="imageUrl" width="80%" max-height="10%" />
           </div>
-          <div v-if="ocrSuccess">
-            <v-row class="mt-5 d-flex align-center">
+          <div
+            v-if="!ocrSuccess"
+            class="my-3 d-flex flex-column justify-center align-center"
+          >
+            <span class="point-font main-col-1 lg-font"
+              >사진 정보 읽기에 실패하였습니다.</span
+            >
+            <span class="point-font main-col-1 lg-font"
+              >다시 시도하거나 아래 정보를 입력해 주세요!</span
+            >
+          </div>
+          <div>
+            <v-row class="ma-0 d-flex align-center">
               <v-col
                 cols="2"
                 class="d-flex flex-row justify-space-between medium-font main-col-1"
@@ -132,7 +160,7 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-            <v-row class="mb-5 d-flex align-center">
+            <v-row class="mb-1 ma-0 d-flex align-center">
               <v-col
                 cols="2"
                 class="d-flex flex-row justify-space-between medium-font main-col-1"
@@ -153,7 +181,6 @@
             </v-row>
             <div class="d-flex flex-column">
               <v-btn
-                v-if="this.ocrSuccess"
                 class="mb-5"
                 color="var(--main-col-1)"
                 rounded
@@ -162,17 +189,6 @@
                 >등록</v-btn
               >
             </div>
-          </div>
-          <div
-            v-else
-            class="mt-5 mb-5 d-flex flex-column justify-center align-center"
-          >
-            <span class="point-font main-col-1 lg-font"
-              >사진 정보 읽기에 실패하였습니다.</span
-            >
-            <span class="point-font main-col-1 lg-font"
-              >다시 시도해주세요!</span
-            >
           </div>
         </div>
       </v-sheet>
@@ -217,8 +233,10 @@ export default {
       this.$refs.detail.changeCalculate(calculate);
       this.$refs.detail.openDialog();
     },
-    addCalculateDetail() {
-      if (this.ocrSuccess && this.receipt) {
+    async addCalculateDetail() {
+      // if (this.ocrSuccess && this.receipt) {
+      const { valid } = await this.$refs.forms.validate();
+      if (valid && this.receipt) {
         saveCalculateDetail(
           this.meetingId,
           this.receipt,
@@ -299,20 +317,25 @@ export default {
   },
   watch: {
     async receipt() {
-      this.imageLoading = true;
-      this.ocrSuccess = await true;
-      if (this.receipt != null) {
-        postReceiptInfo(this.receipt).then(async (res) => {
-          if (res != null) {
-            this.storeName = await res.storeName;
-            this.totalPrice = await res.totalPrice;
-            this.imageLoading = await false;
-            this.ocrSuccess = await true;
-          } else {
-            this.imageLoading = await false;
-            this.ocrSuccess = await false;
-          }
-        });
+      const { valid } = await this.$refs.forms.validate();
+      if (valid && this.receipt != null) {
+        this.imageLoading = true;
+        this.ocrSuccess = await true;
+        if (this.receipt != null) {
+          postReceiptInfo(this.receipt).then(async (res) => {
+            if (res != null) {
+              this.storeName = await res.storeName;
+              this.totalPrice = await res.totalPrice;
+              this.imageLoading = await false;
+              this.ocrSuccess = await true;
+            } else {
+              this.imageLoading = await false;
+              this.ocrSuccess = await false;
+            }
+          });
+        }
+      } else {
+        this.ocrSuccess = true;
       }
     },
   },

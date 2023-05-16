@@ -4,7 +4,7 @@
     height="55"
     color="transparent"
   >
-    <back-button color="var(--main-col-1)"></back-button>
+    <back-button :elevation="false" color="var(--main-col-1)"></back-button>
     <span class="logo-font" @click="goHome()" style="cursor: pointer">
       Almost There
     </span>

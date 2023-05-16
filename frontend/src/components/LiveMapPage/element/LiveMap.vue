@@ -84,7 +84,8 @@ export default {
           if (this.background_type == true) this.initMap();
           else this.initMapTileSet();
         });
-      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&libraries=services&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
+
       document.head.appendChild(script);
     }
   },
@@ -383,6 +384,19 @@ export default {
         image: markerImage,
       });
       if (member.memberId == this.memberId) marker.setZIndex(9999);
+
+      // marker click 이벤트 등록 (click한 marker가 제일 위로 올라오도록)
+      kakao.maps.event.addListener(marker, "click", () => {
+        if (member.memberId != this.memberId) {
+          marker.setZIndex(1000);
+
+          // 클릭한 marker를 제외한 marker들 z-index 조정
+          this.memberMarkerList.forEach((eachMarker) => {
+            if (marker == eachMarker) return;
+            marker.setZIndex(0);
+          });
+        }
+      });
 
       // marker 저장 (for. 삭제)
       const object = new Object();

@@ -29,7 +29,7 @@
         :startLng="startLng"
       ></meeting-start-point>
       <meeting-member :memberList="meeting.meetingMembers"></meeting-member>
-      <meeting-game></meeting-game>
+      <meeting-game :memberList="meeting.meetingMembers"></meeting-game>
       <meeting-late-fee :lateAmount="meeting.lateAmount"></meeting-late-fee>
       <meeting-cost
         :meetingId="meeting.meetingId"

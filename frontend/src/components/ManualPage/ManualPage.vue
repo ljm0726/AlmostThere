@@ -687,7 +687,7 @@
             </v-btn>
             <span> 를 클릭해 중간 위치를 찾아보세요.</span>
             <v-sheet class="d-flex justify-center mt-4" rounded>
-              <v-sheet width="70%" elevation="2" rounded>
+              <v-sheet width="90%" max-width="300" elevation="2" rounded>
                 <img
                   width="100%"
                   height="100%"
@@ -768,7 +768,7 @@
               style="vertical-align: bottom"
               width="18"
               class="mb-1"
-              src="@/assets/images/icons/marker_sample.png"
+              src="@/assets/images/icons/marker1.png"
             />
             <span> 는 출발지를 가리킵니다. </span>
             <v-icon color="var(--yellow-col)">mdi-map-marker-star</v-icon>
@@ -779,44 +779,44 @@
               rounded
             >
               <v-sheet
-                class="pa-3 d-flex flex-column"
+                class="d-flex flex-column"
                 elevation="2"
                 width="100%"
                 max-width="350"
                 rounded
               >
-                <v-sheet class="align-self-end">
-                  <img
-                    class="mx-1"
-                    width="30"
-                    src="@/assets/images/icons/bus-icon.png"
-                  />
-                  <img
-                    class="mx-1"
-                    width="30"
-                    src="@/assets/images/icons/car-icon.png"
-                  />
+                <v-sheet
+                  class="px-3 py-2 white-font rounded-t d-flex flex-row justify-space-between align-center"
+                  color="var(--main-col-1)"
+                >
+                  <span class="bold-font">학동역 7호선</span>
+                  <v-icon color="white">mdi-chevron-right</v-icon>
                 </v-sheet>
-                <v-sheet elevation="1">
-                  <v-sheet
-                    class="pa-2 white-font rounded-t d-flex flex-row justify-space-between align-center"
-                    color="var(--main-col-1)"
-                  >
-                    <span class="bold-font">학천장가든</span>
-                    <v-icon color="white">mdi-chevron-right</v-icon>
-                  </v-sheet>
-                  <v-sheet class="pa-2 d-flex flex-column" rounded>
-                    <span class="xxs-font">경북 문경시 가은읍 학천정길 20</span>
+                <div class="d-flex flex-row align-end justify-space-between">
+                  <v-sheet class="px-3 py-2 d-flex flex-column" rounded>
+                    <span class="xxs-font">서울 강남구 학동로 지하 180</span>
                     <span class="xxxxs-font main-col-2">
-                      (지번 : 경북 문경시 가은읍 완장리 405-2)
+                      (지번 : 서울 강남구 논현동 279-67)
                     </span>
-                    <span class="xxs-font">054-571-0120</span>
+                    <span class="xxs-font">02-6311-7311</span>
                   </v-sheet>
-                </v-sheet>
+                  <div>
+                    <img
+                      class="mx-1"
+                      width="30"
+                      src="@/assets/images/icons/bus-icon.png"
+                    />
+                    <img
+                      class="ml-1 mr-2"
+                      width="30"
+                      src="@/assets/images/icons/car-icon.png"
+                    />
+                  </div>
+                </div>
               </v-sheet>
             </v-sheet>
             <br />
-            <span>아래 마커에서 우측 상단의 </span>
+            <span>아래 마커에서 우측 하단의 </span>
             <img
               class="mr-1"
               width="20"
@@ -824,13 +824,12 @@
               src="@/assets/images/icons/bus-icon.png"
             />
             <img
-              class="mr-1"
               width="20"
               style="vertical-align: bottom"
               src="@/assets/images/icons/car-icon.png"
             />
-            <span
-              >를 클릭하면 각 출발지로부터 선택한 위치까지의 경로를 볼 수
+            <span>
+              를 클릭하면 각 출발지로부터 선택한 위치까지의 경로를 볼 수
               있습니다.
             </span>
             <img
@@ -847,11 +846,112 @@
               src="@/assets/images/icons/car-icon.png"
             />
             <span>는 자동차로 이동 시 경로입니다. </span>
+            <v-sheet class="d-flex justify-center" rounded>
+              <v-sheet
+                class="mt-4 py-3 px-4 d-flex flex-column"
+                elevation="2"
+                width="90%"
+                max-width="350"
+                rounded
+              >
+                <v-sheet
+                  class="mb-2 d-flex flex-row align-center justify-space-between"
+                >
+                  <div>
+                    <span class="md-font bold-font">학동역 7호선</span>
+                    <div class="d-flex flex-row align-center">
+                      <span class="mr-2 sm-font bold-font">10분</span>
+                      <span class="xxxxs-font light-font main-col-2">
+                        평균 이동 시간
+                      </span>
+                    </div>
+                  </div>
+                  <img
+                    class="mr-1"
+                    width="30"
+                    style="vertical-align: bottom"
+                    src="@/assets/images/icons/bus-icon.png"
+                  />
+                </v-sheet>
+                <v-sheet
+                  class="mb-1 mr-2 d-flex flex-row justify-space-between"
+                >
+                  <v-sheet
+                    class="d-flex flex-row justify-space-between align-center"
+                    width="45%"
+                  >
+                    <img
+                      style="vertical-align: bottom"
+                      width="25"
+                      class="mb-1"
+                      src="@/assets/images/icons/marker1.png"
+                    />
+                    <span class="medium-font">11분</span>
+                  </v-sheet>
+                  <v-sheet
+                    class="d-flex flex-row justify-space-between align-center"
+                    width="45%"
+                  >
+                    <img
+                      style="vertical-align: bottom"
+                      width="25"
+                      class="mb-1"
+                      src="@/assets/images/icons/marker2.png"
+                    />
+                    <span class="medium-font">9분</span>
+                  </v-sheet>
+                </v-sheet>
+                <v-sheet
+                  class="d-flex flex-row justify-space-between align-center"
+                >
+                  <div class="main-col-2 xxs-font">상세보기</div>
+                  <v-btn
+                    color="var(--main-col-1)"
+                    elevation="0"
+                    dark
+                    rounded
+                    small
+                  >
+                    선택
+                  </v-btn>
+                </v-sheet>
+              </v-sheet>
+            </v-sheet>
+            <br />
+            <img
+              class="mr-1"
+              width="20"
+              style="vertical-align: bottom"
+              src="@/assets/images/icons/bus-icon.png"
+            />
+            <span>또는 </span>
+            <img
+              width="20"
+              style="vertical-align: bottom"
+              src="@/assets/images/icons/car-icon.png"
+            />
+            <span>
+              중 하나를 선택하면 하단에 위와 같은 창을 보실 수 있습니다. 여기서
+            </span>
+            <img
+              style="vertical-align: bottom; margin-top: 2px"
+              width="18"
+              src="@/assets/images/icons/marker1.png"
+            />
+            <span>
+              옆의 시간은 선택된 장소인 '학동역 7호선'으로부터 첫 번째 입력했던
+              출발지까지의 소요 시간입니다.
+            </span>
             <br />
             <span>
-              마커 상단의 남색 부분을 클릭하면 해당 위치를 상세 정보를
-              카카오맵을 통해 볼 수 있습니다. 마커 하단의 흰색 부분을 선택하면
-              해당 장소가 모임 장소로 선택됩니다.
+              '상세보기'를 누르면 '학동역 7호선'에 대한 자세한 정보를 확인할 수
+              있고,
+            </span>
+            <v-btn class="mb-1" color="var(--main-col-1)" rounded x-small dark>
+              선택
+            </v-btn>
+            <span>
+              을 누르면 모임 장소 입력칸에 '학동역 7호선'이 기입됩니다.
             </span>
           </div>
         </v-sheet>
@@ -877,13 +977,9 @@
             <span>를 통해 서로의 위치를 확인할 수 있습니다.</span>
             <br />
           </div>
-          <v-chip class="mt-3 px-10" color="var(--red-col)" dark>
-            <span class="mr-1 bold-font">1st.</span>
-            <span>실시간 위치 공유</span>
-          </v-chip>
-          <div class="light-font xs-font pa-1 main-col-1">
+          <div class="light-font xs-font mt-2 main-col-1">
             <span>모임 상세페이지에서 모임 제목 옆에 위치한 </span>
-            <v-icon small>$vuetify.icons.location_outline</v-icon>
+            <v-icon small>$vuetify.icons.map_outline</v-icon>
             <span>
               아이콘을 클릭하면 실시간 위치 공유로 이동할 수 있습니다.
             </span>
@@ -894,23 +990,178 @@
             <span class="orange-line">모임 시간 3시간 전후로만</span>
             <span> 가능합니다.</span>
             <br />
+            <v-sheet
+              class="mx-2 my-4 d-flex flex-row justify-center"
+              rounded
+              elevation="2"
+            >
+              <img
+                style="border-radius: 6px 0px 0px 6px"
+                width="50%"
+                src="@/assets/images/page/live_map1.jpg"
+              />
+              <img
+                style="border-radius: 0px 6px 6px 0px"
+                width="50%"
+                src="@/assets/images/page/live_map2.jpg"
+              />
+            </v-sheet>
+            <div class="mb-1">
+              <span>지도는 위와 같이 나타나며 </span>
+              <span class="yellow-line">우측 상단 스위치</span>
+              <span>
+                를 클릭해 배경을 다르게 볼 수 있습니다. 모임 3시간 전후
+              </span>
+              <span class="yellow-line">최신 채팅</span>
+              <span>이 각 멤버 캐릭터 상단에 나타납니다.</span>
+            </div>
+            <v-sheet
+              class="mt-3 mb-4 d-flex justify-center"
+              color="transparent"
+            >
+              <v-bottom-navigation
+                color="primary"
+                style="border: 1px solid var(--main-col-1); border-radius: 10px"
+                max-width="480"
+                width="90%"
+                height="45"
+              >
+                <v-btn>
+                  <span class="main-col-1 xxxxs-font">채팅</span>
+                  <v-icon color="var(--main-col-1)">mdi-forum</v-icon>
+                </v-btn>
+                <v-btn>
+                  <span class="main-col-1">도착 완료</span>
+                  <v-icon color="var(--main-col-1)"
+                    >mdi-map-marker-check</v-icon
+                  >
+                </v-btn>
+                <v-btn>
+                  <span class="main-col-1">범위 재조정</span>
+                  <v-icon color="var(--main-col-1)"
+                    >mdi-arrow-expand-all</v-icon
+                  >
+                </v-btn>
+              </v-bottom-navigation>
+            </v-sheet>
+            <v-sheet class="my-2 d-flex flex-row align-center">
+              <v-chip class="mr-2" color="var(--red-col)" dark small>
+                1
+              </v-chip>
+              <span class="md-font bold-font red-font">실시간 채팅</span>
+            </v-sheet>
+            <span>
+              해당 페이지 외에도 모임 상세페이지에서 모임 제목 옆에 위치한
+            </span>
+            <v-icon small>$vuetify.icons.chatting_outline</v-icon>
+            <span>
+              아이콘을 클릭하면 실시간 채팅으로 이동해 모임 멤버들과 채팅을 나눌
+              수 있습니다.
+            </span>
+            <v-sheet class="my-3 d-flex flex-row justify-center">
+              <v-sheet class="pa-3" width="93%" elevation="2" rounded>
+                <div class="d-flex flex-row align-start justify-start">
+                  <v-avatar class="mr-2" size="34" rounded="lg">
+                    <v-img
+                      src="https://cdn.mediafine.co.kr/news/photo/202304/28522_49668_359.jpg"
+                    ></v-img>
+                  </v-avatar>
+                  <div>
+                    <div class="xxxxs-font">안유진</div>
+                    <div class="d-flex flex-row align-end">
+                      <v-sheet
+                        class="mr-1 pa-1 px-2 xxs-font light-font d-flex flex-row"
+                        outlined
+                        elevation="0"
+                        rounded="lg"
+                      >
+                        안녕
+                      </v-sheet>
+                      <span class="xxxxxs-font main-col-2">오후 6시 22분</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-2 d-flex flex-row align-start justify-start">
+                  <v-avatar class="mr-2" size="34" rounded="lg">
+                    <v-img
+                      src="https://img.seoul.co.kr//img/upload/2022/10/05/SSI_20221005160317_V.jpg"
+                    ></v-img>
+                  </v-avatar>
+                  <div>
+                    <div class="xxxxs-font">장원영</div>
+                    <div class="d-flex flex-row align-end">
+                      <v-sheet
+                        class="mr-1 pa-1 px-2 xxs-font light-font d-flex flex-row"
+                        outlined
+                        elevation="0"
+                        rounded="lg"
+                      >
+                        안녕안녕
+                      </v-sheet>
+                      <span class="xxxxxs-font thin-font main-col-2">
+                        오후 6시 40분
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="mt-2 d-flex flex-row-reverse align-start justify-start"
+                >
+                  <div class="d-flex flex-column align-end">
+                    <div class="d-flex flex-row align-end">
+                      <span class="xxxxxs-font thin-font main-col-2">
+                        오후 6시 40분
+                      </span>
+                      <v-sheet
+                        class="ml-1 pa-1 px-2 xxs-font light-font white-font d-flex flex-row"
+                        outlined
+                        elevation="0"
+                        rounded="lg"
+                        color="var(--main-col-1)"
+                      >
+                        안녕안녕
+                      </v-sheet>
+                    </div>
+                  </div>
+                </div>
+                <v-sheet
+                  class="mt-3 d-flex flex-row justify-space-between"
+                  color="transparent"
+                >
+                  <v-sheet
+                    width="100%"
+                    class="mr-2 px-2 py-1 xxs-font main-col-2"
+                    outlined
+                    rounded
+                  >
+                    메세지를 입력해주세요.
+                  </v-sheet>
+                  <v-icon>$vuetify.icons.send_outline</v-icon>
+                </v-sheet>
+              </v-sheet>
+            </v-sheet>
+            <v-sheet class="my-2 d-flex flex-row align-center">
+              <v-chip class="mr-2" color="var(--yellow-col)" dark small>
+                2
+              </v-chip>
+              <span class="md-font bold-font yellow-font">도착 완료</span>
+            </v-sheet>
             <span>도착 장소 100m 이내에 도달하면 </span>
-            <v-icon color="var(--main-col-1)">mdi-map-marker-check</v-icon>
-            <span class="green-line">도착완료 버튼을 클릭해 도착 처리</span>
+            <span class="orange-line">도착완료 버튼을 클릭해 도착 처리</span>
             <span>를 할 수 있습니다. </span>
             <span>모임 시간 내 </span>
             <span>도착완료 버튼을 클릭하지 않으면 </span>
-            <span class="blue-line">지각 처리</span>
+            <span class="yellow-line">지각 처리</span>
             <span>가 되고 지각비가 부과되니 유의해 주세요!</span>
-          </div>
-          <v-chip class="mt-3 px-10" color="var(--yellow-col)" dark>
-            <span class="mr-1 bold-font">2nd.</span>
-            <span>실시간 채팅</span>
-          </v-chip>
-          <div class="light-font xs-font pa-1 main-col-1">
-            <span>모임 상세페이지에서 모임 제목 옆에 위치한 </span>
-            <v-icon small>$vuetify.icons.chatting_outline</v-icon>
-            <span> 아이콘을 클릭하면 실시간 채팅으로 이동할 수 있습니다.</span>
+            <v-sheet class="my-2 d-flex flex-row align-center">
+              <v-chip class="mr-2" color="var(--green-col)" dark small>
+                3
+              </v-chip>
+              <span class="md-font bold-font green-font">범위 재조정</span>
+            </v-sheet>
+            <span>범위 재조정 버튼을 클릭하면 </span>
+            <span class="green-line">접속해 있는 멤버 전체가 보이도록</span>
+            <span> 지도의 확대 비율을 조절해줍니다.</span>
           </div>
         </v-sheet>
       </v-tab-item>
@@ -942,7 +1193,7 @@ export default {
   name: "ManualPage",
   data() {
     return {
-      tab: 3,
+      tab: 0,
       items: ["소개", "모임", "중간장소", "실시간위치"],
     };
   },
@@ -954,7 +1205,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)
   > .v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(
     .v-slide-group--has-affixes

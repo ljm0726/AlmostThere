@@ -5,6 +5,7 @@
       class="back-btn find-middle-place-btn"
       outlined
       @click="goBack()"
+      elevation="3"
       rounded
     >
       <v-icon class="find-middle-place-btn">$vuetify.icons.arrow_left</v-icon>
@@ -39,7 +40,7 @@
     </div>
     <halfway-modal ref="halfway"></halfway-modal>
 
-    <div id="map" class="maps" @click="closeOveray"></div>
+    <div id="map" class="maps"></div>
     <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
@@ -195,8 +196,9 @@ export default {
   mounted() {
     this.resetPolylines();
 
-    if (window.kakao && window.kakao.maps) {
+    if (window.kakao && window.kakao.maps.services) {
       // 카카오 객체가 있고, 카카오 맵 그릴 준비가 되어 있다면 맵 실행
+      // console.log("loadMap", window.kakao.maps);
       this.loadMap();
     } else {
       // 없다면 카카오 스크립트 추가 후 맵 실행
@@ -382,6 +384,9 @@ export default {
           });
         })(marker, place[i]);
       }
+      window.kakao.maps.event.addListener(this.map, "click", function () {
+        self.closeOveray(); // 지도 클릭 시 실행되는 코드 작성
+      });
     },
 
     closeOveray() {
@@ -428,6 +433,7 @@ export default {
     findCarWay(place) {
       this.stateTraffic = "car";
       this.resetPolylines();
+      this.loading = true;
       this.currentRecommendPlaceName = place.place_name;
       this.currentRecommendPlaceAddress = place.road_address_name;
       this.curRecommendX = place.x;
@@ -879,8 +885,7 @@ export default {
     },
     loadScript() {
       const script = document.createElement("script");
-      script.src =
-        "//dapi.kakao.com/v2/maps/sdk.js?appkey=4a440970d2ed6adb820352f0223f931f&autoload=false&libraries=services"; // &autoload=false api를 로드한 후 맵을 그리는 함수가 실행되도록 구현
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&libraries=services&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
 
       script.onload = () => window.kakao.maps.load(this.loadMap); // 스크립트 로드가 끝나면 지도를 실행될 준비가 되어 있다면 지도가 실행되도록 구현
 
@@ -984,6 +989,7 @@ export default {
   border-bottom: 2px solid #ddd;
   padding-bottom: 10px;
   background: #fff;
+  min-height: 120px;
 }
 .placeinfo:nth-of-type(n) {
   border: 0;
@@ -1037,27 +1043,24 @@ export default {
   margin-top: 0;
 }
 .howto {
-  position: relative;
+  position: absolute;
   left: 71%;
+  bottom: 0;
 }
 .howto #car-icon {
   width: 35px;
-  margin-left: 15%;
-  bottom: 0%;
+  margin-left: 10%;
   /* margin-top: 8%; */
   /* border: 4px solid var(--main-col-1); */
   border-radius: 50%;
   /* box-shadow: 0px 0px 5px 0px var(--main-col-1); */
-  position: absolute;
 }
 .howto #bus-icon {
   width: 35px;
   /* margin-top: 8%; */
-  bottom: 0%;
   /* border: 2px solid var(--main-col-1); */
   border-radius: 50%;
   /* box-shadow: 0px 0px 5px 0px var(--main-col-1); */
-  position: absolute;
 }
 </style>
 <style scoped>

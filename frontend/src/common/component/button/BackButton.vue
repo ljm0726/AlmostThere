@@ -4,6 +4,7 @@
     outlined
     :color="color"
     @click="goBack()"
+    :elevation="elevation ? '3' : '0'"
     rounded
     :style="{
       'background-color':
@@ -20,6 +21,7 @@ export default {
   name: "BackButton",
   props: {
     color: String,
+    elevation: Boolean,
   },
   methods: {
     goBack() {

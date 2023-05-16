@@ -46,7 +46,7 @@
             meetingName
           }}</span>
         </div>
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row align-end justify-center">
           <move-chatting-btn></move-chatting-btn>
           <move-live-map-btn :meetingTime="meetingTime"></move-live-map-btn>
         </div>

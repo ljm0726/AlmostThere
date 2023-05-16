@@ -1,12 +1,5 @@
 <template>
   <v-sheet height="100%" style="padding-top: 55px">
-    <!-- <v-sheet
-      :style="{
-      height: '100vh',
-      height: 'calc(var(--vh, 1vh) * 100)',
-      height: '-webkit-fill-available',
-    }"
-  > -->
     <!-- header -->
     <chatting-header
       @openDrawer="openDrawer"
@@ -39,7 +32,7 @@
           </v-list-item>
         </div>
         <!-- 미팅 방 페이지로 가는 버튼 -->
-        <detail-button :isIcon="false"></detail-button>
+        <detail-button :elevation="false" :isIcon="false"></detail-button>
       </v-sheet>
     </v-navigation-drawer>
     <!-- 새로 들어온 채팅 -->
@@ -72,21 +65,9 @@
     <internet-error ref="error"></internet-error>
     <chatting-loading v-if="loading"></chatting-loading>
     <v-sheet v-else class="d-flex flex-column justify-end" min-height="100%">
-      <!-- <v-sheet
-        v-else
-        class="d-flex flex-column justify-end"
-        style="padding: 55px 0px 72px 0px"
-        min-height="100%"
-        > -->
       <!-- scroll 맨 아래로 내리는 버튼 -->
       <scroll-bottom-button ref="scrollDownBtn"></scroll-bottom-button>
       <!-- 채팅창 -->
-      <!-- <v-sheet
-          id="chattingMessages"
-          style="margin: 55px 0px 72px 0px; overflow-y: auto"
-          :height="chattingHeight"
-          > -->
-      <!-- <v-sheet height="55" max-width="500" width="100%"></v-sheet> -->
       <v-sheet id="chattingMessages">
         <!-- 무한스크롤 -->
         <infinite-loading
@@ -220,13 +201,10 @@
               </v-sheet>
             </v-sheet>
           </div>
+          <!-- footer 여백 -->
           <v-sheet height="72" v-if="idx == chatList.length - 1"></v-sheet>
         </div>
-        <!-- footer 여백 -->
-        <!-- <v-sheet height="72" max-width="500" width="100%"></v-sheet> -->
-        <!-- </div> -->
       </v-sheet>
-      <!-- <v-sheet max-width="500" height="72"></v-sheet> -->
       <!-- 메세지 입력창 -->
       <v-sheet
         class="px-3 pb-4"
@@ -306,23 +284,8 @@ export default {
     member_list() {
       return Object.keys(this.members).map((item) => this.members[item]);
     },
-    // chattingHeight() {
-    //   const pageHeight = document.documentElement.scrollHeight - 127;
-    //   return pageHeight;
-    // },
-    // chattingPageHeight() {
-    //   return window.innerHeight * 0.01;
-    // },
   },
   async created() {
-    // let vh = window.innerHeight * 0.01;
-    // document.documentElement.style.setProperty("--vh", `${vh}px`);
-    // window.addEventListener("resize", () => {
-    //   // console.log("resize");
-    //   let vh = window.innerHeight * 0.01;
-    //   document.documentElement.style.setProperty("--vh", `${vh}px`);
-    // });
-
     this.loading = true;
     // 저장된 채팅 정보를 가져옵니다.
     await getChatting(this.$route.params.id).then(async (res) => {
@@ -349,19 +312,10 @@ export default {
       const scrollY = window.scrollY;
       const visible = document.documentElement.clientHeight;
       const pageHeight = document.documentElement.scrollHeight;
-      // const scrollY = document.getElementById("chattingMessages").scrollTop;
-      // const visible = document.getElementById("chattingMessages").clientHeight;
-      // const pageHeight =
-      //   document.getElementById("chattingMessages").scrollHeight;
-      // console.log(document.getElementById("chattingMessages").scrollTop);
-      // console.log(document.getElementById("chattingMessages").scrollHeight);
-      // console.log(document.getElementById("chattingMessages").clientHeight);
-      // + 90은 Footer의 높이
       const bottomOfPage = visible + scrollY + 90 >= pageHeight;
       return bottomOfPage || pageHeight < visible;
     },
     onTheBottom() {
-      // console.log("onTheBottom");
       this.bottom = this.bottomVisible();
     },
     // 오른쪽 멤버 프로필 목록 상태 변경
@@ -395,11 +349,7 @@ export default {
     },
     // 맨 아래로 스크롤 이동
     goBottom() {
-      // console.log("goBottom");
       window.scrollTo(0, document.querySelector("body").scrollHeight);
-      // document
-      //   .getElementById("chattingMessages")
-      //   .scrollTo(0, document.getElementById("chattingMessages").scrollHeight);
     },
     // 메세지 보내고, 입력 내용 초기화
     sendMessage() {
@@ -431,13 +381,8 @@ export default {
           if (data.statusCode == 200) {
             // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
             await this.chatList.push(data.data);
-            // console.log(">> 여기", data.data);
             // 스크롤 맨 아래로 이동
             // 본인이 작성한 채팅 or 스크롤이 아래 있는 경우
-            // if (
-            //   document.documentElement.scrollTop + window.innerHeight + 100 >=
-            //   document.querySelector("body").scrollHeight
-            // )
             if (this.memberId == data.data.memberId || this.bottom) {
               await this.goBottom();
             } else {
@@ -500,7 +445,7 @@ export default {
         let socket = new SockJS(serverURL);
         this.updateStompClient(Stomp.over(socket));
 
-        console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+        // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
         this.stompClient.connect(
           {},
           async (frame) => {
@@ -513,7 +458,6 @@ export default {
             // this.$refs.error.openDialog();
             this.updateConnected(false);
             this.connect();
-            // this.connect();
           }
         );
       }
@@ -528,23 +472,10 @@ export default {
       document
         .querySelector(".v-snack__wrapper")
         .removeEventListener("click", this.watchNewMessage);
-      // document
-      //   .getElementById("chattingMessages")
-      //   .removeEventListener("scroll", this.onTheBottom);
       window.removeEventListener("scroll", this.onTheBottom);
     }
-    // window.removeEventListener("resize", () => {
-    //   // console.log("resize");
-    //   let vh = window.innerHeight * 0.01;
-    //   document.documentElement.style.setProperty("--vh", `${vh}px`);
-    // });
   },
 };
 </script>
-<style scoped>
-/* #chatting-page {
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
-  height: -webkit-fill-available;
-} */
-</style>
+
+<style scoped></style>

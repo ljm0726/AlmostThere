@@ -5,13 +5,12 @@
         <div class="align-self-end">
           <close-button @closeDialog="dialog = false"></close-button>
         </div>
-        <!-- <img src="@/assets/images/dialog/logout.png" width="60%" /> -->
         <div
-          class="point-font xxxxxxl-font main-col-1 d-flex flex-column align-center"
+          class="point-font xxxxxl-font main-col-1 d-flex flex-column align-center"
           v-html="title"
         ></div>
         <span
-          class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
+          class="extralight-font xxs-font d-flex flex-column align-center semi2narrow-font"
           v-html="message"
         >
         </span>

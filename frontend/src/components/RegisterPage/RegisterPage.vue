@@ -1,21 +1,27 @@
 <template>
-  <div style="margin-bottom: 76px" class="mx-5 main-form">
-    <v-sheet elevation="1" class="px-5 pt-4 pb-3" rounded>
+  <div style="margin-bottom: 76px" class="mx-5 d-flex flex-column">
+    <v-sheet
+      elevation="2"
+      class="px-5 pt-4 pb-5 d-flex flex-column justify-center align-center"
+      rounded
+    >
+      <img width="60%" src="@/assets/images/page/register.png" />
       <div
-        class="d-flex flex-column semi2narrow-font point-font xxxxxxl-font main-col-1"
+        class="my-2 d-flex flex-column align-center narrow-font point-font xxxxxxl-font main-col-1"
       >
-        <span>지금 바로</span>
-        <span>모임을 등록해 보세요!</span>
+        <span>지금 바로 모임을</span>
+        <span>등록해 보세요!</span>
       </div>
-      <div class="d-flex flex-column light-font xxs-font main-col-1">
+      <div
+        class="d-flex flex-column align-center light-font xxs-font main-col-1"
+      >
         <span>함께하고 싶은 멤버들에게 초대 링크를 보낼 수 있고</span>
-        <span>멤버들과 실시간 채팅 및 위치 공유가 가능합니다.</span>
-        <span>정산 기능으로 멤버들과 1/N 계산도 해드립니다!</span>
+        <span>멤버들과 실시간 채팅, 위치 공유, 정산 기능까지!</span>
       </div>
     </v-sheet>
     <v-sheet elevation="0" class="mt-3">
       <!-- 제목 -->
-      <v-sheet width="100%" class="d-flex flex-row" elevation="1" rounded>
+      <v-sheet width="100%" class="d-flex flex-row" elevation="2" rounded>
         <v-sheet
           width="80"
           color="var(--red-col)"
@@ -38,7 +44,7 @@
       </v-sheet>
 
       <!-- 날짜 -->
-      <v-sheet width="100%" class="mt-3 d-flex flex-row" elevation="1" rounded>
+      <v-sheet width="100%" class="mt-3 d-flex flex-row" elevation="2" rounded>
         <v-sheet
           width="80"
           color="var(--yellow-col)"
@@ -98,7 +104,7 @@
       </v-sheet>
 
       <!-- 시간 -->
-      <v-sheet width="100%" class="mt-3 d-flex flex-row" elevation="1" rounded>
+      <v-sheet width="100%" class="mt-3 d-flex flex-row" elevation="2" rounded>
         <v-sheet
           width="80"
           color="var(--green-col)"
@@ -138,7 +144,7 @@
       </v-sheet>
 
       <!-- 장소 -->
-      <v-sheet width="100%" class="mt-3 d-flex flex-row" elevation="1" rounded>
+      <v-sheet width="100%" class="mt-3 d-flex flex-row" elevation="2" rounded>
         <v-sheet
           width="80"
           color="var(--blue-col)"
@@ -364,30 +370,4 @@ export default {
 };
 </script>
 
-<style scoped>
-p {
-  margin: -3% 0%;
-  font-size: 25px;
-}
-
-img {
-  position: absolute;
-  width: 184px;
-  height: 200px;
-  z-index: 100;
-  right: 16px;
-  top: 1%;
-}
-
-.v-input {
-  /* width: 95%; */
-  /* text-align: left; */
-}
-.pr-1 {
-  padding: 12px;
-}
-.row {
-  /* width: 100%; */
-  padding-right: 3%;
-}
-</style>
+<style scoped></style>

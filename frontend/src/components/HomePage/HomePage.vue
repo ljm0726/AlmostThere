@@ -1,8 +1,6 @@
 <template>
   <v-sheet class="d-flex flex-column">
     <home-banner></home-banner>
-    <!-- <v-btn @click="openBottomSheet">테스트 중</v-btn> -->
-    <!-- <bottom-sheet ref="bottomsheet"></bottom-sheet> -->
     <today-meeting></today-meeting>
     <coming-meeting></coming-meeting>
     <close-friends></close-friends>
@@ -12,7 +10,6 @@
 </template>
 
 <script>
-// import BottomSheet from "@/common/component/BottomSheet.vue";
 import CloseFriends from "./CloseFriends.vue";
 import ComingMeeting from "./ComingMeeting.vue";
 import HomeBanner from "./HomeBanner.vue";

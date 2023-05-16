@@ -14,16 +14,7 @@
       z-index: 2;
     "
   >
-    <back-button color="var(--main-col-1)"></back-button>
-    <!-- <span
-      class="point-font"
-      style="text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white"
-    >
-      {{ meetingName }}
-    </span>
-    <span class="point-font white-font" style="text-shadow: 0px 0px 1px #000">
-      {{ meetingName }}
-    </span> -->
+    <back-button :elevation="true" color="var(--main-col-1)"></back-button>
     <v-btn
       class="point-font main-col-1 xxl-font px-3"
       color="var(--main-col-1)"
@@ -38,7 +29,7 @@
     >
       <div class="pt-1">{{ meetingName }}</div>
     </v-btn>
-    <detail-button :isIcon="true"></detail-button>
+    <detail-button :elevation="true" :isIcon="true"></detail-button>
   </v-sheet>
 </template>
 
