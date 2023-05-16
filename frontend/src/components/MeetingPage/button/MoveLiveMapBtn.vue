@@ -1,10 +1,20 @@
 <template>
-  <v-btn color="var(--main-col-1)" @click="moveLivemap" text rounded icon>
-    <div class="d-flex flex-column align-center">
-      <v-icon large style="font-size: 30px; height: 30px; width: 30px">
-        $vuetify.icons.location_outline
+  <v-btn
+    color="var(--main-col-1)"
+    @click="moveLivemap"
+    text
+    rounded
+    icon
+    x-large
+  >
+    <div class="pt-1 d-flex flex-column align-center">
+      <v-icon
+        large
+        style="font-size: 37px; height: 37px; width: 37px; margin: 2px 0px"
+      >
+        $vuetify.icons.map_outline
       </v-icon>
-      <span class="mt-1 xxxxs-font">위치공유</span>
+      <span class="xxxxs-font">위치</span>
     </div>
   </v-btn>
 </template>

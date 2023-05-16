@@ -35,9 +35,10 @@
             <v-btn icon @click="copyLink"
               ><v-icon>$vuetify.icons.copy_outline</v-icon></v-btn
             >
-            <v-btn icon @click="sendkakao"
-              ><v-icon>$vuetify.icons.share_outline</v-icon></v-btn
-            >
+            <v-btn icon @click="sendkakao">
+              <v-icon>$vuetify.icons.share_outline</v-icon>
+              <!-- <v-icon>mdi-share-variant-outline</v-icon> -->
+            </v-btn>
           </div>
         </v-sheet>
         <span class="extralight-font xxs-font main-col-1">

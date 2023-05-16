@@ -979,7 +979,7 @@
           </div>
           <div class="light-font xs-font mt-2 main-col-1">
             <span>모임 상세페이지에서 모임 제목 옆에 위치한 </span>
-            <v-icon small>$vuetify.icons.location_outline</v-icon>
+            <v-icon small>$vuetify.icons.map_outline</v-icon>
             <span>
               아이콘을 클릭하면 실시간 위치 공유로 이동할 수 있습니다.
             </span>

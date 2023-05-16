@@ -1,18 +1,15 @@
 <template>
   <v-btn
-    class="mr-2"
+    class="mr-1"
     color="var(--main-col-1)"
-    @click="moveChatting()"
+    @click="moveChatting"
     text
     rounded
     icon
+    large
   >
     <div class="d-flex flex-column align-center">
-      <v-icon
-        large
-        style="font-size: 35px; height: 35px; width: 35px"
-        color="var(--main-col-1)"
-      >
+      <v-icon large style="font-size: 33px; height: 33px; width: 33px">
         $vuetify.icons.chatting_outline
       </v-icon>
       <span class="mt-1 xxxxs-font">채팅</span>

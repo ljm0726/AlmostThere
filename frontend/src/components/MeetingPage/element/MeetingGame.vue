@@ -12,12 +12,14 @@
     </v-btn>
     <vue-bottom-sheet ref="gameSheet" max-width="500px" :is-full-screen="true">
       <v-sheet class="px-5 d-flex flex-column pb-10">
-        <span
-          class="point-font xxxxl-font main-col-1 align-self-center"
-          v-on:click="spin"
-        >
-          Click Here !
-        </span>
+        <v-btn text rounded>
+          <span
+            class="point-font xxxxl-font main-col-1 align-self-center"
+            v-on:click="spin"
+          >
+            Click Here !
+          </span>
+        </v-btn>
         <section class="section d-flex flex-column align-center justify-center">
           <div class="container" id="app">
             <div class="columns">
@@ -200,6 +202,7 @@ export default {
     },
     pushMember() {
       for (var member of this.memberList) {
+        if (this.options.length == 10) break;
         this.options.push(member.memberNickname);
       }
       this.drawRouletteWheel();
@@ -274,7 +277,7 @@ export default {
       let _this = this;
       this.spinTimeout = setTimeout(function () {
         _this.rotateWheel();
-      }, 20);
+      }, 10);
     },
 
     stopRotateWheel() {
