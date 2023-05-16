@@ -116,7 +116,9 @@ export default {
       const filterMeetingTime = this.formatTime(this.meetingTime);
       const roomCode = this.roomCode;
 
-      Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
+      if (!Kakao.isInitialized()) {
+        Kakao.init(`${process.env.VUE_APP_KAKAO_API_KEY}`);
+      }
       window.Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
