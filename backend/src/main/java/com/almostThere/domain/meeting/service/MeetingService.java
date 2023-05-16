@@ -190,7 +190,9 @@ public class MeetingService {
         Meeting meeting = meetingCreateRequestDto.toEntity(meetingCreateRequestDto, meetingHost,rc);
         meeting = meetingRepository.save(meeting);
         MeetingMember meetingMember = new MeetingMember(meetingHost, meeting, StateType.GOING);
-        return meetingMemberRepository.save(meetingMember).getId();
+        meetingMemberRepository.save(meetingMember);
+
+        return meeting.getId();
     }
 
     /**
