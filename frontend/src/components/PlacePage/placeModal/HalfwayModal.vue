@@ -36,13 +36,11 @@
                 :key="index"
                 outlined
                 small
+                @click="goToSearchPage(`${index + 1}`)"
                 color="var(--main-col-1)"
                 style="border-radius: 10px"
               >
-                <div
-                  class="xs-font medium-font"
-                  @click="goToSearchPage(`${index + 1}`)"
-                >
+                <div class="xs-font medium-font">
                   {{
                     start
                       ? `${index + 1}. ` + start.get("name")
