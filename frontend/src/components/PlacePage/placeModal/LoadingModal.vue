@@ -1,19 +1,21 @@
 <template>
-  <v-dialog v-model="dialog" max-width="300px" rounded="xl" persistent>
-    <v-card rounded="xl">
+  <v-dialog v-model="dialog" max-width="300" rounded="xl" persistent>
+    <v-card rounded="xl" class="pa-2">
       <v-card-title class="d-flex flex-column">
         <v-progress-circular
           :size="70"
           :width="7"
-          color="purple"
-          class="loading"
+          color="var(--main-col-1)"
+          class="mb-5 loading"
           indeterminate
         ></v-progress-circular>
-        <span
-          class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
+        <div
+          class="point-font xxl-font d-flex flex-column align-center semi2narrow-font main-col-1"
         >
-          <div class="find-place-text">중간 장소를 찾고있습니다.</div>
-        </span>
+          <!-- <div class="find-place-text">중간 장소를 찾고있습니다.</div> -->
+          <span>중간 장소를</span>
+          <span>찾고 있습니다.</span>
+        </div>
       </v-card-title>
     </v-card>
   </v-dialog>
@@ -44,12 +46,12 @@ export default {
 </script>
 
 <style scoped>
-.loading {
+/* .loading {
   margin-top: 10%;
 }
 .find-place-text {
   font-family: var(--extrabold-font);
   font-size: 20px;
   margin-top: 20%;
-}
+} */
 </style>

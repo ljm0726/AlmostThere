@@ -30,16 +30,17 @@
       </div>
     </div>
     <div
-      class="detail"
-      style="display: flex; justify-content: space-between; width: 88%"
+      class="detail d-flex justify-space-between align-center"
+      style="width: 88%"
     >
       <a :href="placeUrl" target="_blank" class="xs-font">상세보기</a>
       <v-btn
-        class="px-5"
+        class="px-10"
         color="var(--main-col-1)"
         dark
         rounded
         medium
+        elevation="0"
         @click="regist_meeting"
       >
         선택
@@ -132,6 +133,7 @@ export default {
 <style scoped>
 .traffic {
   width: 14%;
+  max-width: 50px;
   position: absolute;
   margin-left: 80%;
   margin-top: -10%;
@@ -140,9 +142,16 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 50px -10px rgba(0, 0, 0, 0.25);
   border-radius: 20px;
-  width: 90%;
-  margin-inline: -3.5%;
-  height: auto;
+  width: 92%;
+  /* margin-inline: -3.5%; */
+  /* height: auto; */
+  position: fixed;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  z-index: 2;
+  max-width: 470px;
 }
 .average {
   font-size: 20px;

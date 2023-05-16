@@ -31,6 +31,7 @@ import ListIcon from "@/common/component/icons/ListIcon.vue";
 import ArrowRightWhiteIcon from "@/common/component/icons/ArrowRightWhiteIcon.vue";
 import PointIcon from "@/common/component/icons/PointIcon.vue";
 import AddCircleIcon from "@/common/component/icons/AddCircleIcon.vue";
+import SearchIcon from "@/common/component/icons/SearchIcon.vue";
 
 Vue.use(Vuetify);
 
@@ -133,6 +134,9 @@ export default new Vuetify({
       },
       add_circle: {
         component: AddCircleIcon,
+      },
+      search: {
+        component: SearchIcon,
       },
     },
   },

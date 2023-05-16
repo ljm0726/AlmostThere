@@ -251,6 +251,8 @@ export default {
 @import "@/assets/styles/override/snackbar.css";
 @import "@/assets/styles/box/box_shadow.css";
 @import "@/assets/styles/box/box_border.css";
+@import "@/assets/styles/place.css";
+
 :root {
   --swiper-theme-color: var(--main-col-1) !important;
 }

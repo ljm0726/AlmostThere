@@ -93,7 +93,7 @@ const home = [
     name: "search",
     components: {
       default: SearchPlacePage,
-      navigation: TheNavigation,
+      // navigation: TheNavigation,
     },
   },
   {
