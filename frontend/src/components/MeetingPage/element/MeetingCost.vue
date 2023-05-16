@@ -85,7 +85,7 @@
         <span class="point-font xxxxl-font main-col-1 align-self-center">
           영수증 등록
         </span>
-        <v-form ref="forms">
+        <v-form v-model="valid" ref="forms" lazy-validation>
           <v-file-input
             v-model="receipt"
             class="pt-5"
@@ -218,6 +218,7 @@ export default {
   },
   data() {
     return {
+      valid: true,
       imageLoading: false,
       ocrSuccess: true,
       receipt: null,
@@ -235,8 +236,9 @@ export default {
     },
     async addCalculateDetail() {
       // if (this.ocrSuccess && this.receipt) {
-      const { valid } = await this.$refs.forms.validate();
-      if (valid && this.receipt) {
+      // const { valid } = await this.$refs.forms.validate();
+      await this.$refs.forms.validate();
+      if (this.valid && this.receipt) {
         saveCalculateDetail(
           this.meetingId,
           this.receipt,
@@ -317,8 +319,8 @@ export default {
   },
   watch: {
     async receipt() {
-      const { valid } = await this.$refs.forms.validate();
-      if (valid && this.receipt != null) {
+      await this.$refs.forms.validate();
+      if (this.valid && this.receipt != null) {
         this.imageLoading = true;
         this.ocrSuccess = await true;
         if (this.receipt != null) {
