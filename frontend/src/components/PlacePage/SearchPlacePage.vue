@@ -57,7 +57,7 @@ export default {
         "//dapi.kakao.com/v2/maps/sdk.js?appkey=4a440970d2ed6adb820352f0223f931f&autoload=false&libraries=services"; // &autoload=false api를 로드한 후 맵을 그리는 함수가 실행되도록 구현
       script.onload = () => {
         window.kakao.maps.load(() => {
-          this.loadMap;
+          // this.loadMap();
           this.ps = new window.kakao.maps.services.Places();
         });
       }; // 스크립트 로드가 끝나면 지도를 실행될 준비가 되어 있다면 지도가 실행되도록 구현
