@@ -63,8 +63,8 @@
                   v-model="new_option"
                   v-on:keyup.enter="addOptions"
                   type="text"
-                  append-outer-icon="$vuetify.icons.add_circle"
-                  @click:append-outer="addOptions"
+                  append-icon="$vuetify.icons.add_circle"
+                  @click:append="addOptions"
                   placeholder="항목"
                   outlined
                   hide-details
