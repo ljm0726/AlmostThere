@@ -24,7 +24,6 @@ async function checkMeetingMember(roomCode, router) {
       }
     })
     .catch(() => {
-      console.log("hi");
       router.push("/entrance-permission-error");
       throw error;
     });
