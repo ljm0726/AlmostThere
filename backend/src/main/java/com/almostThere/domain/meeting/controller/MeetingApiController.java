@@ -89,8 +89,8 @@ public class MeetingApiController {
      */
     @PostMapping
     public BaseResponse createMeeting(@RequestBody MeetingCreateRequestDto meetingCreateRequestDto){
-        meetingService.createMeeting(meetingCreateRequestDto);
-        return new BaseResponse(200, "SUCCESS",null);
+        Long meetingId = meetingService.createMeeting(meetingCreateRequestDto);
+        return new BaseResponse(200, "SUCCESS", meetingId);
     }
 
     /**
