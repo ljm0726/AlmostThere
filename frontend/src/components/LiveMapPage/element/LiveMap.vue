@@ -84,7 +84,8 @@ export default {
           if (this.background_type == true) this.initMap();
           else this.initMapTileSet();
         });
-      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&libraries=services&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
+
       document.head.appendChild(script);
     }
   },
