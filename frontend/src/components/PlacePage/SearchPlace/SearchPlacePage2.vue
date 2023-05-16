@@ -1,27 +1,62 @@
 <template>
   <div class="overlay full-search-color">
-    <v-btn id="square-btn" class="back-btn" outlined @click="goBack()" rounded>
-      <v-icon>$vuetify.icons.arrow_left</v-icon>
-    </v-btn>
-    <form action="">
-      <input
-        class="search-box"
-        placeholder=" 모임장소를 검색하세요"
-        v-model="searchValue"
-        ref="myInput"
-        autocomplete="off"
-      />
-      <button id="submit_btn" @click.prevent="getSearchResult"></button>
-    </form>
+    <!-- 장소 찾기 헤더 -->
+    <v-sheet
+      class="px-3 main-col-1 d-flex flex-row justify-space-between align-center"
+      max-width="500"
+      height="55"
+      style="
+        position: fixed;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 2;
+      "
+    >
+      <v-btn
+        id="square-btn"
+        class="back-btn"
+        elevation="3"
+        outlined
+        @click="goBack()"
+        rounded
+        color="var(--main-col-1)"
+      >
+        <v-icon>$vuetify.icons.arrow_left</v-icon>
+      </v-btn>
+      <v-sheet class="ml-2 search-place" color="transparent" width="100%">
+        <form action="">
+          <input
+            class="search-box"
+            placeholder=" 모임장소를 검색하세요"
+            v-model="searchValue"
+            ref="myInput"
+            autocomplete="off"
+          />
+          <button id="submit_btn" @click.prevent="getSearchResult"></button>
+        </form>
+        <v-icon class="mr-2 search-icon" v-on:click="getSearchResult">
+          $vuetify.icons.search
+        </v-icon>
+      </v-sheet>
+    </v-sheet>
+    <no-image-default
+      ref="error"
+      :message="errorMsg"
+      :title="errorTitle"
+    ></no-image-default>
     <div id="list" class="lists" v-show="isListOpen"></div>
   </div>
 </template>
 
 <script>
+import NoImageDefault from "@/common/component/dialog/NoImageDefault.vue";
 // index를 props로 받고 결과를 emit으로 저장 하던지, state에 저장하던지 해야함..
 import { mapActions } from "vuex";
 
 export default {
+  components: { NoImageDefault },
   name: "SearchPlacePage2",
   data() {
     return {
@@ -38,6 +73,8 @@ export default {
         type: Object,
         required: true,
       },
+      errorMsg: "",
+      errorTitle: "",
     };
   },
   mounted() {
@@ -119,7 +156,9 @@ export default {
           });
         });
       } else {
-        alert("검색 결과가 없습니다.");
+        this.errorTitle = "<span>검색 결과가</span><span>없습니다!</span>";
+        this.$refs.error.openDialog();
+        // alert("검색 결과가 없습니다.");
       }
     },
     searchAddrFromCoords(coords, callback) {
@@ -158,66 +197,57 @@ export default {
 //   background-color: rgba(255, 255, 255, 1);
 //   z-index: 9999;
 // }
-.lists {
-  overflow: scroll;
-  margin-top: 13%;
-}
-.resident_items {
-  position: relative;
-  margin-inline: 6%;
-}
-.resident_items .place-name {
-  font-size: 20px;
-  font-family: var(--extrabold-font);
-  padding-block: 7px;
-}
-.resident_items .address-name {
-  font-family: var(--medium-font);
-  border-bottom: 2px solid #000;
-  padding-block: 5px;
-}
+// .lists {
+//   // overflow: scroll;
+//   // margin-top: 13%;
+// }
+// .resident_items {
+//   position: relative;
+//   margin-inline: 6%;
+// }
+// .resident_items .place-name {
+//   font-size: 20px;
+//   font-family: var(--extrabold-font);
+//   padding-block: 7px;
+// }
+// .resident_items .address-name {
+//   font-family: var(--medium-font);
+//   border-bottom: 2px solid #000;
+//   padding-block: 5px;
+// }
 
-input {
-  padding-left: 10px; /* 여백 크기 조절 */
-  font-family: var(--medium-font);
-}
-.find-place-btn {
-  box-sizing: border-box;
-  position: absolute;
-  z-index: 2;
-  right: 5%;
-  top: 7.5%;
-  font-family: var(--extrabold-font);
-  background: #ffffff;
-  border: 1px solid #092a49;
-  box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
-  border-radius: 18px;
-}
-.back-btn {
-  display: flex;
-  position: absolute;
-  z-index: 2;
-  background: #ffffff;
-  left: 2.2%;
-  top: 1.7%;
-  bottom: unset; /* 추가 */
-}
-.search-box {
-  box-sizing: border-box;
-  z-index: 2;
-  display: flex;
-  position: absolute;
-  margin-left: 5%;
-  width: 80%;
-  height: 37px;
-  left: 10%; /* 수정 */
-  right: 10%; /* 추가 */
-  top: 1.7%;
-  bottom: unset; /* 추가 */
+// input {
+//   padding-left: 10px;
+//   font-family: var(--medium-font);
+// }
+// .find-place-btn {
+//   box-sizing: border-box;
+//   position: absolute;
+//   z-index: 2;
+//   right: 5%;
+//   top: 7.5%;
+//   font-family: var(--extrabold-font);
+//   background: #ffffff;
+//   border: 1px solid #092a49;
+//   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
+//   border-radius: 18px;
+// }
+// .search-box {
+//   box-sizing: border-box;
+//   z-index: 2;
+//   display: flex;
+//   position: absolute;
+//   margin-left: 5%;
+//   width: 80%;
+//   height: 37px;
+//   left: 10%;
+//   right: 10%;
+//   top: 1.7%;
+//   bottom: unset;
 
-  background: #ffffff;
-  border: 1px solid #092a49;
-  box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
-  border-radius: 10px;
-}
+//   background: #ffffff;
+//   border: 1px solid #092a49;
+//   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
+//   border-radius: 10px;
+// }
 </style>

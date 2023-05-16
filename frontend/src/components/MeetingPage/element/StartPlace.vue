@@ -141,10 +141,10 @@ export default {
   height: 100%;
 }
 
-.place-info {
+/* .place-info {
   z-index: 2;
   position: absolute;
   bottom: 5%;
   left: 8.5%;
-}
+} */
 </style>

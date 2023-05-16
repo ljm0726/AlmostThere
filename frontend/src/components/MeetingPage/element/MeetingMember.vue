@@ -1,6 +1,6 @@
 <template>
-  <v-sheet class="ml-3 my-2 d-flex flex-column" color="transparent">
-    <v-sheet class="d-flex flex-row justify-space-between align-center">
+  <v-sheet class="my-2 d-flex flex-column" color="transparent">
+    <v-sheet class="ml-3 d-flex flex-row justify-space-between align-center">
       <span class="point-font xxxxl-font main-col-1">멤버</span>
       <div class="mr-3 d-flex flex-row xxxxs-font thin-font">
         <div class="mx-1">
@@ -21,10 +21,9 @@
         </div>
       </div>
     </v-sheet>
-    <swiper class="swiper pt-1" :options="swiperOption">
+    <swiper class="swiper pt-1 px-3" :options="swiperOption">
       <swiper-slide v-for="(member, index) in memberList" :key="index">
         <v-badge
-          class="mr-2"
           overlap
           dot
           :color="
@@ -62,7 +61,7 @@ export default {
   data() {
     return {
       swiperOption: {
-        spaceBetween: 0,
+        spaceBetween: 7,
         freeMode: true,
         slidesPerView: "auto",
       },

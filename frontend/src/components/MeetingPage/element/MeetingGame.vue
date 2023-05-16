@@ -72,18 +72,35 @@
                   maxlength="7"
                   block
                 ></v-text-field>
-                <v-btn
-                  class="mt-1 ml-auto"
-                  rounded
-                  color="var(--main-col-1)"
-                  small
-                  dark
-                  block
-                  elevation="0"
-                  @click="pushMember()"
-                >
-                  모임 멤버를 항목으로 넣기
-                </v-btn>
+                <v-row class="ma-0 pa-0 mt-2">
+                  <v-col class="ma-0 pa-0">
+                    <v-btn
+                      color="var(--main-col-1)"
+                      small
+                      dark
+                      width="98%"
+                      elevation="0"
+                      @click="pushMember()"
+                    >
+                      모임 멤버 추가하기
+                    </v-btn>
+                  </v-col>
+                  <v-col class="ma-0 pa-0">
+                    <v-btn
+                      color="var(--main-col-1)"
+                      small
+                      dark
+                      block
+                      width="98%"
+                      outlined
+                      elevation="0"
+                      @click="removeAllOptions()"
+                    >
+                      전체 항목 삭제하기
+                    </v-btn>
+                  </v-col>
+                </v-row>
+
                 <!-- </v-responsive> -->
                 <!-- <v-btn
                         id="round-btn"
@@ -149,6 +166,9 @@ export default {
   props: {
     memberList: Array,
   },
+  // mounted() {
+  //   this.$refs.gameSheet.open();
+  // },
   computed: {
     arc() {
       return Math.PI / (this.options.length / 2);
@@ -198,6 +218,10 @@ export default {
     removeOptions(option) {
       let idx = this.options.indexOf(option) || 0;
       this.options.splice(idx, 1);
+      this.drawRouletteWheel();
+    },
+    removeAllOptions() {
+      this.options = [];
       this.drawRouletteWheel();
     },
     pushMember() {
