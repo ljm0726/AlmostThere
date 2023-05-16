@@ -131,16 +131,16 @@ export default {
         // this.stompClient = Stomp.over(socket);
         this.updateStompClient(Stomp.over(socket));
 
-        console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
+        // console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`);
         this.stompClient.connect(
           {},
-          (frame) => {
+          () => {
             // 소켓 연결 성공
             // this.isSocketConnected = true;
             // this.isConnect = true;
-            console.log("소켓 연결 성공", frame);
+            // console.log("소켓 연결 성공", frame);
             this.updateConnected(false);
-
+            this.stompClient.debug = () => {};
             // GeoLocation - 1초마다 현 위치 얻기
             this.getGeoLocation();
             this.startIntervalMemberLocation();

@@ -1,5 +1,6 @@
 import MeetingPage from "@/components/MeetingPage/MeetingPage.vue";
-import MeetingEntrance from "@/components/MeetingPage/element/MeetingEntrance.vue";
+import MeetingEntranceDenied from "@/components/MeetingPage/element/MeetingEntranceDenied.vue";
+import MeetingMemberExceed from "@/components/MeetingPage/element/MeetingMemberExceed.vue";
 import MeetingHeader from "@/views/Header/MeetingHeader.vue";
 import LiveMapPage from "@/components/LiveMapPage/LiveMapPage.vue";
 // import LiveMapHeader from "@/views/Header/LiveMapHeader.vue";
@@ -16,7 +17,14 @@ const meeting = [
     path: "/entrance-denied",
     name: "entrance-denied",
     components: {
-      default: MeetingEntrance,
+      default: MeetingMemberExceed,
+    },
+  },
+  {
+    path: "/entrance-permission-error",
+    name: "entrance-permission-error",
+    components: {
+      default: MeetingEntranceDenied,
     },
   },
   {
