@@ -66,6 +66,7 @@ export default {
   right: 0;
   bottom: 30px;
   z-index: 2;
+  cursor: pointer;
   /* padding-bottom: 20px; */
 }
 .name {

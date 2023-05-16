@@ -133,7 +133,7 @@ export default {
 <style scoped>
 .traffic {
   width: 14%;
-  max-width: 50px;
+  /* max-width: 50px; */
   position: absolute;
   margin-left: 80%;
   margin-top: -10%;
