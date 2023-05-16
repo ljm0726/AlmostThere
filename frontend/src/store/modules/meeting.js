@@ -112,13 +112,12 @@ const meetingStore = {
         meeting_lat,
         meeting_lng,
         ({ data }) => {
-          data;
           commit("SET_MEETING_NAME", null);
           commit("SET_MEETING_DATE", null);
           commit("SET_MEETING_TIME", null);
           commit("SET_PLACE_NAME", null);
           commit("SET_PLACE_ADDR", null);
-          router.push({ name: "home" });
+          router.push({ path: `/meeting/${data.data}` });
         },
         (error) => {
           console.error(error);

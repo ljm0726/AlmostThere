@@ -176,7 +176,7 @@ public class MeetingService {
      * @return 없음
      */
     @Transactional
-    public void createMeeting(MeetingCreateRequestDto meetingCreateRequestDto){
+    public Long createMeeting(MeetingCreateRequestDto meetingCreateRequestDto){
         final Member meetingHost = memberRepository.findById(meetingCreateRequestDto.getHostId())
                 .orElseThrow(() -> new NotFoundException(
                         ErrorCode.MEMBER_NOT_FOUND));
@@ -190,7 +190,7 @@ public class MeetingService {
         Meeting meeting = meetingCreateRequestDto.toEntity(meetingCreateRequestDto, meetingHost,rc);
         meeting = meetingRepository.save(meeting);
         MeetingMember meetingMember = new MeetingMember(meetingHost, meeting, StateType.GOING);
-        meetingMemberRepository.save(meetingMember);
+        return meetingMemberRepository.save(meetingMember).getId();
     }
 
     /**
