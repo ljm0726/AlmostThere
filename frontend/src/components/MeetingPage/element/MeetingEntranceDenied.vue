@@ -11,13 +11,13 @@
         <div class="align-self-end">
           <close-button @closeDialog="closeDialog"></close-button>
         </div>
-        <img src="@/assets/images/dialog/logout.png" width="60%" />
+        <img src="@/assets/images/dialog/dont_enter.png" width="60%" />
         <span class="logo-font xxxxxxl-font main-col-1">Permission Error</span>
         <span
           class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
         >
-          <!-- <div>모임 정원을 초과했습니다.</div> -->
-          <div>호스트에게 문의해보세요.</div>
+          <div>잘못된 모임 정보이거나</div>
+          <div>회원 정보가 올바르지 않습니다.</div>
         </span>
       </v-card-title>
       <v-card-text>

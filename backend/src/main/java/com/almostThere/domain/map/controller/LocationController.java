@@ -57,6 +57,7 @@ public class LocationController {
     @MessageMapping("/locShare")
     public void saveLocation(String message) throws ParseException {
 
+        System.out.println("메시지 정상 수신");
         JSONParser jsonParser = new JSONParser();
         JSONObject memberObject = (JSONObject) jsonParser.parse(message);
 
