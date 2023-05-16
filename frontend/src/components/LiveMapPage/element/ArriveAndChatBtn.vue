@@ -29,38 +29,6 @@
         <v-icon color="var(--main-col-1)">mdi-arrow-expand-all</v-icon>
       </v-btn>
     </v-bottom-navigation>
-    <!-- <v-sheet
-      max-width="490"
-      color="white"
-      elevation="3"
-      width="80%"
-      class="d-flex flex-row justify-center align-center"
-      style="
-        position: fixed;
-        margin: 0 auto;
-        left: 0;
-        right: 0;
-        bottom: 15px;
-
-        z-index: 2;
-      "
-    >
-      <v-btn
-        class="d-flex flex-column align-center justify-center"
-        @click="goChatting()"
-        color="white"
-        flat
-      >
-        <v-icon>$vuetify.icons.chatting_outline</v-icon>
-        <span>채팅</span>
-      </v-btn>
-      <v-btn @click="checkLocation()" color="var(--main-col-1)" dark rounded>
-        도착 완료
-      </v-btn>
-      <v-btn @click="resizeMapLevel()" color="var(--main-col-1)" dark rounded>
-        범위 재조정
-      </v-btn>
-    </v-sheet> -->
     <v-dialog v-model="success" max-width="300px" rounded="xl">
       <v-card rounded="xl">
         <v-card-title class="d-flex flex-column">

@@ -7,6 +7,7 @@
       color="var(--main-col-1)"
       @click="goDetail()"
       rounded
+      :elevation="elevation ? '3' : '0'"
       style="background-color: white !important"
     >
       <v-icon color="var(--main-col-1)">$vuetify.icons.detail_outline</v-icon>
@@ -29,6 +30,7 @@ export default {
   name: "DetailButton",
   props: {
     isIcon: Boolean,
+    elevation: Boolean,
   },
   methods: {
     goDetail() {

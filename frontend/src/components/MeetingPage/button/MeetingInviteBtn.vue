@@ -18,7 +18,9 @@
         <div class="align-self-end">
           <close-button @closeDialog="closeDialog"></close-button>
         </div>
-        <span class="point-font xl-font main-col-1">{{ meetingName }}</span>
+        <span class="point-font xl-font main-col-1 semi2narrow-font">
+          {{ meetingName }}
+        </span>
         <span class="point-font xxxxxxl-font main-col-1">초대 링크</span>
         <img src="@/assets/images/dialog/invite_link.png" width="60%" />
         <v-sheet
@@ -33,27 +35,35 @@
             <v-btn icon @click="copyLink"
               ><v-icon>$vuetify.icons.copy_outline</v-icon></v-btn
             >
-            <v-btn icon @click="sendkakao"
-              ><v-icon>$vuetify.icons.share_outline</v-icon></v-btn
-            >
+            <v-btn icon @click="sendkakao">
+              <v-icon>$vuetify.icons.share_outline</v-icon>
+              <!-- <v-icon>mdi-share-variant-outline</v-icon> -->
+            </v-btn>
           </div>
         </v-sheet>
-        <span class="extralight-font xs-font main-col-1">
+        <span class="extralight-font xxs-font main-col-1">
           초대 링크를 공유해 멤버를 추가해 보세요.
         </span>
       </v-card-title>
     </v-card>
     <v-snackbar
       v-model="snackbar"
-      :multi-line="multiLine"
       :timeout="timeout"
-      rounded="pill"
+      text
+      elevation="10"
+      color="var(--main-col-1)"
+      outlined
+      id="link-copy"
     >
-      {{ text }}
-
+      <span class="bold-font">{{ text }}</span>
       <template v-slot:action="{ attrs }">
-        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
-          Close
+        <v-btn
+          color="var(--main-col-1)"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          닫기
         </v-btn>
       </template>
     </v-snackbar>
@@ -185,4 +195,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+#link-copy .v-snack__wrapper {
+  margin-bottom: 40px !important;
+}
+</style>

@@ -11,10 +11,10 @@
         <div class="align-self-end">
           <close-button @closeDialog="goBack"></close-button>
         </div>
-        <img src="@/assets/images/dialog/logout.png" width="60%" />
+        <img src="@/assets/images/dialog/internet_error.png" width="60%" />
         <span class="logo-font xxxxxxl-font main-col-1">Server Error</span>
         <span
-          class="extralight-font xs-font d-flex flex-column align-center seminarrow-font"
+          class="extralight-font xxs-font d-flex flex-column align-center semi2narrow-font"
         >
           <div>인터넷 연결이 되지 않았거나</div>
           <div>접속 불가능한 링크입니다.</div>
