@@ -12,11 +12,8 @@
     </v-btn>
     <vue-bottom-sheet ref="gameSheet" max-width="500px" :is-full-screen="true">
       <v-sheet class="px-5 d-flex flex-column pb-10">
-        <v-btn text rounded>
-          <span
-            class="point-font xxxxl-font main-col-1 align-self-center"
-            v-on:click="spin"
-          >
+        <v-btn text rounded v-on:click="spin">
+          <span class="point-font xxxxl-font main-col-1 align-self-center">
             Click Here !
           </span>
         </v-btn>
