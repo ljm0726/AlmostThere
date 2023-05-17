@@ -52,10 +52,7 @@ function apiInstance() {
             result = await instance(error.config);
           })
           .catch(async (error) => {
-            if (!error.response) {
-              localStorage.clear();
-              window.location.href = "/login";
-            }
+            console.log("Err", error);
             const data = error.response.data;
             // access token 재발급 불가 또는 존재하지 않는 회원인 경우
             if (
