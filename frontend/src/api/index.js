@@ -30,8 +30,10 @@ function apiInstance() {
     async function (error) {
       var result = null;
       // 권한 오류인 경우, access_token 재발급 시도
+      console.log("auth error", error);
       if (error.response.data && error.response.data.status == 401) {
         // access token 발급 시도
+        console.log("재발급?");
         await axios
           .create({
             baseURL: `${process.env.VUE_APP_API_BASE_URL}`,
@@ -52,7 +54,11 @@ function apiInstance() {
             result = await instance(error.config);
           })
           .catch(async (error) => {
-            console.log("Err", error);
+            console.log("refr Err", error);
+            if (!error.response) {
+              localStorage.clear();
+              window.location.href = "/login";
+            }
             const data = error.response.data;
             // access token 재발급 불가 또는 존재하지 않는 회원인 경우
             if (
