@@ -113,8 +113,8 @@
           시간
         </v-sheet>
         <v-dialog
-          ref="menu2"
-          v-model="menu2"
+          ref="timeDialog"
+          v-model="timeDialog"
           :return-value.sync="time"
           width="290px"
         >
@@ -132,14 +132,19 @@
               style="width: 100%"
             ></v-text-field>
           </template>
-          <v-time-picker
-            v-if="menu2"
-            v-model="time"
-            full-width
-            color="var(--main-col-1)"
-            @click:minute="$refs.menu2.save(time)"
-            format="24hr"
-          ></v-time-picker>
+          <v-time-picker v-model="time" full-width color="var(--main-col-1)">
+            <v-spacer></v-spacer>
+            <v-btn text color="var(--main-col-1)" @click="timeDialog = false">
+              닫기
+            </v-btn>
+            <v-btn
+              text
+              color="var(--main-col-1)"
+              @click="$refs.timeDialog.save(time)"
+            >
+              확인
+            </v-btn>
+          </v-time-picker>
         </v-dialog>
       </v-sheet>
 
@@ -209,7 +214,7 @@ export default {
       date: new Date().toISOString().substring(0, 10),
       menu: null,
       time: null,
-      menu2: null,
+      timeDialog: null,
       meeting_place: "",
       curDate: null,
       curTime: null,

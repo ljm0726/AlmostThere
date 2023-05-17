@@ -421,7 +421,9 @@ export default {
           .catch((error) => {
             // console.error(error);
             error;
-            alert("수정 중 에러 발생");
+            // alert("수정 중 에러 발생");
+            this.errorTitle = "수정 중 에러 발생";
+            this.$refs.error.openDialog();
           });
       }
     },

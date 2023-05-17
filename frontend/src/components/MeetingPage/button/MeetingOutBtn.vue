@@ -82,8 +82,9 @@ export default {
           });
         })
         .catch((error) => {
-          console.error(error);
-          alert("모임 탈출 실패 ~ ");
+          error;
+          // console.error(error);
+          // alert("모임 탈출 실패 ~ ");
         });
     },
 
