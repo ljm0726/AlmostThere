@@ -49,26 +49,26 @@
           <v-btn-toggle
             elevation="3"
             dense
-            v-show="isRecommend"
             rounded
+            v-show="isRecommend"
             mandatory
             color="var(--main-col-1)"
             id="category"
           >
-            <v-btn id="SW8" @click="onClickCategory">
+            <v-btn id="SW8" @click="onClickCategory" style="min-width: 20px">
               <v-icon color="var(--main-col-1)" id="SW8">
                 mdi mdi-subway-variant
               </v-icon>
             </v-btn>
-            <v-btn id="FD6" @click="onClickCategory">
+            <v-btn id="FD6" @click="onClickCategory" style="min-width: 20px">
               <v-icon id="FD6" color="var(--main-col-1)">
                 mdi mdi-silverware-fork-knife
               </v-icon>
             </v-btn>
-            <v-btn id="CE7" @click="onClickCategory">
+            <v-btn id="CE7" @click="onClickCategory" style="min-width: 20px">
               <v-icon color="var(--main-col-1)" id="CE7">mdi mdi-coffee</v-icon>
             </v-btn>
-            <v-btn id="CT1" @click="onClickCategory">
+            <v-btn id="CT1" @click="onClickCategory" style="min-width: 20px">
               <v-icon color="var(--main-col-1)" id="CT1">
                 mdi mdi-movie-play
               </v-icon>
