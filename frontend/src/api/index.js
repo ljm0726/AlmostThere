@@ -52,6 +52,10 @@ function apiInstance() {
             result = await instance(error.config);
           })
           .catch(async (error) => {
+            if (!error.response) {
+              localStorage.clear();
+              window.location.href = "/login";
+            }
             const data = error.response.data;
             // access token 재발급 불가 또는 존재하지 않는 회원인 경우
             if (
@@ -59,7 +63,7 @@ function apiInstance() {
               (data.status == 404 && data.message == "member not found.")
             ) {
               localStorage.clear();
-              // window.location.href = "/login";
+              window.location.href = "/login";
             } else {
               result = await Promise.reject(error);
             }
