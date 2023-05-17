@@ -59,7 +59,7 @@ function apiInstance() {
               (data.status == 404 && data.message == "member not found.")
             ) {
               localStorage.clear();
-              // window.location.href = "/login";
+              window.location.href = "/login";
             } else {
               result = await Promise.reject(error);
             }
