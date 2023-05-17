@@ -1,20 +1,41 @@
 <template>
   <div style="width: 100%; height: 100%">
-    <!-- 뒤로가기 & 검색 -->
-    <v-btn
-      id="square-btn"
-      class="back-btn"
-      outlined
-      @click="$router.go(-1)"
-      rounded
+    <v-sheet
+      class="px-3 main-col-1 d-flex flex-row justify-space-between align-center"
+      max-width="500"
+      style="
+        position: fixed;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 2;
+      "
+      height="55"
+      color="transparent"
     >
-      <v-icon>$vuetify.icons.arrow_left</v-icon>
-    </v-btn>
-    <input
-      class="search-box"
-      placeholder=" 출발장소를 검색하세요"
-      v-on:click="goSearchPage('/search')"
-    />
+      <!-- 뒤로가기 & 검색 -->
+      <v-btn
+        id="square-btn"
+        class="back-btn"
+        outlined
+        @click="$router.go(-1)"
+        rounded
+      >
+        <v-icon>$vuetify.icons.arrow_left</v-icon>
+      </v-btn>
+      <v-sheet class="ml-2 search-place" color="transparent" width="100%">
+        <input
+          class="search-box"
+          placeholder=" 출발장소를 검색하세요"
+          v-on:click="goSearchPage('/search')"
+        />
+        <v-icon class="mr-2 search-icon" v-on:click="goToPage('/search')">
+          $vuetify.icons.search
+        </v-icon>
+      </v-sheet>
+    </v-sheet>
+
     <!-- kakao-map -->
     <div id="map"></div>
     <!-- 장소 info -->

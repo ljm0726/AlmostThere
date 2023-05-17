@@ -111,8 +111,8 @@
     <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
-    <div v-if="placeSelect">
-      <middle-place-info
+    <v-sheet width="100%" v-if="placeSelect">
+      <!-- <middle-place-info
         class="middle-place-info"
         v-if="minTimes.length == startPlaces.length"
         :minTimes="minTimes"
@@ -122,8 +122,18 @@
         :placeUrl="curRecommendPlaceUrl"
         :placeX="curRecommendX"
         :placeY="curRecommendY"
+      ></middle-place-info> -->
+      <middle-place-info
+        v-if="minTimes.length == startPlaces.length"
+        :minTimes="minTimes"
+        :stateTraffic="stateTraffic"
+        :placeName="currentRecommendPlaceName"
+        :addressName="currentRecommendPlaceAddress"
+        :placeUrl="curRecommendPlaceUrl"
+        :placeX="curRecommendX"
+        :placeY="curRecommendY"
       ></middle-place-info>
-    </div>
+    </v-sheet>
     <loading-modal v-if="loading"></loading-modal>
   </div>
 </template>
