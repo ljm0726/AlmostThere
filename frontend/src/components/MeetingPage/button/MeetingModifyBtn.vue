@@ -18,9 +18,9 @@
         @closed="isClosed"
       >
         <v-sheet class="d-flex flex-column pb-10">
-          <span class="point-font xxxxl-font main-col-1 align-self-center"
-            >모임 내용 수정하기</span
-          >
+          <span class="point-font xxxxl-font main-col-1 align-self-center">
+            모임 내용 수정하기
+          </span>
           <v-sheet class="mx-5 my-2">
             <span class="point-font xxxl-font main-col-1">제목</span>
             <v-text-field
@@ -28,11 +28,12 @@
               outlined
               dense
               hide-details
+              maxlength="10"
             ></v-text-field>
           </v-sheet>
           <v-sheet class="mx-5 my-2">
             <span class="point-font xxxl-font main-col-1">일시</span>
-            <div class="d-flex flex-row">
+            <v-sheet height="40" class="d-flex flex-row">
               <v-dialog
                 ref="dateDialog"
                 v-model="dateDialog"
@@ -118,7 +119,7 @@
                   </v-btn>
                 </v-time-picker>
               </v-dialog>
-            </div>
+            </v-sheet>
           </v-sheet>
           <v-sheet class="mx-5 my-2 d-flex flex-column">
             <span class="point-font xxxl-font main-col-1">장소</span>
@@ -161,7 +162,12 @@
         </v-sheet>
       </vue-bottom-sheet>
     </div>
-    <div class="error">
+    <no-image-default
+      ref="error"
+      :message="errorMsg"
+      :title="errorTitle"
+    ></no-image-default>
+    <!-- <div class="error">
       <v-dialog
         v-model="dialog"
         scrollable
@@ -192,14 +198,17 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { mapMutations, mapState, mapActions } from "vuex";
+import NoImageDefault from "@/common/component/dialog/NoImageDefault.vue";
+
 export default {
   name: "MeetingModifyBtn",
+  components: { NoImageDefault },
   computed: {
     ...mapState("meetingStore", [
       "place_name",
@@ -321,8 +330,11 @@ export default {
       this.getCurTime();
 
       if (this.curDate >= this.date && this.curTime >= this.time) {
-        this.errorMsg = "시간을 다시 설정해주세요!";
-        this.dialog = true;
+        this.errorTitle = "<span>시간을</span><span>다시 설정해주세요</span>";
+        this.errorMsg =
+          "<div>현재 일시 이후의</div><div>날짜와 시간만 설정 가능합니다.</div>";
+        this.$refs.error.openDialog();
+        // this.dialog = true;
       } else if (
         this.name == null ||
         this.name == "" ||
@@ -330,20 +342,25 @@ export default {
         this.place == null ||
         this.address == null
       ) {
-        this.errorMsg = "모든 정보를 입력해주세요!";
-        this.dialog = true;
+        this.errorMsg =
+          "<div>제목, 날짜, 시간, 장소를</div><div>모두 입력해야 등록이 가능합니다.</div>";
+        this.errorTitle = "<span>모든 정보를</span><span>입력해주세요</span>";
+        this.$refs.error.openDialog();
+        // this.dialog = true;
       } else if (this.name.length > 10) {
-        this.errorMsg = "모임 이름을 최대 10자 입니다!";
-        this.dialog = true;
+        this.errorTitle = "모임 이름은 최대 10자 입니다!";
+        this.$refs.error.openDialog();
+        // this.dialog = true;
       } else if (
         isNaN(parseInt(this.amount)) ||
         this.amount < 0 ||
         this.amount > 10000
       ) {
-        this.errorMsg = "지각비는 최대 10,000원 입니다!";
-        console.log(this.dialog);
-        this.dialog = true;
-        console.log(this.dialog);
+        this.errorTitle = "지각비는 최대 10,000원 입니다!";
+        this.$refs.error.openDialog();
+        // console.log(this.dialog);
+        // this.dialog = true;
+        // console.log(this.dialog);
       } else {
         const savedRecentMeeting = new Date(this.recent_meeting.meetingTime);
         const modifiedRecentMeeting = new Date(this.meetingTime);
@@ -359,7 +376,7 @@ export default {
           amount: this.amount,
         })
           .then(() => {
-            console.log("정상실행");
+            // console.log("정상실행");
             this.$nextTick(() => {
               this.resetPlace();
               this.resetStartPlace();
@@ -402,8 +419,11 @@ export default {
             });
           })
           .catch((error) => {
-            console.error(error);
-            alert("수정 중 에러 발생");
+            // console.error(error);
+            error;
+            // alert("수정 중 에러 발생");
+            this.errorTitle = "수정 중 에러 발생";
+            this.$refs.error.openDialog();
           });
       }
     },
@@ -475,7 +495,8 @@ export default {
       timeDialog: false,
       showPlaceForm: false,
       errorMsg: "",
-      dialog: false,
+      errorTitle: "",
+      // dialog: false,
     };
   },
 

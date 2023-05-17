@@ -1,51 +1,118 @@
 <template>
   <div class="map-area">
-    <v-btn
-      id="square-btn"
-      class="back-btn find-middle-place-btn"
-      outlined
-      @click="goBack()"
-      elevation="3"
-      rounded
+    <!-- 장소 찾기 헤더 -->
+    <v-sheet
+      class="px-3 main-col-1"
+      max-width="500"
+      style="
+        position: fixed;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 2;
+      "
+      color="transparent"
     >
-      <v-icon class="find-middle-place-btn">$vuetify.icons.arrow_left</v-icon>
-    </v-btn>
-    <input
-      class="search-box"
-      placeholder=" 모임장소를 검색하세요"
-      v-on:click="goToPage('/search')"
-    />
-    <ul v-show="isRecommend" id="category">
-      <li id="SW8" @click="onClickCategory">
-        <v-icon class="category_icon" id="SW8">mdi mdi-subway-variant</v-icon>
-      </li>
-      <li id="FD6" @click="onClickCategory">
-        <v-icon class="category_icon" id="FD6"
-          >mdi mdi-silverware-fork-knife</v-icon
-        >
-      </li>
-      <li id="CE7" @click="onClickCategory">
-        <v-icon class="category_icon" id="CE7">mdi mdi-coffee</v-icon>
-      </li>
-      <li id="CT1" @click="onClickCategory">
-        <v-icon class="category_icon" id="CT1">mdi mdi-movie-play</v-icon>
-      </li>
-    </ul>
-    <div class="find-middle-place-btn">
-      <v-btn class="find-place-btn" @click="findHalfway()"
-        ><i class="fa-light fa-location-dot"></i>
-        <v-icon class="marker-icon">$vuetify.icons.location_outline</v-icon>
-        <span class="find-middle-place-title">중간 위치 찾기</span></v-btn
+      <v-sheet
+        height="55"
+        color="transparent"
+        class="d-flex flex-row justify-space-between align-center"
       >
-    </div>
+        <v-btn
+          id="square-btn"
+          class="back-btn"
+          outlined
+          @click="goBack()"
+          elevation="3"
+          rounded
+          color="var(--main-col-1)"
+        >
+          <v-icon color="var(--main-col-1)">$vuetify.icons.arrow_left</v-icon>
+        </v-btn>
+        <v-sheet class="ml-2 search-place" color="transparent" width="100%">
+          <input
+            class="search-box"
+            placeholder=" 모임장소를 검색하세요"
+            v-on:click="goToPage('/search')"
+          />
+          <v-icon class="mr-2 search-icon" v-on:click="goToPage('/search')">
+            $vuetify.icons.search
+          </v-icon>
+        </v-sheet>
+      </v-sheet>
+      <v-sheet
+        class="d-flex flex-row justify-space-between"
+        color="transparent"
+      >
+        <div>
+          <v-btn-toggle
+            elevation="3"
+            dense
+            v-show="isRecommend"
+            rounded
+            mandatory
+            color="var(--main-col-1)"
+            id="category"
+          >
+            <v-btn id="SW8" @click="onClickCategory">
+              <v-icon color="var(--main-col-1)" id="SW8">
+                mdi mdi-subway-variant
+              </v-icon>
+            </v-btn>
+            <v-btn id="FD6" @click="onClickCategory">
+              <v-icon id="FD6" color="var(--main-col-1)">
+                mdi mdi-silverware-fork-knife
+              </v-icon>
+            </v-btn>
+            <v-btn id="CE7" @click="onClickCategory">
+              <v-icon color="var(--main-col-1)" id="CE7">mdi mdi-coffee</v-icon>
+            </v-btn>
+            <v-btn id="CT1" @click="onClickCategory">
+              <v-icon color="var(--main-col-1)" id="CT1">
+                mdi mdi-movie-play
+              </v-icon>
+            </v-btn>
+          </v-btn-toggle>
+        </div>
+        <v-btn class="halfway-btn" @click="findHalfway()" outlined rounded>
+          <v-icon class="mr-1">$vuetify.icons.location_outline</v-icon>
+          <span>중간 위치 찾기</span>
+        </v-btn>
+      </v-sheet>
+      <!-- <ul v-show="isRecommend" id="category">
+        <li id="SW8" @click="onClickCategory">
+          <v-icon class="category_icon" id="SW8">mdi mdi-subway-variant</v-icon>
+        </li>
+        <li id="FD6" @click="onClickCategory">
+          <v-icon class="category_icon" id="FD6"
+            >mdi mdi-silverware-fork-knife</v-icon
+          >
+        </li>
+        <li id="CE7" @click="onClickCategory">
+          <v-icon class="category_icon" id="CE7">mdi mdi-coffee</v-icon>
+        </li>
+        <li id="CT1" @click="onClickCategory">
+          <v-icon class="category_icon" id="CT1">mdi mdi-movie-play</v-icon>
+        </li>
+      </ul> -->
+      <!-- <div class="find-middle-place-btn">
+        <v-btn class="find-place-btn" 
+          ><i class="fa-light fa-location-dot"></i>
+          <v-icon class="marker-icon">$vuetify.icons.location_outline</v-icon>
+          <span class="find-middle-place-title">중간 위치 찾기</span></v-btn
+        >
+      </div> -->
+    </v-sheet>
+
     <halfway-modal ref="halfway"></halfway-modal>
 
     <div id="map" class="maps"></div>
     <div v-show="isSelect && placeX != null" @click="moveRegisterPage">
       <place-info class="place-info"></place-info>
     </div>
-    <div v-if="placeSelect">
-      <middle-place-info
+    <v-sheet width="100%" v-if="placeSelect">
+      <!-- <middle-place-info
         class="middle-place-info"
         v-if="minTimes.length == startPlaces.length"
         :minTimes="minTimes"
@@ -55,8 +122,18 @@
         :placeUrl="curRecommendPlaceUrl"
         :placeX="curRecommendX"
         :placeY="curRecommendY"
+      ></middle-place-info> -->
+      <middle-place-info
+        v-if="minTimes.length == startPlaces.length"
+        :minTimes="minTimes"
+        :stateTraffic="stateTraffic"
+        :placeName="currentRecommendPlaceName"
+        :addressName="currentRecommendPlaceAddress"
+        :placeUrl="curRecommendPlaceUrl"
+        :placeX="curRecommendX"
+        :placeY="curRecommendY"
       ></middle-place-info>
-    </div>
+    </v-sheet>
     <loading-modal v-if="loading"></loading-modal>
   </div>
 </template>
@@ -161,7 +238,7 @@ export default {
         if (this.curIntroduceMarker) this.curIntroduceMarker.setMap(null);
         for (var i = 0; i < positions.length; i++) {
           const imageSrc = this.startMarkerImage[i], // 마커이미지의 주소입니다
-            imageSize = new window.kakao.maps.Size(54, 57); // 마커이미지의 크기입니다
+            imageSize = new window.kakao.maps.Size(43, 48); // 마커이미지의 크기입니다
 
           const markerImage = new window.kakao.maps.MarkerImage(
             imageSrc,
@@ -492,7 +569,8 @@ export default {
               return item;
             })
             .catch((error) => {
-              console.error(error);
+              error;
+              // console.error(error);
               return { car_route: [], minTime: 0 };
             });
         })
@@ -720,7 +798,8 @@ export default {
             );
           }
         } catch (error) {
-          console.error(error);
+          error;
+          // console.error(error);
         }
       }
 
@@ -739,7 +818,8 @@ export default {
           this.drawPolyLine(response.data);
         })
         .catch((error) => {
-          console.error(error);
+          error;
+          // console.error(error);
         });
     },
 
@@ -940,7 +1020,7 @@ export default {
 </script>
 
 <style>
-#category {
+/* #category {
   position: absolute;
 
   top: 7.3%;
@@ -970,7 +1050,7 @@ export default {
   background: #2eccfa;
   border-left: 1px solid #092a49;
   margin-left: -1px;
-}
+} */
 
 .placeinfo_wrap {
   position: absolute;
@@ -984,7 +1064,7 @@ export default {
   border-radius: 6px;
   border: 1px solid #ccc;
   border-bottom: 2px solid #ddd;
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
   background: #fff;
   min-height: 120px;
 }
@@ -1014,20 +1094,24 @@ export default {
   overflow: hidden;
   white-space: nowrap;
 }
+.placeinfo .click {
+  margin: 8px 10px;
+}
 .placeinfo span {
-  margin: 5px 5px 0 5px;
+  /* margin: 7px 8px 0 10px; */
   cursor: default;
   font-size: 13px;
 }
 .placeinfo .title {
-  font-weight: bold;
+  /* font-weight: bold; */
+  font-family: var(--bold-font) !important;
   font-size: 14px;
   border-radius: 6px 6px 0 0;
   margin: -1px -1px 0 -1px;
-  padding: 10px;
-  color: #fff;
-  background: #092a49;
-  background: #092a49
+  padding: 8px 12px;
+  color: white;
+  background: var(--main-col-1);
+  background: var(--main-col-1)
     url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png)
     no-repeat right 14px center;
 }
@@ -1061,33 +1145,33 @@ export default {
 }
 </style>
 <style scoped>
-.marker-icon {
+/* .marker-icon {
   font-size: 25px;
   margin-right: 4%;
   margin-left: -8%;
   color: #092a49;
-}
+} */
 .category_icon {
   z-index: 100;
   color: #092a49;
 }
-.place-info {
+/* .place-info {
   z-index: 2;
   position: absolute;
   bottom: 5%;
   left: 8.5%;
-}
+} */
 .middle-place-info {
-  z-index: 50;
+  /* z-index: 50;
   position: absolute;
   bottom: 10%;
-  left: 8.5%;
+  left: 8.5%; */
 }
-input {
-  padding-left: 10px; /* 여백 크기 조절 */
+/* input {
+  padding-left: 10px;
   font-family: var(--medium-font);
-}
-.find-place-btn {
+} */
+/* .find-place-btn {
   box-sizing: border-box;
   position: absolute;
   z-index: 2;
@@ -1098,17 +1182,7 @@ input {
   border: 1.6px solid #092a49;
   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
   border-radius: 18px;
-}
-.back-btn {
-  display: flex;
-  position: absolute;
-
-  z-index: 2;
-  background: #ffffff;
-  left: 2.2%;
-  top: 1.7%;
-  bottom: unset; /* 추가 */
-}
+} */
 .map-area {
   width: 100%;
   height: 100%;
@@ -1121,7 +1195,7 @@ input {
   width: 100%;
   height: 100%;
 }
-.search-box {
+/* .search-box {
   box-sizing: border-box;
   z-index: 2;
   display: flex;
@@ -1129,21 +1203,21 @@ input {
   margin-left: 5%;
   width: 80%;
   height: 37px;
-  left: 10%; /* 수정 */
-  right: 10%; /* 추가 */
+  left: 10%;
+  right: 10%;
   top: 1.7%;
-  bottom: unset; /* 추가 */
+  bottom: unset;
 
   background: #ffffff;
   border: 1.6px solid #092a49;
   box-shadow: 0px 4px 10px rgba(9, 42, 73, 0.25);
   border-radius: 10px;
-}
-.find-middle-place-btn {
+} */
+/* .find-middle-place-btn {
   color: #092a49;
-}
-.find-middle-place-title {
+} */
+/* .find-middle-place-title {
   color: #092a49;
   font-family: var(--bold-font);
-}
+} */
 </style>

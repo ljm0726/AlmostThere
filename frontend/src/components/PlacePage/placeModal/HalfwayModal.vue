@@ -42,25 +42,47 @@
                 readonly
               />
               <div class="img-container">
-                <img
+                <!-- <img
                   v-if="index > 1"
                   src="@/assets/images/dialog/close_btn_small.png"
                   class="close-btn-small"
                   alt=""
                   @click="cancelStart(index)"
-                />
+                /> -->
+                <v-btn
+                  v-if="index > 1"
+                  class="mb-2"
+                  color="var(--main-col-1)"
+                  icon
+                  outlined
+                  x-small
+                  @click="cancelStart(index)"
+                  style="border: 2px solid var(--main-col-1)"
+                >
+                  <v-icon
+                    x-small
+                    color="var(--main-col-1)"
+                    style="font-size: 8px; height: 8px; width: 8px"
+                  >
+                    $vuetify.icons.close
+                  </v-icon>
+                </v-btn>
               </div>
             </div>
           </div>
 
-          <div style="align-self: center; margin: 4% 0" @click="plusStart">
-            <img
+          <!-- <div style="align-self: center; margin: 4% 0" @click="plusStart"> -->
+          <!-- <img
               src="@/assets/images/dialog/Plus.png"
               style="margin-bottom: 8%; float: left"
               alt=""
-            />
-            출발지 추가하기
-          </div>
+            /> -->
+          <!-- 출발지 추가하기 -->
+          <!-- </div> -->
+          <v-btn class="mb-2" color="var(--main-col-1)" text @click="plusStart">
+            <v-icon>$vuetify.icons.flag_plus</v-icon>
+            <span>출발지 추가하기</span>
+          </v-btn>
 
           <v-card-text style="overflow: visible">
             <v-row>
@@ -72,8 +94,9 @@
                   rounded
                   block
                   @click="findHalfway"
-                  >중간 위치 찾기</v-btn
                 >
+                  중간 위치 찾기
+                </v-btn>
               </v-col>
             </v-row>
           </v-card-text>
@@ -81,7 +104,7 @@
       </v-dialog>
     </div>
 
-    <div class="error">
+    <!-- <div class="error">
       <v-dialog
         v-model="dialogError"
         scrollable
@@ -112,23 +135,30 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-    </div>
+    </div> -->
+    <no-image-default
+      ref="error"
+      :message="errorMsg"
+      :title="errorTitle"
+    ></no-image-default>
   </div>
 </template>
 
 <script>
 import CloseButton from "@/common/component/button/CloseButton.vue";
 import { mapActions, mapState } from "vuex";
+import NoImageDefault from "@/common/component/dialog/NoImageDefault.vue";
 // import  from "../SearchPlace/SearchPlacePage2.vue";
 
 export default {
   name: "HalfwayModal",
-  components: { CloseButton },
+  components: { CloseButton, NoImageDefault },
   data() {
     return {
       dialog: false,
-      dialogError: false,
+      // dialogError: false,
       errorMsg: "",
+      errorTitle: "",
       starts: [null, null], //모달에서 보여줄 정보
       isSearchPage: false,
       selectedPlace: {},
@@ -190,8 +220,10 @@ export default {
 
     plusStart() {
       if (this.starts.length > 9) {
-        this.errorMsg = "최대 10명까지 가능합니다";
-        this.dialogError = true;
+        this.errorTitle =
+          "<span>출발지는 최대 10개까지</span><span>추가 가능합니다</span>";
+        this.$refs.error.openDialog();
+        // this.dialogError = true;
       } else {
         this.starts.push(null);
         setTimeout(() => {
@@ -236,8 +268,10 @@ export default {
     findHalfway() {
       for (let i = 0; i < this.starts.length; i++) {
         if (this.starts[i] == null) {
-          this.dialogError = true;
-          this.errorMsg = "출발지를 입력하세요!";
+          this.errorTitle = "<span>출발지를</span><span>입력하세요!</span>";
+          this.$refs.error.openDialog();
+          // this.dialogError = true;
+          // this.errorMsg = "출발지를 입력하세요!";
           return;
         }
       }
@@ -288,7 +322,7 @@ export default {
   padding-left: 20px;
   padding-right: 25px;
 
-  margin-bottom: 13px;
+  margin-bottom: 10px;
 }
 .plusPlace {
   /* align-self: center; */

@@ -104,10 +104,10 @@ export default {
       const textToCopy = `https://k8a401.p.ssafy.io/entrance/${roomCode}`;
       try {
         await navigator.clipboard.writeText(textToCopy);
-        console.log("Text copied to clipboard");
+        // console.log("Text copied to clipboard");
         this.snackbar = true;
       } catch (err) {
-        console.error("Failed to copy text: ", err);
+        // console.error("Failed to copy text: ", err);
       }
     },
 

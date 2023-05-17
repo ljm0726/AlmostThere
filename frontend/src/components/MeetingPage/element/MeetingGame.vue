@@ -63,8 +63,8 @@
                   v-model="new_option"
                   v-on:keyup.enter="addOptions"
                   type="text"
-                  append-outer-icon="$vuetify.icons.add_circle"
-                  @click:append-outer="addOptions"
+                  append-icon="$vuetify.icons.add_circle"
+                  @click:append="addOptions"
                   placeholder="항목"
                   outlined
                   hide-details
@@ -72,18 +72,35 @@
                   maxlength="7"
                   block
                 ></v-text-field>
-                <v-btn
-                  class="mt-1 ml-auto"
-                  rounded
-                  color="var(--main-col-1)"
-                  small
-                  dark
-                  block
-                  elevation="0"
-                  @click="pushMember()"
-                >
-                  모임 멤버를 항목으로 넣기
-                </v-btn>
+                <v-row class="ma-0 pa-0 mt-2">
+                  <v-col class="ma-0 pa-0">
+                    <v-btn
+                      color="var(--main-col-1)"
+                      small
+                      dark
+                      width="98%"
+                      elevation="0"
+                      @click="pushMember()"
+                    >
+                      모임 멤버 추가하기
+                    </v-btn>
+                  </v-col>
+                  <v-col class="ma-0 pa-0">
+                    <v-btn
+                      color="var(--main-col-1)"
+                      small
+                      dark
+                      block
+                      width="98%"
+                      outlined
+                      elevation="0"
+                      @click="removeAllOptions()"
+                    >
+                      전체 항목 삭제하기
+                    </v-btn>
+                  </v-col>
+                </v-row>
+
                 <!-- </v-responsive> -->
                 <!-- <v-btn
                         id="round-btn"
@@ -149,6 +166,9 @@ export default {
   props: {
     memberList: Array,
   },
+  // mounted() {
+  //   this.$refs.gameSheet.open();
+  // },
   computed: {
     arc() {
       return Math.PI / (this.options.length / 2);
@@ -158,7 +178,7 @@ export default {
     open() {
       this.result = "";
       this.options = ["꽝"];
-      console.log("마운트");
+      // console.log("마운트");
       this.drawRouletteWheel();
       this.$refs.gameSheet.open();
     },
@@ -200,10 +220,16 @@ export default {
       this.options.splice(idx, 1);
       this.drawRouletteWheel();
     },
+    removeAllOptions() {
+      this.options = [];
+      this.drawRouletteWheel();
+    },
     pushMember() {
       for (var member of this.memberList) {
         if (this.options.length == 10) break;
-        this.options.push(member.memberNickname);
+        if (!this.options.includes(member.memberNickname)) {
+          this.options.push(member.memberNickname);
+        }
       }
       this.drawRouletteWheel();
     },
@@ -245,7 +271,7 @@ export default {
         }
 
         //Arrow
-        console.log(outsideRadius);
+        // console.log(outsideRadius);
         this.ctx.fillStyle = "#092a49";
         this.ctx.beginPath();
         this.ctx.moveTo(150 - 8, 150 - (outsideRadius + 4)); // 146, 25
