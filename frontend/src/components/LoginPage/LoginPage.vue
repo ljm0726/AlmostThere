@@ -1,47 +1,49 @@
 <template>
   <v-sheet
-    class="narrow-font d-flex flex-column justify-center align-center hugelarge-font main-col-1"
     height="100%"
     color="transparent"
+    class="d-flex flex-column align-center justify-center"
   >
-    <span class="logo-font">Almost</span>
-    <span class="logo-font">There!</span>
-    <img
-      src="@/assets/images/page/login.png"
-      height="450"
-      style="text-align: center"
-      alt=""
-    />
-    <div id="login-modal" class="d-flex flex-column align-center">
-      <div>
-        <img
-          src="@/assets/images/component/login_modal.png"
-          alt=""
-          style="width: 100%"
-        />
+    <v-sheet
+      max-height="700"
+      height="80%"
+      color="transparent"
+      class="login narrow-font d-flex flex-column justify-space-between align-center hugelarge-font main-col-1"
+    >
+      <div class="logo-font d-flex flex-column">
+        <span>Almost</span>
+        <span>There!</span>
       </div>
-
-      <div id="text" class="xs-font main-col-1">
-        <span>친구들과 약속을 잡고</span>
-        <br />
-        <span>약속 당일 서로의 위치를 공유해 보세요!</span>
-        <br />
-        <br />
-        <span>만남 장소 추천부터 모임 정산 기능까지</span>
-        <br />
-        <span>더 편하게 모임을 즐겨보세요!</span>
-
-        <v-btn
-          elevation="5"
-          color="var(--main-col-1)"
-          dark
-          rounded
-          block
-          @click="kakaoLogin"
-          >카카오로 시작하기</v-btn
+      <div class="d-flex justify-center align-center login-modal">
+        <div
+          class="sm-font bold-font main-col-1 d-flex flex-column align-center justify-center"
+          style="position: relative"
         >
+          <div class="mb-4 d-flex flex-column align-center justify-center">
+            <span class="mb-1">친구들과 약속을 잡고</span>
+            <!-- <br /> -->
+            <span>서로의 위치를 공유해 보세요!</span>
+          </div>
+          <div class="d-flex flex-column align-center justify-center">
+            <span class="mb-1">만남 장소 추천부터 정산 기능까지</span>
+            <!-- <br /> -->
+            <span>더 편하게 모임을 즐겨보세요!</span>
+          </div>
+          <!-- <br /> -->
+          <!-- <br /> -->
+
+          <v-btn
+            elevation="5"
+            color="var(--main-col-1)"
+            dark
+            rounded
+            block
+            @click="kakaoLogin"
+            >카카오로 시작하기</v-btn
+          >
+        </div>
       </div>
-    </div>
+    </v-sheet>
   </v-sheet>
 </template>
 
@@ -59,17 +61,28 @@ export default {
 
 <style scoped>
 .logo-font {
-  text-align: center;
 }
-#login-modal {
-  position: absolute;
-  /* background-image: url("@/assets/images/component/Rectangle21.png"); */
-  top: 55%;
-  /* transform: translateY(55%); */
-  text-align: center;
-  align-self: center;
-  /* min-height: 280px; */
+.login-modal {
+  position: relative;
+  height: 32vh;
+  width: 80vw;
+  max-width: 400px;
+  background: radial-gradient(
+    27.95% 27.95% at 46.91% 89.9%,
+    rgba(255, 255, 255, 0.0495679) 0%,
+    rgba(255, 255, 255, 0.3) 100%
+  ) !important;
+  box-shadow: 0px 4px 50px -10px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(50px);
+  border-radius: 30px;
 }
+.login {
+  background-image: url("@/assets/images/page/login.png");
+  background-size: 30vh;
+  background-position-x: center;
+  background-position-y: 65%;
+}
+
 #text {
   position: absolute;
   text-align: center;
@@ -88,7 +101,7 @@ export default {
   width: 213px;
 }
 .v-sheet {
-  position: relative;
+  /* position: relative; */
 }
 .logo-font {
   animation: jump 1s infinite;
