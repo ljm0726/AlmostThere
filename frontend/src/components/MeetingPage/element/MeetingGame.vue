@@ -63,8 +63,8 @@
                   v-model="new_option"
                   v-on:keyup.enter="addOptions"
                   type="text"
-                  append-outer-icon="$vuetify.icons.add_circle"
-                  @click:append-outer="addOptions"
+                  append-icon="$vuetify.icons.add_circle"
+                  @click:append="addOptions"
                   placeholder="항목"
                   outlined
                   hide-details
@@ -178,7 +178,7 @@ export default {
     open() {
       this.result = "";
       this.options = ["꽝"];
-      console.log("마운트");
+      // console.log("마운트");
       this.drawRouletteWheel();
       this.$refs.gameSheet.open();
     },
@@ -227,7 +227,9 @@ export default {
     pushMember() {
       for (var member of this.memberList) {
         if (this.options.length == 10) break;
-        this.options.push(member.memberNickname);
+        if (!this.options.includes(member.memberNickname)) {
+          this.options.push(member.memberNickname);
+        }
       }
       this.drawRouletteWheel();
     },
@@ -269,7 +271,7 @@ export default {
         }
 
         //Arrow
-        console.log(outsideRadius);
+        // console.log(outsideRadius);
         this.ctx.fillStyle = "#092a49";
         this.ctx.beginPath();
         this.ctx.moveTo(150 - 8, 150 - (outsideRadius + 4)); // 146, 25

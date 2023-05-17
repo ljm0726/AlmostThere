@@ -376,7 +376,7 @@ export default {
           amount: this.amount,
         })
           .then(() => {
-            console.log("정상실행");
+            // console.log("정상실행");
             this.$nextTick(() => {
               this.resetPlace();
               this.resetStartPlace();
@@ -419,7 +419,8 @@ export default {
             });
           })
           .catch((error) => {
-            console.error(error);
+            // console.error(error);
+            error;
             alert("수정 중 에러 발생");
           });
       }

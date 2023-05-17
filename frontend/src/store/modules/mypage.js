@@ -47,7 +47,8 @@ const mypageStore = {
           }
         },
         (error) => {
-          console.log(error);
+          error
+          // console.log(error);
         }
       );
       return await Promise.resolve(result);

@@ -69,7 +69,7 @@ router.beforeEach(async (to, from, next) => {
     if (meetingId) {
       next({ name: "meeting", params: { id: meetingId } });
     } else {
-      console.log("entrance-denied?");
+      // console.log("entrance-denied?");
       next({
         name: "entrance-denied",
       });
