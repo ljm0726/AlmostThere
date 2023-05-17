@@ -120,7 +120,8 @@ const meetingStore = {
           router.push({ path: `/meeting/${data.data}` });
         },
         (error) => {
-          console.error(error);
+          error
+          // console.error(error);
         }
       );
     },
@@ -167,7 +168,7 @@ const meetingStore = {
           // router.push({ name: "home" });
         },
         (error) => {
-          console.log(error);
+          // console.log(error);
           throw error;
         }
       );
@@ -186,7 +187,7 @@ const meetingStore = {
           data;
         },
         (error) => {
-          console.error(error);
+          // console.error(error);
           throw error;
         }
       );

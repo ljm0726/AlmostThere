@@ -449,12 +449,14 @@ export default {
         this.stompClient.connect(
           {},
           async (frame) => {
-            console.log("소켓 연결 성공", frame);
+            frame;
+            // console.log("소켓 연결 성공", frame);
             this.updateConnected(false);
             this.connectAction();
           },
           (error) => {
-            console.log("소켓 연결 실패", error);
+            // console.log("소켓 연결 실패", error);
+            error;
             // this.$refs.error.openDialog();
             this.updateConnected(false);
             this.connect();

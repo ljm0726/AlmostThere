@@ -271,7 +271,7 @@ export default {
         }
 
         //Arrow
-        console.log(outsideRadius);
+        // console.log(outsideRadius);
         this.ctx.fillStyle = "#092a49";
         this.ctx.beginPath();
         this.ctx.moveTo(150 - 8, 150 - (outsideRadius + 4)); // 146, 25

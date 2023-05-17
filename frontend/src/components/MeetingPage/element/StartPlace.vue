@@ -147,7 +147,7 @@ export default {
 
       saveMemberStartPlace(startPlaceInfo).then(async (res) => {
         if (res.data.statusCode == 200) {
-          console.log("#21# 출발지 저장 성공 data: ", res.data);
+          // console.log("#21# 출발지 저장 성공 data: ", res.data);
           window.location.href = `${window.location.origin}/meeting/${this.meetingRoomId}`;
         }
       });

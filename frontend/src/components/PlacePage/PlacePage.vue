@@ -569,7 +569,8 @@ export default {
               return item;
             })
             .catch((error) => {
-              console.error(error);
+              error;
+              // console.error(error);
               return { car_route: [], minTime: 0 };
             });
         })
@@ -797,7 +798,8 @@ export default {
             );
           }
         } catch (error) {
-          console.error(error);
+          error;
+          // console.error(error);
         }
       }
 
@@ -816,7 +818,8 @@ export default {
           this.drawPolyLine(response.data);
         })
         .catch((error) => {
-          console.error(error);
+          error;
+          // console.error(error);
         });
     },
 
