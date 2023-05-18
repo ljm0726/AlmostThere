@@ -158,7 +158,7 @@ Almost There는 4가지의 메인 기능을 통해 사용자가 일상생활에�
 
 ### Architecture
 
-![Architecture](/docs/image/architecture.png)
+![Architecture](/docs/image/architecture.jpg)
 
 ## 산출물
 
@@ -166,7 +166,7 @@ Almost There는 4가지의 메인 기능을 통해 사용자가 일상생활에�
 - [기능명세서](https://www.notion.so/e533237a858f4e75a422bab0a1976715?pvs=4)
 - [DB 설계서](https://www.erdcloud.com/d/xzbkWY4Q4Z6weTbCW)
 - [API 명세서](https://www.notion.so/API-b25423dacdf84a7bbca10ee3980e6894?pvs=4)
-- [포팅 매뉴얼](https://lab.ssafy.com/수정필요-/tree/feat/readme/exec)
+- [포팅 매뉴얼](https://lab.ssafy.com/s08-final/S08P31A401/-/tree/develop/exec)
 - [오픈소스 Contributor Guide](https://www.notion.so/Contributor-Guide-4606f48c85104eb48ea0381b31fa2c49?pvs=4)
 
 ## 서비스 화면
