@@ -549,8 +549,11 @@ export default {
               },
             })
             .then((response) => {
-              if (response.data.routes[0].result_code !== 0) {
+              if (response.data.routes[0].result_code === 104) {
                 return { car_route: [], minTime: 0 };
+              }
+              if (response.data.routes[0].result_code !== 0) {
+                return { car_route: [], minTime: 1000 };
               }
               const guides = response.data.routes[0].sections[0].guides;
               const car_route = guides.map((element) => {
@@ -639,12 +642,14 @@ export default {
         try {
           const response = await axios.get(url);
 
-          if (
-            response.data["error"] != undefined &&
-            response.data["error"]["code"] == -98
-          ) {
-            this.minTimes.push(2);
-            continue;
+          if (response.data["error"] != undefined) {
+            if (response.data["error"]["code"] == -98) {
+              this.minTimes.push(2);
+              continue;
+            } else {
+              this.minTimes.push(2000);
+              continue;
+            }
           }
 
           if (response.data["result"]["searchType"] != 0) {
@@ -694,7 +699,8 @@ export default {
             const startResponse = await axios.get(startUrl);
             if (
               startResponse.data["error"] == undefined ||
-              startResponse.data["error"]["code"] != -98
+              (startResponse.data["error"]["code"] != -98 &&
+                startResponse.data["error"]["code"] != 3)
             ) {
               moveTime +=
                 startResponse.data["result"]["path"][0]["info"]["totalTime"];
@@ -702,6 +708,9 @@ export default {
               this.callMapObjApiAJAX(
                 startResponse.data["result"]["path"][0].info.mapObj
               );
+            } else {
+              this.minTimes.push(2000);
+              continue;
             }
 
             await new Promise((resolve) => setTimeout(resolve, 500));
@@ -709,7 +718,8 @@ export default {
             const endResponse = await axios.get(endUrl);
             if (
               endResponse.data["error"] == undefined ||
-              endResponse.data["error"]["code"] != -98
+              (endResponse.data["error"]["code"] != -98 &&
+                endResponse.data["error"]["code"] != 4)
             ) {
               moveTime +=
                 endResponse.data["result"]["path"][0]["info"]["totalTime"];
@@ -717,6 +727,9 @@ export default {
               this.callMapObjApiAJAX(
                 endResponse.data["result"]["path"][0].info.mapObj
               );
+            } else {
+              this.minTimes.push(2000);
+              continue;
             }
             this.minTimes.push(moveTime);
           } else {

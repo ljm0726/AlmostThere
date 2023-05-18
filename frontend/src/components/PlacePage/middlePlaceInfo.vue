@@ -39,7 +39,9 @@
       >
         <img width="35" :src="startMarkerImage[index]" />
         <div class="lg-font">
-          <span v-if="time > 2">{{ time }}분</span>
+          <span v-if="time === 2000">경로 찾기 실패</span>
+          <span v-else-if="time === 1000">차량 이동 불가</span>
+          <span v-else-if="time > 2">{{ time }}분</span>
           <span v-else>700m 이내</span>
         </div>
         <!-- <div v-show="minTimes.length % 2 == 1"></div> -->
@@ -115,6 +117,7 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
+    let len = this.minTimes.length;
     return {
       startMarkerImage: [
         require(`@/assets/images/icons/marker1.png`),
@@ -130,8 +133,12 @@ export default {
       ],
       averageTime: Math.round(
         this.minTimes.reduce(function add(sum, currValue) {
+          if (currValue > 999) {
+            len = len > 1 ? len - 1 : 1;
+            return sum;
+          }
           return sum + currValue;
-        }, 0) / this.minTimes.length
+        }, 0) / len
       ),
     };
   },
