@@ -257,7 +257,11 @@ public class MeetingService {
         String key = "chat:" + meetingDeleteRequestDto.getMeetingId();
         ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
         List<ChattingDto> chattingDtoList = listOperations.range(key, 0, listOperations.size(key));
-        for (ChattingDto chattingDto : chattingDtoList) listOperations.remove(key, 1, chattingDto);
+        for (ChattingDto chattingDto : chattingDtoList) {
+            if (chattingDto.getMemberId().equals(meetingDeleteRequestDto.getMemberId())) {
+                listOperations.remove(key, 1, chattingDto);
+            }
+        }
     }
 
     /**
