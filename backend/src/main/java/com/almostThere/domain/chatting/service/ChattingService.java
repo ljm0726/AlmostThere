@@ -104,16 +104,17 @@ public class ChattingService {
 
                 // roomCode로 meetingId 가져오기
                 Optional<Meeting> meetingOptional = meetingRepository.findById(Long.valueOf(key.substring(5)));
-//                Optional<Meeting> meetingOptional = meetingRepository.findByRoomCode(key.substring(5));
-                if (!meetingOptional.isPresent()) throw new AccessDeniedException(ErrorCode.MEETING_NOT_FOUND);
 
-                // mysql에 저장 - batchInsert 여러 행을 한 번에 넣기
-                // 48초에 10만 건
-                // 성능 관련 참고자료 https://datamoStringney.tistory.com/319
-                chattingJDBCRepository.batchInsert(chattingDtoList, meetingOptional.get().getId());
+//                Optional<Meeting> meetingOptional = meetingRepository.findByRoomCode(key.substring(5));
+                if (meetingOptional.isPresent()) {
+                    // mysql에 저장 - batchInsert 여러 행을 한 번에 넣기
+                    // 48초에 10만 건
+                    // 성능 관련 참고자료 https://datamoStringney.tistory.com/319
+                    chattingJDBCRepository.batchInsert(chattingDtoList, meetingOptional.get().getId());
+                }
 
                 // 가져온 값 redis에서 삭제
-                 listOperations.leftPop(key, size);
+                listOperations.leftPop(key, size);
             }
         }
     }

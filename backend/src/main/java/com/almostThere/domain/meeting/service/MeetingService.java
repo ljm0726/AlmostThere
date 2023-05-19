@@ -1,5 +1,7 @@
 package com.almostThere.domain.meeting.service;
 
+import com.almostThere.domain.chatting.dto.ChattingDto;
+import com.almostThere.domain.chatting.repository.ChattingRepository;
 import com.almostThere.domain.meeting.dto.AttendMeetingMemberDto;
 import com.almostThere.domain.meeting.dto.MeetingDto;
 import com.almostThere.domain.meeting.dto.MeetingTimeDto;
@@ -27,6 +29,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +52,8 @@ public class MeetingService {
     private final MeetingCntRepository meetingCntRepository;
     private final CalculateDetailRepository calculateDetailRepository;
     private final CalculateDetailService calculateDetailService;
+    private final ChattingRepository chattingRepository;
+    private final RedisTemplate<String, ChattingDto> redisTemplateForChatting;
 
     /**
      * 유저가 roomCode에 해당하는 모임에 가입해있는지 조회한다.
@@ -244,6 +250,14 @@ public class MeetingService {
     public void exitMeeting(MeetingDeleteRequestDto meetingDeleteRequestDto){
         meetingMemberRepository.deleteMeetingMemberByMeetingIdAndMemberID(
                 meetingDeleteRequestDto.getMemberId(),meetingDeleteRequestDto.getMeetingId());
+
+        // 해당 멤버의 채팅도 삭제 1. MySQL
+        chattingRepository.deleteByMember_Id(meetingDeleteRequestDto.getMemberId());
+        // 해당 멤버의 채팅도 삭제 2. Redis
+        String key = "chat:" + meetingDeleteRequestDto.getMeetingId();
+        ListOperations<String, ChattingDto> listOperations = redisTemplateForChatting.opsForList();
+        List<ChattingDto> chattingDtoList = listOperations.range(key, 0, listOperations.size(key));
+        for (ChattingDto chattingDto : chattingDtoList) listOperations.remove(key, 1, chattingDto);
     }
 
     /**
