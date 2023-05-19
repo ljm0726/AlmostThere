@@ -4,7 +4,7 @@
 
 - 공유를 통해 모임을 쉽게 관리하고, 일상에서 재미있게 즐길 수 있는 서비스
 - 기간 2023.04.10 ~ 05.19 (6주)
-- 삼성청년SW아카데미 SSAFY 8기 2학기 자율 프로젝트
+- 삼성청년SW아카데미 SSAFY 8기 2학기 자율 **오픈소스** 프로젝트
 - TEAM 어디야? : 엄희정(팀장), 서지윤, 지강훈, 신도연, 안승태, 이종민
 - [Almost There 시연 UCC](https://youtu.be/dL11J09aq0I)
 
@@ -160,6 +160,10 @@ Almost There는 4가지의 메인 기능을 통해 사용자가 일상생활에�
 
 ![Architecture](/docs/image/architecture.jpg)
 
+## 오픈소스
+
+- [오픈소스 Contributor Guide](https://www.notion.so/Contributor-Guide-4606f48c85104eb48ea0381b31fa2c49?pvs=4)
+
 ## 산출물
 
 - [와이어프레임](https://www.figma.com/file/xbogDS5zjIhyLq0YZKDrge/Almost-There-Wireframe?type=design&node-id=0-1)
@@ -167,7 +171,6 @@ Almost There는 4가지의 메인 기능을 통해 사용자가 일상생활에�
 - [DB 설계서](https://www.erdcloud.com/d/xzbkWY4Q4Z6weTbCW)
 - [API 명세서](https://www.notion.so/API-b25423dacdf84a7bbca10ee3980e6894?pvs=4)
 - [포팅 매뉴얼](https://lab.ssafy.com/s08-final/S08P31A401/-/tree/develop/exec)
-- [오픈소스 Contributor Guide](https://www.notion.so/Contributor-Guide-4606f48c85104eb48ea0381b31fa2c49?pvs=4)
 
 ## 서비스 화면
 
