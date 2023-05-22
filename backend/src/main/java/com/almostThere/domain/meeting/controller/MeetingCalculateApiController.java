@@ -7,6 +7,7 @@ import com.almostThere.global.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/meeting-calculate")
 public class MeetingCalculateApiController {
+    @Value("${spring.clova.apiURL}")
+    private String apiURL;
+    @Value("${spring.clova.secretKey}")
+    private String secretKey;
 
     private final CalculateDetailService calculateDetailService;
 
@@ -34,8 +39,6 @@ public class MeetingCalculateApiController {
      */
     @PostMapping("/receipt")
     public BaseResponse getReceiptInfo(Authentication authentication, @RequestParam MultipartFile receipt) {
-        String apiURL = "https://v2crp4slfh.apigw.ntruss.com/custom/v1/22190/b0d9c109697c19ef5d90ba10100ec6bccc7087843fee903fd0b37c5a76729753/document/receipt";
-        String secretKey = "VlN2d2VQQktFRWdsdnRrVFh3dk1xdGtGekdNem9PYnI=";
         String contentType = receipt.getContentType();
 
         if (receipt==null || !(contentType.equals("image/jpg") || contentType.equals("image/jpeg") || contentType.equals("image/png"))){

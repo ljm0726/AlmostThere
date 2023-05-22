@@ -34,9 +34,13 @@ spring:
       develop: "dev, env"
 
   redis:
-    host: localhost # 서버 host
+    host: k8a401.p.ssafy.io # 서버 host
     port: 6379 # redis 서버 포트
     password: ${REDIS_PASSWORD} # for. redis 인증
+
+  clova:
+    apiURL: ${CLOVA_APIURL}
+    secretKey: ${CLOVA_SECRETKEY}
 
 redis:
   locationData:
@@ -87,6 +91,10 @@ spring:
     host: ${REDIS_URL} # 서버 host
     port: 6379 # redis 서버 포트
     password: ${REDIS_PASSWORD}
+
+  clova:
+    apiURL: ${CLOVA_APIURL}
+    secretKey: ${CLOVA_SECRETKEY}
 
   security:
     oauth2:
