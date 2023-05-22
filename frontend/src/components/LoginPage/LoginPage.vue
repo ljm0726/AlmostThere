@@ -16,7 +16,7 @@
       </div>
       <div class="d-flex justify-center align-center login-modal">
         <div
-          class="sm-font bold-font main-col-1 d-flex flex-column align-center justify-center"
+          class="sm-font medium-font main-col-1 d-flex flex-column align-center justify-center"
           style="position: relative"
         >
           <div class="mb-4 d-flex flex-column align-center justify-center">
@@ -66,7 +66,7 @@ export default {
   position: relative;
   height: 32vh;
   width: 80vw;
-  max-width: 400px;
+  max-width: 300px;
   background: radial-gradient(
     27.95% 27.95% at 46.91% 89.9%,
     rgba(255, 255, 255, 0.0495679) 0%,

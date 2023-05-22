@@ -25,4 +25,6 @@ public interface ChattingRepository extends JpaRepository<Chatting, Long> {
     @Query("SELECT ch2 FROM Chatting ch2 WHERE (ch2.member.id, ch2.chattingTime)" +
             "IN (SELECT ch1.member.id, MAX(ch1.chattingTime) AS ct FROM Chatting ch1 WHERE ch1.meeting.id = :meetingId AND ch1.chattingTime BETWEEN :startTime AND :endTime GROUP BY ch1.member.id)")
     List<Chatting> findRecentMessage(@Param("meetingId") Long meetingId, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+
+    void deleteByMember_Id(Long meetingId);
 }

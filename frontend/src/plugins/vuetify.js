@@ -20,11 +20,9 @@ import DeleteOutlineIcon from "@/common/component/icons/DeleteOutlineIcon.vue";
 import LocationOutlineIcon from "@/common/component/icons/LocationOutlineIcon.vue";
 import OutOutlineIcon from "@/common/component/icons/OutOutlineIcon.vue";
 import FlagPlusIcon from "@/common/component/icons/FlagPlusIcon.vue";
-import MenuIcon from "@/common/component/icons/MenuIcon.vue";
 import CheckRoundIcon from "@/common/component/icons/CheckRoundIcon.vue";
 import InfoOutlineIcon from "@/common/component/icons/InfoOutlineIcon.vue";
 import MapOutlineIcon from "@/common/component/icons/MapOutlineIcon.vue";
-import CameraOutlineIcon from "@/common/component/icons/CameraOutlineIcon.vue";
 import SendOutlineIcon from "@/common/component/icons/SendOutlineIcon.vue";
 import ChattingOutlineIcon from "@/common/component/icons/ChattingOutlineIcon.vue";
 import ListIcon from "@/common/component/icons/ListIcon.vue";
@@ -105,9 +103,6 @@ export default new Vuetify({
       flag_plus: {
         component: FlagPlusIcon,
       },
-      menu: {
-        component: MenuIcon,
-      },
       check_round: {
         component: CheckRoundIcon,
       },
@@ -116,9 +111,6 @@ export default new Vuetify({
       },
       map_outline: {
         component: MapOutlineIcon,
-      },
-      camera_outline: {
-        component: CameraOutlineIcon,
       },
       send_outline: {
         component: SendOutlineIcon,

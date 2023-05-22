@@ -21,6 +21,7 @@
         outlined
         @click="$router.go(-1)"
         rounded
+        elevation="3"
       >
         <v-icon>$vuetify.icons.arrow_left</v-icon>
       </v-btn>

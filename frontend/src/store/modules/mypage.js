@@ -47,7 +47,7 @@ const mypageStore = {
           }
         },
         (error) => {
-          error
+          error;
           // console.log(error);
         }
       );

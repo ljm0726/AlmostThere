@@ -3,7 +3,7 @@
     <!-- 회원 프로필 -->
     <v-card rounded="xl" elevation="0">
       <v-skeleton-loader
-        v-if="!member.memberProfileImg"
+        v-if="!memberProfileImg"
         type="image"
         height="80"
         width="80"
@@ -13,7 +13,7 @@
         class="align-end"
         height="80"
         width="80"
-        :src="member.memberProfileImg"
+        :src="memberProfileImg"
       >
       </v-img>
     </v-card>
@@ -21,7 +21,7 @@
       <span>안녕하세요!</span>
       <div>
         <span class="bold-font main-col-1">
-          {{ member.memberNickname }}
+          {{ memberNickname }}
         </span>
         <span>님</span>
       </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+// import { mapState } from "vuex";
 import LogoutDialog from "./LogoutDialog.vue";
 
 export default {
@@ -51,7 +51,11 @@ export default {
     return {};
   },
   computed: {
-    ...mapState("memberStore", ["member"]),
+    // ...mapState("memberStore", ["member"]),
+  },
+  props: {
+    memberProfileImg: String,
+    memberNickname: String,
   },
   components: { LogoutDialog },
   methods: {

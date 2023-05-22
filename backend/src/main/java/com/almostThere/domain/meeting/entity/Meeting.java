@@ -1,11 +1,9 @@
 package com.almostThere.domain.meeting.entity;
 
+import com.almostThere.domain.chatting.entity.Chatting;
 import com.almostThere.domain.meeting.dto.update.MeetingUpdateRequestDto;
 import com.almostThere.domain.user.entity.Member;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -60,6 +58,9 @@ public class Meeting {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "meeting")
     private List<CalculateDetail> calculateDetails = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meeting")
+    private List<Chatting> chattingList = new ArrayList<>();
 
     @Builder
     public Meeting(Member host, String meetingName,String meetingPlace,String meetingAddress
