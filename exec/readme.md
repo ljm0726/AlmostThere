@@ -288,6 +288,8 @@ pipeline{
         KAKAO_CLIENT_SECRET=""
         REDIS_URL=""
         REDIS_PASSWORD=""
+        CLOVA_APIURL=""
+        CLOVA_SECRETKEY=""
     }
     stages{
         stage('Ready'){
@@ -311,11 +313,14 @@ pipeline{
                                  string(credentialsId: 'KAKAO_REDIRECT_URL', variable: 'KAKAO_REDIRECT_URL'),
                                  string(credentialsId: 'KAKAO_CLIENT_SECRET', variable: 'KAKAO_CLIENT_SECRET'),
                                  string(credentialsId: 'REDIS_URL', variable: 'REDIS_URL'),
-                                 string(credentialsId: 'REDIS_PASSWORD', variable: 'REDIS_PASSWORD')]) {
+                                 string(credentialsId: 'REDIS_PASSWORD', variable: 'REDIS_PASSWORD'),
+                                 string(credentialsId: 'CLOVA_APIURL', variable: 'CLOVA_APIURL'),
+                                 string(credentialsId: 'CLOVA_SECRETKEY', variable: 'CLOVA_SECRETKEY')]) {
                     withEnv(["PROFILE=${PROFILE}", "DATABASE_URL=${DATABASE_URL}","DATABASE_ID=${DATABASE_ID}"
                     ,"DATABASE_PASSWORD=${DATABASE_PASSWORD}","LOGIN_SUCCESS_URL=${LOGIN_SUCCESS_URL}"
                     ,"JWT_TOKEN_SECRET_KEY=${JWT_TOKEN_SECRET_KEY}","KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID}","KAKAO_REDIRECT_URL=${KAKAO_REDIRECT_URL}"
-                    ,"KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET}, REDIS_URL=${REDIS_URL}, REDIS_PASSWORD=${REDIS_PASSWORD}"]) {
+                    ,"KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET}", "REDIS_URL=${REDIS_URL}", "REDIS_PASSWORD=${REDIS_PASSWORD}"
+                    , "CLOVA_APIURL=${CLOVA_APIURL}", "CLOVA_SECRETKEY=${CLOVA_SECRETKEY}"]) {
                         sh "echo 'Test'"
                         dir('backend') {
                             sh 'chmod +x gradlew'
@@ -350,10 +355,17 @@ pipeline{
                                  string(credentialsId: 'KAKAO_REDIRECT_URL', variable: 'KAKAO_REDIRECT_URL'),
                                  string(credentialsId: 'KAKAO_CLIENT_SECRET', variable: 'KAKAO_CLIENT_SECRET'),
                                  string(credentialsId: 'REDIS_URL', variable: 'REDIS_URL'),
-                                 string(credentialsId: 'REDIS_PASSWORD', variable: 'REDIS_PASSWORD')]) {
+                                 string(credentialsId: 'REDIS_PASSWORD', variable: 'REDIS_PASSWORD'),
+                                 string(credentialsId: 'CLOVA_APIURL', variable: 'CLOVA_APIURL'),
+                                 string(credentialsId: 'CLOVA_SECRETKEY', variable: 'CLOVA_SECRETKEY')]) {
                     dir('backend'){
                         sh "sudo docker build -t almostthere-backend ./"
-                        sh "sudo docker run -d --name almostthere-backend -e PROFILE=${PROFILE} -e DATABASE_URL=${DATABASE_URL} -e DATABASE_ID=${DATABASE_ID} -e DATABASE_PASSWORD=${DATABASE_PASSWORD} -e LOGIN_SUCCESS_URL=${LOGIN_SUCCESS_URL} -e JWT_TOKEN_SECRET_KEY=${JWT_TOKEN_SECRET_KEY} -e KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID} -e KAKAO_REDIRECT_URL=${KAKAO_REDIRECT_URL} -e KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET} -e REDIS_URL=${REDIS_URL} -e REDIS_PASSWORD=${REDIS_PASSWORD} -v /home/ubuntu/almostthere_store:/var/lib/almostthere -p 9999:9999 almostthere-backend"
+                        sh "sudo docker run -d --name almostthere-backend -e PROFILE=${PROFILE} 
+                        -e DATABASE_URL=${DATABASE_URL} -e DATABASE_ID=${DATABASE_ID} -e DATABASE_PASSWORD=${DATABASE_PASSWORD} 
+                        -e LOGIN_SUCCESS_URL=${LOGIN_SUCCESS_URL} -e JWT_TOKEN_SECRET_KEY=${JWT_TOKEN_SECRET_KEY} 
+                        -e KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID} -e KAKAO_REDIRECT_URL=${KAKAO_REDIRECT_URL} -e KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET} 
+                        -e REDIS_URL=${REDIS_URL} -e REDIS_PASSWORD=${REDIS_PASSWORD} 
+                        -e CLOVA_APIURL=${CLOVA_APIURL} -e CLOVA_SECRETKEY=${CLOVA_SECRETKEY} -v /home/ubuntu/almostthere_store:/var/lib/almostthere -p 9999:9999 almostthere-backend"
                     }
                 }
             }
